@@ -1,0 +1,10 @@
+.vs/
+obj/
+Debug/
+Build/
+Release/
+Bin/
+packages/
+Site/Site/Data/
+.idea/
+*.jpg
