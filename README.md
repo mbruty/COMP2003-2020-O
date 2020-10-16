@@ -3,7 +3,8 @@
 
 ## What are we using?
 ### Website
-*Note: this is a checklist for you to use, change the* `- [ ]` *to a* `- [X]` *to mark is as done*
+*Note: this is a checklist for you to use, change the* `- [ ]` *to a* `- [X]` *to mark is as done*.
+
 The website will be built using React and React-DOM. (if you don't know the difference between them, don't worry)
 To get started follow these steps:
 
@@ -21,7 +22,7 @@ To get started follow these steps:
  To get started follow these steps:
  - [ ] Install node.js [from here](https://nodejs.org/en/) the project has been tested using v12.19.0 (Add to PATH)
  - [ ] Clone the repository
- - [ ] CD in to ./website
+ - [ ] CD in to ./mobile-app
  - [ ] Run `npm install` in the console of your choice
  - [ ] Run `npm start` to start the development server
  - This will start the expo client. You can either chose to use your phone to view the app, or use an emulator.
