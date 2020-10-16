@@ -1,3 +1,4 @@
+
 # Comp 2003 Group O Project
 **Main branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=main) **Release Branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Release) **Development Branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Development)
 
@@ -53,6 +54,8 @@ At the end of each sprint, the table documenting the API's endpoints will be upd
    
   Whilst I will not force you to use typescript, it does offer many advantages for the little amount of time it takes to change code from JS to TS like better auto completion, intellisense and type safety. If you wish to learn about typescript, do not hesitate to talk to me.
 
+Please use [gitmoji](https://gitmoji.carloscuesta.me/) in commit messages, it make's everything look happier and it's easier to see what you've done at a glance 
+
 Don't over-use memoisation, the only good reason to use it is if a component is using a really computationally heavy function inside the state.
 ### ToDo: 
 The react scripts will be updated at a later date to have different environment variables depending on the mode so that you can change from a local api to the one running on the server. This applies to both  the website and mobile app. 
@@ -62,6 +65,24 @@ The react scripts will be updated at a later date to have different environment 
 |--|--|--|--|
 | Get from random user API | https://randomuser.me/api/ | None | Get a random user |
 
+## The server
+It is currently running on one box, using nginx for reverse proxies so that multiple subdomains can listen on their default port.
+
+You should get any server credentials by the end of sprint 0
+### Subdomains
+| Subdomain | What it points to |
+|--|--|
+| mysql | The production mySql server |
+| devsql | The dev mySql server |
+| expo | The published expo link |
+| api | The production api - linked to branch `main` |
+| devapi | The development api - linked to branch `development` |
+| admin | The production website - linked to branch `main` |
+| devsite | The development website - linked to branch `development` |
+
+### Docker
+You're able to run the project locally without docker, but on the server we will be using docker to make it easy to update changes. If this app were to go in to production, everything can be put in to a kubernetes cluster to ensure the application is performant with any amount of users
+ 
 ## How the branches work?
 
  1. You submit a pull request with your changes on a new 'feature' branch.
