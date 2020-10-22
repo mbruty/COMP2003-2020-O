@@ -29,9 +29,13 @@ The mobile app will be built using React and React-Native (if you don't know the
 To get started follow these steps:
 
 - [ ] Install node.js [from here](https://nodejs.org/en/) the project has been tested using v12.19.0 (Add to PATH)
+
 - [ ] Clone the repository
+
 - [ ] CD in to ./mobile-app
+
 - [ ] Run `npm install` in the console of your choice
+
 - [ ] Run `npm start` to start the development server
 
 - This will start the expo client. You can either chose to use your phone to view the app, or use an emulator.
@@ -73,6 +77,14 @@ In order to allow the API app to run properly, please ensure you have downloaded
 2. Click Manage NuGet Packages
 
 3. Click Restore at the top of the page
+
+### Packages
+
+- [MySQL.Data](https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html) -- Interact with the MySQL database
+
+- [Newtonsoft.JSON](https://www.newtonsoft.com/json/help/html/SerializingJSON.htm) -- (De)Serialize Objects
+
+- [Scrypt.NET](https://github.com/viniciuschiele/Scrypt) -- Hashing
 
 ### Viewing the API:
 
