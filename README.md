@@ -36,16 +36,23 @@ To get started follow these steps:
 - [ ] **For javascript files** Please use and run eslint and fix any warnings before submitting [for vscode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) / [instructions for phpstorm](https://www.jetbrains.com/help/phpstorm/eslint.html)
 - [ ] **For typescript files** Please use and run tslint and fix any warnings [for vscode](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin) / [instructions for phpstorm](https://www.jetbrains.com/help/phpstorm/using-tslint-code-quality-tool.html#ws_tslint_activate_and_configure)
 
+---
+
 ### Mobile app
 
 The mobile app will be built using React and React-Native (if you don't know the difference between them, don't worry)
 To get started follow these steps:
 
 - [ ] Install node.js [from here](https://nodejs.org/en/) the project has been tested using v12.19.0 (Add to PATH)
+
 - [ ] Clone the repository
+
 - [ ] CD in to ./mobile-app
+
 - [ ] Run `npm install` in the console of your choice
+
 - [ ] Run `npm start` to start the development server
+
 - This will start the expo client. You can either chose to use your phone to view the app, or use an emulator.
 
 #### Steps for the emulator
@@ -69,15 +76,18 @@ To get started follow these steps:
 - [ ] Please use Prettier to format your code before submitting [for vscode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) / [for phpstorm](https://plugins.jetbrains.com/plugin/10456-prettier)
 - [ ] Please use and run tslint and fix any warnings [for vscode](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin) / [instructions for phpstorm](https://www.jetbrains.com/help/phpstorm/using-tslint-code-quality-tool.html#ws_tslint_activate_and_configure)
 
-### The backend API
+---
+
+### API:
 
 The API will be built using vanilla C# with a testing framework that has yet to be decided on. The IDE of choice is VisualStudio, which you should be familiar with. [download](https://visualstudio.microsoft.com/downloads/)
 
-### First Launch
+### First Launch:
 
 In order to allow the API app to run properly, please ensure you have downloaded the required packages. To do this:
 
 1. Right Click api in the Solution Explorer
+
 2. Click Manage NuGet Packages
 
 3. Click Restore at the top of the page
@@ -90,11 +100,13 @@ In order to allow the API app to run properly, please ensure you have downloaded
 
 - [Scrypt.NET](https://github.com/viniciuschiele/Scrypt) -- Hashing
 
-### Viewing the API
+### Viewing the API:
 
 At the end of each sprint, the table documenting the API's endpoints will be updated. For a more in-depth view, download and install [Postman](https://www.postman.com/downloads/) and [join the team](https://app.getpostman.com/join-team?invite_code=c268b68553ba83262de027359fd55d31). This will allow you to see and run all the possible requests with the required parameters and headers along with the response you will get.
 
-### Notes
+---
+
+### Notes:
 
 #### You do not need to install tslint to the project, just the plugin
 
@@ -111,7 +123,9 @@ Please use [gitmoji](https://gitmoji.carloscuesta.me/) in commit messages, it ma
 
 Don't over-use memoisation, the only good reason to use it is if a component is using a really computationally heavy function inside the state.
 
-### ToDo
+---
+
+### ToDo:
 
 The react scripts will be updated at a later date to have different environment variables depending on the mode so that you can change from a local api to the one running on the server. This applies to both the website and mobile app.
 
@@ -163,6 +177,7 @@ You're able to run the project locally without docker, but on the server we will
 4. Running the node container
    `sudo docker run --name devsite -p 5000:5000 devsite`
 
+---
 ## How the branches work
 
 1. You submit a pull request with your changes on a new 'feature' branch.
