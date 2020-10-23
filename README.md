@@ -1,8 +1,23 @@
 # Comp 2003 Group O Project
 
-**Main branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=main) **Release Branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Release) **Development Branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Development)
+**Main branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=main) **Release Branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Release) **Development Branch** ![enter image description here](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Development) [![file structure: destiny](https://img.shields.io/badge/file%20structure-destiny-7a49ff?style=flat)](https://github.com/benawad/destiny)
 
-## What are we using?
+## Code style guide
+
+### TypeScript
+
+- [ ] Run the tslint extension
+- [ ] Run Prettier (Shift + alt + f)
+- [ ] Run the file formatter `npx destiny -w "src/**/*.*"`
+- [ ] Set your IDE to use 2 spaces for tabs
+- [ ] For interfaces, please name them like I{Name}
+- [ ] Use PascalCase for React.FC Names
+- [ ] Variables and other functions use camelCaps
+- [ ] For constant's please use UPPER_CASE_SNAKE_CASE
+
+### C#
+
+## What are we using
 
 ### Website
 
@@ -40,16 +55,16 @@ To get started follow these steps:
 
 - This will start the expo client. You can either chose to use your phone to view the app, or use an emulator.
 
-#### Steps for the emulator:
+#### Steps for the emulator
 
 - [ ] Download and andriod studio [from here](https://developer.android.com/studio)
 - [ ] Go to tools > AVD Manager
 - [ ] Create Virtual Device. This app has been tested on Pixel 2 running the playstore, but you can chose which ever you want.
 - [ ] Click the green arrow under Actions to start
-- [ ] Once the emulator has started, expo should be able to connect to the device by clicking 'Run on Android device / emulator'
+- [ ] Once the emulator has started, expo shouvld be able to connect to the device by clicking 'Run on Android device / emulator'
 - [ ] Alternatively run `npm run android`
 
-#### Steps for running on your own device:
+#### Steps for running on your own device
 
 - [ ] Download the Expo app from [Google Play store](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) / [AppStore](https://apps.apple.com/gb/app/expo-client/id982107779)
 - [ ] Run `npm start` to launch the expo interface
@@ -59,8 +74,7 @@ To get started follow these steps:
 
 - [ ] Run `npm test` to run the tests before submitting your pull request
 - [ ] Please use Prettier to format your code before submitting [for vscode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) / [for phpstorm](https://plugins.jetbrains.com/plugin/10456-prettier)
-- [ ] **For javascript files** Please use and run eslint and fix any warnings before submitting [for vscode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) / [instructions for phpstorm](https://www.jetbrains.com/help/phpstorm/eslint.html)
-- [ ] **For typescript files** Please use and run tslint and fix any warnings [for vscode](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin) / [instructions for phpstorm](https://www.jetbrains.com/help/phpstorm/using-tslint-code-quality-tool.html#ws_tslint_activate_and_configure)
+- [ ] Please use and run tslint and fix any warnings [for vscode](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin) / [instructions for phpstorm](https://www.jetbrains.com/help/phpstorm/using-tslint-code-quality-tool.html#ws_tslint_activate_and_configure)
 
 ---
 
@@ -94,11 +108,16 @@ At the end of each sprint, the table documenting the API's endpoints will be upd
 
 ### Notes:
 
-#### You do not need to install eslint / tslint to the project, just the plugin
+#### You do not need to install tslint to the project, just the plugin
 
 For this project we will **not** be using class-based components, instead opting for functional components using react hooks. This might seem a tiny bit foreign at first, but functional react offers some nicer features and makes the code cleaner and more understandable.
 
-Whilst I will not force you to use typescript, it does offer many advantages for the little amount of time it takes to change code from JS to TS like better auto completion, intellisense and type safety. If you wish to learn about typescript, do not hesitate to talk to me.
+After the sprint 0 meeting, we have decided to use TypeScript for the whole of the front end. The only typing's that will be enforced will be an interface for the following:
+
+- Component state
+- Component props
+
+Please do try to use typing for most functions and use generics over the any type. I (Mike) might make changes to your branch before merging just to fix these up as it's all alot to learn.
 
 Please use [gitmoji](https://gitmoji.carloscuesta.me/) in commit messages, it make's everything look happier and it's easier to see what you've done at a glance
 
@@ -112,10 +131,11 @@ The react scripts will be updated at a later date to have different environment 
 
 ## API
 
-_updated as of dd/mm/yyyy_
-|Request name| Request URL | Parameters | Description |
-|--|--|--|--|
-| Get from random user API | https://randomuser.me/api/ | None | Get a random user |
+### updated as of dd/mm/yyy
+
+| Request name             | Request URL                  | Parameters | Description       |
+| ------------------------ | ---------------------------- | ---------- | ----------------- |
+| Get from random user API | `https://randomuser.me/api/` | None       | Get a random user |
 
 ## The server
 
@@ -153,17 +173,18 @@ You're able to run the project locally without docker, but on the server we will
    `sudo docker container start prodmySql`
    `sudo docker container start devmySql`
 3. Creating the node container for the web app
-    `sudo docker build -t devsite --build-arg git_user="github_username" --build-arg git_pw="github_pw" -f dev.dockerfile .`
+   `sudo docker build -t devsite --build-arg git_user="github_username" --build-arg git_pw="github_pw" -f dev.dockerfile .`
+4. Running the node container
+   `sudo docker run --name devsite -p 5000:5000 devsite`
 
 ---
-
-## How the branches work?
+## How the branches work
 
 1. You submit a pull request with your changes on a new 'feature' branch.
 2. Travis-CI will automatically run tests on the changes you've made
 3. If the test's pass, go to 4, if any fail, go to 1 and make the appropriate changes
 4. Either Mike or Oscar will have a look at the code to ensure quality and test's have been made
-5. The changes in the development branch will be automatically uploaded to the development server available at /_ We need to get a name first _/
+5. The changes in the development branch will be automatically uploaded to the development server available at _We need to get a name first_
 6. At the end of the sprint we will review if the project is at the next _release_ stage. The changes in the development branch will then be merged in to the release branch.
 7. Once we've made sure everything in the release branch is good to go, the release branch will be merged in to the main branch.
-8. On the merge in to the main branch, the project will be built and put on the release server avalible at /_ We need to get a name first _/
+8. On the merge in to the main branch, the project will be built and put on the release server avalible at _We need to get a name first_
