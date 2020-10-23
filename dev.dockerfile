@@ -15,12 +15,8 @@ RUN apt-get install -y git nodejs npm
 
 RUN git clone --branch Development https://${git_user}:${git_pw}@github.com/mbruty/COMP2003-2020-O.git
 
-# Remove SSH keys
-RUN rm -rf /root/.ssh/
-
 # Move in to the website folder
 WORKDIR COMP2003-2020-O/website
-RUN ls -a
 # Install the dependencies
 RUN npm i
 
@@ -32,4 +28,4 @@ EXPOSE 5000:5000
 
 # End of install #
 # Run this every time the container is started
-CMD ["node", "server.js"]
+CMD ["node", "src/server.js"]
