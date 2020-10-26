@@ -1,4 +1,3 @@
-# Start of install #
 FROM ubuntu
 
 # ARGS
@@ -17,6 +16,12 @@ RUN git clone --branch Development https://${git_user}:${git_pw}@github.com/mbru
 
 # Move in to the website folder
 WORKDIR COMP2003-2020-O/website
+
+RUN touch .env
+
+# Put the port number in to the .env file
+RUN echo PORT=5001 > .env
+
 # Install the dependencies
 RUN npm i
 
@@ -24,7 +29,7 @@ RUN npm i
 RUN npm run build
 
 # Open the needed ports
-EXPOSE 5000:5000
+EXPOSE 5001:5001
 
 # End of install #
 # Run this every time the container is started
