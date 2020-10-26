@@ -1,3 +1,3 @@
 test('Example test!', () => {
-  expect(false).toBeTruthy();
+  expect(true).toBeTruthy();
 })
