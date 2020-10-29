@@ -32,6 +32,6 @@ before_install:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: dev_deploy.sh
+    script: dev_deploy_travis.sh
     on:
       branch: Development
