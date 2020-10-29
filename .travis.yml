@@ -1,23 +1,37 @@
 language: node_js
-
 node_js:
-  - 12.18.3
+- 12.18.3
+dist: trusty
+sudo: false
 
+# This keeps the "add <your-host.tld> to known_hosts" prompt from popping up
+addons:
+  ssh_known_hosts:
+  - 51.195.201.170
 before_script:
-  - cd website
-  - npm install
-  - cd ..
-  - cd mobile-app
-  - npm install
-  - cd ..
+- cd website
+- npm install
+- cd ..
+- cd mobile-app
+- npm install
+- cd ..
+script:
+- cd mobile-app
+- npm run test-ci
+- cd ..
+- cd website
+- npm run test-ci
+notifications: 
+  - webhooks: https://outlook.office.com/webhook/b10bec35-63c9-4c66-8ebc-2ea387d602bc@5437e7eb-83fb-4d1a-bfd3-bb247e061bf1/TravisCI/039531632ff54aaf82bbdd5f6659888b/48572203-9657-49f1-a944-e6ec4132634a
 
-script: 
-  - cd mobile-app
-  - npm run test-ci
-  - cd ..
-  - cd website
-  - npm run test-ci
+before_install:
+- openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
+  -in deploy_key.enc -out ./deploy_key -d
+- eval "$(ssh-agent -s)"
 
-notifications:
-
-webhooks: https://outlook.office.com/webhook/b10bec35-63c9-4c66-8ebc-2ea387d602bc@5437e7eb-83fb-4d1a-bfd3-bb247e061bf1/TravisCI/039531632ff54aaf82bbdd5f6659888b/48572203-9657-49f1-a944-e6ec4132634a
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: dev_deploy.sh
+    on:
+      branch: Development
