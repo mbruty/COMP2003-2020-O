@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-docker exec -it devsite git fetch
-docker exec -it devsite git pull origin Development
-docker exec -it devsite npm run build
+docker exec devsite git fetch
+docker exec devsite git pull origin Development
+docker exec devsite npm run build
 exit 
