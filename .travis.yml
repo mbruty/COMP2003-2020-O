@@ -35,6 +35,6 @@ before_install:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: ssh ubuntu@51.195.201.170 -v 'sudo sh dev_deploy.sh'
+    script: ssh ubuntu@51.195.201.170 -v 'sudo bash dev_deploy.sh'
     on:
       branch: Development
