@@ -1,19 +1,22 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { IUser } from "./App/IUser";
+import { Preferences } from "./App/Preferences";
 
 export default function App() {
+  const [user, setUser] = useState<IUser>({fName: "Mike"});
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Preferences fName={user.fName}/>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#F1F1F1",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
