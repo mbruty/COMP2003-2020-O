@@ -17,6 +17,7 @@ export const ChipView: React.FC<Props> = (props) => {
     <View style={styles.container}>
       {props.chipNameList.map((chip, index) => (
         <Chip
+          key={`chip-${index}`}
           title={chip}
           enabled={enabledArray[index]}
           index={index}
@@ -33,6 +34,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     marginLeft: 20,
-    flexWrap: "wrap"
-  }
-})
+    flexWrap: "wrap",
+  },
+});
