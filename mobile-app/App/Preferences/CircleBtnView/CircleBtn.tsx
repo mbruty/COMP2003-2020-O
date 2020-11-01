@@ -10,6 +10,7 @@ interface Props {
 
 export const CircleBtn: React.FC<Props> = (props) => {
   const buttonStyle: any = [styles.btn];
+  // Set the button styles and image to match the selected state of the button
   buttonStyle.push(props.selected ? styles.selected : styles.deselected);
   const image = props.selected
     ? require("./CircleBtn/heart.png")

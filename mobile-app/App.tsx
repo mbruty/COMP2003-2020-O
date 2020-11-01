@@ -5,8 +5,13 @@ import { Preferences } from "./App/Preferences";
 
 export default function App() {
   const [user, setUser] = useState<IUser>({ fName: "Mike" });
+
+  /* For development set this to the page you're making..
+  Set this to "main" when publishing */
+  
   const [page, setPage] = useState<string>("preferences");
 
+  // Render the different pages by name of page
   switch (page) {
     case "preferences":
       return (

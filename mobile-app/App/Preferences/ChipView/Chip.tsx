@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
 interface Props {
@@ -11,10 +11,12 @@ interface Props {
 export const Chip: React.FC<Props> = (props) => {
   const viewStyles: Array<any> = [styles.container];
 
+  // Add disabled / enabled colour to the view styles
   viewStyles.push(props.enabled ? styles.active : styles.inactive);
 
   const textStyle = props.enabled ? styles.textActive : styles.textDisabled;
 
+  // Set the icon to the enabled / disabled one
   const icon = props.enabled
     ? require("./Chip/baseline_check_circle_outline_white_18.png")
     : require("../shared/baseline_not_interested_black_48.png");
@@ -25,7 +27,9 @@ export const Chip: React.FC<Props> = (props) => {
     >
       <View style={viewStyles}>
         <Image style={styles.icon} source={icon}></Image>
-        <Text allowFontScaling={false} style={textStyle}>{props.title}</Text>
+        <Text allowFontScaling={false} style={textStyle}>
+          {props.title}
+        </Text>
       </View>
     </TouchableOpacity>
   );

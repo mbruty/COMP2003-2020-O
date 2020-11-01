@@ -30,24 +30,31 @@ export const Preferences: React.FC<Props> = (props) => {
     new Array<boolean>(allergies.length).fill(true)
   );
 
+  /* Set the allergies array to the value at the index
+    This will be used by the chips to update the state of the form on
+    a touch event from a chip 
+  */
   const setAllergies = (touched: boolean, index: number) => {
     let enabled = [...allergiesBoolArr];
     enabled[index] = touched;
     setAllergiesBoolArr(enabled);
   };
 
+  // Same as above, but for food types
   const setFoodTypes = (touched: boolean, index: number) => {
     let enabled = [...foodBoolArr];
     enabled[index] = touched;
     setFoodBoolArr(enabled);
   };
 
+  // Called on submit button click
   const submit = () => {
     // ToDo:
     // Send preferences to the server...
     props.setPage("main");
   };
 
+  // The react-native way of doing width: 100vw; height: 100vh;
   const dimensions = Dimensions.get("window");
   const imageHeight = Math.round((dimensions.width * 9) / 16);
   const imageWidth = dimensions.width;
@@ -113,7 +120,7 @@ const styles = StyleSheet.create({
   submit: {
     alignSelf: "flex-end",
     marginRight: 40,
-    marginTop: 40
+    marginTop: 40,
   },
   submitText: {
     color: "#FD4040",
