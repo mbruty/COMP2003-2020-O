@@ -58,6 +58,7 @@ exports[`Renders Chip List 1`] = `
         }
       />
       <Text
+        allowFontScaling={false}
         style={
           Object {
             "color": "#FFF",
@@ -100,7 +101,7 @@ exports[`Renders Chip List 1`] = `
             "paddingRight": 15,
           },
           Object {
-            "backgroundColor": "#FD4040",
+            "backgroundColor": "#FFF",
           },
         ]
       }
@@ -116,9 +117,10 @@ exports[`Renders Chip List 1`] = `
         }
       />
       <Text
+        allowFontScaling={false}
         style={
           Object {
-            "color": "#FFF",
+            "color": "#707070",
             "marginTop": 2,
             "paddingLeft": 5,
           }

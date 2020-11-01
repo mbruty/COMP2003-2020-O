@@ -4,7 +4,13 @@ import { ChipView } from "./ChipView";
 
 test("Renders Chip List", () => {
   const chipList = renderer
-    .create(<ChipView chipNameList={["Chip One", "Chip Two"]} />)
+    .create(
+      <ChipView
+        setTouched={(value: boolean, index: number) => {}}
+        chipNameList={["Chip One", "Chip Two"]}
+        enabledArray={[true, false]}
+      />
+    )
     .toJSON();
   expect(chipList).toMatchSnapshot();
 });

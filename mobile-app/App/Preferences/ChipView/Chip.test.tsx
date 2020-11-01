@@ -3,7 +3,7 @@ import renderer from "react-test-renderer";
 import { Chip } from "./Chip";
 
 test("Renders Enabled Chip", () => {
-  const chipList = renderer
+  const chip = renderer
     .create(
       <Chip
         title="Chip"
@@ -13,11 +13,11 @@ test("Renders Enabled Chip", () => {
       />
     )
     .toJSON();
-  expect(chipList).toMatchSnapshot();
+  expect(chip).toMatchSnapshot();
 });
 
 test("Renders Disabled Chip", () => {
-  const chipList = renderer
+  const chip = renderer
     .create(
       <Chip
         title="Chip"
@@ -27,5 +27,5 @@ test("Renders Disabled Chip", () => {
       />
     )
     .toJSON();
-  expect(chipList).toMatchSnapshot();
+  expect(chip).toMatchSnapshot();
 });
