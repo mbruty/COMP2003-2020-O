@@ -26,7 +26,7 @@
     "ios": "expo start --ios",
     "web": "expo web",
     "eject": "expo eject",
-    "test": "jest -u",
+    "test": "jest",
     "test-ci": "jest --watchAll=false --coverage"
   },
   "private": true,
@@ -34,7 +34,8 @@
     "preset": "jest-expo",
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base)"
-    ]
+    ],
+    "snapshotResolver": "./snapshotResolver.js"
   },
   "automock": false
 }
