@@ -95,6 +95,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Endpoints\Listener.cs" />
+    <Compile Include="Backend\Endpoints\WebRequest.cs" />
+    <Compile Include="Backend\Endpoints\WebSockets.cs" />
+    <Compile Include="Backend\Events\Echo.cs" />
+    <Compile Include="Backend\Events\EventAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -104,8 +109,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Backend\Data\" />
-    <Folder Include="Backend\Endpoints\" />
-    <Folder Include="Backend\Events\" />
     <Folder Include="Backend\Security\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
