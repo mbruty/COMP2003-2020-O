@@ -4,6 +4,8 @@ namespace api
 {
     internal class Program
     {
+        #region Methods
+
         private static void Main(string[] args)
         {
             api.Backend.Endpoints.WebListener.Start();
@@ -11,5 +13,7 @@ namespace api
             //Prevent The App Closing
             while (true) { Console.ReadLine(); }
         }
+
+        #endregion Methods
     }
 }
