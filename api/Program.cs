@@ -10,6 +10,9 @@ namespace api
     {
         static void Main(string[] args)
         {
+            api.Backend.Endpoints.WebListener.Start();
+
+            while (true) { Console.ReadLine(); }
         }
     }
 }
