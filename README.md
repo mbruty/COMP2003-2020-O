@@ -20,6 +20,7 @@ To produce a mobile application to recommend local restaurants to groups or indi
 **Main branch** ![ ](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=main) **Release Branch** ![ ](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Release) **Development Branch** ![ ](https://travis-ci.com/mbruty/COMP2003-2020-O.svg?token=pzMm3R21aNWorpoM4kpx&branch=Development) [![file structure: destiny](https://img.shields.io/badge/file%20structure-destiny-7a49ff?style=flat)](https://github.com/benawad/destiny)
 
 #### Branch flowchart
+
 ![Branch flowchart](https://i.imgur.com/YAY0LCQ.png)
 
 _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _to mark is as done_.
@@ -38,6 +39,10 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 - [ ] For constant's please use UPPER_CASE_SNAKE_CASE
 
 ### C#
+
+- Comment Chunks of code to explain function
+
+- Keep functions under 30 lines
 
 ## What are we using
 
@@ -206,6 +211,7 @@ You're able to run the project locally without docker, but on the server we will
    `sudo docker container run website pkill -9 node && node server.js`
 
 ---
+
 ## How the branches work
 
 1. You submit a pull request with your changes on a new 'feature' branch.
