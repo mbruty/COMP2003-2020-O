@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.WebSockets;
-using System.Threading.Tasks;
 
 namespace api.Backend.Endpoints
 {
@@ -14,17 +10,21 @@ namespace api.Backend.Endpoints
         public static void Start(int port = 3000)
         {
             listener = new HttpListener();
+
+            //specifies that we can only receive local requests from the given port
             listener.Prefixes.Add($"http://localhost:{port}/");
 
-            listener.Start();
-            listener.BeginGetContext(PreHandle, null);
+            listener.Start(); //Start the listener
+            listener.BeginGetContext(PreHandle, null); //Forwards any requests to the PreHandler
         }
 
         private static async void PreHandle(IAsyncResult result)
         {
+            //Get the object containing the request details
             HttpListenerContext listenerContext = listener.EndGetContext(result);
             listener.BeginGetContext(PreHandle, null);
 
+            //Continue request handling in the appropriate handler
             if (listenerContext.Request.IsWebSocketRequest) await WebSockets.PreHandle(listenerContext);
             else WebRequest.PreHandle(listenerContext);
         }

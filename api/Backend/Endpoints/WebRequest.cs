@@ -1,19 +1,17 @@
-﻿using System;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Net;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
-using System.Threading.Tasks;
+using System.Net;
 using System.Reflection;
 
 namespace api.Backend.Endpoints
 {
     public static class WebRequest
     {
-        public class HttpResponse
+        public class HttpResponse //Stores any and all data being returned to the requestor
         {
-            public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}");
-            public int StatusCode = 500;
+            public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}"); //Time always provided
+            public int StatusCode = 500; //https://httpstatuses.com/
             private CookieCollection cookies = new CookieCollection();
 
             public void AddCookie(string name, string value)
@@ -35,28 +33,31 @@ namespace api.Backend.Endpoints
             {
                 response.StatusCode = StatusCode;
 
-                response.Headers.Add("Access-Control-Allow-Origin", "*");
+                response.Headers.Add("Access-Control-Allow-Origin", "*"); //Do Not Touch
 
-                response.ContentType = "application/json";
+                response.ContentType = "application/json"; //All requests WILL be sent in json form
                 response.Cookies = cookies;
 
-                StreamWriter stream = new StreamWriter(response.OutputStream);
+                StreamWriter stream = new StreamWriter(response.OutputStream); //Send the data
                 if (Data != null) stream.Write(JToken.FromObject(Data).ToString());
 
-                stream.Flush();
+                stream.Flush(); //CLose out the request
                 stream.Close();
             }
         }
 
         public static void PreHandle(HttpListenerContext listenerContext)
         {
+            //Read any request data (from the body)
             StreamReader stream = new StreamReader(listenerContext.Request.InputStream);
             string streamString = stream.ReadToEnd();
 
             HttpResponse response = new HttpResponse();
 
+            //Pass the request on
             Handle(listenerContext.Request, streamString, ref response);
 
+            //Send the request
             response.Send(listenerContext.Response);
         }
 
@@ -64,11 +65,13 @@ namespace api.Backend.Endpoints
         {
             string url = request.RawUrl.ToLower(), method = request.HttpMethod.ToLower();
 
+            //Find and then run the appriproate web event
             MethodInfo[] tMethod = Events.WebEvent.FindMethodInfos(url, method, false);
 
             if (tMethod.Length > 0) tMethod[0].Invoke(null, new object[] { request.Headers, Data, response });
             else
             {
+                //Provide an error if no event is found
                 response.StatusCode = 404;
                 response.AddToData("error", "Page not found");
             }

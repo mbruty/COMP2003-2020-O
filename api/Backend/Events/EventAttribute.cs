@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 
 namespace api.Backend.Events
@@ -10,6 +7,7 @@ namespace api.Backend.Events
     [System.AttributeUsage(System.AttributeTargets.Method)]
     public class WebEvent : System.Attribute
     {
+        //Find all WebEvents
         private static MethodInfo[] methodInfos = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(x => x.GetTypes())
             .SelectMany(x => x.GetMethods())
@@ -43,10 +41,11 @@ namespace api.Backend.Events
 
         public static MethodInfo[] FindMethodInfos(string url, string method, bool WebSocket)
         {
+            //Return matching WebEvents
             return methodInfos.Where(x => x.GetCustomAttribute<Events.WebEvent>().Equals(url, method, WebSocket)).ToArray();
         }
 
-        public bool Equals(string urlPath, string Method, bool WebSocket = false)
+        public bool Equals(string urlPath, string Method, bool WebSocket = false) //Easily check if states match
         {
             return urlPath.ToLower() == this.urlPath && Method.ToLower() == this.method && WebSocket == this.WebSocket;
         }
