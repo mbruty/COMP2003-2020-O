@@ -56,12 +56,12 @@ exports[`Renders Circle Button List 1`] = `
             "marginTop": 0,
           },
           Object {
+            "marginBottom": 0,
             "marginTop": 10,
           },
         ]
       }
     >
-       
       Types of food
     </Text>
     <View
@@ -417,13 +417,18 @@ exports[`Renders Circle Button List 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#707070",
-          "fontSize": 25,
-          "fontWeight": "bold",
-          "margin": 15,
-          "marginTop": 0,
-        }
+        Array [
+          Object {
+            "color": "#707070",
+            "fontSize": 25,
+            "fontWeight": "bold",
+            "margin": 15,
+            "marginTop": 0,
+          },
+          Object {
+            "marginTop": 15,
+          },
+        ]
       }
     >
       Allergies / intolerance

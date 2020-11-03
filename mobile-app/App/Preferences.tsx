@@ -74,8 +74,10 @@ export const Preferences: React.FC<Props> = (props) => {
         What types of food can you{"\n"}
         eat?
       </Text>
-      <Text allowFontScaling={false} style={[styles.text, { marginTop: 10 }]}>
-        {" "}
+      <Text
+        allowFontScaling={false}
+        style={[styles.text, { marginTop: 10, marginBottom: 0 }]}
+      >
         Types of food
       </Text>
       <CircleBtnView
@@ -83,7 +85,7 @@ export const Preferences: React.FC<Props> = (props) => {
         touchedArray={foodBoolArr}
         setTouched={setFoodTypes}
       />
-      <Text allowFontScaling={false} style={styles.text}>
+      <Text allowFontScaling={false} style={[styles.text, {marginTop: 15}]}>
         Allergies / intolerance
       </Text>
       <ChipView
