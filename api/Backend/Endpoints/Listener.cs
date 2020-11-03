@@ -35,6 +35,8 @@ namespace api.Backend.Endpoints
 
             listener.Start(); //Start the listener
             listener.BeginGetContext(PreHandle, null); //Forwards any requests to the PreHandler
+
+            Console.WriteLine($"API Running on port {port}");
         }
     }
 }

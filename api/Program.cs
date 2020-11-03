@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace api
 {
@@ -9,10 +10,10 @@ namespace api
         private static void Main(string[] args)
         {
             // To run on dev server
-            if(args.Contains('-d'))
+            if(args.Contains("-d"))
                 api.Backend.Endpoints.WebListener.Start(445);
             // To run on the production server
-            else if(args.Contains('-p'))
+            else if(args.Contains("-p"))
                 api.Backend.Endpoints.WebListener.Start(444);
             else
                 api.Backend.Endpoints.WebListener.Start();
