@@ -1,5 +1,6 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
+using System.Linq;
 
 namespace api
 {
@@ -27,6 +28,10 @@ namespace api
             u.CheckId = 1;
 
             u.Insert();
+
+            u = Binding.GetTable<User>().Select<User>("Email", u.Email)?.First();
+
+            u.Delete();
 
             //User[] users = /*t[4].Select<User>(new object[] { null, "o.d@g.c" });*/
             //t[4].Select<User>("YearOfBirth", 2001);

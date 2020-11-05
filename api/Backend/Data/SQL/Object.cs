@@ -1,12 +1,35 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace api.Backend.Data.SQL
 {
     public class Object
     {
         #region Methods
+
+        public Object() { }
+        
+        public void Delete()
+        {
+            Type t = this.GetType();
+            Table table = Binding.GetTable(t);
+
+            Column[] PrimaryKeys = table.PrimaryKeys, Fields = table.Fields;
+
+            List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
+
+            string Where = "";
+            for (int i = 0; i < PrimaryKeys.Length; i++)
+            {
+                Where += $"{PrimaryKeys[i].Field} = @{PrimaryKeys[i].Field} AND ";
+                Params.Add(new Tuple<string, object>(PrimaryKeys[i].Field, t.GetField(PrimaryKeys[i].Field).GetValue(this)));
+            }
+            Where = Where.Trim().Remove(Where.Length - 5, 4);
+
+            SQL.Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
+        }
 
         public void Insert()
         {
