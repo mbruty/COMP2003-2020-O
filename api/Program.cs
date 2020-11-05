@@ -9,9 +9,9 @@ namespace api
 
         private static void Main(string[] args)
         {
-            api.Backend.Data.SQL.SQLInstance.Start("root","tat","Jaminima48");
+            api.Backend.Data.SQL.Instance.Start("root","tat","Jaminima48");
 
-            var p = api.Backend.Data.SQL.AutoSQL.tableColumns;
+            var p = api.Backend.Data.SQL.AutoSQL.Instance.tables;
 
             // To run on dev server
             //if(args.Contains("-d"))

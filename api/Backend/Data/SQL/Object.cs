@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace api.Backend.Data.SQL
 {
-    public class SQLObj
+    public class Object
     {
     }
 }

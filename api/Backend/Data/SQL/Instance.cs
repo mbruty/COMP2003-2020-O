@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace api.Backend.Data.SQL
 {
-    public static class SQLInstance
+    public static class Instance
     {
         static MySqlConnection connection;
 
@@ -17,7 +17,7 @@ namespace api.Backend.Data.SQL
             connection = new MySqlConnection($"SERVER={Server};UID={Username};DATABASE={Database};port={Port};PASSWORD={Password};SslMode=Preferred;");
             connection.Open();
 
-            AutoSQL.Start();
+            AutoSQL.Instance.Start();
         }
 
         public static void Execute(string Command, List<Tuple<string, object>> Params = null)
