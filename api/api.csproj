@@ -95,6 +95,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Data\SQL\AutoSQL\Bindings.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Column.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Instance.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Table.cs" />

@@ -1,16 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL.AutoSQL
 {
+    public enum Key
+    {
+        PRI, MUL, NULL
+    }
+
     public class Column
     {
+        #region Fields
+
         public string Field, Type, Default, Extra;
-        public bool Null;
         public Key Key = Key.NULL;
+        public bool Null;
+
+        #endregion Fields
+
+        #region Constructors
 
         public Column(object[] rData)
         {
@@ -22,20 +29,21 @@ namespace api.Backend.Data.SQL.AutoSQL
             Extra = (string)rData[5];
         }
 
+        #endregion Constructors
+
+        #region Methods
+
         public bool FieldMatchesType(object obj)
         {
             Type t = obj.GetType();
-            return t.Name.ToLower().StartsWith(Type) || (t.Name=="String" && Type.StartsWith("varchar"));
+            return t.Name.ToLower().StartsWith(Type) || (t.Name == "String" && Type.StartsWith("varchar"));
         }
 
         public override string ToString()
         {
             return this.Field;
         }
-    }
 
-    public enum Key
-    {
-        PRI, MUL, NULL
+        #endregion Methods
     }
 }

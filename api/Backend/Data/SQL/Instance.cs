@@ -10,14 +10,30 @@ namespace api.Backend.Data.SQL
 {
     public static class Instance
     {
-        static MySqlConnection connection;
+        #region Fields
 
-        public static void Start(string Username, string Database, string Password, string Server = "localhost", string Port = "3306")
+        private static MySqlConnection connection;
+
+        #endregion Fields
+
+        #region Methods
+
+        private static List<object[]> DoRead(MySqlCommand sqlCommand)
         {
-            connection = new MySqlConnection($"SERVER={Server};UID={Username};DATABASE={Database};port={Port};PASSWORD={Password};SslMode=Preferred;");
-            connection.Open();
+            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
 
-            AutoSQL.Instance.Start();
+            List<object[]> Data = new List<object[]>();
+            object[] tRow;
+            while (dataReader.Read())
+            {
+                tRow = new object[dataReader.FieldCount];
+                for (int i = 0; i < tRow.Length; i++) tRow[i] = dataReader[i];
+                Data.Add(tRow);
+            }
+
+            dataReader.Close();
+
+            return Data;
         }
 
         public static void Execute(string Command, List<Tuple<string, object>> Params = null)
@@ -40,22 +56,14 @@ namespace api.Backend.Data.SQL
             return DoRead(sqlCommand);
         }
 
-        private static List<object[]> DoRead(MySqlCommand sqlCommand)
+        public static void Start(string Username, string Database, string Password, string Server = "localhost", string Port = "3306")
         {
-            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
+            connection = new MySqlConnection($"SERVER={Server};UID={Username};DATABASE={Database};port={Port};PASSWORD={Password};SslMode=Preferred;");
+            connection.Open();
 
-            List<object[]> Data = new List<object[]>();
-            object[] tRow;
-            while (dataReader.Read())
-            {
-                tRow = new object[dataReader.FieldCount];
-                for (int i = 0; i < tRow.Length; i++) tRow[i] = dataReader[i];
-                Data.Add(tRow);
-            }
-
-            dataReader.Close();
-
-            return Data;
+            AutoSQL.Instance.Start();
         }
+
+        #endregion Methods
     }
 }

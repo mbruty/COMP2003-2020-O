@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
+using System;
 
 namespace api
 {
@@ -8,20 +7,17 @@ namespace api
     {
         #region Methods
 
-        class User
-        {
-            public int Id, YearOfBirth, CheckId;
-            public string Email, Password, Nickname;
-        }
-
         private static void Main(string[] args)
         {
-            api.Backend.Data.SQL.Instance.Start("root","tat","Jaminima48");
+            api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
 
             Table[] t = api.Backend.Data.SQL.AutoSQL.Instance.tables;
 
-            User[] users = /*t[4].Select<User>(new object[] { null, "o.d@g.c" });*/
-                t[4].Select<User>("YearOfBirth", 2001);
+            Binding.Add<User>("User");
+            var p = Binding.GetTable<User>().Select<User>();
+
+            //User[] users = /*t[4].Select<User>(new object[] { null, "o.d@g.c" });*/
+            //t[4].Select<User>("YearOfBirth", 2001);
 
             // To run on dev server
             //if(args.Contains("-d"))
@@ -37,5 +33,19 @@ namespace api
         }
 
         #endregion Methods
+
+        #region Classes
+
+        private class User
+        {
+            #region Fields
+
+            public string Email, Password, Nickname;
+            public int Id, YearOfBirth, CheckId;
+
+            #endregion Fields
+        }
+
+        #endregion Classes
     }
 }
