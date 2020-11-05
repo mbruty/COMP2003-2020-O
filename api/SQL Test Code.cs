@@ -1,6 +1,5 @@
 ﻿using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
-using System.Linq;
 
 namespace api
 {
@@ -10,29 +9,21 @@ namespace api
 
         public static void Run()
         {
-            Table[] t = api.Backend.Data.SQL.AutoSQL.Instance.tables;
-
             Binding.Add<User>("User");
+            //Binding.Add<Session>("Session");
+            Binding.Add<FoodChecks>("FoodChecks");
 
-            var p = Binding.GetTable<User>().Select<User>();
+            Binding.Add<Resturant>("Resturant");
+            //Binding.Add<FoodTags>("FoodTags");
+            //Binding.Add<MenuItem>("MenuItem");
+            //Binding.Add<MenuItemTags>("MenuItemTags");
 
-            p[0].Nickname = "Garath";
-            p[0].Update();
+            //Binding.Add<FoodOpinion>("FoodOpinion");
+            //Binding.Add<ResturantOpinion>("ResturantOpinion");
+            Binding.Add<Review>("Review");
+            Binding.Add<Visit>("Visit");
 
-            User u = new User();
-            u.Email = "oscar.d@gmai.com";
-            u.Password = "sdsfsdf";
-            u.YearOfBirth = 2002;
-            u.CheckId = 1;
-
-            u.Insert();
-
-            u = Binding.GetTable<User>().Select<User>("Email", u.Email)?.First();
-
-            u.Delete();
-
-            User[] users = /*t[4].Select<User>(new object[] { null, "o.d@g.c" });*/
-            t[4].Select<User>("YearOfBirth", 2001);
+            var p = Binding.GetTable<User>().Select<User>()[0].visits;
         }
 
         #endregion Methods

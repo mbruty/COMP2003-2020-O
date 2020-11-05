@@ -95,7 +95,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Data\Obj\FoodChecks.cs" />
+    <Compile Include="Backend\Data\Obj\Opinions\FoodOpinion.cs" />
+    <Compile Include="Backend\Data\Obj\Resturant\FoodTags.cs" />
+    <Compile Include="Backend\Data\Obj\Resturant\MenuItem.cs" />
+    <Compile Include="Backend\Data\Obj\Resturant\MenuItemTags.cs" />
+    <Compile Include="Backend\Data\Obj\Resturant\Resturant.cs" />
+    <Compile Include="Backend\Data\Obj\Opinions\ResturantOpinion.cs" />
+    <Compile Include="Backend\Data\Obj\Opinions\Review.cs" />
+    <Compile Include="Backend\Data\Obj\Session.cs" />
     <Compile Include="Backend\Data\Obj\User.cs" />
+    <Compile Include="Backend\Data\Obj\Opinions\Visit.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Bindings.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Column.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Instance.cs" />
