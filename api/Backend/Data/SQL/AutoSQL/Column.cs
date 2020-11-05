@@ -22,6 +22,12 @@ namespace api.Backend.Data.SQL.AutoSQL
             Extra = (string)rData[5];
         }
 
+        public bool FieldMatchesType(object obj)
+        {
+            Type t = obj.GetType();
+            return t.Name.ToLower().StartsWith(Type) || (t.Name=="String" && Type.StartsWith("varchar"));
+        }
+
         public override string ToString()
         {
             return this.Field;

@@ -38,8 +38,11 @@ namespace api.Backend.Data.SQL.AutoSQL
 
             for (int i = 0; i < PrimaryKeyValues.Length && i<PrimaryKeys.Length; i++) 
             {
-                Where += $"{PrimaryKeys[i].Field} = @{PrimaryKeys[i].Field} AND ";
-                Params.Add(new Tuple<string, object>(PrimaryKeys[i].Field, PrimaryKeyValues[i]));
+                if (PrimaryKeyValues[i] != null && PrimaryKeys[i].FieldMatchesType(PrimaryKeyValues[i]))
+                {
+                    Where += $"{PrimaryKeys[i].Field} = @{PrimaryKeys[i].Field} AND ";
+                    Params.Add(new Tuple<string, object>(PrimaryKeys[i].Field, PrimaryKeyValues[i]));
+                }
             }
             Where = Where.Trim().Remove(Where.Length - 5,4);
 
