@@ -95,9 +95,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\Data\SQL\AutoSQL.cs" />
-    <Compile Include="Backend\Data\SQL\SQLInstance.cs" />
-    <Compile Include="Backend\Data\SQL\SQLObj.cs" />
+    <Compile Include="Backend\Data\SQL\AutoSQL\Bindings.cs" />
+    <Compile Include="Backend\Data\SQL\AutoSQL\Column.cs" />
+    <Compile Include="Backend\Data\SQL\AutoSQL\Instance.cs" />
+    <Compile Include="Backend\Data\SQL\AutoSQL\Table.cs" />
+    <Compile Include="Backend\Data\SQL\Instance.cs" />
+    <Compile Include="Backend\Data\SQL\Object.cs" />
     <Compile Include="Backend\Endpoints\Listener.cs" />
     <Compile Include="Backend\Endpoints\WebRequest.cs" />
     <Compile Include="Backend\Endpoints\WebSockets.cs" />
