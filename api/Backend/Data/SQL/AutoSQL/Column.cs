@@ -45,7 +45,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         public bool FieldMatchesType(object obj)
         {
             Type t = obj.GetType();
-            return t.Name.ToLower().StartsWith(Type) || (t.Name == "String" && Type.StartsWith("varchar"));
+            return t.Name.ToLower().Contains(Type.ToLower()) || Type.ToLower().Contains(t.Name.ToLower()) || (t.Name == "String" && Type.StartsWith("varchar"));
         }
 
         public override string ToString()

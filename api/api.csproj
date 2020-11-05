@@ -95,7 +95,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Data\Obj\FoodChecks.cs" />
+    <Compile Include="Backend\Data\Obj\Resturant.cs" />
+    <Compile Include="Backend\Data\Obj\ResturantOpinion.cs" />
+    <Compile Include="Backend\Data\Obj\Review.cs" />
     <Compile Include="Backend\Data\Obj\User.cs" />
+    <Compile Include="Backend\Data\Obj\Visit.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Bindings.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Column.cs" />
     <Compile Include="Backend\Data\SQL\AutoSQL\Instance.cs" />
