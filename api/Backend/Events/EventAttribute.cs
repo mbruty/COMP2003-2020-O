@@ -7,13 +7,13 @@ namespace api.Backend.Events
     [System.AttributeUsage(System.AttributeTargets.Method)]
     public class WebEvent : System.Attribute
     {
+        #region Fields
+
         //Find all WebEvents
         private static MethodInfo[] methodInfos = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(x => x.GetTypes())
             .SelectMany(x => x.GetMethods())
             .Where(x => x.GetCustomAttributes(typeof(Events.WebEvent), false).FirstOrDefault() != null).ToArray();
-
-        #region Fields
 
         public string urlPath, method;
         public bool WebSocket = false;

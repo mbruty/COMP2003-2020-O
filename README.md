@@ -209,6 +209,13 @@ You're able to run the project locally without docker, but on the server we will
 6. Running the node container
    `sudo docker container run devsite pkill -9 node && node server.js`
    `sudo docker container run website pkill -9 node && node server.js`
+7. Creating the API container
+   `sudo docker build -t devapi --build-arg git_user="github_username" --build-arg git_pw="github_pw" -f devapi.dockerfile .`
+8. Starting the API container
+   `sudo docker run --name devapi -p 445:445 devapi`
+9. Running the API
+   `sudo docker container run devapi dotnet build`
+   `sudo docker container run devapi --configuration Release`
 
 ---
 
