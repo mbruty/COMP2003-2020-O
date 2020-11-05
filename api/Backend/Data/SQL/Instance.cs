@@ -32,14 +32,14 @@ namespace api.Backend.Data.SQL
             return Data;
         }
 
-        public static void Execute(string Command, List<Tuple<string, object>> Params = null)
+        public static bool Execute(string Command, List<Tuple<string, object>> Params = null)
         {
             MySqlCommand sqlCommand = connection.CreateCommand();
             sqlCommand.CommandText = Command;
 
             Params?.ForEach(x => sqlCommand.Parameters.Add(new MySqlParameter(x.Item1, x.Item2)));
 
-            try { sqlCommand.ExecuteNonQuery(); } catch (Exception e) { Console.WriteLine(e.ToString()); }
+            try { sqlCommand.ExecuteNonQuery(); return true; } catch (Exception e) { Console.WriteLine(e.ToString()); return false; }
         }
 
         public static List<object[]> Read(string Command, List<Tuple<string, object>> Params = null)

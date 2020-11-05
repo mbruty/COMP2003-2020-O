@@ -1,17 +1,22 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace api.Backend.Data.SQL
 {
     public class Object
     {
+        #region Constructors
+
+        public Object()
+        {
+        }
+
+        #endregion Constructors
+
         #region Methods
 
-        public Object() { }
-        
-        public void Delete()
+        public bool Delete()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -28,10 +33,10 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            SQL.Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
+            return Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
         }
 
-        public void Insert()
+        public bool Insert()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -54,10 +59,10 @@ namespace api.Backend.Data.SQL
             }
             What = What.Trim().Remove(What.Length - 2, 1);
 
-            SQL.Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
+            return Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
         }
 
-        public void Update()
+        public bool Update()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -82,7 +87,7 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            SQL.Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
+            return Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
         }
 
         #endregion Methods
