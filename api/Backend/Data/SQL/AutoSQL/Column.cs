@@ -19,6 +19,11 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         #region Constructors
 
+        public bool IsAutoIncrement
+        {
+            get { return Extra.Contains("auto_increment"); }
+        }
+
         public Column(object[] rData)
         {
             Field = (string)rData[0];

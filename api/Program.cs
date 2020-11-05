@@ -20,6 +20,14 @@ namespace api
             p[0].Nickname = "Garath";
             p[0].Update();
 
+            User u = new User();
+            u.Email = "oscar.d@gmai.com";
+            u.Password = "sdsfsdf";
+            u.YearOfBirth = 2002;
+            u.CheckId = 1;
+
+            u.Insert();
+
             //User[] users = /*t[4].Select<User>(new object[] { null, "o.d@g.c" });*/
             //t[4].Select<User>("YearOfBirth", 2001);
 

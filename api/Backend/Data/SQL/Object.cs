@@ -9,6 +9,32 @@ namespace api.Backend.Data.SQL
     {
         #region Methods
 
+        public void Insert()
+        {
+            Type t = this.GetType();
+            Table table = Binding.GetTable(t);
+
+            Column[] Fields = table.Columns;
+
+            List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
+            string What = "";
+
+            for (int i = 0; i < Fields.Length; i++)
+            {
+                object Value = t.GetField(Fields[i].Field).GetValue(this);
+
+                if (!Fields[i].IsAutoIncrement && (Fields[i].Default==null || Value!=null))
+                {
+                    What += $"@{Fields[i].Field}, ";
+                    Params.Add(new Tuple<string, object>(Fields[i].Field, Value));
+                }
+                else What += "default, ";
+            }
+            What = What.Trim().Remove(What.Length - 2, 1);
+
+            SQL.Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
+        }
+
         public void Update()
         {
             Type t = this.GetType();
