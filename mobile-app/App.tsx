@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { IUser } from "./App/IUser";
+import { LogIn } from "./App/LogIn";
 import { Preferences } from "./App/Preferences";
 
 export default function App() {
@@ -9,7 +10,7 @@ export default function App() {
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
   
-  const [page, setPage] = useState<string>("preferences");
+  const [page, setPage] = useState<string>("log-in");
 
   // Render the different pages by name of page
   switch (page) {
@@ -20,6 +21,12 @@ export default function App() {
         </SafeAreaView>
       );
       break;
+    case "log-in":
+        return(
+          <SafeAreaView style={styles.container}>
+            <LogIn />
+          </SafeAreaView>
+        )
     default:
       return (
         <View style={styles.container}>
