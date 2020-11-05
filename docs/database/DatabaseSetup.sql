@@ -42,6 +42,14 @@ create table `User` (
     check (YearOfBirth > 1900)
 );
 
+create table `Session` (
+	UserId int unique auto_increment not null,
+    foreign key (UserId) references `User`(Id) on delete cascade on update cascade,
+    
+    SignedIn datetime default now(),
+    AuthToken varchar(110) not null
+);
+
 create table `Resturant` (
 	Id int unique auto_increment not null,
 	OwnerId int not null,
