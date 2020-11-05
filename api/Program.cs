@@ -20,7 +20,8 @@ namespace api
 
             Table[] t = api.Backend.Data.SQL.AutoSQL.Instance.tables;
 
-            User[] users = t[4].Select<User>(new object[] { 1 });
+            User[] users = /*t[4].Select<User>(new object[] { null, "o.d@g.c" });*/
+                t[4].Select<User>("YearOfBirth", 2001);
 
             // To run on dev server
             //if(args.Contains("-d"))

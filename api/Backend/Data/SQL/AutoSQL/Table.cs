@@ -29,6 +29,32 @@ namespace api.Backend.Data.SQL.AutoSQL
             return SetFieldValues<T>(Data);
         }
 
+        public T[] Select<T>(string FieldName, object FieldValue) where T : new()
+        {
+            return Select<T>(new string[] { FieldName }, new object[] { FieldValue });
+        }
+
+        public T[] Select<T>(string[] FieldNames, object[] FieldValues) where T : new()
+        {
+            List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
+            string Where = "";
+
+            for (int i = 0; i < FieldValues.Length && i < FieldNames.Length; i++)
+            {
+                Column column = Columns.First(x => x.Field.ToLower() == FieldNames[i].ToLower());
+                if (column!=null)
+                {
+                    Where += $"{column.Field} = @{column.Field} AND ";
+                    Params.Add(new Tuple<string, object>(column.Field, FieldValues[i]));
+                }
+            }
+            Where = Where.Trim().Remove(Where.Length - 5, 4);
+
+            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
+
+            return SetFieldValues<T>(Data);
+        }
+
         public T[] Select<T>(object[] PrimaryKeyValues) where T : new()
         {
             Column[] PrimaryKeys = this.PrimaryKeys;
