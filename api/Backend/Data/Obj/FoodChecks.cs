@@ -1,11 +1,13 @@
-﻿namespace api.Backend.Data.Obj
+﻿
+using System;
+namespace api.Backend.Data.Obj
 {
     public class FoodChecks : Backend.Data.SQL.Object
     {
         #region Fields
 
         public int Id;
-        public bool IsVegetarian, IsVegan, ContainsLactose, ContainsNut, IsGlutenFree, ContainsEgg, ContainsSoy, IsHallal, IsKosher;
+        public bool IsVegetarian, IsVegan, ContainsLactose, ContainsNut, ContainsGluten, ContainsEgg, ContainsSoy, IsHallal, IsKosher;
 
         #endregion Fields
     }

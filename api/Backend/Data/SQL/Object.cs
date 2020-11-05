@@ -1,6 +1,8 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace api.Backend.Data.SQL
 {
@@ -36,7 +38,7 @@ namespace api.Backend.Data.SQL
             return Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
         }
 
-        public bool Insert()
+        public bool Insert(bool FetchInsertedIds = false)
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -59,7 +61,23 @@ namespace api.Backend.Data.SQL
             }
             What = What.Trim().Remove(What.Length - 2, 1);
 
-            return Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
+            
+
+            bool success = Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
+
+            if (FetchInsertedIds && success)
+            {
+                int[] Ids = FetchAutoIncrement();
+
+                t.GetField(Fields.First(x => x.IsAutoIncrement)?.Field)?.SetValue(this, Ids[0]);
+            }
+            return success;
+        }
+
+        private int[] FetchAutoIncrement()
+        {
+            List<object[]> Data = Instance.Read($"SELECT LAST_INSERT_ID();");
+            return Array.ConvertAll(Data[0],x=>int.Parse(x.ToString()));
         }
 
         public bool Update()
