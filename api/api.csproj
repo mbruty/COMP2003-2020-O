@@ -119,6 +119,7 @@
     <Compile Include="Backend\Events\Echo.cs" />
     <Compile Include="Backend\Events\EventAttribute.cs" />
     <Compile Include="Backend\Security\Hashing.cs" />
+    <Compile Include="Backend\Security\Sessions.cs" />
     <Compile Include="Backend\Security\SQL-Connection-Details.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

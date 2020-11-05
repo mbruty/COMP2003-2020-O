@@ -2,13 +2,14 @@
 using System.Collections.Specialized;
 using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
+using api.Backend.Security;
 
 namespace api.Backend.Events
 {
     public static class Authentication
     {
         [WebEvent("/signup", "POST", false)]
-        public static void TestWebRequest(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        public static void SignUp(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"];
 
@@ -42,11 +43,50 @@ namespace api.Backend.Events
             foodChecks.Insert(true);
 
             user.CheckId = foodChecks.Id;
+            user.Insert(true);
 
-            user.Insert();
+            string Token = Sessions.AddSession(user);
+
+            response.AddToData("AuthToken", Token);
 
             response.StatusCode = 200;
             response.AddToData("Message", "Signed Up");
+        }
+
+        [WebEvent("/login", "POST", false)]
+        public static void Login(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        {
+            string email = headers["email"], password = headers["password"];
+
+            if (email == null || password == null)
+            {
+                response.StatusCode = 401;
+                response.AddToData("Error", "Missing email or password");
+                return;
+            }
+
+            User[] users = Binding.GetTable<User>().Select<User>("email", email);
+
+            if (users.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("Error", "Email is not in use");
+                return;
+            }
+
+            if (!Hashing.Match(password, users[0].Password))
+            {
+                response.StatusCode = 401;
+                response.AddToData("Error", "Password is incorrect");
+                return;
+            }
+
+            string Token = Sessions.AddSession(users[0]);
+
+            response.AddToData("AuthToken", Token);
+
+            response.StatusCode = 200;
+            response.AddToData("Message", "Logged in");
         }
     }
 }
