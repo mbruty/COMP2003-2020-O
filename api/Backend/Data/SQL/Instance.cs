@@ -37,6 +37,11 @@ namespace api.Backend.Data.SQL
 
             Params?.ForEach(x => sqlCommand.Parameters.Add(new MySqlParameter(x.Item1, x.Item2)));
 
+            return DoRead(sqlCommand);
+        }
+
+        private static List<object[]> DoRead(MySqlCommand sqlCommand)
+        {
             MySqlDataReader dataReader = sqlCommand.ExecuteReader();
 
             List<object[]> Data = new List<object[]>();

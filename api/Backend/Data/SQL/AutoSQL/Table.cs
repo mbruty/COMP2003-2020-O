@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL.AutoSQL
@@ -19,6 +20,48 @@ namespace api.Backend.Data.SQL.AutoSQL
         public Column[] ForeignKeys
         {
             get { return Columns.Where(x => x.Key == Key.MUL).ToArray(); }
+        }
+
+        public T[] Select<T>(string where = "TRUE") where T : new()
+        {
+            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}");
+
+            return SetFieldValues<T>(Data);
+        }
+
+        public T[] Select<T>(object[] PrimaryKeyValues) where T : new()
+        {
+            Column[] PrimaryKeys = this.PrimaryKeys;
+
+            List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
+            string Where = "";
+
+            for (int i = 0; i < PrimaryKeyValues.Length && i<PrimaryKeys.Length; i++) 
+            {
+                Where += $"{PrimaryKeys[i].Field} = @{PrimaryKeys[i].Field} AND ";
+                Params.Add(new Tuple<string, object>(PrimaryKeys[i].Field, PrimaryKeyValues[i]));
+            }
+            Where = Where.Trim().Remove(Where.Length - 5,4);
+
+            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})",Params);
+
+            return SetFieldValues<T>(Data);
+        }
+
+        private T[] SetFieldValues<T>(List<object[]> Data) where T : new()
+        {
+            Type t = typeof(T);
+
+            T[] Tata = new T[Data.Count];
+            Tata = Tata.Select(x => new T()).ToArray();
+
+            foreach (FieldInfo p in t.GetFields())
+            {
+                int index = Array.FindIndex(Columns, x => x.Field.ToString().ToLower() == p.Name.ToLower());
+
+                for (int i = 0; i < Tata.Length && index > -1; i++) p.SetValue(Tata[i], Data[i][index]);
+            }
+            return Tata;
         }
 
         public Table(string Name)
