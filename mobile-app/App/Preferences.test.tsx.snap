@@ -23,15 +23,19 @@ exports[`Renders Circle Button List 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#F1F1F1",
-          "elevation": 26,
-          "fontSize": 30,
-          "fontWeight": "bold",
-          "left": 15,
-          "position": "absolute",
-          "top": 50,
-        }
+        Array [
+          Object {
+            "elevation": 26,
+            "fontSize": 30,
+            "fontWeight": "bold",
+            "left": 15,
+            "position": "absolute",
+            "top": 50,
+          },
+          Object {
+            "color": "#F1F1F1",
+          },
+        ]
       }
     >
       Hi 
@@ -48,13 +52,17 @@ exports[`Renders Circle Button List 1`] = `
       allowFontScaling={false}
       style={
         Array [
-          Object {
-            "color": "#707070",
-            "fontSize": 25,
-            "fontWeight": "bold",
-            "margin": 15,
-            "marginTop": 0,
-          },
+          Array [
+            Object {
+              "fontSize": 25,
+              "fontWeight": "bold",
+              "margin": 15,
+              "marginTop": 0,
+            },
+            Object {
+              "color": "#707070",
+            },
+          ],
           Object {
             "marginBottom": 0,
             "marginTop": 10,
@@ -123,11 +131,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Fish
@@ -179,11 +191,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Vegan
@@ -235,11 +251,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Vegetarian
@@ -291,11 +311,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Meat
@@ -347,11 +371,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Halal
@@ -403,11 +431,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Kosher
@@ -418,13 +450,17 @@ exports[`Renders Circle Button List 1`] = `
       allowFontScaling={false}
       style={
         Array [
-          Object {
-            "color": "#707070",
-            "fontSize": 25,
-            "fontWeight": "bold",
-            "margin": 15,
-            "marginTop": 0,
-          },
+          Array [
+            Object {
+              "fontSize": 25,
+              "fontWeight": "bold",
+              "margin": 15,
+              "marginTop": 0,
+            },
+            Object {
+              "color": "#707070",
+            },
+          ],
           Object {
             "marginTop": 15,
           },
@@ -492,11 +528,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Lactose
@@ -551,11 +591,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Nuts
@@ -610,11 +654,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Gluten
@@ -669,11 +717,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Soy
@@ -728,11 +780,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Shellfish
@@ -762,11 +818,15 @@ exports[`Renders Circle Button List 1`] = `
       <View>
         <Text
           style={
-            Object {
-              "color": "#FD4040",
-              "fontSize": 15,
-              "fontWeight": "bold",
-            }
+            Array [
+              Object {
+                "fontSize": 15,
+                "fontWeight": "bold",
+              },
+              Object {
+                "color": "#FD4040",
+              },
+            ]
           }
         >
           Submit

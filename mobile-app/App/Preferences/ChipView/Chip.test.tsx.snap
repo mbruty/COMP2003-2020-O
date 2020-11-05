@@ -49,11 +49,15 @@ exports[`Renders Disabled Chip 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#707070",
-          "marginTop": 2,
-          "paddingLeft": 5,
-        }
+        Array [
+          Object {
+            "marginTop": 2,
+            "paddingLeft": 5,
+          },
+          Object {
+            "color": "#707070",
+          },
+        ]
       }
     >
       Chip
@@ -111,11 +115,15 @@ exports[`Renders Enabled Chip 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#FFF",
-          "marginTop": 2,
-          "paddingLeft": 5,
-        }
+        Array [
+          Object {
+            "marginTop": 2,
+            "paddingLeft": 5,
+          },
+          Object {
+            "color": "#FFF",
+          },
+        ]
       }
     >
       Chip
