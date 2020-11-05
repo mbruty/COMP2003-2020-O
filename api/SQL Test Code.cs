@@ -7,7 +7,7 @@ namespace api
     {
         #region Methods
 
-        public static void Run()
+        public static void Bind()
         {
             Binding.Add<User>("User");
             Binding.Add<Session>("Session");
@@ -22,7 +22,10 @@ namespace api
             Binding.Add<ResturantOpinion>("ResturantOpinion");
             Binding.Add<Review>("Review");
             Binding.Add<Visit>("Visit");
+        }
 
+        public static void Run()
+        {
             FoodChecks u = new FoodChecks();
             u.Insert(true);
 

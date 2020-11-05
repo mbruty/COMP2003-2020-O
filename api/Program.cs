@@ -25,7 +25,8 @@ namespace api
             else
             {
                 api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
-                SQL_Test_Code.Run();
+                //SQL_Test_Code.Run();
+                SQL_Test_Code.Bind();
 
                 api.Backend.Endpoints.WebListener.Start();
             }
