@@ -6,5 +6,5 @@ interface Props{
 }
 
 export const LogIn: React.FC<Props> = (props) => {
-  return <Text>Hello</Text>;
+  return <Text>Hello!!!!!</Text>;
 }
