@@ -41,6 +41,11 @@ namespace api.Backend.Data.SQL.AutoSQL
             return bindings.First(x => x.ObjType == typeof(T))?.table;
         }
 
+        public static Table GetTable(Type objType)
+        {
+            return bindings.First(x => x.ObjType == objType)?.table;
+        }
+
         #endregion Methods
     }
 }

@@ -14,7 +14,11 @@ namespace api
             Table[] t = api.Backend.Data.SQL.AutoSQL.Instance.tables;
 
             Binding.Add<User>("User");
+
             var p = Binding.GetTable<User>().Select<User>();
+
+            p[0].Nickname = "Garath";
+            p[0].Update();
 
             //User[] users = /*t[4].Select<User>(new object[] { null, "o.d@g.c" });*/
             //t[4].Select<User>("YearOfBirth", 2001);
@@ -36,7 +40,7 @@ namespace api
 
         #region Classes
 
-        private class User
+        private class User : Backend.Data.SQL.Object
         {
             #region Fields
 

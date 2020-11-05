@@ -56,6 +56,11 @@ namespace api.Backend.Data.SQL.AutoSQL
             get { return Columns.Where(x => x.Key == Key.PRI).ToArray(); }
         }
 
+        public Column[] Fields
+        {
+            get { return Columns.Where(x => x.Key != Key.PRI).ToArray(); }
+        }
+
         #endregion Properties
 
         public T[] Select<T>(string where = "TRUE") where T : new()
