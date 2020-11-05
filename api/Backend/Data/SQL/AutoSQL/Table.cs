@@ -20,7 +20,10 @@ namespace api.Backend.Data.SQL.AutoSQL
             {
                 int index = Array.FindIndex(Columns, x => x.Field.ToString().ToLower() == p.Name.ToLower());
 
-                for (int i = 0; i < Tata.Length && index > -1; i++) p.SetValue(Tata[i], Data[i][index]);
+                for (int i = 0; i < Tata.Length && index > -1; i++)
+                {
+                    p.SetValue(Tata[i], Data[i][index].GetType() != typeof(DBNull) ? Data[i][index] : null);
+                }
             }
             return Tata;
         }
@@ -46,6 +49,11 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         #region Properties
 
+        public Column[] Fields
+        {
+            get { return Columns.Where(x => x.Key != Key.PRI).ToArray(); }
+        }
+
         public Column[] ForeignKeys
         {
             get { return Columns.Where(x => x.Key == Key.MUL).ToArray(); }
@@ -54,11 +62,6 @@ namespace api.Backend.Data.SQL.AutoSQL
         public Column[] PrimaryKeys
         {
             get { return Columns.Where(x => x.Key == Key.PRI).ToArray(); }
-        }
-
-        public Column[] Fields
-        {
-            get { return Columns.Where(x => x.Key != Key.PRI).ToArray(); }
         }
 
         #endregion Properties

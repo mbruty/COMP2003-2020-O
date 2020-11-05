@@ -1,7 +1,6 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
-using System.Collections.Generic;
-using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace api.Backend.Data.SQL
 {
@@ -23,7 +22,7 @@ namespace api.Backend.Data.SQL
             {
                 object Value = t.GetField(Fields[i].Field).GetValue(this);
 
-                if (!Fields[i].IsAutoIncrement && (Fields[i].Default==null || Value!=null))
+                if (!Fields[i].IsAutoIncrement && (Fields[i].Default == null || Value != null))
                 {
                     What += $"@{Fields[i].Field}, ";
                     Params.Add(new Tuple<string, object>(Fields[i].Field, Value));
