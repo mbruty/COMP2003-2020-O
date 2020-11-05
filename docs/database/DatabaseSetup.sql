@@ -6,6 +6,7 @@ Drop table if exists `MenuItemTags`;
 Drop table if exists `MenuItem`;
 Drop table if exists `FoodTags`;
 Drop table if exists `Resturant`;
+Drop table if exists `Session`;
 Drop table if exists `User`;
 Drop table if exists `FoodChecks`;
 
@@ -15,11 +16,11 @@ create table `FoodChecks`(
     
 	IsVegetarian bit default false,
 	IsVegan bit default false,
-	IsLactoseFree bit default true,
-	IsNutFree bit default true,
-	IsGlutenFree bit default false,
-	IsEggFree bit default true,
-	IsSoyFree bit default true,
+	ContainsLactose bit default true,
+	ContainsNut bit default true,
+	ContainsGluten bit default false,
+	ContainsEgg bit default true,
+	ContainsSoy bit default true,
 	IsHallal bit default false,
 	IsKosher bit default false
 );
