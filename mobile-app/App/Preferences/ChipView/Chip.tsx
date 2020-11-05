@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { CONSTANT_STYLES } from "../../constants";
 
 interface Props {
   title: string;
@@ -12,9 +13,11 @@ export const Chip: React.FC<Props> = (props) => {
   const viewStyles: Array<any> = [styles.container];
 
   // Add disabled / enabled colour to the view styles
-  viewStyles.push(props.enabled ? styles.active : styles.inactive);
+  viewStyles.push(
+    props.enabled ? CONSTANT_STYLES.BG_RED : CONSTANT_STYLES.BG_WHITE
+  );
 
-  const textStyle = props.enabled ? styles.textActive : styles.textDisabled;
+  const textStyle = props.enabled ? [styles.textActive, CONSTANT_STYLES.TXT_WHITE] : [styles.textDisabled, CONSTANT_STYLES.TXT_DEFAULT];
 
   // Set the icon to the enabled / disabled one
   const icon = props.enabled
@@ -45,21 +48,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     elevation: 10,
   },
-  active: {
-    backgroundColor: "#FD4040",
-  },
-  inactive: {
-    backgroundColor: "#FFF",
-  },
   textActive: {
     marginTop: 2,
     paddingLeft: 5,
-    color: "#FFF",
   },
   textDisabled: {
     marginTop: 2,
     paddingLeft: 5,
-    color: "#707070",
   },
   icon: {
     width: 24,

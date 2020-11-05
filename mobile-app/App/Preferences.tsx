@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { CircleBtnView } from "./Preferences/CircleBtnView";
 import { ChipView } from "./Preferences/ChipView";
+import { CONSTANT_STYLES } from "./constants";
 
 // ToDo: Fetch this list from the API?
 
@@ -58,6 +59,8 @@ export const Preferences: React.FC<Props> = (props) => {
   const dimensions = Dimensions.get("window");
   const imageHeight = Math.round((dimensions.width * 9) / 16);
   const imageWidth = dimensions.width;
+
+  const textStyle = [styles.text, CONSTANT_STYLES.TXT_DEFAULT];
   return (
     <ScrollView>
       <View style={{ elevation: 25 }}>
@@ -69,13 +72,15 @@ export const Preferences: React.FC<Props> = (props) => {
           source={require("./Preferences/preferences_banner.png")}
         />
       </View>
-      <Text allowFontScaling={false} style={styles.bannerText}>
+      <Text allowFontScaling={false} style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}>
         Hi {props.fName}!{"\n"}
         What types of food can you{"\n"}
         eat?
       </Text>
-      <Text allowFontScaling={false} style={[styles.text, { marginTop: 10 }]}>
-        {" "}
+      <Text
+        allowFontScaling={false}
+        style={[textStyle, { marginTop: 10, marginBottom: 0 }]}
+      >
         Types of food
       </Text>
       <CircleBtnView
@@ -83,7 +88,7 @@ export const Preferences: React.FC<Props> = (props) => {
         touchedArray={foodBoolArr}
         setTouched={setFoodTypes}
       />
-      <Text allowFontScaling={false} style={styles.text}>
+      <Text allowFontScaling={false} style={[textStyle, {marginTop: 15}]}>
         Allergies / intolerance
       </Text>
       <ChipView
@@ -93,7 +98,7 @@ export const Preferences: React.FC<Props> = (props) => {
       />
       <TouchableOpacity style={styles.submit} onPress={submit}>
         <View>
-          <Text style={styles.submitText}>Submit</Text>
+          <Text style={[styles.submitText, CONSTANT_STYLES.TXT_RED]}>Submit</Text>
         </View>
       </TouchableOpacity>
     </ScrollView>
@@ -102,14 +107,12 @@ export const Preferences: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   text: {
-    color: "#707070",
     margin: 15,
     marginTop: 0,
     fontSize: 25,
     fontWeight: "bold",
   },
   bannerText: {
-    color: "#F1F1F1",
     position: "absolute",
     top: 50,
     left: 15,
@@ -123,7 +126,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   submitText: {
-    color: "#FD4040",
     fontSize: 15,
     fontWeight: "bold",
   },

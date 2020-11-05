@@ -60,11 +60,15 @@ exports[`Renders Circle Button List 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#707070",
-          "marginTop": 5,
-          "textAlign": "center",
-        }
+        Array [
+          Object {
+            "marginTop": 5,
+            "textAlign": "center",
+          },
+          Object {
+            "color": "#707070",
+          },
+        ]
       }
     >
       Option One
@@ -116,11 +120,15 @@ exports[`Renders Circle Button List 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#707070",
-          "marginTop": 5,
-          "textAlign": "center",
-        }
+        Array [
+          Object {
+            "marginTop": 5,
+            "textAlign": "center",
+          },
+          Object {
+            "color": "#707070",
+          },
+        ]
       }
     >
       Option Two
