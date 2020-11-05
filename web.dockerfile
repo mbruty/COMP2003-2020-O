@@ -12,7 +12,7 @@ RUN apt-get update
 # Install git and nodejs
 RUN apt-get install -y git nodejs npm
 
-RUN git clone --branch Development https://${git_user}:${git_pw}@github.com/mbruty/COMP2003-2020-O.git
+RUN git Development https://${git_user}:${git_pw}@github.com/mbruty/COMP2003-2020-O.git
 
 # Move in to the website folder
 WORKDIR COMP2003-2020-O/website
