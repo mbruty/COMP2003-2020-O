@@ -1,4 +1,5 @@
 import React from "react";
+import { CONSTANT_STYLES } from '../../constants';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
@@ -9,9 +10,9 @@ interface Props {
 }
 
 export const CircleBtn: React.FC<Props> = (props) => {
-  const buttonStyle: any = [styles.btn];
+  const buttonStyle: any = [styles.btn, CONSTANT_STYLES.BG_RED];
   // Set the button styles and image to match the selected state of the button
-  buttonStyle.push(props.selected ? styles.selected : styles.deselected);
+  buttonStyle.push(props.selected ? CONSTANT_STYLES.BG_RED : CONSTANT_STYLES.BG_WHITE);
   const image = props.selected
     ? require("./CircleBtn/heart.png")
     : require("../shared/baseline_not_interested_black_48.png");
@@ -23,7 +24,7 @@ export const CircleBtn: React.FC<Props> = (props) => {
       >
         <Image style={styles.icon} source={image}></Image>
       </TouchableOpacity>
-      <Text allowFontScaling={false} style={styles.text}>{props.name}</Text>
+      <Text allowFontScaling={false} style={[styles.text, CONSTANT_STYLES.TXT_DEFAULT]}>{props.name}</Text>
     </View>
   );
 };
@@ -34,14 +35,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 20,
   },
-  selected: {
-    backgroundColor: "#FD4040",
-  },
-  deselected: {
-    backgroundColor: "#FFF",
-  },
   btn: {
-    backgroundColor: "#FD4040",
     borderRadius: 100,
     width: 60,
     height: 60,
@@ -57,6 +51,5 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     marginTop: 5,
-    color: '#707070'
   },
 });
