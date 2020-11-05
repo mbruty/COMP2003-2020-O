@@ -22,7 +22,7 @@ namespace api.Backend.Data.SQL.AutoSQL
 
                 for (int i = 0; i < Tata.Length && index > -1; i++)
                 {
-                    if (p.FieldType == typeof(bool)) p.SetValue(Tata[i], (UInt64)Data[i][index]==1);
+                    if (p.FieldType == typeof(bool)) p.SetValue(Tata[i], (UInt64)Data[i][index] == 1);
                     else p.SetValue(Tata[i], Data[i][index].GetType() != typeof(DBNull) ? Data[i][index] : null);
                 }
             }
