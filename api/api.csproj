@@ -115,6 +115,7 @@
     <Compile Include="Backend\Endpoints\Listener.cs" />
     <Compile Include="Backend\Endpoints\WebRequest.cs" />
     <Compile Include="Backend\Endpoints\WebSockets.cs" />
+    <Compile Include="Backend\Events\GenericModify.cs" />
     <Compile Include="Backend\Events\Users\Authentication.cs" />
     <Compile Include="Backend\Events\Echo.cs" />
     <Compile Include="Backend\Events\EventAttribute.cs" />

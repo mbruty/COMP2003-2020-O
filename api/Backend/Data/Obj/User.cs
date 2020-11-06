@@ -2,7 +2,7 @@
 
 namespace api.Backend.Data.Obj
 {
-    public class User : Backend.Data.SQL.Object
+    public class User : Object
     {
         #region Fields
 

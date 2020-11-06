@@ -18,19 +18,10 @@ namespace api.Backend.Events.Users
         {
             if (!Sessions.CheckSession(headers, ref response)) return;
 
-            Type t = typeof(User);
             Table table = Binding.GetTable<User>();
             User[] users = table.Select<User>("id", headers["userid"]);
 
-            foreach (FieldInfo field in t.GetFields())
-            {
-                if (headers.AllKeys.Contains(field.Name.ToLower()) && table.AutoIncrement.Count(x => x.Field.ToLower() == field.Name.ToLower()) == 0)
-                {
-                    field.SetValue(users[0], headers[field.Name]);
-                }
-            }
-
-            users[0].Update();
+            users[0].UpdateContents<User>(headers);
 
             response.AddToData("message", "Updated user");
             response.StatusCode = 200;

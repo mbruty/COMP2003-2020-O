@@ -1,6 +1,6 @@
 ﻿namespace api.Backend.Data.Obj
 {
-    public class FoodTags : Backend.Data.SQL.Object
+    public class FoodTags : Object
     {
         #region Fields
 
