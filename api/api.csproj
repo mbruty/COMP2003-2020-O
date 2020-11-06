@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Data\Obj\FoodChecks.cs" />
+    <Compile Include="Backend\Data\Obj\Object.cs" />
     <Compile Include="Backend\Data\Obj\Opinions\FoodOpinion.cs" />
     <Compile Include="Backend\Data\Obj\Resturant\FoodTags.cs" />
     <Compile Include="Backend\Data\Obj\Resturant\MenuItem.cs" />
@@ -115,7 +116,6 @@
     <Compile Include="Backend\Endpoints\Listener.cs" />
     <Compile Include="Backend\Endpoints\WebRequest.cs" />
     <Compile Include="Backend\Endpoints\WebSockets.cs" />
-    <Compile Include="Backend\Events\GenericModify.cs" />
     <Compile Include="Backend\Events\Users\Authentication.cs" />
     <Compile Include="Backend\Events\Echo.cs" />
     <Compile Include="Backend\Events\EventAttribute.cs" />
