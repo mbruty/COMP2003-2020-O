@@ -1,0 +1,664 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders first item in form progress 1`] = `
+Array [
+  <View
+    style={
+      Array [
+        Object {
+          "alignSelf": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "padding": 15,
+          "paddingTop": 25,
+        },
+        Object {
+          "width": 725,
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Create Your 
+Account
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#707070",
+          "flexShrink": 1,
+          "height": 2,
+          "marginTop": -35,
+          "width": 50,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Confirm Your 
+Email
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#707070",
+          "flexShrink": 1,
+          "height": 2,
+          "marginTop": -35,
+          "width": 50,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Select Your 
+Preferences
+      </Text>
+    </View>
+  </View>,
+  <View
+    style={
+      Array [
+        Object {
+          "alignSelf": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "padding": 15,
+          "paddingTop": 25,
+        },
+        Object {
+          "marginTop": -15,
+        },
+      ]
+    }
+  >
+    <View
+      accessible={true}
+      focusable={false}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#B6B6B6",
+          "borderRadius": 10,
+          "marginRight": 150,
+          "opacity": 1,
+          "paddingBottom": 10,
+          "paddingLeft": 25,
+          "paddingRight": 25,
+          "paddingTop": 10,
+        }
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#F1F1F1",
+            },
+            Object {
+              "fontWeight": "bold",
+            },
+          ]
+        }
+      >
+        BACK
+      </Text>
+    </View>
+    <View
+      accessible={true}
+      focusable={false}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#FD4040",
+          "borderRadius": 10,
+          "opacity": 1,
+          "paddingBottom": 10,
+          "paddingLeft": 25,
+          "paddingRight": 25,
+          "paddingTop": 10,
+        }
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#F1F1F1",
+            },
+            Object {
+              "fontWeight": "bold",
+            },
+          ]
+        }
+      >
+        NEXT
+      </Text>
+    </View>
+  </View>,
+]
+`;
+
+exports[`Renders second item in form progress 1`] = `
+Array [
+  <View
+    style={
+      Array [
+        Object {
+          "alignSelf": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "padding": 15,
+          "paddingTop": 25,
+        },
+        Object {
+          "width": 725,
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Create Your 
+Account
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#707070",
+          "flexShrink": 1,
+          "height": 2,
+          "marginTop": -35,
+          "width": 50,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Confirm Your 
+Email
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#707070",
+          "flexShrink": 1,
+          "height": 2,
+          "marginTop": -35,
+          "width": 50,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Select Your 
+Preferences
+      </Text>
+    </View>
+  </View>,
+  <View
+    style={
+      Array [
+        Object {
+          "alignSelf": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "padding": 15,
+          "paddingTop": 25,
+        },
+        Object {
+          "marginTop": -15,
+        },
+      ]
+    }
+  >
+    <View
+      accessible={true}
+      focusable={false}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#707070",
+          "borderRadius": 10,
+          "marginRight": 150,
+          "opacity": 1,
+          "paddingBottom": 10,
+          "paddingLeft": 25,
+          "paddingRight": 25,
+          "paddingTop": 10,
+        }
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#F1F1F1",
+            },
+            Object {
+              "fontWeight": "bold",
+            },
+          ]
+        }
+      >
+        BACK
+      </Text>
+    </View>
+    <View
+      accessible={true}
+      focusable={false}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#FD4040",
+          "borderRadius": 10,
+          "opacity": 1,
+          "paddingBottom": 10,
+          "paddingLeft": 25,
+          "paddingRight": 25,
+          "paddingTop": 10,
+        }
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#F1F1F1",
+            },
+            Object {
+              "fontWeight": "bold",
+            },
+          ]
+        }
+      >
+        NEXT
+      </Text>
+    </View>
+  </View>,
+]
+`;
+
+exports[`Renders third item in form progress 1`] = `
+Array [
+  <View
+    style={
+      Array [
+        Object {
+          "alignSelf": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "padding": 15,
+          "paddingTop": 25,
+        },
+        Object {
+          "width": 725,
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Create Your 
+Account
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#707070",
+          "flexShrink": 1,
+          "height": 2,
+          "marginTop": -35,
+          "width": 50,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Confirm Your 
+Email
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#707070",
+          "flexShrink": 1,
+          "height": 2,
+          "marginTop": -35,
+          "width": 50,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": 50,
+            "width": 50,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        Select Your 
+Preferences
+      </Text>
+    </View>
+  </View>,
+  <View
+    style={
+      Array [
+        Object {
+          "alignSelf": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "padding": 15,
+          "paddingTop": 25,
+        },
+        Object {
+          "marginTop": -15,
+        },
+      ]
+    }
+  >
+    <View
+      accessible={true}
+      focusable={false}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#707070",
+          "borderRadius": 10,
+          "marginRight": 150,
+          "opacity": 1,
+          "paddingBottom": 10,
+          "paddingLeft": 25,
+          "paddingRight": 25,
+          "paddingTop": 10,
+        }
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#F1F1F1",
+            },
+            Object {
+              "fontWeight": "bold",
+            },
+          ]
+        }
+      >
+        BACK
+      </Text>
+    </View>
+    <View
+      accessible={true}
+      focusable={false}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#FD4040",
+          "borderRadius": 10,
+          "opacity": 1,
+          "paddingBottom": 10,
+          "paddingLeft": 25,
+          "paddingRight": 25,
+          "paddingTop": 10,
+        }
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#F1F1F1",
+            },
+            Object {
+              "fontWeight": "bold",
+            },
+          ]
+        }
+      >
+        SUBMIT
+      </Text>
+    </View>
+  </View>,
+]
+`;
