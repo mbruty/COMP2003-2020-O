@@ -2,12 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace api.Backend.Data.SQL
 {
     public class Object
     {
+        #region Methods
+
+        private int[] FetchAutoIncrement()
+        {
+            List<object[]> Data = Instance.Read($"SELECT LAST_INSERT_ID();");
+            return Array.ConvertAll(Data[0], x => int.Parse(x.ToString()));
+        }
+
+        #endregion Methods
+
         #region Constructors
 
         public Object()
@@ -15,8 +24,6 @@ namespace api.Backend.Data.SQL
         }
 
         #endregion Constructors
-
-        #region Methods
 
         public bool Delete()
         {
@@ -61,8 +68,6 @@ namespace api.Backend.Data.SQL
             }
             What = What.Trim().Remove(What.Length - 2, 1);
 
-            
-
             bool success = Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
 
             if (FetchInsertedIds && success)
@@ -72,12 +77,6 @@ namespace api.Backend.Data.SQL
                 t.GetField(Fields.First(x => x.IsAutoIncrement)?.Field)?.SetValue(this, Ids[0]);
             }
             return success;
-        }
-
-        private int[] FetchAutoIncrement()
-        {
-            List<object[]> Data = Instance.Read($"SELECT LAST_INSERT_ID();");
-            return Array.ConvertAll(Data[0],x=>int.Parse(x.ToString()));
         }
 
         public bool Update()
@@ -107,7 +106,5 @@ namespace api.Backend.Data.SQL
 
             return Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
         }
-
-        #endregion Methods
     }
 }

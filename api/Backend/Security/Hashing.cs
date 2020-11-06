@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Scrypt;
+﻿using Scrypt;
 
 namespace api.Backend.Security
 {
     public static class Hashing
     {
+        #region Fields
+
         private static ScryptEncoder encoder = new ScryptEncoder();
+
+        #endregion Fields
+
+        #region Methods
 
         public static string Hash(string raw)
         {
@@ -20,5 +21,7 @@ namespace api.Backend.Security
         {
             return encoder.Compare(raw, hash);
         }
+
+        #endregion Methods
     }
 }

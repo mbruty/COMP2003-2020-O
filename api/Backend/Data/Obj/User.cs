@@ -9,11 +9,15 @@ namespace api.Backend.Data.Obj
         public string Email, Password, Nickname;
         public int Id, YearOfBirth, CheckId;
 
+        #endregion Fields
+
+        #region Properties
+
         public Visit[] visits
         {
             get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
         }
 
-        #endregion Fields
+        #endregion Properties
     }
 }
