@@ -19,7 +19,7 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "You are logged in");
         }
 
-       [WebEvent("/login", "POST", false)]
+        [WebEvent("/login", "POST", false)]
         public static void Login(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"];
