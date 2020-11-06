@@ -42,8 +42,8 @@ const items: Array<{
 interface Props {
   selectedIdx: number;
   allowBack: boolean;
-  onNext: () => void;
-  onSubmit: () => void;
+  onNext?: () => void;
+  onSubmit?: () => void;
   onBack?: () => void;
 }
 export const FormProgress: React.FC<Props> = (props) => {
