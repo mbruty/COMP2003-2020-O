@@ -65,6 +65,11 @@ namespace api.Backend.Data.SQL.AutoSQL
             get { return Columns.Where(x => x.Key == Key.PRI).ToArray(); }
         }
 
+        public Column[] AutoIncrement
+        {
+            get { return Columns.Where(x => x.IsAutoIncrement).ToArray(); }
+        }
+
         #endregion Properties
 
         public T[] Select<T>(string where = "TRUE") where T : Object, new()
