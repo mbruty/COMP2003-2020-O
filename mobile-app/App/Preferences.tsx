@@ -101,7 +101,7 @@ export const Preferences: React.FC<Props> = (props) => {
         setTouched={setAllergies}
         chipNameList={allergies}
       />
-      <FormProgress selectedIdx={2} />
+      <FormProgress allowBack={false} selectedIdx={2} />
     </ScrollView>
   );
 };

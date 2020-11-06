@@ -801,14 +801,14 @@ exports[`Renders Circle Button List 1`] = `
       style={
         Array [
           Object {
-            "alignSelf": "center",
             "flex": 1,
             "flexDirection": "row",
-            "justifyContent": "space-between",
             "padding": 15,
             "paddingTop": 25,
           },
           Object {
+            "alignSelf": "center",
+            "justifyContent": "space-between",
             "width": 725,
           },
         ]
@@ -825,8 +825,8 @@ exports[`Renders Circle Button List 1`] = `
           source={1}
           style={
             Object {
-              "height": 50,
-              "width": 50,
+              "height": 35,
+              "width": 35,
             }
           }
         />
@@ -864,8 +864,8 @@ Account
           source={1}
           style={
             Object {
-              "height": 50,
-              "width": 50,
+              "height": 35,
+              "width": 35,
             }
           }
         />
@@ -903,8 +903,8 @@ Email
           source={1}
           style={
             Object {
-              "height": 50,
-              "width": 50,
+              "height": 35,
+              "width": 35,
             }
           }
         />
@@ -922,19 +922,12 @@ Preferences
     </View>
     <View
       style={
-        Array [
-          Object {
-            "alignSelf": "center",
-            "flex": 1,
-            "flexDirection": "row",
-            "justifyContent": "space-between",
-            "padding": 15,
-            "paddingTop": 25,
-          },
-          Object {
-            "marginTop": -15,
-          },
-        ]
+        Object {
+          "flex": 1,
+          "flexDirection": "row",
+          "padding": 15,
+          "paddingTop": 25,
+        }
       }
     >
       <View
@@ -949,51 +942,16 @@ Preferences
         onStartShouldSetResponder={[Function]}
         style={
           Object {
-            "backgroundColor": "#707070",
-            "borderRadius": 10,
-            "marginRight": 150,
-            "opacity": 1,
-            "paddingBottom": 10,
-            "paddingLeft": 25,
-            "paddingRight": 25,
-            "paddingTop": 10,
-          }
-        }
-      >
-        <Text
-          style={
-            Array [
-              Object {
-                "color": "#F1F1F1",
-              },
-              Object {
-                "fontWeight": "bold",
-              },
-            ]
-          }
-        >
-          BACK
-        </Text>
-      </View>
-      <View
-        accessible={true}
-        focusable={false}
-        onClick={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          Object {
             "backgroundColor": "#FD4040",
             "borderRadius": 10,
+            "bottom": 0,
             "opacity": 1,
-            "paddingBottom": 10,
-            "paddingLeft": 25,
-            "paddingRight": 25,
-            "paddingTop": 10,
+            "paddingBottom": 8,
+            "paddingLeft": 20,
+            "paddingRight": 20,
+            "paddingTop": 8,
+            "position": "absolute",
+            "right": 25,
           }
         }
       >

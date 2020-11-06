@@ -14,7 +14,7 @@ interface Props {
 
 export const Icon: React.FC<Props> = (props) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={`icon ${props.text}`}>
       <Image style={styles.img} source={props.image} />
       <Text style={styles.txt}>{props.text}</Text>
     </View>
@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   img: {
-    height: 50,
-    width: 50,
+    height: 35,
+    width: 35,
   },
   txt: {
     textAlign: "center",

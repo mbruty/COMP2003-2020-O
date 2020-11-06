@@ -41,13 +41,27 @@ const items: Array<{
 
 interface Props {
   selectedIdx: number;
+  allowBack: boolean;
+  onNext: () => void;
+  onSubmit: () => void;
+  onBack?: () => void;
 }
 export const FormProgress: React.FC<Props> = (props) => {
   const dimensions = Dimensions.get("window");
   const imageWidth = dimensions.width;
   return (
     <>
-      <View style={[styles.container, { width: imageWidth - 25 }]}>
+      <View
+        key={`FormProgress ${props.selectedIdx}`}
+        style={[
+          styles.container,
+          {
+            width: imageWidth - 25,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          },
+        ]}
+      >
         {items.map((x, index) => (
           <>
             <Icon
@@ -61,20 +75,26 @@ export const FormProgress: React.FC<Props> = (props) => {
           </>
         ))}
       </View>
-      <View style={[styles.container, { marginTop: -15 }]}>
+      <View style={styles.container}>
+        {props.allowBack && (
+          <TouchableOpacity
+            style={[
+              props.selectedIdx === 0
+                ? CONSTANT_STYLES.BG_LIGHT_GREY
+                : CONSTANT_STYLES.BG_DARK_GREY,
+              styles.btn,
+              { left: 25, bottom: 0 },
+            ]}
+          >
+            <Text style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>BACK</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
-          style={[
-            props.selectedIdx === 0
-              ? CONSTANT_STYLES.BG_LIGHT_GREY
-              : CONSTANT_STYLES.BG_DARK_GREY,
-            styles.btn,
-            { marginRight: 150 },
-          ]}
+          style={[CONSTANT_STYLES.BG_RED, styles.btn, { right: 25, bottom: 0 }]}
         >
-          <Text style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>BACK</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[CONSTANT_STYLES.BG_RED, styles.btn]}>
-        <Text style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>{props.selectedIdx === 2 ? "SUBMIT" : "NEXT"}</Text>
+          <Text style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>
+            {props.selectedIdx === 2 ? "SUBMIT" : "NEXT"}
+          </Text>
         </TouchableOpacity>
       </View>
     </>
@@ -85,8 +105,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "center",
     padding: 15,
     paddingTop: 25,
   },
@@ -99,11 +117,12 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   btn: {
-    paddingLeft: 25,
-    paddingRight: 25,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 8,
+    paddingBottom: 8,
     borderRadius: 10,
+    position: "absolute",
   },
   txt: {
     fontWeight: "bold",

@@ -12,8 +12,8 @@ exports[`Renders Icon from form progress 1`] = `
     source={1}
     style={
       Object {
-        "height": 50,
-        "width": 50,
+        "height": 35,
+        "width": 35,
       }
     }
   />
