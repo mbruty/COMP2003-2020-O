@@ -75,7 +75,7 @@ export const FormProgress: React.FC<Props> = (props) => {
           </>
         ))}
       </View>
-      <View style={styles.container}>
+      <View style={[styles.container, {paddingBottom: 25}]}>
         {props.allowBack && (
           <TouchableOpacity
             style={[
@@ -92,7 +92,7 @@ export const FormProgress: React.FC<Props> = (props) => {
         <TouchableOpacity
           style={[CONSTANT_STYLES.BG_RED, styles.btn, { right: 25, bottom: 0 }]}
         >
-          <Text style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>
+          <Text allowFontScaling={false} style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>
             {props.selectedIdx === 2 ? "SUBMIT" : "NEXT"}
           </Text>
         </TouchableOpacity>

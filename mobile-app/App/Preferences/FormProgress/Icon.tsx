@@ -16,7 +16,7 @@ export const Icon: React.FC<Props> = (props) => {
   return (
     <View style={styles.container} key={`icon ${props.text}`}>
       <Image style={styles.img} source={props.image} />
-      <Text style={styles.txt}>{props.text}</Text>
+      <Text allowFontScaling={false} style={styles.txt}>{props.text}</Text>
     </View>
   );
 };

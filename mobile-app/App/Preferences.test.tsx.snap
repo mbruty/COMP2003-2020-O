@@ -831,6 +831,7 @@ exports[`Renders Circle Button List 1`] = `
           }
         />
         <Text
+          allowFontScaling={false}
           style={
             Object {
               "textAlign": "center",
@@ -870,6 +871,7 @@ Account
           }
         />
         <Text
+          allowFontScaling={false}
           style={
             Object {
               "textAlign": "center",
@@ -909,6 +911,7 @@ Email
           }
         />
         <Text
+          allowFontScaling={false}
           style={
             Object {
               "textAlign": "center",
@@ -922,12 +925,17 @@ Preferences
     </View>
     <View
       style={
-        Object {
-          "flex": 1,
-          "flexDirection": "row",
-          "padding": 15,
-          "paddingTop": 25,
-        }
+        Array [
+          Object {
+            "flex": 1,
+            "flexDirection": "row",
+            "padding": 15,
+            "paddingTop": 25,
+          },
+          Object {
+            "paddingBottom": 25,
+          },
+        ]
       }
     >
       <View
@@ -956,6 +964,7 @@ Preferences
         }
       >
         <Text
+          allowFontScaling={false}
           style={
             Array [
               Object {

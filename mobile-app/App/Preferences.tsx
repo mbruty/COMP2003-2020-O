@@ -21,6 +21,7 @@ const typesOfFood = ["Fish", "Vegan", "Vegetarian", "Meat", "Halal", "Kosher"];
 interface Props {
   fName: string;
   setPage?: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: () => void;
 }
 
 export const Preferences: React.FC<Props> = (props) => {
@@ -101,7 +102,7 @@ export const Preferences: React.FC<Props> = (props) => {
         setTouched={setAllergies}
         chipNameList={allergies}
       />
-      <FormProgress allowBack={false} selectedIdx={2} />
+      <FormProgress onSubmit={props.onSubmit} allowBack={false} selectedIdx={2} />
     </ScrollView>
   );
 };
