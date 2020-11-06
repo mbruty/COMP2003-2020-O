@@ -11,6 +11,7 @@ import {
 import { CircleBtnView } from "./Preferences/CircleBtnView";
 import { ChipView } from "./Preferences/ChipView";
 import { CONSTANT_STYLES } from "./constants";
+import { FormProgress } from "./Preferences/FormProgress";
 
 // ToDo: Fetch this list from the API?
 
@@ -68,18 +69,22 @@ export const Preferences: React.FC<Props> = (props) => {
           style={{
             height: imageHeight,
             width: imageWidth,
+            marginTop: -15,
           }}
           source={require("./Preferences/preferences_banner.png")}
         />
       </View>
-      <Text allowFontScaling={false} style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}>
+      <Text
+        allowFontScaling={false}
+        style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}
+      >
         Hi {props.fName}!{"\n"}
         What types of food can you{"\n"}
         eat?
       </Text>
       <Text
         allowFontScaling={false}
-        style={[textStyle, { marginTop: 10, marginBottom: 0 }]}
+        style={[textStyle, { marginTop: 0, marginBottom: 0 }]}
       >
         Types of food
       </Text>
@@ -88,7 +93,7 @@ export const Preferences: React.FC<Props> = (props) => {
         touchedArray={foodBoolArr}
         setTouched={setFoodTypes}
       />
-      <Text allowFontScaling={false} style={[textStyle, {marginTop: 15}]}>
+      <Text allowFontScaling={false} style={[textStyle, { marginTop: 15 }]}>
         Allergies / intolerance
       </Text>
       <ChipView
@@ -96,11 +101,7 @@ export const Preferences: React.FC<Props> = (props) => {
         setTouched={setAllergies}
         chipNameList={allergies}
       />
-      <TouchableOpacity style={styles.submit} onPress={submit}>
-        <View>
-          <Text style={[styles.submitText, CONSTANT_STYLES.TXT_RED]}>Submit</Text>
-        </View>
-      </TouchableOpacity>
+      <FormProgress allowBack={false} selectedIdx={2} />
     </ScrollView>
   );
 };
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
   },
   bannerText: {
     position: "absolute",
-    top: 50,
+    top: 35,
     left: 15,
     fontSize: 30,
     fontWeight: "bold",

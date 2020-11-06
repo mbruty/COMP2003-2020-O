@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders Icon from form progress 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+    }
+  }
+>
+  <Image
+    source={1}
+    style={
+      Object {
+        "height": 35,
+        "width": 35,
+      }
+    }
+  />
+  <Text
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    test
+  </Text>
+</View>
+`;
