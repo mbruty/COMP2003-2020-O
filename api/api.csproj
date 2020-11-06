@@ -115,9 +115,10 @@
     <Compile Include="Backend\Endpoints\Listener.cs" />
     <Compile Include="Backend\Endpoints\WebRequest.cs" />
     <Compile Include="Backend\Endpoints\WebSockets.cs" />
-    <Compile Include="Backend\Events\Authentication.cs" />
+    <Compile Include="Backend\Events\Users\Authentication.cs" />
     <Compile Include="Backend\Events\Echo.cs" />
     <Compile Include="Backend\Events\EventAttribute.cs" />
+    <Compile Include="Backend\Events\Users\Modify.cs" />
     <Compile Include="Backend\Security\Hashing.cs" />
     <Compile Include="Backend\Security\Sessions.cs" />
     <Compile Include="Backend\Security\SQL-Connection-Details.cs" />
