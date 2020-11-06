@@ -1,6 +1,4 @@
-﻿
-using System;
-namespace api.Backend.Data.Obj
+﻿namespace api.Backend.Data.Obj
 {
     public class FoodChecks : Backend.Data.SQL.Object
     {
