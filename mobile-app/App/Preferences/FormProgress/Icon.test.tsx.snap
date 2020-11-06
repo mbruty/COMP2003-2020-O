@@ -18,6 +18,7 @@ exports[`Renders Icon from form progress 1`] = `
     }
   />
   <Text
+    allowFontScaling={false}
     style={
       Object {
         "textAlign": "center",
