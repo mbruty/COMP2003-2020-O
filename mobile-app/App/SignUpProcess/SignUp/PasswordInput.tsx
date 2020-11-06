@@ -23,8 +23,8 @@ interface Props {
 export const PasswordInput: React.FC<Props> = (props) => {
   const [showText, setShowText] = useState<boolean>(false);
   const image = showText
-    ? require("./dont_show_pass.png")
-    : require("./show_pass.png");
+    ? require("./PasswordInput/dont_show_pass.png")
+    : require("./PasswordInput/show_pass.png");
 
   return (
     <View>

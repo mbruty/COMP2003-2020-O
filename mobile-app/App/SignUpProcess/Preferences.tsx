@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import { CircleBtnView } from "./Preferences/CircleBtnView";
 import { ChipView } from "./Preferences/ChipView";
-import { CONSTANT_STYLES } from "./constants";
-import { FormProgress } from "./Preferences/FormProgress";
-import { IData } from "./IData";
+import { CONSTANT_STYLES } from "./shared/constants";
+import { FormProgress } from "./shared/FormProgress";
+import { IData } from "../shared/IData";
 
 // ToDo: Fetch this list from the API?
 
@@ -70,7 +70,7 @@ export const Preferences: React.FC<Props> = (props) => {
             width: imageWidth,
             marginTop: -15,
           }}
-          source={require("./Preferences/preferences_banner.png")}
+          source={require("./shared/preferences_banner.png")}
         />
       </View>
       <Text

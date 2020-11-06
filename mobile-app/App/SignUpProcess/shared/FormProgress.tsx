@@ -8,8 +8,8 @@ import {
   TouchableOpacityComponent,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "../constants";
-import { Icon } from "./FormProgress/Icon";
+import { CONSTANT_STYLES } from "./constants";
+import { Icon } from "../Preferences/FormProgress/Icon";
 
 // ToDo: If this is ever needed any where else, maybe add this to the props?
 const items: Array<{
@@ -19,22 +19,22 @@ const items: Array<{
   {
     text: "Create Your \nAccount",
     img: {
-      active: require("./FormProgress/account_circle_active.png"),
-      inactive: require("./FormProgress/account_circle_inactive.png"),
+      active: require("../Preferences/FormProgress/account_circle_active.png"),
+      inactive: require("../Preferences/FormProgress/account_circle_inactive.png"),
     },
   },
   {
     text: "Confirm Your \nEmail",
     img: {
-      active: require("./FormProgress/email_active.png"),
-      inactive: require("./FormProgress/email_inactive.png"),
+      active: require("../Preferences/FormProgress/email_active.png"),
+      inactive: require("../Preferences/FormProgress/email_inactive.png"),
     },
   },
   {
     text: "Select Your \nPreferences",
     img: {
-      active: require("./FormProgress/food_active.png"),
-      inactive: require("./FormProgress/food_inactive.png"),
+      active: require("../Preferences/FormProgress/food_active.png"),
+      inactive: require("../Preferences/FormProgress/food_inactive.png"),
     },
   },
 ];
