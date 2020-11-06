@@ -1,5 +1,6 @@
 ﻿using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
+using api.Backend.Endpoints;
 using System;
 
 namespace api.Backend.Security
@@ -7,6 +8,27 @@ namespace api.Backend.Security
     public static class Sessions
     {
         #region Methods
+
+        public static bool CheckSession(string authtoken,int uid, ref WebRequest.HttpResponse response)
+        {
+            Session[] sessions = Binding.GetTable<Session>().Select<Session>("userid", uid);
+
+            if (sessions.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Session does not exist");
+                return false;
+            }
+
+            if (!Hashing.Match(authtoken, sessions[0].AuthToken))
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Authtoken is incorrect");
+                return false;
+            }
+
+            return true;
+        }
 
         public static string AddSession(User user)
         {
