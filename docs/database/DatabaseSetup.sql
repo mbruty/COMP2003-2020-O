@@ -30,7 +30,7 @@ create table `User` (
     Email varchar(60) unique not null,
     check (Email like '%@%.%'),
     
-	primary key(Id, Email),
+	primary key(Id),
     
     CheckId int not null,
     foreign key (CheckId) references `FoodChecks`(Id) on delete restrict on update cascade,
@@ -53,6 +53,8 @@ create table `Session` (
 
 create table `Resturant` (
 	Id int unique auto_increment not null,
+    primary key (Id),
+    
 	OwnerId int not null,
     foreign key (OwnerId) references `User`(Id) on delete restrict on update cascade,
     
@@ -141,6 +143,7 @@ create table `Visit` (
 
 create table `Review` (
 	VisitId int not null,
+    primary key (VisitId),
     foreign key (VisitId) references `Visit`(Id) on delete restrict on update cascade,
     
     Rating tinyint,
