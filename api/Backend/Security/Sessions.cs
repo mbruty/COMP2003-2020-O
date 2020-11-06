@@ -1,6 +1,11 @@
 ﻿using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
+using api.Backend.Data.Obj;
+using api.Backend.Data.SQL.AutoSQL;
+using api.Backend.Endpoints;
+using api.Backend.Security;
+using System.Collections.Specialized;
 using System;
 
 namespace api.Backend.Security
@@ -9,8 +14,26 @@ namespace api.Backend.Security
     {
         #region Methods
 
-        public static bool CheckSession(string authtoken,int uid, ref WebRequest.HttpResponse response)
+        public static bool CheckSession(NameValueCollection headers, ref WebRequest.HttpResponse response)
         {
+            string userid = headers["userid"], authtoken = headers["authtoken"];
+
+            if (userid == null || authtoken == null)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing email or authtoken");
+                return false;
+            }
+
+            int uid;
+
+            if (!int.TryParse(userid, out uid))
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "User id is invalid");
+                return false;
+            }
+
             Session[] sessions = Binding.GetTable<Session>().Select<Session>("userid", uid);
 
             if (sessions.Length == 0)

@@ -4,7 +4,7 @@ using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Collections.Specialized;
 
-namespace api.Backend.Events
+namespace api.Backend.Events.Users
 {
     public static class Authentication
     {
@@ -13,25 +13,7 @@ namespace api.Backend.Events
         [WebEvent("/auth", "POST", false)]
         public static void CheckAuth(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
         {
-            string userid = headers["userid"], authtoken = headers["authtoken"];
-
-            if (userid == null || authtoken == null)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Missing email or authtoken");
-                return;
-            }
-
-            int uid;
-
-            if (!int.TryParse(userid, out uid))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "User id is invalid");
-                return;
-            }
-
-            if (!Sessions.CheckSession(authtoken, uid, ref response)) return;
+            if (!Sessions.CheckSession(headers, ref response)) return;
 
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
