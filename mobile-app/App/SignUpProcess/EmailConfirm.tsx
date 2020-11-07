@@ -20,7 +20,6 @@ export const EmailConfirm: React.FC<Props> = (props) => {
   const imageHeight = Math.round((dimensions.width * 9) / 16);
   const imageWidth = dimensions.width;
 
-  const firstRef = React.createRef<TextInput>();
   const secondRef = React.createRef<TextInput>();
   const thirdRef = React.createRef<TextInput>();
 
@@ -83,7 +82,6 @@ export const EmailConfirm: React.FC<Props> = (props) => {
           keyboardType={"number-pad"}
           allowFontScaling={false}
           style={inputStyles}
-          ref={firstRef}
           maxLength={3}
           onChangeText={(e) => {
             onChangeText(e, 0);
