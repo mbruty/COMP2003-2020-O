@@ -9,13 +9,21 @@ export default function App() {
 
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
-
-  const [page, setPage] = useState<string>("sign-up");
+  
+  const [page, setPage] = useState<string>("log-in");
 
   // Render the different pages by name of page
   switch (page) {
     case "sign-up":
       return <SignUpProcess setPage={setPage} user={user} />;
+      break;
+    case "log-in":
+      return(
+        <SafeAreaView style={styles.container}>
+          <LogIn />
+        </SafeAreaView>
+      )
+      break;
     default:
       return (
         <View style={styles.container}>
