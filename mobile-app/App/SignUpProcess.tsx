@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { IData } from "./shared/IData";
+import { EmailConfirm } from "./SignUpProcess/EmailConfirm";
 import { IUser } from "./SignUpProcess/IUser";
 import { Preferences } from "./SignUpProcess/Preferences";
 import { SignUp } from "./SignUpProcess/SignUp";
@@ -11,15 +12,21 @@ interface Props {
 }
 
 export const SignUpProcess: React.FC<Props> = (props) => {
-  const [pageNo, setPageNo] = useState<number>(2);
+  const [pageNo, setPageNo] = useState<number>(0);
   const submit = (data: IData) => {};
+
+  const next = () => {
+    console.log("Going to next page");
+    
+    setPageNo(pageNo + 1);
+  }
 
   switch (pageNo) {
     case 0:
       return <SignUp />;
       break;
     case 1:
-      return null;
+      return <EmailConfirm next={next}/>;
       break;
     case 2:
       return (

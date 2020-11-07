@@ -15,7 +15,11 @@ export default function App() {
   // Render the different pages by name of page
   switch (page) {
     case "sign-up":
-      return <SignUpProcess setPage={setPage} user={user} />;
+      return (
+        <View style={styles.container}>
+          <SignUpProcess setPage={setPage} user={user} />
+        </View>
+      );
     default:
       return (
         <View style={styles.container}>

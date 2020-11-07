@@ -42,8 +42,7 @@ const items: Array<{
 interface Props {
   selectedIdx: number;
   allowBack: boolean;
-  onNext?: () => void;
-  onSubmit?: () => void;
+  onSubmit: () => void;
   onBack?: () => void;
 }
 export const FormProgress: React.FC<Props> = (props) => {
@@ -91,9 +90,10 @@ export const FormProgress: React.FC<Props> = (props) => {
         )}
         <TouchableOpacity
           style={[CONSTANT_STYLES.BG_RED, styles.btn, { right: 25, bottom: 0 }]}
+          onPress={props.onSubmit}
         >
           <Text allowFontScaling={false} style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>
-            {props.selectedIdx === 2 ? "SUBMIT" : "NEXT"}
+            SUBMIT
           </Text>
         </TouchableOpacity>
       </View>
