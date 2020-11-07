@@ -1,67 +1,112 @@
 import React from "react";
-import {Alert, Button, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+  Alert,
+  Button,
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { CustomTextInput } from "./Login/CustomTextInput";
-import {CONSTANT_STYLES} from "./constants";
+import { CONSTANT_STYLES } from "./constants";
 
 interface Props {}
 
 export const LogIn: React.FC<Props> = (props) => {
   // @ts-ignore
-  const dimensions= Dimensions.get("window");
-  const imageHeight=Math.round((dimensions.width*8)/13);
-  const imageWidth=dimensions.width;
-
-  const styles = StyleSheet.create({
-    ImageStyle:{
-      height:imageHeight,
-      width:imageWidth,
-    }
-
-  })
-
+  const dimensions = Dimensions.get("window");
+  const imageHeight = dimensions.height / 2;
+  const imageWidth = dimensions.width;
 
   return (
-    <>
-      <View style={{
-        top:-175,
-        backgroundColor:'white'
-      }}>
-        <Image style={styles.ImageStyle} source={require('./log-in.png')}/>
-      </View>
+    <ScrollView style={{ overflow: "hidden" }}>
+      <Image
+        style={{
+          width: imageWidth,
+          height: imageHeight,
+          marginBottom: imageHeight,
+        }}
+        source={require("./log-in.png")}
+      />
 
-
-      <View style={{
-        position:"absolute",
-        top: 200,
-        borderRadius:40,
-        backgroundColor:'white',
-        borderWidth:50,
-        borderColor:'white'
-      }}>
-
-        <Text style={{fontWeight:"bold" , color:'red' , fontSize:24 , paddingBottom:15 , paddingTop:10 , textAlign: 'center'}}>Track and Taste</Text>
-
+      <View style={[styles.card, CONSTANT_STYLES.BG_BASE_COLOUR]}>
+        <Text style={[styles.titleText, CONSTANT_STYLES.TXT_RED]}>
+          Track and Taste
+        </Text>
 
         <CustomTextInput label="Email" isPassword={false} />
         <CustomTextInput label="Password" isPassword={true} />
 
-
         <TouchableOpacity>
-          <Text style={{color:'firebrick' , fontSize:12 , textAlign: "right" , paddingBottom:15}}>Forgot Password?</Text>
+          <Text
+            style={[
+              styles.highlightTxt,
+              CONSTANT_STYLES.TXT_RED,
+              { textAlign: "right" },
+            ]}
+          >
+            Forgot Password?
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={[styles.btn, CONSTANT_STYLES.BG_RED]}>
+            <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
+              LOG IN
+            </Text>
+          </View>
         </TouchableOpacity>
 
-        <Button title={"Log In"} onPress={console.clear} color={'red'}>Log In</Button>
-
-
-        <Text style={{color:"gainsboro" , paddingTop:15}}>
-          Don't have an account?
-          <TouchableOpacity>
-            <Text style={{color:"firebrick" , textAlign: "right"}}> Sign Up</Text>
-          </TouchableOpacity>
-        </Text>
+        <TouchableOpacity style={styles.txtContainer}>
+          <Text style={CONSTANT_STYLES.TXT_DEFAULT}>
+            Don't have an account?
+          </Text>
+          <Text style={CONSTANT_STYLES.TXT_RED}>
+            {" "}
+            Sign Up
+          </Text>
+        </TouchableOpacity>
       </View>
-
-
-    </>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  card: {
+    position: "absolute",
+    top: 200,
+    padding: 50,
+    borderRadius: 50,
+    elevation: 5,
+    paddingBottom: 500,
+  },
+  titleText: {
+    fontWeight: "bold",
+    fontSize: 24,
+    paddingBottom: 20,
+    paddingTop: 10,
+    textAlign: "center",
+  },
+  highlightTxt: {
+    fontSize: 14,
+    paddingBottom: 15,
+  },
+  btn: {
+    paddingHorizontal: 0,
+    paddingVertical: 15,
+    borderRadius: 50,
+  },
+  btnTxt: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  txtContainer: {
+    flex:1,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 25
+  }
+});
