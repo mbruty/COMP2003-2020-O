@@ -1,0 +1,314 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders Circle Button List 1`] = `
+<RCTScrollView
+  style={
+    Object {
+      "overflow": "hidden",
+    }
+  }
+>
+  <View>
+    <Image
+      source={1}
+      style={
+        Object {
+          "height": 667,
+          "marginBottom": 667,
+          "width": 750,
+        }
+      }
+    />
+    <View
+      style={
+        Array [
+          Object {
+            "borderRadius": 50,
+            "elevation": 5,
+            "padding": 50,
+            "paddingBottom": 500,
+            "position": "absolute",
+            "top": 200,
+          },
+          Object {
+            "backgroundColor": "#F1F1F1",
+          },
+        ]
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "fontSize": 24,
+              "fontWeight": "bold",
+              "paddingBottom": 20,
+              "paddingTop": 10,
+              "textAlign": "center",
+            },
+            Object {
+              "color": "#FD4040",
+            },
+          ]
+        }
+      >
+        Track and Taste
+      </Text>
+      <View
+        style={
+          Object {
+            "marginBottom": 20,
+            "width": 650,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "width": "100%",
+            }
+          }
+        >
+          <Text
+            style={
+              Object {
+                "fontSize": 18,
+                "left": 10,
+                "position": "absolute",
+                "top": 12,
+              }
+            }
+          >
+            Email
+          </Text>
+          <View
+            style={
+              Object {
+                "borderBottomWidth": 1,
+                "borderColor": "#c4c4c4",
+                "borderRadius": 5,
+                "padding": 10,
+                "width": "100%",
+              }
+            }
+          >
+            <TextInput
+              allowFontScaling={true}
+              onBlur={[Function]}
+              onChangeText={[Function]}
+              onFocus={[Function]}
+              rejectResponderTermination={true}
+              secureTextEntry={false}
+              testID="input"
+              underlineColorAndroid="transparent"
+            />
+          </View>
+        </View>
+      </View>
+      <View
+        style={
+          Object {
+            "marginBottom": 20,
+            "width": 650,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "width": "100%",
+            }
+          }
+        >
+          <Text
+            style={
+              Object {
+                "fontSize": 18,
+                "left": 10,
+                "position": "absolute",
+                "top": 12,
+              }
+            }
+          >
+            Password
+          </Text>
+          <View
+            style={
+              Object {
+                "borderBottomWidth": 1,
+                "borderColor": "#c4c4c4",
+                "borderRadius": 5,
+                "padding": 10,
+                "width": "100%",
+              }
+            }
+          >
+            <TextInput
+              allowFontScaling={true}
+              onBlur={[Function]}
+              onChangeText={[Function]}
+              onFocus={[Function]}
+              rejectResponderTermination={true}
+              secureTextEntry={true}
+              testID="input"
+              underlineColorAndroid="transparent"
+            />
+          </View>
+        </View>
+        <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "opacity": 1,
+              "position": "absolute",
+              "right": 5,
+              "top": 10,
+            }
+          }
+        >
+          <Image
+            source={1}
+            style={
+              Object {
+                "height": 25,
+                "width": 25,
+              }
+            }
+          />
+        </View>
+      </View>
+      <View
+        accessible={true}
+        focusable={false}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "fontSize": 14,
+                "paddingBottom": 15,
+              },
+              Object {
+                "color": "#FD4040",
+              },
+              Object {
+                "textAlign": "right",
+              },
+            ]
+          }
+        >
+          Forgot Password?
+        </Text>
+      </View>
+      <View
+        accessible={true}
+        focusable={false}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "borderRadius": 50,
+                "paddingHorizontal": 0,
+                "paddingVertical": 15,
+              },
+              Object {
+                "backgroundColor": "#FD4040",
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "fontSize": 16,
+                  "fontWeight": "bold",
+                  "textAlign": "center",
+                },
+                Object {
+                  "color": "#F1F1F1",
+                },
+              ]
+            }
+          >
+            LOG IN
+          </Text>
+        </View>
+      </View>
+      <View
+        accessible={true}
+        focusable={false}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "flex": 1,
+            "flexDirection": "row",
+            "justifyContent": "center",
+            "marginTop": 25,
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#707070",
+            }
+          }
+        >
+          Don't have an account?
+        </Text>
+        <Text
+          style={
+            Object {
+              "color": "#FD4040",
+            }
+          }
+        >
+           
+          Sign Up
+        </Text>
+      </View>
+    </View>
+  </View>
+</RCTScrollView>
+`;
