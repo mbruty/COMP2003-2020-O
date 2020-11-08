@@ -8,7 +8,7 @@ import {
   TouchableOpacityComponent,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "./constants";
+import { CONSTANT_STYLES } from "../../shared/constants";
 import { Icon } from "../Preferences/FormProgress/Icon";
 
 // ToDo: If this is ever needed any where else, maybe add this to the props?

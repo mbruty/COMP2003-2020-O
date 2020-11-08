@@ -25,10 +25,10 @@ export default ({ type }: CardProps) => {
   let source: number;
   switch (type) {
     case Cards.Card1:
-      source = require("./Card/card1.png");
+      source = require("../AnimatedScroll/Card/card1.png");
       break;
     case Cards.Card2:
-      source = require("./Card/card2.png");
+      source = require("../AnimatedScroll/Card/card2.png");
       break;
     default:
       throw Error("Invalid card style");

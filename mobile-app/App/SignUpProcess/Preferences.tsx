@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { CircleBtnView } from "./Preferences/CircleBtnView";
 import { ChipView } from "./Preferences/ChipView";
-import { CONSTANT_STYLES } from "./shared/constants";
+import { CONSTANT_STYLES } from "../shared/constants";
 import { FormProgress } from "./shared/FormProgress";
 import { IData } from "../shared/IData";
 

@@ -9,8 +9,8 @@
 
 import React, { useRef } from "react";
 import { Animated, FlatList } from "react-native";
-import { Cards } from "./Card";
-import GroupCard from "./GroupCard";
+import { Cards } from "./shared/Card";
+import GroupCard from "./AnimatedScroll/GroupCard";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 const useLazyRef = <T extends object>(initializer: () => T) => {

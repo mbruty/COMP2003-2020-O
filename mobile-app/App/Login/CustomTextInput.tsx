@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Dimensions, Image, TouchableOpacity, View } from "react-native";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { CONSTANT_STYLES } from "../constants";
 
 interface Props {
   isPassword: boolean;

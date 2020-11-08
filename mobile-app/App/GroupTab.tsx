@@ -1,5 +1,5 @@
 import React from "react";
-import AnimatedScroll from "./JellyScroll";
+import AnimatedScroll from "./GroupTab/AnimatedScroll";
 
 interface Props {
 

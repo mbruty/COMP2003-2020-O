@@ -10,7 +10,7 @@
 
 import React from "react";
 import { Animated, Dimensions, StyleSheet, View } from "react-native";
-import Card, { Cards, CARD_HEIGHT as DEFAULT_CARD_HEIGHT } from "./Card";
+import Card, { Cards, CARD_HEIGHT as DEFAULT_CARD_HEIGHT } from "../shared/Card";
 
 export const MARGIN = 16;
 export const CARD_HEIGHT = DEFAULT_CARD_HEIGHT + MARGIN * 2;
