@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { CustomTextInput } from "./LogIn/CustomTextInput";
+import { CustomTextInput } from "./Login/CustomTextInput";
 import { CONSTANT_STYLES } from "./shared/constants";
 
 interface Props {}
@@ -29,7 +29,7 @@ export const LogIn: React.FC<Props> = (props) => {
           height: imageHeight,
           marginBottom: imageHeight,
         }}
-        source={require("./LogIn/log-in.png")}
+        source={require("./log-in.png")}
       />
 
       <View style={[styles.card, CONSTANT_STYLES.BG_BASE_COLOUR]}>
