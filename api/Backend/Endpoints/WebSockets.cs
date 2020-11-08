@@ -27,8 +27,16 @@ namespace api.Backend.Endpoints
 
                 if (tMethod.Length > 0)
                 {
-                    tMethod[0].Invoke(null, new object[] { webSocket, instance, @event, response });
-                    await response.Send(webSocket);
+                    try 
+                    {  
+                        tMethod[0].Invoke(null, new object[] { webSocket, instance, @event, response });
+                        await response.Send(webSocket);
+                    }
+                    catch (Exception e)
+                    {
+                        await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "A Server Errror has Occured!", CancellationToken.None);
+                        Console.WriteLine(e);
+                    }
                 }
                 else
                 {

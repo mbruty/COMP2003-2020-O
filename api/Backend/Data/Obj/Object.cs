@@ -20,7 +20,7 @@ namespace api.Backend.Data.Obj
 
             foreach (FieldInfo field in t.GetFields())
             {
-                if (headers.AllKeys.Contains(field.Name.ToLower()) && table.AutoIncrement.Count(x => x.Field.ToLower() == field.Name.ToLower()) == 0)
+                if (headers.AllKeys.Select(x=>x.ToLower()).Contains(field.Name.ToLower()) && table.AutoIncrement.Count(x => x.Field.ToLower() == field.Name.ToLower()) == 0)
                 {
                     if (field.Name.ToLower().StartsWith("password"))
                         field.SetValue(this, Hashing.Hash(headers[field.Name]));
