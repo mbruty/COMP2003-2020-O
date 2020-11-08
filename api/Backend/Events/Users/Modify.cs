@@ -43,6 +43,19 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
+        [WebEvent("/modify/user", "DELETE", false)]
+        public static void DeleteUser (NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        {
+            if (!Sessions.CheckSession(headers, ref response)) return;
+
+            User[] users = Binding.GetTable<User>().Select<User>("id", headers["userid"]);
+
+            users[0].Delete();
+
+            response.AddToData("message", "Deleted User");
+            response.StatusCode = 200;
+        }
+
         #endregion Methods
     }
 }
