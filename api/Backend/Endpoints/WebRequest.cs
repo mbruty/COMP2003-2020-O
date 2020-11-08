@@ -20,7 +20,8 @@ namespace api.Backend.Endpoints
             if (tMethod.Length > 0)
             {
                 try { tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); }
-                catch (Exception e) { 
+                catch (Exception e)
+                {
                     response.StatusCode = 505;
                     response.AddToData("error", "A Server Error has Occured!");
                     Console.WriteLine(e);

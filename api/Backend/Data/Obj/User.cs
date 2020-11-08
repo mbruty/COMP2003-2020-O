@@ -13,9 +13,23 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
+        public FoodChecks foodCheck
+        {
+            get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId)?[0]; }
+        }
+
+        public Visit[] visits
+        {
+            get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
+        }
+
+        #endregion Properties
+
+        #region Methods
+
         public override bool Delete()
         {
-             return base.Delete() && foodCheck.Delete();
+            return base.Delete() && foodCheck.Delete();
         }
 
         public override bool Insert(bool FetchInsertedIds = false)
@@ -28,16 +42,6 @@ namespace api.Backend.Data.Obj
             return base.Insert(FetchInsertedIds);
         }
 
-        public FoodChecks foodCheck
-        {
-            get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId)?[0]; }
-        }
-
-        public Visit[] visits
-        {
-            get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
-        }
-
-        #endregion Properties
+        #endregion Methods
     }
 }

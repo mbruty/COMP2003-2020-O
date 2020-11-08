@@ -27,8 +27,8 @@ namespace api.Backend.Endpoints
 
                 if (tMethod.Length > 0)
                 {
-                    try 
-                    {  
+                    try
+                    {
                         tMethod[0].Invoke(null, new object[] { webSocket, instance, @event, response });
                         await response.Send(webSocket);
                     }

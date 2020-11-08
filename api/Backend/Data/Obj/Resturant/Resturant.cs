@@ -1,6 +1,4 @@
-﻿using api.Backend.Data.SQL;
-
-namespace api.Backend.Data.Obj
+﻿namespace api.Backend.Data.Obj
 {
     public class Resturant : Object
     {
