@@ -13,6 +13,16 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
+        public override bool Insert(bool FetchInsertedIds = false)
+        {
+            FoodChecks foodChecks = new FoodChecks();
+            foodChecks.Insert(true);
+
+            this.CheckId = foodChecks.Id;
+
+            return base.Insert(FetchInsertedIds);
+        }
+
         public Visit[] visits
         {
             get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }

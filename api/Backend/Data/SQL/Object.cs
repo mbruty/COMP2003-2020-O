@@ -25,7 +25,7 @@ namespace api.Backend.Data.SQL
 
         #endregion Constructors
 
-        public bool Delete()
+        public virtual bool Delete()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -45,7 +45,7 @@ namespace api.Backend.Data.SQL
             return Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
         }
 
-        public bool Insert(bool FetchInsertedIds = false)
+        public virtual bool Insert(bool FetchInsertedIds = false)
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -79,7 +79,7 @@ namespace api.Backend.Data.SQL
             return success;
         }
 
-        public bool Update()
+        public virtual bool Update()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);

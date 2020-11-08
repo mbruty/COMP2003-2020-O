@@ -87,10 +87,6 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            FoodChecks foodChecks = new FoodChecks();
-            foodChecks.Insert(true);
-
-            user.CheckId = foodChecks.Id;
             user.Insert(true);
 
             string Token = Sessions.AddSession(user);
