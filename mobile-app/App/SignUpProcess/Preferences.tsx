@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import { CircleBtnView } from "./Preferences/CircleBtnView";
 import { ChipView } from "./Preferences/ChipView";
+import { CONSTANT_STYLES } from "./shared/constants";
+import { FormProgress } from "./shared/FormProgress";
+import { IData } from "../shared/IData";
 
 // ToDo: Fetch this list from the API?
 
@@ -19,6 +22,7 @@ const typesOfFood = ["Fish", "Vegan", "Vegetarian", "Meat", "Halal", "Kosher"];
 interface Props {
   fName: string;
   setPage?: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: (data: IData) => void;
 }
 
 export const Preferences: React.FC<Props> = (props) => {
@@ -47,17 +51,16 @@ export const Preferences: React.FC<Props> = (props) => {
     setFoodBoolArr(enabled);
   };
 
-  // Called on submit button click
   const submit = () => {
-    // ToDo:
-    // Send preferences to the server...
-    props.setPage("main");
-  };
+
+  }
 
   // The react-native way of doing width: 100vw; height: 100vh;
   const dimensions = Dimensions.get("window");
   const imageHeight = Math.round((dimensions.width * 9) / 16);
   const imageWidth = dimensions.width;
+
+  const textStyle = [styles.text, CONSTANT_STYLES.TXT_DEFAULT];
   return (
     <ScrollView>
       <View style={{ elevation: 25 }}>
@@ -65,17 +68,23 @@ export const Preferences: React.FC<Props> = (props) => {
           style={{
             height: imageHeight,
             width: imageWidth,
+            marginTop: -15,
           }}
-          source={require("./Preferences/preferences_banner.png")}
+          source={require("./shared/preferences_banner.png")}
         />
       </View>
-      <Text allowFontScaling={false} style={styles.bannerText}>
+      <Text
+        allowFontScaling={false}
+        style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}
+      >
         Hi {props.fName}!{"\n"}
         What types of food can you{"\n"}
         eat?
       </Text>
-      <Text allowFontScaling={false} style={[styles.text, { marginTop: 10 }]}>
-        {" "}
+      <Text
+        allowFontScaling={false}
+        style={[textStyle, { marginTop: 0, marginBottom: 0 }]}
+      >
         Types of food
       </Text>
       <CircleBtnView
@@ -83,7 +92,7 @@ export const Preferences: React.FC<Props> = (props) => {
         touchedArray={foodBoolArr}
         setTouched={setFoodTypes}
       />
-      <Text allowFontScaling={false} style={styles.text}>
+      <Text allowFontScaling={false} style={[textStyle, { marginTop: 15 }]}>
         Allergies / intolerance
       </Text>
       <ChipView
@@ -91,27 +100,21 @@ export const Preferences: React.FC<Props> = (props) => {
         setTouched={setAllergies}
         chipNameList={allergies}
       />
-      <TouchableOpacity style={styles.submit} onPress={submit}>
-        <View>
-          <Text style={styles.submitText}>Submit</Text>
-        </View>
-      </TouchableOpacity>
+      <FormProgress onSubmit={submit} allowBack={false} selectedIdx={2} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   text: {
-    color: "#707070",
     margin: 15,
     marginTop: 0,
     fontSize: 25,
     fontWeight: "bold",
   },
   bannerText: {
-    color: "#F1F1F1",
     position: "absolute",
-    top: 50,
+    top: 35,
     left: 15,
     fontSize: 30,
     fontWeight: "bold",
@@ -123,7 +126,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   submitText: {
-    color: "#FD4040",
     fontSize: 15,
     fontWeight: "bold",
   },

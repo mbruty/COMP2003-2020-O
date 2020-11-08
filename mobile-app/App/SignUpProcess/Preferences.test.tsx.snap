@@ -15,6 +15,7 @@ exports[`Renders Circle Button List 1`] = `
         style={
           Object {
             "height": 422,
+            "marginTop": -15,
             "width": 750,
           }
         }
@@ -23,15 +24,19 @@ exports[`Renders Circle Button List 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#F1F1F1",
-          "elevation": 26,
-          "fontSize": 30,
-          "fontWeight": "bold",
-          "left": 15,
-          "position": "absolute",
-          "top": 50,
-        }
+        Array [
+          Object {
+            "elevation": 26,
+            "fontSize": 30,
+            "fontWeight": "bold",
+            "left": 15,
+            "position": "absolute",
+            "top": 35,
+          },
+          Object {
+            "color": "#F1F1F1",
+          },
+        ]
       }
     >
       Hi 
@@ -48,20 +53,24 @@ exports[`Renders Circle Button List 1`] = `
       allowFontScaling={false}
       style={
         Array [
+          Array [
+            Object {
+              "fontSize": 25,
+              "fontWeight": "bold",
+              "margin": 15,
+              "marginTop": 0,
+            },
+            Object {
+              "color": "#707070",
+            },
+          ],
           Object {
-            "color": "#707070",
-            "fontSize": 25,
-            "fontWeight": "bold",
-            "margin": 15,
+            "marginBottom": 0,
             "marginTop": 0,
-          },
-          Object {
-            "marginTop": 10,
           },
         ]
       }
     >
-       
       Types of food
     </Text>
     <View
@@ -123,11 +132,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Fish
@@ -179,11 +192,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Vegan
@@ -235,11 +252,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Vegetarian
@@ -291,11 +312,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Meat
@@ -347,11 +372,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Halal
@@ -403,11 +432,15 @@ exports[`Renders Circle Button List 1`] = `
         <Text
           allowFontScaling={false}
           style={
-            Object {
-              "color": "#707070",
-              "marginTop": 5,
-              "textAlign": "center",
-            }
+            Array [
+              Object {
+                "marginTop": 5,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#707070",
+              },
+            ]
           }
         >
           Kosher
@@ -417,13 +450,22 @@ exports[`Renders Circle Button List 1`] = `
     <Text
       allowFontScaling={false}
       style={
-        Object {
-          "color": "#707070",
-          "fontSize": 25,
-          "fontWeight": "bold",
-          "margin": 15,
-          "marginTop": 0,
-        }
+        Array [
+          Array [
+            Object {
+              "fontSize": 25,
+              "fontWeight": "bold",
+              "margin": 15,
+              "marginTop": 0,
+            },
+            Object {
+              "color": "#707070",
+            },
+          ],
+          Object {
+            "marginTop": 15,
+          },
+        ]
       }
     >
       Allergies / intolerance
@@ -487,11 +529,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Lactose
@@ -546,11 +592,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Nuts
@@ -605,11 +655,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Gluten
@@ -664,11 +718,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Soy
@@ -723,11 +781,15 @@ exports[`Renders Circle Button List 1`] = `
           <Text
             allowFontScaling={false}
             style={
-              Object {
-                "color": "#FFF",
-                "marginTop": 2,
-                "paddingLeft": 5,
-              }
+              Array [
+                Object {
+                  "marginTop": 2,
+                  "paddingLeft": 5,
+                },
+                Object {
+                  "color": "#FFF",
+                },
+              ]
             }
           >
             Shellfish
@@ -736,35 +798,185 @@ exports[`Renders Circle Button List 1`] = `
       </View>
     </View>
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
-        Object {
-          "alignSelf": "flex-end",
-          "marginRight": 40,
-          "marginTop": 40,
-          "opacity": 1,
-        }
+        Array [
+          Object {
+            "flex": 1,
+            "flexDirection": "row",
+            "padding": 15,
+            "paddingTop": 25,
+          },
+          Object {
+            "alignSelf": "center",
+            "justifyContent": "space-between",
+            "width": 725,
+          },
+        ]
       }
     >
-      <View>
-        <Text
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+          }
+        }
+      >
+        <Image
+          source={1}
           style={
             Object {
-              "color": "#FD4040",
-              "fontSize": 15,
-              "fontWeight": "bold",
+              "height": 35,
+              "width": 35,
+            }
+          }
+        />
+        <Text
+          allowFontScaling={false}
+          style={
+            Object {
+              "textAlign": "center",
             }
           }
         >
-          Submit
+          Create Your 
+Account
+        </Text>
+      </View>
+      <View
+        style={
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#707070",
+            "flexShrink": 1,
+            "height": 2,
+            "marginTop": -35,
+            "width": 50,
+          }
+        }
+      />
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+          }
+        }
+      >
+        <Image
+          source={1}
+          style={
+            Object {
+              "height": 35,
+              "width": 35,
+            }
+          }
+        />
+        <Text
+          allowFontScaling={false}
+          style={
+            Object {
+              "textAlign": "center",
+            }
+          }
+        >
+          Confirm Your 
+Email
+        </Text>
+      </View>
+      <View
+        style={
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#707070",
+            "flexShrink": 1,
+            "height": 2,
+            "marginTop": -35,
+            "width": 50,
+          }
+        }
+      />
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+          }
+        }
+      >
+        <Image
+          source={1}
+          style={
+            Object {
+              "height": 35,
+              "width": 35,
+            }
+          }
+        />
+        <Text
+          allowFontScaling={false}
+          style={
+            Object {
+              "textAlign": "center",
+            }
+          }
+        >
+          Select Your 
+Preferences
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Array [
+          Object {
+            "flex": 1,
+            "flexDirection": "row",
+            "padding": 15,
+            "paddingTop": 25,
+          },
+          Object {
+            "paddingBottom": 25,
+          },
+        ]
+      }
+    >
+      <View
+        accessible={true}
+        focusable={false}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "backgroundColor": "#FD4040",
+            "borderRadius": 10,
+            "bottom": 0,
+            "opacity": 1,
+            "paddingBottom": 8,
+            "paddingLeft": 20,
+            "paddingRight": 20,
+            "paddingTop": 8,
+            "position": "absolute",
+            "right": 25,
+          }
+        }
+      >
+        <Text
+          allowFontScaling={false}
+          style={
+            Array [
+              Object {
+                "color": "#F1F1F1",
+              },
+              Object {
+                "fontWeight": "bold",
+              },
+            ]
+          }
+        >
+          SUBMIT
         </Text>
       </View>
     </View>

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { IUser } from "./App/IUser";
-import { Preferences } from "./App/Preferences";
+import { SignUpProcess } from "./App/SignUpProcess";
+import { IUser } from "./App/SignUpProcess/IUser";
+import { FormProgress } from "./App/SignUpProcess/shared/FormProgress";
 
 export default function App() {
   const [user, setUser] = useState<IUser>({ fName: "Mike" });
@@ -9,16 +10,19 @@ export default function App() {
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
   
-  const [page, setPage] = useState<string>("preferences");
+  const [page, setPage] = useState<string>("log-in");
 
   // Render the different pages by name of page
   switch (page) {
-    case "preferences":
-      return (
+    case "sign-up":
+      return <SignUpProcess setPage={setPage} user={user} />;
+      break;
+    case "log-in":
+      return(
         <SafeAreaView style={styles.container}>
-          <Preferences setPage={setPage} fName={user.fName} />
+          <LogIn />
         </SafeAreaView>
-      );
+      )
       break;
     default:
       return (
