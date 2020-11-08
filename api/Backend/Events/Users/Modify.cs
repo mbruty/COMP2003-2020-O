@@ -27,6 +27,37 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
+        [WebEvent("/modify/user/password", "POST", false)]
+        public static void ModifyUserPassword(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        {
+            string password = headers["password"];
+
+            if (password == null)
+            {
+                response.AddToData("error", "No password provided");
+                response.StatusCode = 401;
+                return;
+            }
+
+            if (!ValidityChecks.IsStrongPassword(password))
+            {
+                response.AddToData("error", "Password is too weak");
+                response.StatusCode = 401;
+                return;
+            }
+
+            if (!Sessions.CheckSession(headers, ref response)) return;
+
+            Table table = Binding.GetTable<User>();
+            User[] users = table.Select<User>("id", headers["userid"]);
+
+            users[0].Password = Hashing.Hash(headers["password"]);
+            users[0].Update();
+
+            response.AddToData("message", "Updated User Password");
+            response.StatusCode = 200;
+        }
+
         [WebEvent("/modify/user/foods", "PUT", false)]
         public static void ModifyUserFoodChecks(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
         {
