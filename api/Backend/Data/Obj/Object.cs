@@ -24,7 +24,7 @@ namespace api.Backend.Data.Obj
                 {
                     if (field.Name.ToLower().StartsWith("password"))
                         field.SetValue(this, Hashing.Hash(headers[field.Name]));
-                    else field.SetValue(this, headers[field.Name]);
+                    else field.SetValue(this, Convert.ChangeType(headers[field.Name],field.FieldType));
                 }
             }
             this.Update();

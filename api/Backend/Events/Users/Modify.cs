@@ -27,6 +27,22 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
+        [WebEvent("/modify/user/foods", "PUT", false)]
+        public static void ModifyUserFoodChecks(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        {
+            if (!Sessions.CheckSession(headers, ref response)) return;
+
+            User[] users = Binding.GetTable<User>().Select<User>("id", headers["userid"]);
+
+            Table table = Binding.GetTable<FoodChecks>();
+            FoodChecks[] foods = table.Select<FoodChecks>("id", users[0].CheckId);
+
+            foods[0].UpdateContents<FoodChecks>(headers);
+
+            response.AddToData("message", "Updated Foods");
+            response.StatusCode = 200;
+        }
+
         #endregion Methods
     }
 }
