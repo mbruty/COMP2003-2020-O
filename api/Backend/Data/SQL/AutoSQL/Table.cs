@@ -50,6 +50,11 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         #region Properties
 
+        public Column[] AutoIncrement
+        {
+            get { return Columns.Where(x => x.IsAutoIncrement).ToArray(); }
+        }
+
         public Column[] Fields
         {
             get { return Columns.Where(x => x.Key != Key.PRI).ToArray(); }

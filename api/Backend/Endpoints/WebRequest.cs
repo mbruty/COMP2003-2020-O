@@ -17,7 +17,16 @@ namespace api.Backend.Endpoints
             //Find and then run the appriproate web event
             MethodInfo[] tMethod = Events.WebEvent.FindMethodInfos(url, method, false);
 
-            if (tMethod.Length > 0) tMethod[0].Invoke(null, new object[] { request.Headers, Data, response });
+            if (tMethod.Length > 0)
+            {
+                try { tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); }
+                catch (Exception e)
+                {
+                    response.StatusCode = 505;
+                    response.AddToData("error", "A Server Error has Occured!");
+                    Console.WriteLine(e);
+                }
+            }
             else
             {
                 //Provide an error if no event is found

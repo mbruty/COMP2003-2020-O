@@ -4,7 +4,10 @@ namespace api.Backend.Data.SQL.AutoSQL
 {
     public enum Key
     {
-        PRI, MUL, NULL
+        PRI, //Primary Key
+        MUL, //Fuck knows
+        UNI, //Unique Key
+        NULL
     }
 
     public class Column

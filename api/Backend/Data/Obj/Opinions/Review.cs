@@ -1,6 +1,6 @@
 ﻿namespace api.Backend.Data.Obj
 {
-    public class Review : Backend.Data.SQL.Object
+    public class Review : Object
     {
         #region Fields
 
