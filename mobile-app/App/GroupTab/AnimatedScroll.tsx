@@ -23,35 +23,57 @@ const useLazyRef = <T extends object>(initializer: () => T) => {
 const cards = [
   {
     index: 1,
-    type: Cards.Card1,
+    type: 0,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
   {
     index: 2,
-    type: Cards.Card2,
+    type: 1,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
   {
     index: 3,
-    type: Cards.Card1,
+    type: 0,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
   {
     index: 4,
-    type: Cards.Card2,
+    type: 1,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
   {
     index: 5,
-    type: Cards.Card1,
+    type: 0,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
   {
     index: 6,
-    type: Cards.Card2,
+    type: 1,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
   {
     index: 7,
-    type: Cards.Card1,
+    type: 0,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
   {
     index: 8,
-    type: Cards.Card2,
+    type: 1,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
+  },
+  {
+    index: 9,
+    type: 0,
+    name: "Big O Bois",
+    nextVisit: "09-12-20",
   },
 ];
 
@@ -76,7 +98,7 @@ const AnimatedScroll = () => {
       {...{ onScroll }}
       data={cards}
       renderItem={({ index, item: { type } }) => (
-        <GroupCard {...{ index, y, type }} />
+        <GroupCard {...{ index, y, type }} name={cards[index].name} nextVisit={cards[index].nextVisit}/>
       )}
       keyExtractor={(item) => `${item.index}`}
     />
