@@ -12,6 +12,7 @@ namespace api.Backend.Events
         public static void TestWebRequest(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
         {
             response.AddToData("Text", Data);
+            response.StatusCode = 200;
         }
 
         [WebEvent("/echo", "Echo", true)]
