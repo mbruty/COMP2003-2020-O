@@ -34,7 +34,7 @@ namespace api
                 api.Backend.Data.SQL.Instance.Start("root", "tat", Backend.Security.SQL_Connection_Details.DevPword, "devsql.trackandtaste.com", "3307");
                 Bind();
 
-                api.Backend.Endpoints.WebListener.Start(445);
+                api.Backend.Endpoints.WebListener.Start(445, true);
             }
             // To run on the production server
             else if (args.Contains("-p"))
@@ -42,7 +42,7 @@ namespace api
                 api.Backend.Data.SQL.Instance.Start("root", "tat", Backend.Security.SQL_Connection_Details.DevPword, "prodsql.trackandtaste.com");
                 Bind();
 
-                api.Backend.Endpoints.WebListener.Start(444);
+                api.Backend.Endpoints.WebListener.Start(444, true);
             }
             //Run locally
             else
