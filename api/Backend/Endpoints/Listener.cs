@@ -26,12 +26,13 @@ namespace api.Backend.Endpoints
 
         #endregion Fields
 
-        public static void Start(int port = 3000)
+        public static void Start(int port = 3000, bool externalConnections = false)
         {
             listener = new HttpListener();
 
             //specifies that we can only receive local requests from the given port
-            listener.Prefixes.Add($"http://localhost:{port}/");
+            if (externalConnections) listener.Prefixes.Add($"http://+:{port}/");
+            else listener.Prefixes.Add($"http://localhost:{port}/");
 
             listener.Start(); //Start the listener
             listener.BeginGetContext(PreHandle, null); //Forwards any requests to the PreHandler
