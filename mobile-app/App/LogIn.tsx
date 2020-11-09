@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { CustomTextInput } from "./Login/CustomTextInput";
-import { CONSTANT_STYLES } from "./constants";
+import { CONSTANT_STYLES } from "./shared/constants";
 
 interface Props {}
 

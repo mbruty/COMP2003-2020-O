@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { GroupTab } from "./App/GroupTab";
+import { LogIn } from "./App/LogIn";
 import { SignUpProcess } from "./App/SignUpProcess";
 import { IUser } from "./App/SignUpProcess/IUser";
 import { FormProgress } from "./App/SignUpProcess/shared/FormProgress";
+import AnimatedCard from "./App/GroupTab/AnimatedScroll/AnimatedCard";
 
 export default function App() {
   const [user, setUser] = useState<IUser>({ fName: "Mike" });
@@ -10,7 +13,7 @@ export default function App() {
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
   
-  const [page, setPage] = useState<string>("log-in");
+  const [page, setPage] = useState<string>("sign-up");
 
   // Render the different pages by name of page
   switch (page) {
@@ -24,6 +27,14 @@ export default function App() {
         </SafeAreaView>
       )
       break;
+    case "main":
+      return(
+        <SafeAreaView style={styles.container}>
+          <GroupTab />
+        </SafeAreaView>
+      )
+    case "test":
+      return <AnimatedCard />
     default:
       return (
         <View style={styles.container}>

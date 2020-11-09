@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { CONSTANT_STYLES } from "./shared/constants";
+import { CONSTANT_STYLES } from "../shared/constants";
 import { PasswordInput } from "./SignUp/PasswordInput";
 import { FormProgress } from "./shared/FormProgress";
 

@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const SignUpProcess: React.FC<Props> = (props) => {
-  const [pageNo, setPageNo] = useState<number>(2);
+  const [pageNo, setPageNo] = useState<number>(0);
   const submit = (data: IData) => {};
 
   switch (pageNo) {
