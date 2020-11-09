@@ -7,29 +7,32 @@
     https://github.com/wcandillon/can-it-be-done-in-react-native/blob/master/the-10-min/src/Wallet/WalletFlatList.tsx
 */
 
-
 import React from "react";
-import { Animated, Dimensions, StyleSheet, View } from "react-native";
-import Card, { Cards, CARD_HEIGHT as DEFAULT_CARD_HEIGHT } from "../shared/Card";
-
+import { Animated, Dimensions, StyleSheet, Text, View } from "react-native";
+import { CONSTANT_STYLES } from "../../shared/constants";
+import { CARD_HEIGHT as DEFAULT_CARD_HEIGHT } from "../shared/Card";
+import AnimatedCard from "./AnimatedCard";
 export const MARGIN = 16;
 export const CARD_HEIGHT = DEFAULT_CARD_HEIGHT + MARGIN * 2;
-const { height: wHeight } = Dimensions.get("window");
+const { height: wHeight, width: wWidth } = Dimensions.get("window");
 const height = wHeight - 64;
-const styles = StyleSheet.create({
+const styles: any = StyleSheet.create({
   card: {
     marginVertical: MARGIN,
     alignSelf: "center",
+    width: wWidth
   },
 });
 
 interface GroupCardProps {
   y: Animated.Value;
   index: number;
-  type: Cards;
+  type: number;
+  name: any;
+  nextVisit?: string;
 }
 
-const GroupCard = ({ type, y, index }: GroupCardProps) => {
+const GroupCard = ({ type, y, index, name, nextVisit }: GroupCardProps) => {
   const position = Animated.subtract(index * CARD_HEIGHT, y);
   const isDisappearing = -CARD_HEIGHT;
   const isTop = 0;
@@ -59,12 +62,13 @@ const GroupCard = ({ type, y, index }: GroupCardProps) => {
     inputRange: [isDisappearing, isTop, isBottom, isAppearing],
     outputRange: [0.5, 1, 1, 0.5],
   });
+
   return (
     <Animated.View
       style={[styles.card, { opacity, transform: [{ translateY }, { scale }] }]}
       key={index}
     >
-      <Card {...{ type }} />
+      <AnimatedCard {...{ type }} name={name} nextVisit={nextVisit} />
     </Animated.View>
   );
 };
