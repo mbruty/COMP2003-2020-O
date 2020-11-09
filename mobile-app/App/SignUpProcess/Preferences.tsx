@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { CircleBtnView } from "./Preferences/CircleBtnView";
 import { ChipView } from "./Preferences/ChipView";
-import { CONSTANT_STYLES } from "./shared/constants";
+import { CONSTANT_STYLES } from "../shared/constants";
 import { FormProgress } from "./shared/FormProgress";
 import { IData } from "../shared/IData";
 
@@ -77,8 +77,8 @@ export const Preferences: React.FC<Props> = (props) => {
         allowFontScaling={false}
         style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}
       >
-        Hi {props.fName}!{"\n"}
-        What types of food can you{"\n"}
+        Hi {props.fName},{"\n"}
+        what types of food can you{"\n"}
         eat?
       </Text>
       <Text
