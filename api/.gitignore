@@ -1,5 +1,4 @@
 .vs/
-api/obj/
 Debug/
 Build/
 Release/
@@ -8,3 +7,4 @@ packages/
 .idea/
 *.jpg
 Backend/Security/SQL-Connection-Details.cs
+api/obj/
