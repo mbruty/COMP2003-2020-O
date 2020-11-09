@@ -17,7 +17,7 @@ export const CustomTextInput: React.FC<Props> = ({ isPassword, label }) => {
     : require("./CustomTextInput/baseline_visibility_off_black_36.png");
   return (
     <View style={{ width: imageWidth - 100, marginBottom: 20 }}>
-      <AwesomeTextInput label={label} secureTextEntry={showPass} />
+      <AwesomeTextInput keyboardType="email-address" label={label} secureTextEntry={showPass} />
       {isPassword && (
         <TouchableOpacity
           style={{ position: "absolute", right: 5, top: 10 }}

@@ -77,8 +77,8 @@ export const Preferences: React.FC<Props> = (props) => {
         allowFontScaling={false}
         style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}
       >
-        Hi {props.fName}!{"\n"}
-        What types of food can you{"\n"}
+        Hi {props.fName},{"\n"}
+        what types of food can you{"\n"}
         eat?
       </Text>
       <Text
