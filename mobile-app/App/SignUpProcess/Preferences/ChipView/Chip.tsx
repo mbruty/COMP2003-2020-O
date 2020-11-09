@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { CONSTANT_STYLES } from "../../shared/constants";
+import { CONSTANT_STYLES } from "../../../shared/constants";
 
 interface Props {
   title: string;
