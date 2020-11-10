@@ -32,3 +32,5 @@ export const CONSTANT_STYLES = StyleSheet.create({
     color: '#FD4040'
   }
 });
+
+export const API_URL = "http://devapi.trackandtaste.com";
