@@ -15,7 +15,8 @@
     "react-native-screens": "~2.10.1",
     "react-native-testing-library": "^6.0.0",
     "react-native-web": "0.13.13",
-    "react-test-renderer": "^16.14.0"
+    "react-test-renderer": "^16.14.0",
+    "yup": "^0.29.3"
   },
   "devDependencies": {
     "@babel/core": "7.9.0",
