@@ -2,7 +2,7 @@
 
 namespace api.Backend.Data.Obj
 {
-    public class Resturant : Object
+    public class Restaurant : Object
     {
         #region Fields
 
@@ -16,7 +16,7 @@ namespace api.Backend.Data.Obj
 
         public MenuItem[] menuitems
         {
-            get { return Binding.GetTable<MenuItem>().Select<MenuItem>("ResturantID", Id); }
+            get { return Binding.GetTable<MenuItem>().Select<MenuItem>("RestaurantID", Id); }
         }
 
         public User Owner
@@ -24,14 +24,14 @@ namespace api.Backend.Data.Obj
             get { return Binding.GetTable<User>().Select<User>("Id", OwnerId)?[0]; }
         }
 
-        public ResturantOpinion resturantopinion
+        public RestaurantOpinion Restaurantopinion
         {
-            get { return Binding.GetTable<ResturantOpinion>().Select<ResturantOpinion>("ResturantID", Id)?[0]; }
+            get { return Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("RestaurantID", Id)?[0]; }
         }
 
         public Visit[] visits
         {
-            get { return Binding.GetTable<Visit>().Select<Visit>("ResturantID", Id); }
+            get { return Binding.GetTable<Visit>().Select<Visit>("RestaurantID", Id); }
         }
 
         #endregion Properties

@@ -8,15 +8,15 @@ namespace api.Backend.Data.Obj
         #region Fields
 
         public DateTime Date;
-        public int Id, ResturantId, UserId, GroupSize;
+        public int Id, RestaurantId, UserId, GroupSize;
 
         #endregion Fields
 
         #region Properties
 
-        public Resturant resturant
+        public Restaurant Restaurant
         {
-            get { return Binding.GetTable<Resturant>().Select<Resturant>("ID", ResturantId)?[0]; }
+            get { return Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId)?[0]; }
         }
 
         public Review review

@@ -15,13 +15,13 @@ namespace api
             Binding.Add<Session>("Session");
             Binding.Add<FoodChecks>("FoodChecks");
 
-            Binding.Add<Resturant>("Resturant");
+            Binding.Add<Restaurant>("Restaurant");
             Binding.Add<FoodTags>("FoodTags");
             Binding.Add<MenuItem>("MenuItem");
             Binding.Add<MenuItemTags>("MenuItemTags");
 
             Binding.Add<FoodOpinion>("FoodOpinion");
-            Binding.Add<ResturantOpinion>("ResturantOpinion");
+            Binding.Add<RestaurantOpinion>("RestaurantOpinion");
             Binding.Add<Review>("Review");
             Binding.Add<Visit>("Visit");
         }

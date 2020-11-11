@@ -6,7 +6,7 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
-        public int Id, ResturantId, CheckId;
+        public int Id, RestaurantId, CheckId;
         public string Name, Description;
         public float Price;
 
@@ -24,9 +24,9 @@ namespace api.Backend.Data.Obj
             get { return Binding.GetTable<MenuItemTags>().Select<MenuItemTags>("MenuID", Id); }
         }
 
-        public Resturant resturant
+        public Restaurant Restaurant
         {
-            get { return Binding.GetTable<Resturant>().Select<Resturant>("ID", ResturantId)?[0]; }
+            get { return Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId)?[0]; }
         }
 
         #endregion Properties

@@ -2,20 +2,20 @@
 
 namespace api.Backend.Data.Obj
 {
-    public class ResturantOpinion : Object
+    public class RestaurantOpinion : Object
     {
         #region Fields
 
         public bool NeverShow;
-        public int UserId, ResturantId, SwipeLeft, SwipeRight;
+        public int UserId, RestaurantId, SwipeLeft, SwipeRight;
 
         #endregion Fields
 
         #region Properties
 
-        public Resturant resturant
+        public Restaurant Restaurant
         {
-            get { return Binding.GetTable<Resturant>().Select<Resturant>("ID", ResturantId)?[0]; }
+            get { return Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId)?[0]; }
         }
 
         public User user
