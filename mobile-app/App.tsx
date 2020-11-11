@@ -6,14 +6,15 @@ import { SignUpProcess } from "./App/SignUpProcess";
 import { IUser } from "./App/SignUpProcess/IUser";
 import { FormProgress } from "./App/SignUpProcess/shared/FormProgress";
 import AnimatedCard from "./App/GroupTab/AnimatedScroll/AnimatedCard";
+import { SwipeCard } from "./App/SwipeCard";
 
 export default function App() {
   const [user, setUser] = useState<IUser>({ fName: "Mike" });
 
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
-  
-  const [page, setPage] = useState<string>("sign-up");
+
+  const [page, setPage] = useState<string>("test");
 
   // Render the different pages by name of page
   switch (page) {
@@ -21,20 +22,29 @@ export default function App() {
       return <SignUpProcess setPage={setPage} user={user} />;
       break;
     case "log-in":
-      return(
+      return (
         <SafeAreaView style={styles.container}>
           <LogIn />
         </SafeAreaView>
-      )
+      );
       break;
     case "main":
-      return(
+      return (
         <SafeAreaView style={styles.container}>
           <GroupTab />
         </SafeAreaView>
-      )
+      );
     case "test":
-      return <AnimatedCard />
+      return (
+          <SwipeCard
+            title="Burger"
+            imageURI="https://supervalu.co.uk/wp-content/uploads/2017/04/Burger.png"
+            items={[
+              { text: "Gulten Free", enabled: true },
+              { text: "Kosher Option", enabled: false },
+            ]}
+          />
+      );
     default:
       return (
         <View style={styles.container}>
