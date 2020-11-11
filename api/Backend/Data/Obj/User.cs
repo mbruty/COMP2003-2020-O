@@ -18,6 +18,26 @@ namespace api.Backend.Data.Obj
             get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId)?[0]; }
         }
 
+        public FoodOpinion[] foodopinions
+        {
+            get { return Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("UserID", Id); }
+        }
+
+        public ResturantOpinion[] resturantopinions
+        {
+            get { return Binding.GetTable<ResturantOpinion>().Select<ResturantOpinion>("UserID", Id); }
+        }
+
+        public Resturant[] resturants
+        {
+            get { return Binding.GetTable<Resturant>().Select<Resturant>("OwnerID", Id); }
+        }
+
+        public Session session
+        {
+            get { return Binding.GetTable<Session>().Select<Session>("UserId", Id)?[0]; }
+        }
+
         public Visit[] visits
         {
             get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
