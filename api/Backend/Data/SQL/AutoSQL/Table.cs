@@ -72,19 +72,19 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         #endregion Properties
 
-        public T[] Select<T>(string where = "TRUE") where T : Object, new()
+        public virtual T[] Select<T>(string where = "TRUE") where T : Object, new()
         {
             List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}");
 
             return SetFieldValues<T>(Data);
         }
 
-        public T[] Select<T>(string FieldName, object FieldValue) where T : Object, new()
+        public virtual T[] Select<T>(string FieldName, object FieldValue) where T : Object, new()
         {
             return Select<T>(new string[] { FieldName }, new object[] { FieldValue });
         }
 
-        public T[] Select<T>(string[] FieldNames, object[] FieldValues) where T : Object, new()
+        public virtual T[] Select<T>(string[] FieldNames, object[] FieldValues) where T : Object, new()
         {
             List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
             string Where = "";
@@ -105,7 +105,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             return SetFieldValues<T>(Data);
         }
 
-        public T[] Select<T>(object[] PrimaryKeyValues) where T : Object, new()
+        public virtual T[] Select<T>(object[] PrimaryKeyValues) where T : Object, new()
         {
             Column[] PrimaryKeys = this.PrimaryKeys;
 

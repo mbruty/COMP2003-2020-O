@@ -18,9 +18,5 @@ namespace api.Backend.Data.SQL.AutoSQL
         }
 
         #endregion Methods
-
-        //public static T[] Select<T>(string Table, object[] PrimaryKeys)
-        //{
-        //}
     }
 }

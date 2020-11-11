@@ -1,5 +1,6 @@
 ﻿using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
+using api.Backend.Data.SQL.Caching;
 using System;
 using System.Linq;
 
@@ -28,6 +29,7 @@ namespace api
 
         private static void Main(string[] args)
         {
+
             //To run on dev server
             if (args.Contains("-d"))
             {
