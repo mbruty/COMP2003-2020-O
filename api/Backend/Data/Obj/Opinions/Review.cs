@@ -1,5 +1,4 @@
-﻿using System;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
 
 namespace api.Backend.Data.Obj
 {
@@ -15,7 +14,7 @@ namespace api.Backend.Data.Obj
 
         public Visit visit
         {
-            get { return Binding.GetTable<Visit>().Select<Visit>("ID", VisitId)?[0];  }
+            get { return Binding.GetTable<Visit>().Select<Visit>("ID", VisitId)?[0]; }
         }
 
         #endregion Properties

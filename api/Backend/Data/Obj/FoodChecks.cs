@@ -1,5 +1,4 @@
-﻿using System;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
 
 namespace api.Backend.Data.Obj
 {
@@ -14,14 +13,14 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
+        public MenuItem menuitem
+        {
+            get { return Binding.GetTable<MenuItem>().Select<MenuItem>("CheckID", Id)?[0]; }
+        }
+
         public User user
         {
             get { return Binding.GetTable<User>().Select<User>("CheckID", Id)?[0]; }
-        }
-
-        public MenuItem[] menuitem
-        {
-            get { return Binding.GetTable<MenuItem>().Select<MenuItem>("CheckID", Id);  }
         }
 
         #endregion Properties

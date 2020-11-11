@@ -14,11 +14,6 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public Resturant resturant
-        {
-            get { return Binding.GetTable<Resturant>().Select<Resturant>("ID", ResturantId)?[0]; }
-        }
-
         public FoodChecks foodchecks
         {
             get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("ID", CheckId)?[0]; }
@@ -28,6 +23,12 @@ namespace api.Backend.Data.Obj
         {
             get { return Binding.GetTable<MenuItemTags>().Select<MenuItemTags>("MenuID", Id); }
         }
+
+        public Resturant resturant
+        {
+            get { return Binding.GetTable<Resturant>().Select<Resturant>("ID", ResturantId)?[0]; }
+        }
+
         #endregion Properties
     }
 }

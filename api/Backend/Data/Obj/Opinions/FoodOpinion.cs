@@ -1,5 +1,4 @@
-﻿using System;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
 
 namespace api.Backend.Data.Obj
 {
@@ -12,18 +11,18 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
-        #region 
+        #region Properties
 
-        public User[] user
+        public FoodTags foodtag
         {
-            get { return Binding.GetTable<User>().Select<User>("ID", UserId); }
+            get { return Binding.GetTable<FoodTags>().Select<FoodTags>("ID", FoodTagId)?[0]; }
         }
 
-        public FoodTags foodtags
+        public User user
         {
-            get { return Binding.GetTable<FoodTags>().Select<FoodTags>("ID", FoodTagId)?[0];  }
+            get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
         }
 
-        #endregion 
+        #endregion Properties
     }
 }

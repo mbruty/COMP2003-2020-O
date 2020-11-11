@@ -1,5 +1,5 @@
-﻿using System;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
+using System;
 
 namespace api.Backend.Data.Obj
 {
@@ -14,20 +14,20 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public User user
-        {
-            get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
-        }
-
         public Resturant resturant
         {
             get { return Binding.GetTable<Resturant>().Select<Resturant>("ID", ResturantId)?[0]; }
         }
+
         public Review review
         {
             get { return Binding.GetTable<Review>().Select<Review>("VisitID", Id)?[0]; }
         }
 
+        public User user
+        {
+            get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
+        }
 
         #endregion Properties
     }

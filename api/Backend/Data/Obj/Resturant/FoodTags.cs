@@ -13,14 +13,14 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
+        public FoodOpinion[] foodopinions
+        {
+            get { return Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("FoodTagID", Id); }
+        }
+
         public MenuItemTags[] menuitemtags
         {
             get { return Binding.GetTable<MenuItemTags>().Select<MenuItemTags>("FoodTagID", Id); }
-        }
-
-        public FoodOpinion[] foodopinion
-        {
-            get { return Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("FoodTagID", Id); }
         }
 
         #endregion Properties
