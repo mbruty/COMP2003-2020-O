@@ -1,10 +1,4 @@
 export interface IUser{
-  fName?: string;
-  loginState: loginState
+  authToken?: string;
 }
 
-export enum loginState {
-  failed,
-  undefined,
-  success
-};

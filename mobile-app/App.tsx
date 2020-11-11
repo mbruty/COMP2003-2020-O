@@ -3,40 +3,20 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { GroupTab } from "./App/GroupTab";
 import { LogIn, SignIn } from "./App/LogIn";
 import { SignUpProcess } from "./App/SignUpProcess";
-import { IUser, loginState } from "./App/SignUpProcess/IUser";
-import { FormProgress } from "./App/SignUpProcess/shared/FormProgress";
+import { IUser } from "./App/SignUpProcess/IUser";
 import AnimatedCard from "./App/GroupTab/AnimatedScroll/AnimatedCard";
-import { API_URL } from "./App/constants";
 
 export default function App() {
-  const [user, setUser] = useState<IUser>({
-    loginState: loginState.undefined,
-  });
+  const [user, setUser] = useState<IUser>();
 
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
 
   const [page, setPage] = useState<string>("log-in");
 
-  const logIn = (values: SignIn) => {
-    fetch(API_URL + "/login", {
-      method: "POST",
-      headers: {
-        email: values.email,
-        password: values.password,
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        if(response.message === "Logged in"){
-          // ToDo Get user info
-          setPage("main");
-        }
-        else {
-          setUser({loginState: loginState.failed});
-        }
-        console.log(response.message);
-      });
+  const logIn = (token: string) => {
+    setUser({authToken: token});
+    setPage("main");
   };
 
   // Render the different pages by name of page
@@ -47,7 +27,7 @@ export default function App() {
     case "log-in":
       return (
         <SafeAreaView style={styles.container}>
-          <LogIn submit={logIn} loginState={user.loginState} />
+          <LogIn submit={logIn} />
         </SafeAreaView>
       );
       break;

@@ -18,6 +18,7 @@ interface SignUp {
   email: string;
   password: string;
 }
+
 export const SignUp: React.FC<Props> = (props) => {
   const dimensions = Dimensions.get("window");
   const imageHeight = Math.round((dimensions.width * 9) / 16);
