@@ -23,6 +23,28 @@ namespace api.Backend.Data.Obj
             get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
         }
 
+        public Session session
+        {
+            get { return Binding.GetTable<Session>().Select<Session>("UserId", Id)?[0]; }
+        }
+
+        public ResturantOpinion[] resturantopinion
+        {
+            get { return Binding.GetTable<ResturantOpinion>().Select<ResturantOpinion>("UserID", Id ); }
+        }
+
+        public FoodOpinion[] foodopinion
+        {
+            get { return Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("UserID", Id); }
+        }
+
+        public Resturant[] resturants
+        {
+            get { return Binding.GetTable<Resturant>().Select<Resturant>("OwnerID", Id); }
+        }
+
+
+
         #endregion Properties
 
         #region Methods
