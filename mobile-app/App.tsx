@@ -22,7 +22,7 @@ export default function App() {
   // Render the different pages by name of page
   switch (page) {
     case "sign-up":
-      return <SignUpProcess setPage={setPage} user={user} />;
+      return <SignUpProcess setUser={setUser} setPage={setPage} user={user} />;
       break;
     case "log-in":
       return (

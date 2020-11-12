@@ -35,8 +35,8 @@ interface Values {
   confPassword: string;
 }
 
-interface Props{
-  next: (value: string) => void;
+interface Props {
+  next: (value: string, userid: string, authtoken: string) => void;
 }
 
 export const SignUp: React.FC<Props> = (props) => {
@@ -104,7 +104,7 @@ export const SignUp: React.FC<Props> = (props) => {
           email: values.email,
           password: values.password,
           yearOfBirth: date.getFullYear().toString(),
-          nickname: values.username
+          nickname: values.username,
         },
       })
         .then((response) => response.json())
@@ -114,10 +114,10 @@ export const SignUp: React.FC<Props> = (props) => {
             currentErrors.email = "Email is in use";
           } else if (response.message === "Signed Up") {
             // Go to the next bit
-            props.next(values.username);
+            props.next(values.username, response.userid, response.authtoken);
           } else {
             console.log(response);
-            
+
             alert("An unexpected error has happened");
           }
         })

@@ -9,6 +9,7 @@ import { SignUp } from "./SignUpProcess/SignUp";
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>;
   user: IUser;
+  setUser: React.Dispatch<React.SetStateAction<IUser>>;
 }
 let nick = "";
 
@@ -20,9 +21,10 @@ export const SignUpProcess: React.FC<Props> = (props) => {
     setPageNo(pageNo + 1);
   };
 
-  const goToEmail = (inNick: string) => {
+  const goToEmail = (inNick: string, id: string, authToken: string) => {
     nick = inNick;
     setPageNo(pageNo + 1);
+    props.setUser({id, authToken});
   };
 
   switch (pageNo) {
