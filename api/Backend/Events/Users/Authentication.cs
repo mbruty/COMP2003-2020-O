@@ -59,7 +59,7 @@ namespace api.Backend.Events.Users
         [WebEvent("/signup", "POST", false)]
         public static void SignUp(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
         {
-            string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"];
+            string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"], nickname = headers["nickname"];
 
             if (email == null || password == null)
             {
@@ -86,6 +86,8 @@ namespace api.Backend.Events.Users
                 response.AddToData("error", "Year of Birth is invalid");
                 return;
             }
+
+            if (nickname != null) user.Nickname = nickname;
 
             user.Insert(true);
 
