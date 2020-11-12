@@ -43,10 +43,10 @@ export const EmailConfirm: React.FC<Props> = (props) => {
     const prevText = [...text];
     prevText[index] = newText;
 
-    if (prevText[0].length === 3) {
-      secondRef.current.focus();
-    } else if (prevText[1].length === 3) {
+    if (prevText[1].length === 3) {
       thirdRef.current.focus();
+    } else if (prevText[0].length === 3) {
+      secondRef.current.focus();
     } else if (prevText[2].length === 3) {
       if (errorText === "Please enter a valid code") {
         setErrorText(undefined);
