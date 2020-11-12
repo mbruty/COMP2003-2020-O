@@ -408,7 +408,7 @@ exports[`Renders Circle Button List 1`] = `
           style={
             Object {
               "alignSelf": "center",
-              "backgroundColor": "#FFF",
+              "backgroundColor": "#FD4040",
               "borderRadius": 100,
               "elevation": 10,
               "height": 60,
@@ -792,7 +792,7 @@ exports[`Renders Circle Button List 1`] = `
               ]
             }
           >
-            Shellfish
+            Egg
           </Text>
         </View>
       </View>
