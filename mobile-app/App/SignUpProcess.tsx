@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { IData } from "./shared/IData";
+import { EmailConfirm } from "./SignUpProcess/EmailConfirm";
 import { IUser } from "./SignUpProcess/IUser";
 import { Preferences } from "./SignUpProcess/Preferences";
 import { SignUp } from "./SignUpProcess/SignUp";
@@ -8,23 +9,40 @@ import { SignUp } from "./SignUpProcess/SignUp";
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>;
   user: IUser;
+  setUser: React.Dispatch<React.SetStateAction<IUser>>;
 }
+let nick = "";
 
 export const SignUpProcess: React.FC<Props> = (props) => {
   const [pageNo, setPageNo] = useState<number>(0);
-  const submit = (data: IData) => {};
+  const submit = () => {
+    props.setPage("main");
+  };
+
+  const next = () => {
+    setPageNo(pageNo + 1);
+  };
+
+  const goToEmail = (inNick: string, id: string, authToken: string) => {
+    nick = inNick;
+    setPageNo(pageNo + 1);
+    props.setUser({ id, authToken });
+  };
 
   switch (pageNo) {
     case 0:
-      return <SignUp />;
-      break;
+      return <SignUp next={goToEmail} />;
     case 1:
-      return null;
-      break;
+      return <EmailConfirm next={next} />;
     case 2:
       return (
         <SafeAreaView style={styles.container}>
-          <Preferences onSubmit={submit} fName={props.user.fName} />
+          <Preferences
+            authToken={props.user.authToken}
+            userId={props.user.id}
+            onSubmit={submit}
+            fName={nick}
+          />
         </SafeAreaView>
       );
   }

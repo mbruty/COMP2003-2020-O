@@ -13,16 +13,19 @@ import { ChipView } from "./Preferences/ChipView";
 import { CONSTANT_STYLES } from "../shared/constants";
 import { FormProgress } from "./shared/FormProgress";
 import { IData } from "../shared/IData";
+import { submitPreferences } from "./submitPreferences";
 
 // ToDo: Fetch this list from the API?
 
-const allergies = ["Lactose", "Nuts", "Gluten", "Soy", "Shellfish"];
+const allergies = ["Lactose", "Nuts", "Gluten", "Soy", "Egg"];
 const typesOfFood = ["Fish", "Vegan", "Vegetarian", "Meat", "Halal", "Kosher"];
 
 interface Props {
   fName: string;
   setPage?: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: (data: IData) => void;
+  onSubmit: () => void;
+  authToken: string;
+  userId: string;
 }
 
 export const Preferences: React.FC<Props> = (props) => {
@@ -31,7 +34,7 @@ export const Preferences: React.FC<Props> = (props) => {
   );
 
   const [foodBoolArr, setFoodBoolArr] = useState<Array<boolean>>(
-    new Array<boolean>(allergies.length).fill(true)
+    new Array<boolean>(typesOfFood.length).fill(true)
   );
 
   /* Set the allergies array to the value at the index
@@ -51,9 +54,21 @@ export const Preferences: React.FC<Props> = (props) => {
     setFoodBoolArr(enabled);
   };
 
-  const submit = () => {
-
-  }
+  const submit = async () => {
+    try {
+      await submitPreferences(
+        {
+          food: foodBoolArr,
+          allergies: allergiesBoolArr,
+        },
+        props.userId,
+        props.authToken
+      );
+      props.onSubmit();
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   // The react-native way of doing width: 100vw; height: 100vh;
   const dimensions = Dimensions.get("window");
