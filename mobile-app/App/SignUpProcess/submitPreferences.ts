@@ -25,12 +25,11 @@ export const submitPreferences = (
     })
       .then((response) => response.json())
       .then((response) => {
-        if (response.error === "Email is in use") {
-        } else if (response.message === "Signed Up") {
+        if (response.error) {
+          reject(response.error);
         } else {
-          alert("An unexpected error has happened");
+          resolve();
         }
-        resolve();
       })
       .catch((e) => {
         reject(e);
