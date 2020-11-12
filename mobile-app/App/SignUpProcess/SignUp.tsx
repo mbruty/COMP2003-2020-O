@@ -62,7 +62,6 @@ export const SignUp: React.FC<Props> = (props) => {
   });
 
   const validate = async () => {
-    console.log(values);
     let hasErrors = false;
     let currentErrors: Values = {
       username: "",
