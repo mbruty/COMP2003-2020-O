@@ -8,7 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "./shared/constants";
+import { CONSTANT_STYLES } from "../constants";
 import { FormProgress } from "./shared/FormProgress";
 
 interface Props {

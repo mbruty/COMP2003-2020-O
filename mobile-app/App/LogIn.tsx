@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
 import { CONSTANT_STYLES } from "./shared/constants";
-import { loginState } from "./SignUpProcess/IUser";
 import { PasswordInput } from "./SignUpProcess/SignUp/PasswordInput";
 import * as yup from "yup";
 import { API_URL } from "./constants";
@@ -29,8 +28,7 @@ const wWidth = dimensions.width;
 
 const styles = StyleSheet.create({
   card: {
-    position: "absolute",
-    top: 200,
+    marginTop: -450,
     padding: 50,
     borderRadius: 50,
     elevation: 5,
@@ -72,10 +70,11 @@ const styles = StyleSheet.create({
 
 interface Props {
   submit: (token: string) => void;
+  setPage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const email = yup.string().email().required();
-export const LogIn: React.FC<Props> = ({ submit }) => {
+export const LogIn: React.FC<Props> = ({ submit, setPage }) => {
   const [values, setValues] = useState<SignIn>({
     email: "",
     password: "",
@@ -125,7 +124,7 @@ export const LogIn: React.FC<Props> = ({ submit }) => {
   };
 
   return (
-    <ScrollView style={{ overflow: "hidden" }}>
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <Image style={styles.image} source={require("./log-in.png")} />
 
       <KeyboardAvoidingView
@@ -188,7 +187,10 @@ export const LogIn: React.FC<Props> = ({ submit }) => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.txtContainer}>
+        <TouchableOpacity
+          style={styles.txtContainer}
+          onPress={() => setPage("sign-up")}
+        >
           <Text style={[CONSTANT_STYLES.TXT_DEFAULT]}>
             Don't have an account?
           </Text>

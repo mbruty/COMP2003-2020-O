@@ -15,7 +15,7 @@ export default function App() {
   const [page, setPage] = useState<string>("log-in");
 
   const logIn = (token: string) => {
-    setUser({authToken: token});
+    setUser({ authToken: token });
     setPage("main");
   };
 
@@ -27,7 +27,7 @@ export default function App() {
     case "log-in":
       return (
         <SafeAreaView style={styles.container}>
-          <LogIn submit={logIn} />
+          <LogIn setPage={setPage} submit={logIn} />
         </SafeAreaView>
       );
       break;
