@@ -163,6 +163,7 @@ export const SignUp: React.FC<Props> = (props) => {
             title: CONSTANT_STYLES.TXT_DEFAULT,
             container: { marginTop: 25 },
           }}
+          keyboardType="email-address"
           onChangeText={(text) => setValues({ ...values, email: text })}
         />
         {errors.email !== "" && (
