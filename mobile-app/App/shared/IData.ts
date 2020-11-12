@@ -1,6 +1,4 @@
 export interface IData {
-  data: {
-    food: Array<boolean>;
-    allergies: Array<boolean>;
-  }
+  food: Array<boolean>;
+  allergies: Array<boolean>;
 }
