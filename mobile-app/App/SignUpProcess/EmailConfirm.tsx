@@ -76,7 +76,14 @@ export const EmailConfirm: React.FC<Props> = (props) => {
       >
         We've sent a code to your email
       </Text>
-      <Text style={[CONSTANT_STYLES.TXT_DEFAULT, {marginTop: 60, marginLeft: 40, marginBottom: 15}]}>Code: </Text>
+      <Text
+        style={[
+          CONSTANT_STYLES.TXT_DEFAULT,
+          { marginTop: 60, marginLeft: 40, marginBottom: 15 },
+        ]}
+      >
+        Code:{" "}
+      </Text>
       <View style={styles.container}>
         <TextInput
           keyboardType={"number-pad"}
