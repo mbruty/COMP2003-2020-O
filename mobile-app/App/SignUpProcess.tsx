@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { IData } from "./shared/IData";
 import { EmailConfirm } from "./SignUpProcess/EmailConfirm";
@@ -15,7 +15,9 @@ let nick = "";
 
 export const SignUpProcess: React.FC<Props> = (props) => {
   const [pageNo, setPageNo] = useState<number>(0);
-  const submit = (data: IData) => {};
+  const submit = () => {
+    props.setPage("main");
+  };
 
   const next = () => {
     setPageNo(pageNo + 1);
@@ -24,7 +26,7 @@ export const SignUpProcess: React.FC<Props> = (props) => {
   const goToEmail = (inNick: string, id: string, authToken: string) => {
     nick = inNick;
     setPageNo(pageNo + 1);
-    props.setUser({id, authToken});
+    props.setUser({ id, authToken });
   };
 
   switch (pageNo) {
@@ -35,7 +37,12 @@ export const SignUpProcess: React.FC<Props> = (props) => {
     case 2:
       return (
         <SafeAreaView style={styles.container}>
-          <Preferences onSubmit={submit} fName={nick} />
+          <Preferences
+            authToken={props.user.authToken}
+            userId={props.user.id}
+            onSubmit={submit}
+            fName={nick}
+          />
         </SafeAreaView>
       );
   }
