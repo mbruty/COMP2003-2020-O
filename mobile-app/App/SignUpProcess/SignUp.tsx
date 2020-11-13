@@ -3,6 +3,7 @@ import DatePicker from "@react-native-community/datetimepicker";
 import {
   Dimensions,
   Image,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -37,6 +38,7 @@ interface Values {
 
 interface Props {
   next: (value: string, userid: string, authtoken: string) => void;
+  close: () => void;
 }
 
 export const SignUp: React.FC<Props> = (props) => {
@@ -51,6 +53,7 @@ export const SignUp: React.FC<Props> = (props) => {
     password: "",
     confPassword: "",
   });
+
   const [date, setDate] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [errors, setErrors] = useState<Values>({
@@ -71,11 +74,13 @@ export const SignUp: React.FC<Props> = (props) => {
       confPassword: "",
     };
     try {
+      // Validate the email using Yup
       await email.validate(values.email);
     } catch (e) {
       currentErrors.email = "Please enter a valid email";
       hasErrors = true;
     }
+    // Checking that nothing is empty
     if (values.username.length === 0) {
       currentErrors.username = "Username is required";
       hasErrors = true;
@@ -91,10 +96,12 @@ export const SignUp: React.FC<Props> = (props) => {
       currentErrors.confPassword = "The passwords do not match";
       hasErrors = true;
     }
+    // date is initalised to today, so if it's today the haven't changed it
     if (isToday(date)) {
       currentErrors.dob = "Date of Birth is required";
       hasErrors = true;
     }
+    // No errors occurred... Time to send it to the api
     if (!hasErrors) {
       // Try and post the sign-up info
       fetch(API_URL + "/signup", {
@@ -106,6 +113,7 @@ export const SignUp: React.FC<Props> = (props) => {
           nickname: values.username,
         },
       })
+        // Convert the response to json
         .then((response) => response.json())
         .then((response) => {
           if (response.error === "Email is in use") {
@@ -115,8 +123,6 @@ export const SignUp: React.FC<Props> = (props) => {
             // Go to the next bit
             props.next(values.username, response.userid, response.authtoken);
           } else {
-            console.log(response);
-
             alert("An unexpected error has happened");
           }
         })
@@ -129,6 +135,26 @@ export const SignUp: React.FC<Props> = (props) => {
 
   return (
     <ScrollView>
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          top: 50,
+          right: 30,
+          zIndex: 2,
+          opacity: 0.5,
+        }}
+        onPress={() => {
+          props.close();
+        }}
+      >
+        <Image
+          style={{
+            width: 40,
+            height: 40,
+          }}
+          source={require("./SignUp/baseline_cancel_black_48.png")}
+        />
+      </TouchableOpacity>
       <Image
         style={{
           height: imageHeight,
@@ -144,30 +170,68 @@ export const SignUp: React.FC<Props> = (props) => {
         {"Hello,\nLet's get your account \nset-up"}
       </Text>
       <View style={[styles.txtContainer, { width: imageWidth - 100 }]}>
-        <AwesomeTextInput
-          label="Username"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-          }}
-          onChangeText={(text) => setValues({ ...values, username: text })}
-        />
+        <KeyboardAvoidingView>
+          <AwesomeTextInput
+            label="Username"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+            }}
+            onChangeText={(text) => setValues({ ...values, username: text })}
+          />
+        </KeyboardAvoidingView>
         {errors.username !== "" && (
           <Text style={[CONSTANT_STYLES.TXT_RED, styles.errTxt]}>
             {errors.username}
           </Text>
         )}
-        <AwesomeTextInput
-          label="Email"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-            container: { marginTop: 25 },
-          }}
-          keyboardType="email-address"
-          onChangeText={(text) => setValues({ ...values, email: text })}
-        />
+        <KeyboardAvoidingView>
+          <AwesomeTextInput
+            label="Email"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+              container: { marginTop: 25 },
+            }}
+            keyboardType="email-address"
+            onChangeText={(text) => setValues({ ...values, email: text })}
+          />
+        </KeyboardAvoidingView>
         {errors.email !== "" && (
           <Text style={[CONSTANT_STYLES.TXT_RED, styles.errTxt]}>
             {errors.email}
+          </Text>
+        )}
+
+        <KeyboardAvoidingView>
+          <PasswordInput
+            label="Password"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+              container: { marginTop: 25 },
+            }}
+            onChangeText={(text) => setValues({ ...values, password: text })}
+          />
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView>
+          <PasswordInput
+            label="Repeat Password"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+              container: { marginTop: 25, marginBottom: 25 },
+            }}
+            onChangeText={(text) =>
+              setValues({ ...values, confPassword: text })
+            }
+          />
+        </KeyboardAvoidingView>
+        {errors.confPassword !== "" && (
+          <Text
+            style={[
+              CONSTANT_STYLES.TXT_RED,
+              styles.errTxt,
+              { marginTop: -10, marginBottom: 10 },
+            ]}
+          >
+            {errors.confPassword}
           </Text>
         )}
         <TouchableOpacity
@@ -206,34 +270,6 @@ export const SignUp: React.FC<Props> = (props) => {
             maximumDate={new Date()}
           />
         )}
-
-        <PasswordInput
-          label="Password"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-            container: { marginTop: 25 },
-          }}
-          onChangeText={(text) => setValues({ ...values, password: text })}
-        />
-        <PasswordInput
-          label="Repeat Password"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-            container: { marginTop: 25, marginBottom: 25 },
-          }}
-          onChangeText={(text) => setValues({ ...values, confPassword: text })}
-        />
-        {errors.confPassword !== "" && (
-          <Text
-            style={[
-              CONSTANT_STYLES.TXT_RED,
-              styles.errTxt,
-              { marginTop: -10, marginBottom: 10 },
-            ]}
-          >
-            {errors.confPassword}
-          </Text>
-        )}
       </View>
       <FormProgress
         onSubmit={() => {
@@ -264,8 +300,6 @@ const styles = StyleSheet.create({
   dateInput: {
     width: "98%",
     height: 50,
-    marginTop: 15,
-    marginBottom: -10,
     borderBottomColor: "#c4c4c4",
     borderRadius: 5,
     borderBottomWidth: 1,
