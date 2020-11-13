@@ -3,6 +3,7 @@ import DatePicker from "@react-native-community/datetimepicker";
 import {
   Dimensions,
   Image,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -144,30 +145,68 @@ export const SignUp: React.FC<Props> = (props) => {
         {"Hello,\nLet's get your account \nset-up"}
       </Text>
       <View style={[styles.txtContainer, { width: imageWidth - 100 }]}>
-        <AwesomeTextInput
-          label="Username"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-          }}
-          onChangeText={(text) => setValues({ ...values, username: text })}
-        />
+        <KeyboardAvoidingView>
+          <AwesomeTextInput
+            label="Username"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+            }}
+            onChangeText={(text) => setValues({ ...values, username: text })}
+          />
+        </KeyboardAvoidingView>
         {errors.username !== "" && (
           <Text style={[CONSTANT_STYLES.TXT_RED, styles.errTxt]}>
             {errors.username}
           </Text>
         )}
-        <AwesomeTextInput
-          label="Email"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-            container: { marginTop: 25 },
-          }}
-          keyboardType="email-address"
-          onChangeText={(text) => setValues({ ...values, email: text })}
-        />
+        <KeyboardAvoidingView>
+          <AwesomeTextInput
+            label="Email"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+              container: { marginTop: 25 },
+            }}
+            keyboardType="email-address"
+            onChangeText={(text) => setValues({ ...values, email: text })}
+          />
+        </KeyboardAvoidingView>
         {errors.email !== "" && (
           <Text style={[CONSTANT_STYLES.TXT_RED, styles.errTxt]}>
             {errors.email}
+          </Text>
+        )}
+
+        <KeyboardAvoidingView>
+          <PasswordInput
+            label="Password"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+              container: { marginTop: 25 },
+            }}
+            onChangeText={(text) => setValues({ ...values, password: text })}
+          />
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView>
+          <PasswordInput
+            label="Repeat Password"
+            customStyles={{
+              title: CONSTANT_STYLES.TXT_DEFAULT,
+              container: { marginTop: 25, marginBottom: 25 },
+            }}
+            onChangeText={(text) =>
+              setValues({ ...values, confPassword: text })
+            }
+          />
+        </KeyboardAvoidingView>
+        {errors.confPassword !== "" && (
+          <Text
+            style={[
+              CONSTANT_STYLES.TXT_RED,
+              styles.errTxt,
+              { marginTop: -10, marginBottom: 10 },
+            ]}
+          >
+            {errors.confPassword}
           </Text>
         )}
         <TouchableOpacity
@@ -206,34 +245,6 @@ export const SignUp: React.FC<Props> = (props) => {
             maximumDate={new Date()}
           />
         )}
-
-        <PasswordInput
-          label="Password"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-            container: { marginTop: 25 },
-          }}
-          onChangeText={(text) => setValues({ ...values, password: text })}
-        />
-        <PasswordInput
-          label="Repeat Password"
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-            container: { marginTop: 25, marginBottom: 25 },
-          }}
-          onChangeText={(text) => setValues({ ...values, confPassword: text })}
-        />
-        {errors.confPassword !== "" && (
-          <Text
-            style={[
-              CONSTANT_STYLES.TXT_RED,
-              styles.errTxt,
-              { marginTop: -10, marginBottom: 10 },
-            ]}
-          >
-            {errors.confPassword}
-          </Text>
-        )}
       </View>
       <FormProgress
         onSubmit={() => {
@@ -264,8 +275,6 @@ const styles = StyleSheet.create({
   dateInput: {
     width: "98%",
     height: 50,
-    marginTop: 15,
-    marginBottom: -10,
     borderBottomColor: "#c4c4c4",
     borderRadius: 5,
     borderBottomWidth: 1,
