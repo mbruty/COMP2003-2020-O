@@ -11,7 +11,7 @@ namespace api.Backend.Data.SQL
 
         private int[] FetchAutoIncrement()
         {
-            List<object[]> Data = Instance.Read($"SELECT LAST_INSERT_ID();");
+            List<object[]> Data = SQL.Instance.DoAsync(Instance.Read($"SELECT LAST_INSERT_ID();"));
             return Array.ConvertAll(Data[0], x => int.Parse(x.ToString()));
         }
 
@@ -42,7 +42,7 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            return Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
+            return SQL.Instance.DoAsync(Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params));
         }
 
         public virtual bool Insert(bool FetchInsertedIds = false)
@@ -68,7 +68,7 @@ namespace api.Backend.Data.SQL
             }
             What = What.Trim().Remove(What.Length - 2, 1);
 
-            bool success = Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
+            bool success = SQL.Instance.DoAsync(Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params));
 
             if (FetchInsertedIds && success)
             {
@@ -104,7 +104,7 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            return Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
+            return SQL.Instance.DoAsync(Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params));
         }
     }
 }
