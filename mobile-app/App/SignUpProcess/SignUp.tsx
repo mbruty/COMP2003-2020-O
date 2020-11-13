@@ -38,6 +38,7 @@ interface Values {
 
 interface Props {
   next: (value: string, userid: string, authtoken: string) => void;
+  close: () => void;
 }
 
 export const SignUp: React.FC<Props> = (props) => {
@@ -134,6 +135,26 @@ export const SignUp: React.FC<Props> = (props) => {
 
   return (
     <ScrollView>
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          top: 50,
+          right: 30,
+          zIndex: 2,
+          opacity: 0.5,
+        }}
+        onPress={() => {
+          props.close();
+        }}
+      >
+        <Image
+          style={{
+            width: 40,
+            height: 40,
+          }}
+          source={require("./SignUp/baseline_cancel_black_48.png")}
+        />
+      </TouchableOpacity>
       <Image
         style={{
           height: imageHeight,
