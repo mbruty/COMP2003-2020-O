@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL.AutoSQL
 {
@@ -43,7 +44,9 @@ namespace api.Backend.Data.SQL.AutoSQL
         public Table(string Name)
         {
             this.Name = Name;
-            this.Columns = SQL.Instance.Read($"SHOW columns FROM {Name}").Select(y => new Column(y)).ToArray();
+
+            List<object[]> F = SQL.Instance.DoAsync(SQL.Instance.Read($"SHOW columns FROM {Name}"));
+            this.Columns =  F.Select(y => new Column(y)).ToArray();
         }
 
         #endregion Constructors
@@ -74,7 +77,7 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         public T[] Select<T>(string where = "TRUE") where T : Object, new()
         {
-            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}");
+            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}"));
 
             return SetFieldValues<T>(Data);
         }
@@ -100,7 +103,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
+            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params));
 
             return SetFieldValues<T>(Data);
         }
@@ -122,7 +125,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
+            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params));
 
             return SetFieldValues<T>(Data);
         }

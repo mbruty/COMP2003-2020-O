@@ -47,7 +47,7 @@ namespace api
             //Run locally
             else
             {
-                api.Backend.Data.SQL.Instance.Start("root", "tat", "William48");
+                api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
                 Bind();
                 //SQL_Test_Code.Run();
 
