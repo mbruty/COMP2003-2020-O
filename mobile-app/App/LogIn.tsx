@@ -28,7 +28,7 @@ const wWidth = dimensions.width;
 
 const styles = StyleSheet.create({
   card: {
-    marginTop: -450,
+    marginTop: -550,
     padding: 50,
     borderRadius: 50,
     elevation: 5,
