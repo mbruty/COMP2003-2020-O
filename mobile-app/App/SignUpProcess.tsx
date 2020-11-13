@@ -29,6 +29,7 @@ export const SignUpProcess: React.FC<Props> = (props) => {
     props.setUser({ id, authToken });
   };
 
+  // Routing the user through the sign-up sequence
   switch (pageNo) {
     case 0:
       return <SignUp next={goToEmail} />;

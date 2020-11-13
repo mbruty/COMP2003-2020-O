@@ -52,6 +52,7 @@ export const SignUp: React.FC<Props> = (props) => {
     password: "",
     confPassword: "",
   });
+
   const [date, setDate] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [errors, setErrors] = useState<Values>({
@@ -72,11 +73,13 @@ export const SignUp: React.FC<Props> = (props) => {
       confPassword: "",
     };
     try {
+      // Validate the email using Yup
       await email.validate(values.email);
     } catch (e) {
       currentErrors.email = "Please enter a valid email";
       hasErrors = true;
     }
+    // Checking that nothing is empty
     if (values.username.length === 0) {
       currentErrors.username = "Username is required";
       hasErrors = true;
@@ -92,10 +95,12 @@ export const SignUp: React.FC<Props> = (props) => {
       currentErrors.confPassword = "The passwords do not match";
       hasErrors = true;
     }
+    // date is initalised to today, so if it's today the haven't changed it
     if (isToday(date)) {
       currentErrors.dob = "Date of Birth is required";
       hasErrors = true;
     }
+    // No errors occurred... Time to send it to the api
     if (!hasErrors) {
       // Try and post the sign-up info
       fetch(API_URL + "/signup", {
@@ -107,6 +112,7 @@ export const SignUp: React.FC<Props> = (props) => {
           nickname: values.username,
         },
       })
+        // Convert the response to json
         .then((response) => response.json())
         .then((response) => {
           if (response.error === "Email is in use") {
@@ -116,8 +122,6 @@ export const SignUp: React.FC<Props> = (props) => {
             // Go to the next bit
             props.next(values.username, response.userid, response.authtoken);
           } else {
-            console.log(response);
-
             alert("An unexpected error has happened");
           }
         })

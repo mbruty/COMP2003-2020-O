@@ -9,6 +9,8 @@ export const submitPreferences = (
   return new Promise((resolve, reject) => {
     fetch(API_URL + "/modify/user/foods", {
       method: "PUT",
+      // Mapping the items in the array to their appropriate fields in the database
+      // Need the exact name for it to work with auto mysql
       headers: {
         IsVegan: data.food[0].toString(),
         IsVegetarian: data.food[0].toString(),
