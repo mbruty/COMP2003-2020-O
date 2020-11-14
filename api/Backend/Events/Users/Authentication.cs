@@ -68,6 +68,13 @@ namespace api.Backend.Events.Users
                 return;
             }
 
+            if (!ValidityChecks.IsStrongPassword(password))
+            {
+                response.AddToData("error", "Password is too weak");
+                response.StatusCode = 401;
+                return;
+            }
+
             User[] users = Binding.GetTable<User>().Select<User>("email", email);
 
             if (users.Length > 0)
