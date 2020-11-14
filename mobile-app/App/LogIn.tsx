@@ -28,12 +28,13 @@ const wWidth = dimensions.width;
 
 const styles = StyleSheet.create({
   card: {
-    marginTop: -550,
+    marginTop: -wHeight * 0.70,
     padding: 50,
-    borderRadius: 50,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
     elevation: 5,
     width: wWidth,
-    height: wHeight + 50,
+    height: wHeight * 0.8,
   },
   image: {
     width: wWidth,
