@@ -14,7 +14,7 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public MenuItem[] menuitems
+        public MenuItem[] MenuItems
         {
             get { return Binding.GetTable<MenuItem>().Select<MenuItem>("RestaurantID", Id); }
         }
@@ -29,7 +29,7 @@ namespace api.Backend.Data.Obj
             get { return Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("RestaurantID", Id)?[0]; }
         }
 
-        public Visit[] visits
+        public Visit[] Visits
         {
             get { return Binding.GetTable<Visit>().Select<Visit>("RestaurantID", Id); }
         }

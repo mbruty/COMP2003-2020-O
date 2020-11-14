@@ -12,7 +12,7 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public Visit visit
+        public Visit Visit
         {
             get { return Binding.GetTable<Visit>().Select<Visit>("ID", VisitId)?[0]; }
         }

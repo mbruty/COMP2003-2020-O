@@ -68,6 +68,13 @@ namespace api.Backend.Events.Users
                 return;
             }
 
+            if (!ValidityChecks.IsStrongPassword(password))
+            {
+                response.AddToData("error", "Password is too weak");
+                response.StatusCode = 401;
+                return;
+            }
+
             User[] users = Binding.GetTable<User>().Select<User>("email", email);
 
             if (users.Length > 0)
@@ -77,8 +84,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User user = new User();
-            user.Email = email; user.Password = Security.Hashing.Hash(password);
+            User user = new User() { Email = email, Password = Security.Hashing.Hash(password) };
 
             if (!int.TryParse(yearOfBirth, out user.YearOfBirth))
             {

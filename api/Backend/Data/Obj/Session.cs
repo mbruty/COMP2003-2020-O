@@ -15,7 +15,7 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public User user
+        public User User
         {
             get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
         }
