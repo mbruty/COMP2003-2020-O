@@ -44,7 +44,7 @@ create table `User` (
 );
 
 create table `Session` (
-	UserId int unique auto_increment not null,
+	UserId int unique not null,
     foreign key (UserId) references `User`(Id) on delete cascade on update cascade,
     
     SignedIn datetime default now(),
