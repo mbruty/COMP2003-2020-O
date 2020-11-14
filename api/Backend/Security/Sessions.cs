@@ -27,7 +27,7 @@ namespace api.Backend.Security
         /// <returns>The AuthToken to authenticate this session</returns>
         public static async Task<string> AddSession(User user)
         {
-            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id);
+            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id, 1);
 
             string token = RandomString();
 

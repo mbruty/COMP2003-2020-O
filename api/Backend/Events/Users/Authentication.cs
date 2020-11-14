@@ -32,7 +32,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = await Binding.GetTable<User>().Select<User>("email", email);
+            User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
             if (users.Length == 0)
             {
@@ -47,6 +47,8 @@ namespace api.Backend.Events.Users
                 response.AddToData("error", "Password is incorrect");
                 return;
             }
+
+            string Token = await Sessions.AddSession(users[0]);
 
             response.AddToData("authtoken", Token);
             response.AddToData("userid", users[0].Id);
@@ -95,7 +97,12 @@ namespace api.Backend.Events.Users
 
             if (nickname != null) user.Nickname = nickname;
 
-            await user.Insert(true);
+            if (!await user.Insert(true))
+            {
+                response.StatusCode = 501;
+                response.AddToData("error", "Database Insertion Failure");
+                return;
+            }
 
             new Thread(async () => { user.Password = Security.Hashing.Hash(password); await user.Update(); }).Start();
 
