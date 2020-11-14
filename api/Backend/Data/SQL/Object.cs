@@ -9,6 +9,10 @@ namespace api.Backend.Data.SQL
     {
         #region Methods
 
+        /// <summary>
+        /// Get the value(s) of the last autoincrmenetd fields
+        /// </summary>
+        /// <returns>Array of incremented ids</returns>
         private int[] FetchAutoIncrement()
         {
             List<object[]> Data = SQL.Instance.DoAsync(Instance.Read($"SELECT LAST_INSERT_ID();"));
@@ -25,6 +29,10 @@ namespace api.Backend.Data.SQL
 
         #endregion Constructors
 
+        /// <summary>
+        /// Delete this object from the database
+        /// </summary>
+        /// <returns>If the delete was successful</returns>
         public virtual bool Delete()
         {
             Type t = this.GetType();
@@ -45,6 +53,11 @@ namespace api.Backend.Data.SQL
             return SQL.Instance.DoAsync(Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params));
         }
 
+        /// <summary>
+        /// Attempt to insert this into the db
+        /// </summary>
+        /// <param name="FetchInsertedIds">If we should fill auto incremeneted fields</param>
+        /// <returns>If the insert was successful</returns>
         public virtual bool Insert(bool FetchInsertedIds = false)
         {
             Type t = this.GetType();
@@ -79,6 +92,10 @@ namespace api.Backend.Data.SQL
             return success;
         }
 
+        /// <summary>
+        /// Attempt to update this object in the db
+        /// </summary>
+        /// <returns>If the update was successful</returns>
         public virtual bool Update()
         {
             Type t = this.GetType();
