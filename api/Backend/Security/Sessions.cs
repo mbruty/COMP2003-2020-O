@@ -4,12 +4,21 @@ using api.Backend.Endpoints;
 using System;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace api.Backend.Security
 {
     public static class Sessions
     {
         #region Methods
+        static Random rnd = new Random();
+
+        private static string RandomString(int length = 32)
+        {
+            string s = "";
+            for (int i = length; i >= 0; i--) s += (char)rnd.Next(65,123);
+            return s.Replace('\\','/');
+        }
 
         /// <summary>
         /// Create a login session for the User
@@ -20,18 +29,15 @@ namespace api.Backend.Security
         {
             Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id);
 
-            string token = Hashing.Hash(DateTime.Now.ToString()).Substring(15, 32), hashtoken = Hashing.Hash(token);
+            string token = RandomString();
 
             if (existing.Length == 0)
             {
-                Session session = new Session() { UserId = user.Id, AuthToken = hashtoken };
-
-                await session.Insert();
+                new Thread(async () => { await new Session() { UserId = user.Id, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
             }
             else
             {
-                existing[0].AuthToken = hashtoken;
-                await existing[0].Update();
+                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
             }
 
             return token;
