@@ -15,6 +15,9 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         #region Methods
 
+        /// <summary>
+        /// Start the AutoSQL instance
+        /// </summary>
         public static void Start()
         {
             Task<List<object[]>> t = SQL.Instance.Read("SHOW tables");

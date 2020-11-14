@@ -9,6 +9,9 @@ namespace api
     {
         #region Methods
 
+        /// <summary>
+        /// Creates the connections between the db objects and the tables
+        /// </summary>
         private static void Bind() //Link objects to a table
         {
             Binding.Add<User>("User");
