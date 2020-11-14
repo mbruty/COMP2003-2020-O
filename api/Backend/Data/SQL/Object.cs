@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL
 {
@@ -33,7 +34,7 @@ namespace api.Backend.Data.SQL
         /// Delete this object from the database
         /// </summary>
         /// <returns>If the delete was successful</returns>
-        public virtual bool Delete()
+        public virtual async Task<bool> Delete()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -50,7 +51,7 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            return SQL.Instance.DoAsync(Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params));
+            return await Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace api.Backend.Data.SQL
         /// </summary>
         /// <param name="FetchInsertedIds">If we should fill auto incremeneted fields</param>
         /// <returns>If the insert was successful</returns>
-        public virtual bool Insert(bool FetchInsertedIds = false)
+        public virtual async Task<bool> Insert(bool FetchInsertedIds = false)
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -81,7 +82,7 @@ namespace api.Backend.Data.SQL
             }
             What = What.Trim().Remove(What.Length - 2, 1);
 
-            bool success = SQL.Instance.DoAsync(Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params));
+            bool success = await Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
 
             if (FetchInsertedIds && success)
             {
@@ -96,7 +97,7 @@ namespace api.Backend.Data.SQL
         /// Attempt to update this object in the db
         /// </summary>
         /// <returns>If the update was successful</returns>
-        public virtual bool Update()
+        public virtual async Task<bool> Update()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -121,7 +122,7 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            return SQL.Instance.DoAsync(Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params));
+            return await Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
         }
     }
 }

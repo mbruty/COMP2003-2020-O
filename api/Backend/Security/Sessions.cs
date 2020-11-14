@@ -3,6 +3,7 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using System;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 
 namespace api.Backend.Security
 {
@@ -15,9 +16,9 @@ namespace api.Backend.Security
         /// </summary>
         /// <param name="user"></param>
         /// <returns>The AuthToken to authenticate this session</returns>
-        public static string AddSession(User user)
+        public static async Task<string> AddSession(User user)
         {
-            Session[] existing = Binding.GetTable<Session>().Select<Session>("UserId", user.Id);
+            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id);
 
             string token = Hashing.Hash(DateTime.Now.ToString()).Substring(15, 32), hashtoken = Hashing.Hash(token);
 
@@ -25,12 +26,12 @@ namespace api.Backend.Security
             {
                 Session session = new Session() { UserId = user.Id, AuthToken = hashtoken };
 
-                session.Insert();
+                await session.Insert();
             }
             else
             {
                 existing[0].AuthToken = hashtoken;
-                existing[0].Update();
+                await existing[0].Update();
             }
 
             return token;
@@ -42,7 +43,7 @@ namespace api.Backend.Security
         /// <param name="headers"></param>
         /// <param name="response"></param>
         /// <returns>If the session is valid</returns>
-        public static bool CheckSession(NameValueCollection headers, ref WebRequest.HttpResponse response)
+        public static async Task<bool> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
         {
             string userid = headers["userid"], authtoken = headers["authtoken"];
 
@@ -60,7 +61,7 @@ namespace api.Backend.Security
                 return false;
             }
 
-            Session[] sessions = Binding.GetTable<Session>().Select<Session>("userid", uid);
+            Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
 
             if (sessions.Length == 0)
             {

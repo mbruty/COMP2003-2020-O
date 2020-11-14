@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL.AutoSQL
 {
@@ -89,9 +90,9 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <typeparam name="T"></typeparam>
         /// <param name="where"></param>
         /// <returns>Any Selected Objects</returns>
-        public T[] Select<T>(string where = "TRUE") where T : Object, new()
+        public async Task<T[]> Select<T>(string where = "TRUE") where T : Object, new()
         {
-            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}"));
+            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}");
 
             return SetFieldValues<T>(Data);
         }
@@ -103,9 +104,9 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <param name="FieldName">Collumn name in DB</param>
         /// <param name="FieldValue">Value to check is equal</param>
         /// <returns>Any Selected Objects</returns>
-        public T[] Select<T>(string FieldName, object FieldValue) where T : Object, new()
+        public async Task<T[]> Select<T>(string FieldName, object FieldValue) where T : Object, new()
         {
-            return Select<T>(new string[] { FieldName }, new object[] { FieldValue });
+            return await Select<T>(new string[] { FieldName }, new object[] { FieldValue });
         }
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <param name="FieldNames">Array of Column names in DB</param>
         /// <param name="FieldValues">Values to check Columns equal against</param>
         /// <returns>Any Selected Objects</returns>
-        public T[] Select<T>(string[] FieldNames, object[] FieldValues) where T : Object, new()
+        public async Task<T[]> Select<T>(string[] FieldNames, object[] FieldValues) where T : Object, new()
         {
             List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
             string Where = "";
@@ -131,7 +132,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params));
+            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
 
             return SetFieldValues<T>(Data);
         }
@@ -142,7 +143,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <typeparam name="T"></typeparam>
         /// <param name="PrimaryKeyValues">Values for all primary key columns in the table</param>
         /// <returns>Any Selected Objects</returns>
-        public T[] Select<T>(object[] PrimaryKeyValues) where T : Object, new()
+        public async Task<T[]> Select<T>(object[] PrimaryKeyValues) where T : Object, new()
         {
             Column[] PrimaryKeys = this.PrimaryKeys;
 
@@ -159,7 +160,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params));
+            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
 
             return SetFieldValues<T>(Data);
         }
