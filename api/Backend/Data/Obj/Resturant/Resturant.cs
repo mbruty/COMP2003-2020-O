@@ -1,4 +1,5 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -11,28 +12,23 @@ namespace api.Backend.Data.Obj
         public string Name, Description, Phone, Email, Site;
 
         #endregion Fields
+        #region Properties
+
+        #endregion Fields
 
         #region Properties
 
-        public MenuItem[] MenuItems
-        {
-            get { return Binding.GetTable<MenuItem>().Select<MenuItem>("RestaurantID", Id); }
-        }
+        public async Task<MenuItem[]> GetMenuItems()
+        { return await Binding.GetTable<MenuItem>().Select<MenuItem>("RestaurantID", Id); }
 
-        public User Owner
-        {
-            get { return Binding.GetTable<User>().Select<User>("Id", OwnerId)?[0]; }
-        }
+        public async Task<User> GetOwner()
+        { return (await Binding.GetTable<User>().Select<User>("Id", OwnerId))?[0]; }
 
-        public RestaurantOpinion Restaurantopinion
-        {
-            get { return Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("RestaurantID", Id)?[0]; }
-        }
+        public async  Task<RestaurantOpinion> GetRestaurantopinion()
+        { return (await Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("RestaurantID", Id))?[0]; }
 
-        public Visit[] Visits
-        {
-            get { return Binding.GetTable<Visit>().Select<Visit>("RestaurantID", Id); }
-        }
+        public async Task<Visit[]> GetVisits()
+        { return await Binding.GetTable<Visit>().Select<Visit>("RestaurantID", Id); }
 
         #endregion Properties
     }

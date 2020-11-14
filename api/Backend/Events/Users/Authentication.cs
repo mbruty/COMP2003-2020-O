@@ -11,16 +11,16 @@ namespace api.Backend.Events.Users
         #region Methods
 
         [WebEvent("/auth", "POST", false)]
-        public static void CheckAuth(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        public static async void CheckAuth(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            if (!Sessions.CheckSession(headers, ref response)) return;
+            if (!await Sessions.CheckSession(headers, response)) return;
 
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
         [WebEvent("/login", "POST", false)]
-        public static void Login(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        public static async void Login(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"];
 
@@ -31,7 +31,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = Binding.GetTable<User>().Select<User>("email", email);
+            User[] users = await Binding.GetTable<User>().Select<User>("email", email);
 
             if (users.Length == 0)
             {
@@ -47,7 +47,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            string Token = Sessions.AddSession(users[0]);
+            string Token = await Sessions.AddSession(users[0]);
 
             response.AddToData("authtoken", Token);
             response.AddToData("userid", users[0].Id);
@@ -57,7 +57,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/signup", "POST", false)]
-        public static void SignUp(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        public static async void SignUp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"], nickname = headers["nickname"];
 
@@ -75,7 +75,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = Binding.GetTable<User>().Select<User>("email", email);
+            User[] users = await Binding.GetTable<User>().Select<User>("email", email);
 
             if (users.Length > 0)
             {
@@ -95,9 +95,9 @@ namespace api.Backend.Events.Users
 
             if (nickname != null) user.Nickname = nickname;
 
-            user.Insert(true);
+            await user.Insert(true);
 
-            string Token = Sessions.AddSession(user);
+            string Token = await Sessions.AddSession(user);
 
             response.AddToData("authtoken", Token);
             response.AddToData("userid", user.Id);

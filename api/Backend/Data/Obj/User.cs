@@ -1,4 +1,5 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -13,53 +14,47 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public FoodChecks FoodCheck
+        public async Task<FoodChecks> GetFoodCheck()
         {
-            get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId)?[0]; }
+            return (await Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId))?[0];
         }
 
-        public FoodOpinion[] FoodOpinions
+        public async Task<FoodOpinion[]> GetFoodOpinions()
         {
-            get { return Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("UserID", Id); }
+            return await Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("UserID", Id);
         }
 
-        public RestaurantOpinion[] Restaurantopinions
+        public async Task<RestaurantOpinion[]> GetRestaurantopinions()
         {
-            get { return Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("UserID", Id); }
+            return await Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("UserID", Id);
         }
 
-        public Restaurant[] Restaurants
-        {
-            get { return Binding.GetTable<Restaurant>().Select<Restaurant>("OwnerID", Id); }
-        }
+        public async Task<Restaurant[]> GetRestaurants()
+        { return await Binding.GetTable<Restaurant>().Select<Restaurant>("OwnerID", Id); }
 
-        public Session Session
-        {
-            get { return Binding.GetTable<Session>().Select<Session>("UserId", Id)?[0]; }
-        }
+        public  async Task<Session> GetSession()
+        { return (await Binding.GetTable<Session>().Select<Session>("UserId", Id))?[0]; }
 
-        public Visit[] Visits
-        {
-            get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
-        }
+        public async Task<Visit[]> GetVisits()
+        { return await Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
 
         #endregion Properties
 
         #region Methods
 
-        public override bool Delete()
+        public override async Task<bool> Delete()
         {
-            return base.Delete() && FoodCheck.Delete();
+            return await base.Delete() && await (await GetFoodCheck()).Delete();
         }
 
-        public override bool Insert(bool FetchInsertedIds = false)
+        public override async Task<bool> Insert(bool FetchInsertedIds = false)
         {
             FoodChecks foodChecks = new FoodChecks();
-            foodChecks.Insert(true);
+            await foodChecks.Insert(true);
 
             this.CheckId = foodChecks.Id;
 
-            return base.Insert(FetchInsertedIds);
+            return await base.Insert(FetchInsertedIds);
         }
 
         #endregion Methods
