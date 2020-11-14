@@ -11,11 +11,8 @@ namespace api.Backend.Data.Obj
         public string Tag;
 
         #endregion Fields
-        #region Properties
 
-        #endregion Fields
-
-        #region Properties
+        #region Methods
 
         public async Task<FoodOpinion[]> GetFoodOpinions()
         { return await Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("FoodTagID", Id); }
@@ -23,6 +20,6 @@ namespace api.Backend.Data.Obj
         public async Task<MenuItemTags[]> GetMenuItemTags()
         { return await Binding.GetTable<MenuItemTags>().Select<MenuItemTags>("FoodTagID", Id); }
 
-        #endregion Properties
+        #endregion Methods
     }
 }

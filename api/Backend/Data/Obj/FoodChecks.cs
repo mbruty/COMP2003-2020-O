@@ -11,11 +11,8 @@ namespace api.Backend.Data.Obj
         public bool IsVegetarian, IsVegan, ContainsLactose, ContainsNut, ContainsGluten, ContainsEgg, ContainsSoy, IsHallal, IsKosher;
 
         #endregion Fields
-        #region Properties
 
-        #endregion Fields
-
-        #region Properties
+        #region Methods
 
         public async Task<MenuItem> GetMenuItem()
         { return (await Binding.GetTable<MenuItem>().Select<MenuItem>("CheckID", Id))?[0]; }
@@ -23,6 +20,6 @@ namespace api.Backend.Data.Obj
         public async Task<User> GetUser()
         { return (await Binding.GetTable<User>().Select<User>("CheckID", Id))?[0]; }
 
-        #endregion Properties
+        #endregion Methods
     }
 }

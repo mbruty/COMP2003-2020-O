@@ -10,15 +10,12 @@ namespace api.Backend.Data.Obj
         public int VisitId, Rating;
 
         #endregion Fields
-        #region Properties
 
-        #endregion Fields
-
-        #region Properties
+        #region Methods
 
         public async Task<Visit> GetVisit()
         { return (await Binding.GetTable<Visit>().Select<Visit>("ID", VisitId))?[0]; }
 
-        #endregion Properties
+        #endregion Methods
     }
 }

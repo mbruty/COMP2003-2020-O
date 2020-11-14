@@ -13,15 +13,12 @@ namespace api.Backend.Data.Obj
         public int UserId;
 
         #endregion Fields
-        #region Properties
 
-        #endregion Fields
-
-        #region Properties
+        #region Methods
 
         public async Task<User> GetUser()
         { return (await Binding.GetTable<User>().Select<User>("ID", UserId))?[0]; }
 
-        #endregion Properties
+        #endregion Methods
     }
 }

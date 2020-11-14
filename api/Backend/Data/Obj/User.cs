@@ -12,7 +12,12 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
-        #region Properties
+        #region Methods
+
+        public override async Task<bool> Delete()
+        {
+            return await base.Delete() && await (await GetFoodCheck()).Delete();
+        }
 
         public async Task<FoodChecks> GetFoodCheck()
         {
@@ -32,20 +37,11 @@ namespace api.Backend.Data.Obj
         public async Task<Restaurant[]> GetRestaurants()
         { return await Binding.GetTable<Restaurant>().Select<Restaurant>("OwnerID", Id); }
 
-        public  async Task<Session> GetSession()
+        public async Task<Session> GetSession()
         { return (await Binding.GetTable<Session>().Select<Session>("UserId", Id))?[0]; }
 
         public async Task<Visit[]> GetVisits()
         { return await Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
-
-        #endregion Properties
-
-        #region Methods
-
-        public override async Task<bool> Delete()
-        {
-            return await base.Delete() && await (await GetFoodCheck()).Delete();
-        }
 
         public override async Task<bool> Insert(bool FetchInsertedIds = false)
         {

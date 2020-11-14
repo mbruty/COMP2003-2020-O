@@ -12,11 +12,8 @@ namespace api.Backend.Data.Obj
         public float Price;
 
         #endregion Fields
-        #region Properties
 
-        #endregion Fields
-
-        #region Properties
+        #region Methods
 
         public async Task<FoodChecks> GetFoodChecks()
         { return (await Binding.GetTable<FoodChecks>().Select<FoodChecks>("ID", CheckId))?[0]; }
@@ -27,6 +24,6 @@ namespace api.Backend.Data.Obj
         public async Task<Restaurant> GetRestaurant()
         { return (await Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId))?[0]; }
 
-        #endregion Properties
+        #endregion Methods
     }
 }
