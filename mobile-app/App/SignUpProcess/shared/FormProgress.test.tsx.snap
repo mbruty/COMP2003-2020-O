@@ -181,7 +181,7 @@ Preferences
           ]
         }
       >
-        NEXT
+        SUBMIT
       </Text>
     </View>
   </View>,
@@ -369,7 +369,7 @@ Preferences
           ]
         }
       >
-        NEXT
+        SUBMIT
       </Text>
     </View>
   </View>,
