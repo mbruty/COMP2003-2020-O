@@ -10,6 +10,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         NULL
     }
 
+    //Represents a Column in a Table
     public class Column
     {
         #region Fields

@@ -17,18 +17,6 @@ namespace api.Backend.Data.SQL
         #region Methods
 
         /// <summary>
-        /// Run the Function Asynchronusly
-        /// </summary>
-        /// <typeparam name="T">Resturn Type</typeparam>
-        /// <param name="Function">The Task to run</param>
-        /// <returns>Result of the Function</returns>
-        public static T DoAsync<T>(Task<T> Function)
-        {
-            Function.Wait();
-            return Function.Result;
-        }
-
-        /// <summary>
         /// Read data from the db and format it, using the provided sql command
         /// </summary>
         /// <param name="sqlCommand">The SQL command to perform</param>
@@ -49,6 +37,18 @@ namespace api.Backend.Data.SQL
             dataReader.Close();
 
             return Data;
+        }
+
+        /// <summary>
+        /// Run the Function Asynchronusly
+        /// </summary>
+        /// <typeparam name="T">Resturn Type</typeparam>
+        /// <param name="Function">The Task to run</param>
+        /// <returns>Result of the Function</returns>
+        public static T DoAsync<T>(Task<T> Function)
+        {
+            Function.Wait();
+            return Function.Result;
         }
 
         /// <summary>

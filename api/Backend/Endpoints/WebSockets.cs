@@ -12,6 +12,7 @@ namespace api.Backend.Endpoints
     public static class WebSockets
     {
         #region Methods
+
         /// <summary>
         /// Finds the appropriate event for the request and passes it along
         /// </summary>

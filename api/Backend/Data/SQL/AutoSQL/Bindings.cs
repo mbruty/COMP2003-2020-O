@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace api.Backend.Data.SQL.AutoSQL
 {
+    /// <summary>
+    /// Represents a link between a Table Obj and a DB Table
+    /// </summary>
     public class Binding
     {
         #region Fields
@@ -60,7 +63,6 @@ namespace api.Backend.Data.SQL.AutoSQL
         {
             return bindings.First(x => x.ObjType == typeof(T))?.table;
         }
-
 
         /// <summary>
         /// Get the table that is bound to type objType

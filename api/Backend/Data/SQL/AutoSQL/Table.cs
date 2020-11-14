@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL.AutoSQL
 {
+    /// <summary>
+    /// Represents a table in the DB
+    /// </summary>
     public class Table
     {
         #region Methods
@@ -52,7 +54,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             this.Name = Name;
 
             List<object[]> F = SQL.Instance.DoAsync(SQL.Instance.Read($"SHOW columns FROM {Name}"));
-            this.Columns =  F.Select(y => new Column(y)).ToArray();
+            this.Columns = F.Select(y => new Column(y)).ToArray();
         }
 
         #endregion Constructors
