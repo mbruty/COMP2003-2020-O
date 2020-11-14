@@ -77,8 +77,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User user = new User();
-            user.Email = email; user.Password = Security.Hashing.Hash(password);
+            User user = new User() { Email = email, Password = Security.Hashing.Hash(password) };
 
             if (!int.TryParse(yearOfBirth, out user.YearOfBirth))
             {

@@ -13,12 +13,12 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public FoodChecks foodCheck
+        public FoodChecks FoodCheck
         {
             get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId)?[0]; }
         }
 
-        public FoodOpinion[] foodopinions
+        public FoodOpinion[] FoodOpinions
         {
             get { return Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("UserID", Id); }
         }
@@ -33,12 +33,12 @@ namespace api.Backend.Data.Obj
             get { return Binding.GetTable<Restaurant>().Select<Restaurant>("OwnerID", Id); }
         }
 
-        public Session session
+        public Session Session
         {
             get { return Binding.GetTable<Session>().Select<Session>("UserId", Id)?[0]; }
         }
 
-        public Visit[] visits
+        public Visit[] Visits
         {
             get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
         }
@@ -49,7 +49,7 @@ namespace api.Backend.Data.Obj
 
         public override bool Delete()
         {
-            return base.Delete() && foodCheck.Delete();
+            return base.Delete() && FoodCheck.Delete();
         }
 
         public override bool Insert(bool FetchInsertedIds = false)

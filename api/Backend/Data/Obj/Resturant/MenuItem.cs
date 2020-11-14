@@ -14,12 +14,12 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public FoodChecks foodchecks
+        public FoodChecks FoodChecks
         {
             get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("ID", CheckId)?[0]; }
         }
 
-        public MenuItemTags[] menuitemtags
+        public MenuItemTags[] MenuItemTags
         {
             get { return Binding.GetTable<MenuItemTags>().Select<MenuItemTags>("MenuID", Id); }
         }

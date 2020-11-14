@@ -38,7 +38,7 @@ namespace api.Backend.Data.SQL
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
 
-            Column[] PrimaryKeys = table.PrimaryKeys, Fields = table.Fields;
+            Column[] PrimaryKeys = table.PrimaryKeys;
 
             List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
 

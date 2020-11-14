@@ -13,12 +13,12 @@ namespace api.Backend.Data.Obj
 
         #region Properties
 
-        public MenuItem menuitem
+        public MenuItem MenuItem
         {
             get { return Binding.GetTable<MenuItem>().Select<MenuItem>("CheckID", Id)?[0]; }
         }
 
-        public User user
+        public User User
         {
             get { return Binding.GetTable<User>().Select<User>("CheckID", Id)?[0]; }
         }

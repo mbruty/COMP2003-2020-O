@@ -11,8 +11,8 @@ namespace api.Backend.Data.SQL.AutoSQL
     {
         #region Fields
 
-        private Type ObjType;
-        private Table table;
+        private readonly Type ObjType;
+        private readonly Table table;
         public static List<Binding> bindings = new List<Binding>();
 
         #endregion Fields

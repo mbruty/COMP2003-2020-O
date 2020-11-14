@@ -19,12 +19,12 @@ namespace api.Backend.Data.Obj
             get { return Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId)?[0]; }
         }
 
-        public Review review
+        public Review Review
         {
             get { return Binding.GetTable<Review>().Select<Review>("VisitID", Id)?[0]; }
         }
 
-        public User user
+        public User User
         {
             get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
         }

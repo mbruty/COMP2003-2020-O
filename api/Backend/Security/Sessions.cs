@@ -23,9 +23,7 @@ namespace api.Backend.Security
 
             if (existing.Length == 0)
             {
-                Session session = new Session();
-                session.UserId = user.Id;
-                session.AuthToken = hashtoken;
+                Session session = new Session() { UserId = user.Id, AuthToken = hashtoken };
 
                 session.Insert();
             }
@@ -55,9 +53,7 @@ namespace api.Backend.Security
                 return false;
             }
 
-            int uid;
-
-            if (!int.TryParse(userid, out uid))
+            if (!int.TryParse(userid, out int uid))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "User id is invalid");
