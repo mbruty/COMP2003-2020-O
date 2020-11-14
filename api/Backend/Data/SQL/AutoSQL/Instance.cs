@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL.AutoSQL
 {
@@ -12,15 +14,16 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         #region Methods
 
+        /// <summary>
+        /// Start the AutoSQL instance
+        /// </summary>
         public static void Start()
         {
-            tables = SQL.Instance.Read("SHOW tables").Select(x => new Table((string)x[0])).ToArray();
+            Task<List<object[]>> t = SQL.Instance.Read("SHOW tables");
+            t.Wait();
+            tables = t.Result.Select(x => new Table((string)x[0])).ToArray();
         }
 
         #endregion Methods
-
-        //public static T[] Select<T>(string Table, object[] PrimaryKeys)
-        //{
-        //}
     }
 }

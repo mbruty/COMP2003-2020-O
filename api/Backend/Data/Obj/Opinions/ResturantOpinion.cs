@@ -1,12 +1,28 @@
-﻿namespace api.Backend.Data.Obj
+﻿using api.Backend.Data.SQL.AutoSQL;
+
+namespace api.Backend.Data.Obj
 {
-    public class ResturantOpinion : Object
+    public class RestaurantOpinion : Object
     {
         #region Fields
 
         public bool NeverShow;
-        public int UserId, ResturantId, SwipeLeft, SwipeRight;
+        public int UserId, RestaurantId, SwipeLeft, SwipeRight;
 
         #endregion Fields
+
+        #region Properties
+
+        public Restaurant Restaurant
+        {
+            get { return Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId)?[0]; }
+        }
+
+        public User User
+        {
+            get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
+        }
+
+        #endregion Properties
     }
 }

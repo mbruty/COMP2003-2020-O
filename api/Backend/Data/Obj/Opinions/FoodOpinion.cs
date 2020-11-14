@@ -1,4 +1,6 @@
-﻿namespace api.Backend.Data.Obj
+﻿using api.Backend.Data.SQL.AutoSQL;
+
+namespace api.Backend.Data.Obj
 {
     public class FoodOpinion : Object
     {
@@ -8,5 +10,19 @@
         public int UserId, FoodTagId, SwipeRight;
 
         #endregion Fields
+
+        #region Properties
+
+        public FoodTags Foodtag
+        {
+            get { return Binding.GetTable<FoodTags>().Select<FoodTags>("ID", FoodTagId)?[0]; }
+        }
+
+        public User User
+        {
+            get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
+        }
+
+        #endregion Properties
     }
 }

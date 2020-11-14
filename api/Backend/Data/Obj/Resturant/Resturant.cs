@@ -1,6 +1,8 @@
-﻿namespace api.Backend.Data.Obj
+﻿using api.Backend.Data.SQL.AutoSQL;
+
+namespace api.Backend.Data.Obj
 {
-    public class Resturant : Object
+    public class Restaurant : Object
     {
         #region Fields
 
@@ -9,5 +11,29 @@
         public string Name, Description, Phone, Email, Site;
 
         #endregion Fields
+
+        #region Properties
+
+        public MenuItem[] MenuItems
+        {
+            get { return Binding.GetTable<MenuItem>().Select<MenuItem>("RestaurantID", Id); }
+        }
+
+        public User Owner
+        {
+            get { return Binding.GetTable<User>().Select<User>("Id", OwnerId)?[0]; }
+        }
+
+        public RestaurantOpinion Restaurantopinion
+        {
+            get { return Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("RestaurantID", Id)?[0]; }
+        }
+
+        public Visit[] Visits
+        {
+            get { return Binding.GetTable<Visit>().Select<Visit>("RestaurantID", Id); }
+        }
+
+        #endregion Properties
     }
 }

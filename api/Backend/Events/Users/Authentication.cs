@@ -59,12 +59,19 @@ namespace api.Backend.Events.Users
         [WebEvent("/signup", "POST", false)]
         public static void SignUp(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
         {
-            string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"];
+            string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"], nickname = headers["nickname"];
 
             if (email == null || password == null)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing email or password");
+                return;
+            }
+
+            if (!ValidityChecks.IsStrongPassword(password))
+            {
+                response.AddToData("error", "Password is too weak");
+                response.StatusCode = 401;
                 return;
             }
 
@@ -77,8 +84,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User user = new User();
-            user.Email = email; user.Password = Security.Hashing.Hash(password);
+            User user = new User() { Email = email, Password = Security.Hashing.Hash(password) };
 
             if (!int.TryParse(yearOfBirth, out user.YearOfBirth))
             {
@@ -86,6 +92,8 @@ namespace api.Backend.Events.Users
                 response.AddToData("error", "Year of Birth is invalid");
                 return;
             }
+
+            if (nickname != null) user.Nickname = nickname;
 
             user.Insert(true);
 

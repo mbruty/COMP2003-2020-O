@@ -5,10 +5,19 @@ using System.Reflection;
 
 namespace api.Backend.Data.SQL.AutoSQL
 {
+    /// <summary>
+    /// Represents a table in the DB
+    /// </summary>
     public class Table
     {
         #region Methods
 
+        /// <summary>
+        /// Attempts to assign SELECT * data into the correct fields in to an object of T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Data"></param>
+        /// <returns>An array of T, with the Data inserted</returns>
         private T[] SetFieldValues<T>(List<object[]> Data) where T : Object, new()
         {
             Type t = typeof(T);
@@ -43,7 +52,9 @@ namespace api.Backend.Data.SQL.AutoSQL
         public Table(string Name)
         {
             this.Name = Name;
-            this.Columns = SQL.Instance.Read($"SHOW columns FROM {Name}").Select(y => new Column(y)).ToArray();
+
+            List<object[]> F = SQL.Instance.DoAsync(SQL.Instance.Read($"SHOW columns FROM {Name}"));
+            this.Columns = F.Select(y => new Column(y)).ToArray();
         }
 
         #endregion Constructors
@@ -72,18 +83,38 @@ namespace api.Backend.Data.SQL.AutoSQL
 
         #endregion Properties
 
+        /// <summary>
+        /// Write your own select statement
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="where"></param>
+        /// <returns>Any Selected Objects</returns>
         public T[] Select<T>(string where = "TRUE") where T : Object, new()
         {
-            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}");
+            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE {where}"));
 
             return SetFieldValues<T>(Data);
         }
 
+        /// <summary>
+        /// Select based on a specific collumn and value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="FieldName">Collumn name in DB</param>
+        /// <param name="FieldValue">Value to check is equal</param>
+        /// <returns>Any Selected Objects</returns>
         public T[] Select<T>(string FieldName, object FieldValue) where T : Object, new()
         {
             return Select<T>(new string[] { FieldName }, new object[] { FieldValue });
         }
 
+        /// <summary>
+        /// Select based on a specific set of collumns and values
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="FieldNames">Array of Column names in DB</param>
+        /// <param name="FieldValues">Values to check Columns equal against</param>
+        /// <returns>Any Selected Objects</returns>
         public T[] Select<T>(string[] FieldNames, object[] FieldValues) where T : Object, new()
         {
             List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
@@ -100,11 +131,17 @@ namespace api.Backend.Data.SQL.AutoSQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
+            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params));
 
             return SetFieldValues<T>(Data);
         }
 
+        /// <summary>
+        /// Selects using primary key values
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="PrimaryKeyValues">Values for all primary key columns in the table</param>
+        /// <returns>Any Selected Objects</returns>
         public T[] Select<T>(object[] PrimaryKeyValues) where T : Object, new()
         {
             Column[] PrimaryKeys = this.PrimaryKeys;
@@ -122,7 +159,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            List<object[]> Data = SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
+            List<object[]> Data = SQL.Instance.DoAsync(SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params));
 
             return SetFieldValues<T>(Data);
         }
