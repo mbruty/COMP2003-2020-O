@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL.Caching
 {
@@ -14,22 +15,22 @@ namespace api.Backend.Data.SQL.Caching
             //Cache = new List<Obj.Object>();
         }
 
-        public override T[] Select<T>(object[] PrimaryKeyValues)
+        public override async Task<T[]> Select<T>(object[] PrimaryKeyValues, int Limit = 0)
         {
             //Logic To Find And Return A Cached Object
-            return base.Select<T>(PrimaryKeyValues);
+            return await base.Select<T>(PrimaryKeyValues,Limit);
         }
 
-        public override T[] Select<T>(string where = "TRUE")
+        public override async Task<T[]> SelectCustom<T>(string where = "TRUE", int Limit = 0)
         {
             //Logic To Find And Return A Cached Object
-            return base.Select<T>(where);
+            return await base.Select<T>(where,Limit);
         }
 
-        public override T[] Select<T>(string[] FieldNames, object[] FieldValues)
+        public override async Task<T[]> Select<T>(string[] FieldNames, object[] FieldValues, int Limit = 0)
         {
             //Logic To Find And Return A Cached Object
-            return base.Select<T>(FieldNames, FieldValues);
+            return await base.Select<T>(FieldNames, FieldValues,Limit);
         }
     }
 }

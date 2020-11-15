@@ -1,3 +1,5 @@
 export interface IUser{
-  fName: string
+  authToken?: string;
+  id?: string;
 }
+
