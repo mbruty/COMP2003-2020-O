@@ -3,6 +3,7 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Collections.Specialized;
+using System.Threading;
 
 namespace api.Backend.Events.Users
 {
@@ -31,7 +32,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = await Binding.GetTable<User>().Select<User>("email", email);
+            User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
             if (users.Length == 0)
             {
@@ -47,7 +48,8 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            string Token = await Sessions.AddSession(users[0]);
+            string Token = Sessions.RandomString();
+            await Sessions.AddSession(users[0], Token);
 
             response.AddToData("authtoken", Token);
             response.AddToData("userid", users[0].Id);
@@ -75,7 +77,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = await Binding.GetTable<User>().Select<User>("email", email);
+            User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
             if (users.Length > 0)
             {
@@ -84,7 +86,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User user = new User() { Email = email, Password = Security.Hashing.Hash(password) };
+            User user = new User() { Email = email, Password = "PASSWORD PENDING" };
 
             if (!int.TryParse(yearOfBirth, out user.YearOfBirth))
             {
@@ -95,11 +97,18 @@ namespace api.Backend.Events.Users
 
             if (nickname != null) user.Nickname = nickname;
 
-            await user.Insert(true);
+            if (!await user.Insert(true))
+            {
+                response.StatusCode = 501;
+                response.AddToData("error", "Database Insertion Failure");
+                return;
+            }
 
-            string Token = await Sessions.AddSession(user);
+            string token = Sessions.RandomString();
 
-            response.AddToData("authtoken", Token);
+            new Thread(async () => { user.Password = Hashing.Hash(password); await user.Update(); await Sessions.AddSession(user, token); }).Start();
+
+            response.AddToData("authtoken", token);
             response.AddToData("userid", user.Id);
 
             response.StatusCode = 200;

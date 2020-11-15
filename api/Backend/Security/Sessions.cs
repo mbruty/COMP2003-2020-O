@@ -3,12 +3,19 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using System;
 using System.Collections.Specialized;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace api.Backend.Security
 {
     public static class Sessions
     {
+        #region Fields
+
+        private static Random rnd = new Random();
+
+        #endregion Fields
+
         #region Methods
 
         /// <summary>
@@ -16,25 +23,18 @@ namespace api.Backend.Security
         /// </summary>
         /// <param name="user"></param>
         /// <returns>The AuthToken to authenticate this session</returns>
-        public static async Task<string> AddSession(User user)
+        public static async Task AddSession(User user, string token)
         {
-            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id);
-
-            string token = Hashing.Hash(DateTime.Now.ToString()).Substring(15, 32), hashtoken = Hashing.Hash(token);
+            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id, 1);
 
             if (existing.Length == 0)
             {
-                Session session = new Session() { UserId = user.Id, AuthToken = hashtoken };
-
-                await session.Insert();
+                new Thread(async () => { await new Session() { UserId = user.Id, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
             }
             else
             {
-                existing[0].AuthToken = hashtoken;
-                await existing[0].Update();
+                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
             }
-
-            return token;
         }
 
         /// <summary>
@@ -78,6 +78,13 @@ namespace api.Backend.Security
             }
 
             return true;
+        }
+
+        public static string RandomString(int length = 32)
+        {
+            string s = "";
+            for (int i = length; i >= 0; i--) s += (char)rnd.Next(65, 123);
+            return s.Replace('\\', '/');
         }
 
         #endregion Methods
