@@ -31,6 +31,12 @@ namespace api.Backend.Events
             this.method = Method.ToLower();
         }
 
+        public WebEvent(string urlPath, bool WebSocket = true)
+        {
+            this.urlPath = urlPath.ToLower();
+            this.WebSocket = WebSocket;
+        }
+
         public WebEvent(string urlPath, string Method, bool WebSocket = false)
         {
             this.urlPath = urlPath.ToLower();
@@ -55,6 +61,12 @@ namespace api.Backend.Events
             return methodInfos.Where(x => x.GetCustomAttribute<Events.WebEvent>().Equals(url, method, WebSocket)).ToArray();
         }
 
+        public static MethodInfo[] FindMethodInfos(string path, bool WebSocket)
+        {
+            //Return matching WebEvents
+            return methodInfos.Where(x => x.GetCustomAttribute<Events.WebEvent>().Equals(path, WebSocket)).ToArray();
+        }
+
         /// <summary>
         /// Easily check equivalence
         /// </summary>
@@ -65,6 +77,18 @@ namespace api.Backend.Events
         public bool Equals(string urlPath, string Method, bool WebSocket = false) //Easily check if states match
         {
             return urlPath.ToLower() == this.urlPath && Method.ToLower() == this.method && WebSocket == this.WebSocket;
+        }
+
+        /// <summary>
+        /// Easily check equivalence
+        /// </summary>
+        /// <param name="urlPath">   </param>
+        /// <param name="Method">    </param>
+        /// <param name="WebSocket"> </param>
+        /// <returns> </returns>
+        public bool Equals(string urlPath, bool WebSocket = false) //Easily check if states match
+        {
+            return urlPath.ToLower() == this.urlPath && WebSocket == this.WebSocket;
         }
 
         #endregion Methods

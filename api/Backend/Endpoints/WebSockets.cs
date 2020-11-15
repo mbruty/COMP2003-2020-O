@@ -30,14 +30,20 @@ namespace api.Backend.Endpoints
                 JToken jData = JObject.Parse(Data);
                 SocketRequest @event = jData.ToObject<SocketRequest>();
 
+                if (@event.Path == null)
+                {
+                    await webSocket.CloseAsync(WebSocketCloseStatus.EndpointUnavailable, "Request does not correspond to a known event", CancellationToken.None);
+                    return;
+                }
+
                 //Find and then run the appriproate web event
-                MethodInfo[] tMethod = Events.WebEvent.FindMethodInfos(url, @event.Method, true);
+                MethodInfo[] tMethod = Events.WebEvent.FindMethodInfos(@event.Path, true);
 
                 if (tMethod.Length > 0)
                 {
                     try
                     {
-                        tMethod[0].Invoke(null, new object[] { webSocket, instance, @event, response });
+                        tMethod[0].Invoke(null, new object[] { instance, @event, response });
                         await response.Send(webSocket);
                     }
                     catch (Exception e)
@@ -160,8 +166,8 @@ namespace api.Backend.Endpoints
         {
             #region Fields
 
-            public string Data;
-            public string Method;
+            public JToken Data;
+            public string Path;
 
             #endregion Fields
         }
@@ -174,6 +180,7 @@ namespace api.Backend.Endpoints
             #region Fields
 
             public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}");
+            public int StatusCode = 500;
 
             #endregion Fields
 
@@ -208,6 +215,8 @@ namespace api.Backend.Endpoints
             /// <returns> </returns>
             public async Task Send(WebSocket webSocket)
             {
+                AddToData("StatusCode", StatusCode);
+
                 //Convert the response into its UTF bytes and send it
                 byte[] bData = Encoding.UTF8.GetBytes(Data.ToString());
                 await webSocket.SendAsync(new ArraySegment<byte>(bData, 0, bData.Length), WebSocketMessageType.Text, true, CancellationToken.None);
