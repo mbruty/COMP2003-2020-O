@@ -10,7 +10,7 @@ namespace api.Backend.Data.SQL
     {
         #region Fields
 
-        private static MySqlConnection connection;
+        private static string connectionString;
 
         #endregion Fields
 
@@ -35,6 +35,7 @@ namespace api.Backend.Data.SQL
             }
 
             dataReader.Close();
+            await dataReader.DisposeAsync();
 
             return Data;
         }
@@ -59,12 +60,18 @@ namespace api.Backend.Data.SQL
         /// <returns>If the command was successful</returns>
         public static async Task<bool> Execute(string Command, List<Tuple<string, object>> Params = null)
         {
-            MySqlCommand sqlCommand = connection.CreateCommand();
-            sqlCommand.CommandText = Command;
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
 
-            Params?.ForEach(x => sqlCommand.Parameters.Add(new MySqlParameter(x.Item1, x.Item2)));
+                MySqlCommand sqlCommand = conn.CreateCommand();
+                sqlCommand.CommandText = Command;
 
-            try { await sqlCommand.ExecuteNonQueryAsync(); return true; } catch (Exception e) { Console.WriteLine(e.ToString()); return false; }
+                Params?.ForEach(x => sqlCommand.Parameters.Add(new MySqlParameter(x.Item1, x.Item2)));
+
+                try { await sqlCommand.ExecuteNonQueryAsync(); return true; }
+                catch (Exception e) { Console.WriteLine(e.ToString()); return false; }
+            }
         }
 
         /// <summary>
@@ -75,12 +82,17 @@ namespace api.Backend.Data.SQL
         /// <returns>A List Of Rows</returns>
         public static async Task<List<object[]>> Read(string Command, List<Tuple<string, object>> Params = null)
         {
-            MySqlCommand sqlCommand = connection.CreateCommand();
-            sqlCommand.CommandText = Command;
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
 
-            Params?.ForEach(x => sqlCommand.Parameters.Add(new MySqlParameter(x.Item1, x.Item2)));
+                MySqlCommand sqlCommand = conn.CreateCommand();
+                sqlCommand.CommandText = Command;
 
-            return await DoRead(sqlCommand);
+                Params?.ForEach(x => sqlCommand.Parameters.Add(new MySqlParameter(x.Item1, x.Item2)));
+
+                return await DoRead(sqlCommand);
+            }
         }
 
         /// <summary>
@@ -93,8 +105,7 @@ namespace api.Backend.Data.SQL
         /// <param name="Port"></param>
         public static void Start(string Username, string Database, string Password, string Server = "localhost", string Port = "3306")
         {
-            connection = new MySqlConnection($"SERVER={Server};UID={Username};DATABASE={Database};port={Port};PASSWORD={Password};SslMode=Preferred;");
-            connection.Open();
+            connectionString = $"SERVER={Server};UID={Username};DATABASE={Database};port={Port};PASSWORD={Password};SslMode=Preferred;";
 
             AutoSQL.Instance.Start();
         }

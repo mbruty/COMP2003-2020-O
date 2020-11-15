@@ -1,4 +1,5 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -10,13 +11,11 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
-        #region Properties
+        #region Methods
 
-        public Visit Visit
-        {
-            get { return Binding.GetTable<Visit>().Select<Visit>("ID", VisitId)?[0]; }
-        }
+        public async Task<Visit> GetVisit()
+        { return (await Binding.GetTable<Visit>().Select<Visit>("ID", VisitId))?[0]; }
 
-        #endregion Properties
+        #endregion Methods
     }
 }

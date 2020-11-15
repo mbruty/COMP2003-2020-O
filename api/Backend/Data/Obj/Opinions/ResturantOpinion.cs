@@ -1,4 +1,5 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -11,18 +12,14 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
-        #region Properties
+        #region Methods
 
-        public Restaurant Restaurant
-        {
-            get { return Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId)?[0]; }
-        }
+        public async Task<Restaurant> GetRestaurant()
+        { return (await Binding.GetTable<Restaurant>().Select<Restaurant>("ID", RestaurantId))?[0]; }
 
-        public User User
-        {
-            get { return Binding.GetTable<User>().Select<User>("ID", UserId)?[0]; }
-        }
+        public async Task<User> GetUser()
+        { return (await Binding.GetTable<User>().Select<User>("ID", UserId))?[0]; }
 
-        #endregion Properties
+        #endregion Methods
     }
 }
