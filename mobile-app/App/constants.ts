@@ -19,16 +19,21 @@ export const CONSTANT_STYLES = StyleSheet.create({
   BG_DARK_GREY: {
     backgroundColor: "#707070",
   },
+  BG_ERR: {
+    backgroundColor: "#f7a8ac",
+  },
   TXT_DEFAULT: {
     color: "#707070",
   },
   TXT_WHITE: {
-    color: '#FFF'
+    color: "#FFF",
   },
   TXT_BASE: {
-    color: '#F1F1F1'
+    color: "#F1F1F1",
   },
   TXT_RED: {
-    color: '#FD4040'
-  }
+    color: "#FD4040",
+  },
 });
+
+export const API_URL = "http://devapi.trackandtaste.com";

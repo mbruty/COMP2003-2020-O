@@ -6,7 +6,7 @@ namespace api.Backend.Security
     {
         #region Fields
 
-        private static ScryptEncoder encoder = new ScryptEncoder();
+        private static readonly ScryptEncoder encoder = new ScryptEncoder();
 
         #endregion Fields
 
