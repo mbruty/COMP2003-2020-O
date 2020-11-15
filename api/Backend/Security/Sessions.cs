@@ -3,33 +3,29 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using System;
 using System.Collections.Specialized;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace api.Backend.Security
 {
     public static class Sessions
     {
-        #region Methods
-        static Random rnd = new Random();
+        #region Fields
 
-        private static string RandomString(int length = 32)
-        {
-            string s = "";
-            for (int i = length; i >= 0; i--) s += (char)rnd.Next(65,123);
-            return s.Replace('\\','/');
-        }
+        private static Random rnd = new Random();
+
+        #endregion Fields
+
+        #region Methods
 
         /// <summary>
         /// Create a login session for the User
         /// </summary>
         /// <param name="user"></param>
         /// <returns>The AuthToken to authenticate this session</returns>
-        public static async Task<string> AddSession(User user)
+        public static async Task<string> AddSession(User user, string token)
         {
             Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id, 1);
-
-            string token = RandomString();
 
             if (existing.Length == 0)
             {
@@ -84,6 +80,13 @@ namespace api.Backend.Security
             }
 
             return true;
+        }
+
+        public static string RandomString(int length = 32)
+        {
+            string s = "";
+            for (int i = length; i >= 0; i--) s += (char)rnd.Next(65, 123);
+            return s.Replace('\\', '/');
         }
 
         #endregion Methods

@@ -48,7 +48,8 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            string Token = await Sessions.AddSession(users[0]);
+            string Token = Sessions.RandomString();
+            await Sessions.AddSession(users[0], Token);
 
             response.AddToData("authtoken", Token);
             response.AddToData("userid", users[0].Id);
@@ -85,8 +86,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User user = new User() { Email = email, Password="PASSWORD PENDING" };
-
+            User user = new User() { Email = email, Password = "PASSWORD PENDING" };
 
             if (!int.TryParse(yearOfBirth, out user.YearOfBirth))
             {
@@ -104,11 +104,11 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            new Thread(async () => { user.Password = Security.Hashing.Hash(password); await user.Update(); }).Start();
+            string token = Sessions.RandomString();
 
-            string Token = await Sessions.AddSession(user);
+            new Thread(async () => { user.Password = Hashing.Hash(password); await user.Update(); await Sessions.AddSession(user, token); }).Start();
 
-            response.AddToData("authtoken", Token);
+            response.AddToData("authtoken", token);
             response.AddToData("userid", user.Id);
 
             response.StatusCode = 200;

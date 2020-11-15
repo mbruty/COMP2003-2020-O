@@ -85,22 +85,6 @@ namespace api.Backend.Data.SQL.AutoSQL
         #endregion Properties
 
         /// <summary>
-        /// Write your own select statement
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="where"></param>
-        /// <returns>Any Selected Objects</returns>
-        public async Task<T[]> SelectCustom<T>(string where = "TRUE", int Limit = 0) where T : Object, new()
-        {
-            string Lim = "";
-            if (Limit > 0) Lim = $"LIMIT {Limit}";
-
-            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({where}) {Limit}");
-
-            return SetFieldValues<T>(Data);
-        }
-
-        /// <summary>
         /// Select based on a specific collumn and value
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -109,7 +93,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <returns>Any Selected Objects</returns>
         public async Task<T[]> Select<T>(string FieldName, object FieldValue, int Limit = 0) where T : Object, new()
         {
-            return await Select<T>(new string[] { FieldName }, new object[] { FieldValue },Limit);
+            return await Select<T>(new string[] { FieldName }, new object[] { FieldValue }, Limit);
         }
 
         /// <summary>
@@ -149,7 +133,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <typeparam name="T"></typeparam>
         /// <param name="PrimaryKeyValues">Values for all primary key columns in the table</param>
         /// <returns>Any Selected Objects</returns>
-        public async Task<T[]> Select<T>(object[] PrimaryKeyValues, int Limit=0) where T : Object, new()
+        public async Task<T[]> Select<T>(object[] PrimaryKeyValues, int Limit = 0) where T : Object, new()
         {
             Column[] PrimaryKeys = this.PrimaryKeys;
 
@@ -170,6 +154,22 @@ namespace api.Backend.Data.SQL.AutoSQL
             if (Limit > 0) Lim = $"LIMIT {Limit}";
 
             List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({Where})", Params);
+
+            return SetFieldValues<T>(Data);
+        }
+
+        /// <summary>
+        /// Write your own select statement
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="where"></param>
+        /// <returns>Any Selected Objects</returns>
+        public async Task<T[]> SelectCustom<T>(string where = "TRUE", int Limit = 0) where T : Object, new()
+        {
+            string Lim = "";
+            if (Limit > 0) Lim = $"LIMIT {Limit}";
+
+            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({where}) {Limit}");
 
             return SetFieldValues<T>(Data);
         }
