@@ -21,8 +21,8 @@ namespace api.Backend.Security
         /// <summary>
         /// Create a login session for the User
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns>The AuthToken to authenticate this session</returns>
+        /// <param name="user"> </param>
+        /// <returns> The AuthToken to authenticate this session </returns>
         public static async Task AddSession(User user, string token)
         {
             Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id, 1);
@@ -40,9 +40,9 @@ namespace api.Backend.Security
         /// <summary>
         /// Checks if the req headers contain a valid session
         /// </summary>
-        /// <param name="headers"></param>
-        /// <param name="response"></param>
-        /// <returns>If the session is valid</returns>
+        /// <param name="headers">  </param>
+        /// <param name="response"> </param>
+        /// <returns> If the session is valid </returns>
         public static async Task<bool> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
         {
             string userid = headers["userid"], authtoken = headers["authtoken"];

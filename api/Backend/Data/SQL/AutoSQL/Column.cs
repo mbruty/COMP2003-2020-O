@@ -26,7 +26,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Create a column using data selected from SHOW COLUMNS FROM
         /// </summary>
-        /// <param name="rData">result from SHOW COLUMNS FROM</param>
+        /// <param name="rData"> result from SHOW COLUMNS FROM </param>
         public Column(object[] rData)
         {
             Field = (string)rData[0];
@@ -53,8 +53,8 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Check if the provided object, is compatible with the datatype of this column
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>If it is compatible</returns>
+        /// <param name="obj"> </param>
+        /// <returns> If it is compatible </returns>
         public bool FieldMatchesType(object obj)
         {
             Type t = obj.GetType();

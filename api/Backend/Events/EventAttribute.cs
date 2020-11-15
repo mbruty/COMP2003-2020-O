@@ -45,10 +45,10 @@ namespace api.Backend.Events
         /// <summary>
         /// Finds a request that matches the paramaters
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="method"></param>
-        /// <param name="WebSocket"></param>
-        /// <returns></returns>
+        /// <param name="url">       </param>
+        /// <param name="method">    </param>
+        /// <param name="WebSocket"> </param>
+        /// <returns> </returns>
         public static MethodInfo[] FindMethodInfos(string url, string method, bool WebSocket)
         {
             //Return matching WebEvents
@@ -58,10 +58,10 @@ namespace api.Backend.Events
         /// <summary>
         /// Easily check equivalence
         /// </summary>
-        /// <param name="urlPath"></param>
-        /// <param name="Method"></param>
-        /// <param name="WebSocket"></param>
-        /// <returns></returns>
+        /// <param name="urlPath">   </param>
+        /// <param name="Method">    </param>
+        /// <param name="WebSocket"> </param>
+        /// <returns> </returns>
         public bool Equals(string urlPath, string Method, bool WebSocket = false) //Easily check if states match
         {
             return urlPath.ToLower() == this.urlPath && Method.ToLower() == this.method && WebSocket == this.WebSocket;

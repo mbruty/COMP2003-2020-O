@@ -16,11 +16,11 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Finds the appropriate event for the request and passes it along
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="Data"></param>
-        /// <param name="webSocket"></param>
-        /// <param name="instance"></param>
-        /// <returns></returns>
+        /// <param name="url">       </param>
+        /// <param name="Data">      </param>
+        /// <param name="webSocket"> </param>
+        /// <param name="instance">  </param>
+        /// <returns> </returns>
         private static async Task ForwardSocRequest(string url, string Data, WebSocket webSocket, SocketInstance instance)
         {
             SocketResponse response = new SocketResponse();
@@ -63,9 +63,9 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// While the websocket is open, we wait, and on any data we forward the request onwards
         /// </summary>
-        /// <param name="webSocket"></param>
-        /// <param name="listenerContext"></param>
-        /// <returns></returns>
+        /// <param name="webSocket">       </param>
+        /// <param name="listenerContext"> </param>
+        /// <returns> </returns>
         private static async Task WebSocketInstance(WebSocket webSocket, HttpListenerContext listenerContext)
         {
             try
@@ -112,8 +112,8 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Attempts to start a WebSocket connection before passing the request along
         /// </summary>
-        /// <param name="listenerContext"></param>
-        /// <returns></returns>
+        /// <param name="listenerContext"> </param>
+        /// <returns> </returns>
         public static async Task PreHandle(HttpListenerContext listenerContext)
         {
             //Attempt to establish the WebSocket
@@ -184,8 +184,8 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a given object into the json response
             /// </summary>
-            /// <param name="Header"></param>
-            /// <param name="obj"></param>
+            /// <param name="Header"> </param>
+            /// <param name="obj">    </param>
             public void AddObjectToData(string Header, object obj)
             {
                 Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
@@ -194,8 +194,8 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a already stingable object, ie supports .ToString()
             /// </summary>
-            /// <param name="Header"></param>
-            /// <param name="stringable">.ToString() supporting object</param>
+            /// <param name="Header">     </param>
+            /// <param name="stringable"> .ToString() supporting object </param>
             public void AddToData(string Header, object stringable)
             {
                 Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
@@ -204,8 +204,8 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Finish up the response and send it back to the user
             /// </summary>
-            /// <param name="webSocket"></param>
-            /// <returns></returns>
+            /// <param name="webSocket"> </param>
+            /// <returns> </returns>
             public async Task Send(WebSocket webSocket)
             {
                 //Convert the response into its UTF bytes and send it
