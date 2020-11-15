@@ -23,7 +23,7 @@ namespace api.Backend.Security
         /// </summary>
         /// <param name="user"></param>
         /// <returns>The AuthToken to authenticate this session</returns>
-        public static async Task<string> AddSession(User user, string token)
+        public static async Task AddSession(User user, string token)
         {
             Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id, 1);
 
@@ -35,8 +35,6 @@ namespace api.Backend.Security
             {
                 new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
             }
-
-            return token;
         }
 
         /// <summary>
