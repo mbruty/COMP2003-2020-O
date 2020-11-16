@@ -1,8 +1,7 @@
+import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
-import CheckCircle from "../../resources/icons/checkCircle";
-import NotInterested from "../../resources/icons/notInterested";
 interface Props {
   title: string;
   index: number;
@@ -23,14 +22,20 @@ export const Chip: React.FC<Props> = (props) => {
     : [styles.textDisabled, CONSTANT_STYLES.TXT_DEFAULT];
 
   // Set the icon to the enabled / disabled one
-  const icon = props.enabled ? <CheckCircle /> : <NotInterested />;
+  const icon = props.enabled ? "" : "not-interested";
+  const colour = props.enabled ? "#FFFFFF" : "#707070";
   return (
     <TouchableOpacity
       style={{ height: 50 }}
       onPress={() => props.setTouched(!props.enabled, props.index)}
     >
       <View style={viewStyles}>
-        {() => icon}
+        {props.enabled && (
+          <Feather name="check-circle" size={24} color="white" />
+        )}
+        {!props.enabled && (
+          <MaterialIcons name="not-interested" size={24} color="#707070" />
+        )}
         <Text allowFontScaling={false} style={textStyle}>
           {props.title}
         </Text>
