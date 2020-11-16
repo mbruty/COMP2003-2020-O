@@ -12,7 +12,7 @@ interface Props {
 }
 let nick = "";
 
-export const SignUpProcess: React.FC<Props> = (props) => {
+const SignUpProcess: React.FC<Props> = (props) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const submit = () => {
     props.setPage("main");
@@ -56,3 +56,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+export default SignUpProcess;
