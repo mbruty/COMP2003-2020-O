@@ -16,6 +16,8 @@ import { CONSTANT_STYLES } from "../../constants";
 import { isToday, Values } from "./utils";
 import validate from "./ValidateSignUp";
 import { FormProgress, PasswordInput } from "../controls";
+import Cancel from "../../resources/icons/cancel";
+import Banner from "../../resources/BannerSvg";
 
 interface Props {
   next: (value: string, userid: string, authtoken: string) => void;
@@ -61,22 +63,9 @@ const SignUp: React.FC<Props> = (props) => {
           props.close();
         }}
       >
-        <Image
-          style={{
-            width: 40,
-            height: 40,
-          }}
-          source={require("./SignUp/baseline_cancel_black_48.png")}
-        />
+        <Cancel />
       </TouchableOpacity>
-      <Image
-        style={{
-          height: imageHeight,
-          width: imageWidth,
-          marginTop: -15,
-        }}
-        source={require("./shared/preferences_banner.png")}
-      />
+      <Banner />
       <Text
         allowFontScaling={false}
         style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}

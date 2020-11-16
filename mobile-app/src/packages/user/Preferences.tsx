@@ -10,6 +10,7 @@ import {
 import { CONSTANT_STYLES } from "../../constants";
 import { ChipView, CircleBtnView, FormProgress } from "../controls";
 import { submitPreferences } from "./submitPreferences";
+import BannerSvg from "../../resources/BannerSvg";
 
 // ToDo: Fetch this list from the API?
 
@@ -75,14 +76,7 @@ const Preferences: React.FC<Props> = (props) => {
   return (
     <ScrollView>
       <View style={{ elevation: 25 }}>
-        <Image
-          style={{
-            height: imageHeight,
-            width: imageWidth,
-            marginTop: -15,
-          }}
-          source={require("./shared/preferences_banner.png")}
-        />
+        <BannerSvg />
       </View>
       <Text
         allowFontScaling={false}

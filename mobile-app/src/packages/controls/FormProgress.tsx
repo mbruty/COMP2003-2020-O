@@ -12,31 +12,10 @@ import { CONSTANT_STYLES } from "../../constants";
 import { Icon } from "./Icon";
 
 // ToDo: If this is ever needed any where else, maybe add this to the props?
-const items: Array<{
-  text: string;
-  img: { active: ImageSourcePropType; inactive: ImageSourcePropType };
-}> = [
-  {
-    text: "Create Your \nAccount",
-    img: {
-      active: require("../Preferences/FormProgress/account_circle_active.png"),
-      inactive: require("../Preferences/FormProgress/account_circle_inactive.png"),
-    },
-  },
-  {
-    text: "Confirm Your \nEmail",
-    img: {
-      active: require("../Preferences/FormProgress/email_active.png"),
-      inactive: require("../Preferences/FormProgress/email_inactive.png"),
-    },
-  },
-  {
-    text: "Select Your \nPreferences",
-    img: {
-      active: require("../Preferences/FormProgress/food_active.png"),
-      inactive: require("../Preferences/FormProgress/food_inactive.png"),
-    },
-  },
+const items: Array<string> = [
+  "Create Your \nAccount",
+  "Confirm Your \nEmail",
+  "Select Your \nPreferences",
 ];
 
 interface Props {
@@ -63,18 +42,13 @@ const FormProgress: React.FC<Props> = (props) => {
       >
         {items.map((x, index) => (
           <>
-            <Icon
-              text={x.text}
-              image={
-                index === props.selectedIdx ? x.img.active : x.img.inactive
-              }
-            />
+            <Icon text={x} index={index} />
 
             {index < items.length - 1 && <View style={styles.line} />}
           </>
         ))}
       </View>
-      <View style={[styles.container, {paddingBottom: 25}]}>
+      <View style={[styles.container, { paddingBottom: 25 }]}>
         {props.allowBack && (
           <TouchableOpacity
             style={[
@@ -92,7 +66,10 @@ const FormProgress: React.FC<Props> = (props) => {
           style={[CONSTANT_STYLES.BG_RED, styles.btn, { right: 25, bottom: 0 }]}
           onPress={props.onSubmit}
         >
-          <Text allowFontScaling={false} style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>
+          <Text
+            allowFontScaling={false}
+            style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}
+          >
             SUBMIT
           </Text>
         </TouchableOpacity>

@@ -14,6 +14,11 @@ export interface Values {
   confPassword: string;
 }
 
+export interface IData {
+  food: Array<boolean>;
+  allergies: Array<boolean>;
+}
+
 export const email = yup.string().email().required();
 
 export const isToday = (someDate): boolean => {

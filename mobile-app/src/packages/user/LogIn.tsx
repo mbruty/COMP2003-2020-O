@@ -15,6 +15,7 @@ import { CONSTANT_STYLES } from "../../constants";
 import { PasswordInput } from "../controls";
 import { SignIn } from "./utils";
 import validate from "./ValidateLogin";
+import LogInSvg from "../../resources/LogInSvg";
 
 const dimensions = Dimensions.get("window");
 const wHeight = dimensions.height;
@@ -69,7 +70,6 @@ interface Props {
 }
 
 const LogIn: React.FC<Props> = ({ submit, setPage }) => {
-  
   const [values, setValues] = useState<SignIn>({
     email: "",
     password: "",
@@ -81,8 +81,7 @@ const LogIn: React.FC<Props> = ({ submit, setPage }) => {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <Image style={styles.image} source={require("./log-in.png")} />
-
+      <LogInSvg />
       <KeyboardAvoidingView
         style={[styles.card, CONSTANT_STYLES.BG_BASE_COLOUR]}
       >
@@ -135,7 +134,11 @@ const LogIn: React.FC<Props> = ({ submit, setPage }) => {
             Forgot Password?
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => { validate(values, setValidated, submit) }}>
+        <TouchableOpacity
+          onPress={() => {
+            validate(values, setValidated, submit);
+          }}
+        >
           <View style={[styles.btn, CONSTANT_STYLES.BG_RED]}>
             <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
               LOG IN

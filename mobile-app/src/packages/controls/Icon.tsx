@@ -6,17 +6,37 @@ import {
   Text,
   View,
 } from "react-native";
+import Mail from "../../resources/icons/mail";
+import Account from "../../resources/icons/account";
+import Food from "../../resources/icons/food";
 
 interface Props {
-  image: ImageSourcePropType;
   text: string;
+  index: number;
 }
+
+const getImage = (index: number) => {
+  switch (index) {
+    case 0:
+      return <Account />;
+    case 1:
+      return <Mail />;
+    case 2:
+      return <Food />;
+    default:
+      return null;
+  }
+};
 
 export const Icon: React.FC<Props> = (props) => {
   return (
     <View style={styles.container} key={`icon ${props.text}`}>
-      <Image style={styles.img} source={props.image} />
-      <Text allowFontScaling={false} style={styles.txt}>{props.text}</Text>
+      {() => {
+        getImage(props.index);
+      }}
+      <Text allowFontScaling={false} style={styles.txt}>
+        {props.text}
+      </Text>
     </View>
   );
 };

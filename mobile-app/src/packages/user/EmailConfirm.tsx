@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
 import { FormProgress } from "../controls";
-
+import Banner from "../../resources/BannerSvg";
 interface Props {
   next: () => void;
 }
@@ -62,14 +62,7 @@ const EmailConfirm: React.FC<Props> = (props) => {
 
   return (
     <ScrollView>
-      <Image
-        style={{
-          height: imageHeight,
-          width: imageWidth,
-          marginTop: -15,
-        }}
-        source={require("./shared/preferences_banner.png")}
-      />
+      <Banner />
       <Text
         allowFontScaling={false}
         style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}

@@ -1,6 +1,5 @@
-import { API_URL } from "../constants";
-import { IData } from "../shared/IData";
-
+import { API_URL } from "../../constants";
+import { IData } from "./utils";
 export const submitPreferences = (
   data: IData,
   userId: string,

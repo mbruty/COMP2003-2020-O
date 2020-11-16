@@ -7,6 +7,9 @@ import {
   Image,
 } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
+import Settings from "../../resources/icons/settings";
+import Solo from "../../resources/icons/solo";
+import Group from "../../resources/icons/group";
 
 interface Props {
   selectedIdx: number;
@@ -43,14 +46,7 @@ export const Nav: React.FC<Props> = (props) => {
         style={styles.touchable}
         onPress={() => props.setPage(0)}
       >
-        <Image
-          style={[styles.image, { marginTop: 8 }]}
-          source={
-            props.selectedIdx === 0
-              ? require("./resources/solo-active.png")
-              : require("./resources/solo-inactive.png")
-          }
-        />
+        <Solo />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => props.setPage(1)}
@@ -59,27 +55,13 @@ export const Nav: React.FC<Props> = (props) => {
           { width: 75, height: 75, marginTop: -3, marginBottom: -25 },
         ]}
       >
-        <Image
-          style={{ width: 60, height: 60 }}
-          source={
-            props.selectedIdx === 1
-              ? require("./resources/group-active.png")
-              : require("./resources/group-inactive.png")
-          }
-        />
+        <Group />
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.touchable, { marginTop: 4 }]}
         onPress={() => props.setPage(2)}
       >
-        <Image
-          style={styles.image}
-          source={
-            props.selectedIdx === 2
-              ? require("./resources/settings-active.png")
-              : require("./resources/settings-inactive.png")
-          }
-        />
+        <Settings />
       </TouchableOpacity>
     </View>
   );

@@ -7,6 +7,8 @@ import {
   ViewStyle,
 } from "react-native";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
+import Visability from "../../resources/icons/visability";
+import VisabilityOff from "../../resources/icons/visabilityOff";
 
 interface StyleStructure {
   container: ViewStyle;
@@ -22,9 +24,7 @@ interface Props {
 
 const PasswordInput: React.FC<Props> = (props) => {
   const [showText, setShowText] = useState<boolean>(false);
-  const image = showText
-    ? require("./PasswordInput/dont_show_pass.png")
-    : require("./PasswordInput/show_pass.png");
+  const image = showText ? <Visability /> : <VisabilityOff />;
 
   return (
     <View>
@@ -38,7 +38,7 @@ const PasswordInput: React.FC<Props> = (props) => {
         style={{ position: "absolute", top: 38, right: 25 }}
         onPress={() => setShowText(!showText)}
       >
-        <Image source={image} style={{ width: 25, height: 25 }} />
+        {() => image}
       </TouchableOpacity>
     </View>
   );
