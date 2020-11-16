@@ -8,8 +8,8 @@ import {
   TouchableOpacityComponent,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "../../shared/constants";
-import { Icon } from "../Preferences/FormProgress/Icon";
+import { CONSTANT_STYLES } from "../../constants";
+import { Icon } from "./Icon";
 
 // ToDo: If this is ever needed any where else, maybe add this to the props?
 const items: Array<{
@@ -45,7 +45,7 @@ interface Props {
   onSubmit: () => void;
   onBack?: () => void;
 }
-export const FormProgress: React.FC<Props> = (props) => {
+const FormProgress: React.FC<Props> = (props) => {
   const dimensions = Dimensions.get("window");
   const imageWidth = dimensions.width;
   return (
@@ -128,3 +128,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+export default FormProgress;

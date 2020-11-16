@@ -20,7 +20,7 @@ interface Props {
   onChangeText: (text: string) => void;
 }
 
-export const PasswordInput: React.FC<Props> = (props) => {
+const PasswordInput: React.FC<Props> = (props) => {
   const [showText, setShowText] = useState<boolean>(false);
   const image = showText
     ? require("./PasswordInput/dont_show_pass.png")
@@ -34,9 +34,14 @@ export const PasswordInput: React.FC<Props> = (props) => {
         customStyles={props.customStyles}
         onChangeText={props.onChangeText}
       />
-      <TouchableOpacity style={{ position: "absolute", top: 38, right: 25 }} onPress={() => setShowText(!showText)}>
+      <TouchableOpacity
+        style={{ position: "absolute", top: 38, right: 25 }}
+        onPress={() => setShowText(!showText)}
+      >
         <Image source={image} style={{ width: 25, height: 25 }} />
       </TouchableOpacity>
     </View>
   );
 };
+
+export default PasswordInput;

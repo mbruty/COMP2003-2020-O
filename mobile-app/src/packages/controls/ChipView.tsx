@@ -1,14 +1,12 @@
-import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { Chip } from "./ChipView/Chip";
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Chip } from "./Chip";
 interface Props {
   chipNameList: Array<string>;
   enabledArray: Array<boolean>;
   setTouched: (touched: boolean, index: number) => void;
 }
-export const ChipView: React.FC<Props> = (props) => {
-  
-
+const ChipView: React.FC<Props> = (props) => {
   return (
     <View style={styles.container}>
       {props.chipNameList.map((chip, index) => (
@@ -33,3 +31,5 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
 });
+
+export default ChipView;
