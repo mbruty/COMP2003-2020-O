@@ -12,10 +12,10 @@ import { CONSTANT_STYLES } from "../../constants";
 import { Icon } from "./Icon";
 
 // ToDo: If this is ever needed any where else, maybe add this to the props?
-const items: Array<string> = [
-  "Create Your \nAccount",
-  "Confirm Your \nEmail",
-  "Select Your \nPreferences",
+const items: Array<{ name: string; icon: string }> = [
+  { name: "Create Your \nAccount", icon: "account-box" },
+  { name: "Confirm Your \nEmail", icon: "email" },
+  { name: "Select Your \nPreferences", icon: "food" },
 ];
 
 interface Props {
@@ -42,7 +42,12 @@ const FormProgress: React.FC<Props> = (props) => {
       >
         {items.map((x, index) => (
           <>
-            <Icon text={x} index={index} />
+            <Icon
+              text={x.name}
+              iconName={x.icon}
+              enabled={props.selectedIdx === index}
+              index={index}
+            />
 
             {index < items.length - 1 && <View style={styles.line} />}
           </>
