@@ -17,18 +17,15 @@ import { isToday, Values } from "./utils";
 import validate from "./ValidateSignUp";
 import { FormProgress, PasswordInput } from "../controls";
 import Cancel from "../../resources/icons/cancel";
-import Banner from "../../resources/BannerSvg";
+import Banner from "./Banner";
 
 interface Props {
   next: (value: string, userid: string, authtoken: string) => void;
   close: () => void;
 }
 
+const { width } = Dimensions.get("window");
 const SignUp: React.FC<Props> = (props) => {
-  const dimensions = Dimensions.get("window");
-  const imageHeight = Math.round((dimensions.width * 9) / 16);
-  const imageWidth = dimensions.width;
-
   const [values, setValues] = useState<Values>({
     username: "",
     email: "",
@@ -72,7 +69,7 @@ const SignUp: React.FC<Props> = (props) => {
       >
         {"Hello,\nLet's get your account \nset-up"}
       </Text>
-      <View style={[styles.txtContainer, { width: imageWidth - 100 }]}>
+      <View style={[styles.txtContainer, { width: width - 100 }]}>
         <KeyboardAvoidingView>
           <AwesomeTextInput
             label="Username"

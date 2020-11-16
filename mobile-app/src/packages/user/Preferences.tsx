@@ -10,7 +10,7 @@ import {
 import { CONSTANT_STYLES } from "../../constants";
 import { ChipView, CircleBtnView, FormProgress } from "../controls";
 import { submitPreferences } from "./submitPreferences";
-import BannerSvg from "../../resources/BannerSvg";
+import Banner from "./Banner";
 
 // ToDo: Fetch this list from the API?
 
@@ -76,7 +76,7 @@ const Preferences: React.FC<Props> = (props) => {
   return (
     <ScrollView>
       <View style={{ elevation: 25 }}>
-        <BannerSvg />
+        <Banner />
       </View>
       <Text
         allowFontScaling={false}

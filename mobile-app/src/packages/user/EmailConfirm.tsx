@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
 import { FormProgress } from "../controls";
-import Banner from "../../resources/BannerSvg";
+import Banner from "./Banner";
 interface Props {
   next: () => void;
 }
