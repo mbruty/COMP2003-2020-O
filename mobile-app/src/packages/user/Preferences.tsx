@@ -5,14 +5,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import { CircleBtnView } from "./Preferences/CircleBtnView";
-import { ChipView } from "./Preferences/ChipView";
-import { CONSTANT_STYLES } from "../shared/constants";
-import { FormProgress } from "./shared/FormProgress";
-import { IData } from "../shared/IData";
+import { CONSTANT_STYLES } from "../../constants";
+import { ChipView, CircleBtnView, FormProgress } from "../controls";
 import { submitPreferences } from "./submitPreferences";
 
 // ToDo: Fetch this list from the API?
@@ -28,7 +24,12 @@ interface Props {
   userId: string;
 }
 
-export const Preferences: React.FC<Props> = (props) => {
+// The react-native way of doing width: 100vw; height: 100vh;
+const dimensions = Dimensions.get("window");
+const imageHeight = Math.round((dimensions.width * 9) / 16);
+const imageWidth = dimensions.width;
+
+const Preferences: React.FC<Props> = (props) => {
   const [allergiesBoolArr, setAllergiesBoolArr] = useState<Array<boolean>>(
     new Array<boolean>(allergies.length).fill(true)
   );
@@ -69,11 +70,6 @@ export const Preferences: React.FC<Props> = (props) => {
       console.log(e);
     }
   };
-
-  // The react-native way of doing width: 100vw; height: 100vh;
-  const dimensions = Dimensions.get("window");
-  const imageHeight = Math.round((dimensions.width * 9) / 16);
-  const imageWidth = dimensions.width;
 
   const textStyle = [styles.text, CONSTANT_STYLES.TXT_DEFAULT];
   return (
@@ -145,3 +141,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+export default Preferences;

@@ -11,37 +11,18 @@ import {
   View,
 } from "react-native";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { CONSTANT_STYLES } from "../shared/constants";
-import { PasswordInput } from "./SignUp/PasswordInput";
-import { FormProgress } from "./shared/FormProgress";
-import * as yup from "yup";
 import { TouchableOpacity } from "react-native";
-import { API_URL } from "../constants";
-
-const isToday = (someDate): boolean => {
-  const today = new Date();
-  return (
-    someDate.getDate() == today.getDate() &&
-    someDate.getMonth() == today.getMonth() &&
-    someDate.getFullYear() == today.getFullYear()
-  );
-};
-
-const email = yup.string().email().required();
-interface Values {
-  username: string;
-  email: string;
-  dob: Date | string;
-  password: string;
-  confPassword: string;
-}
+import { CONSTANT_STYLES } from "../../constants";
+import { isToday, Values } from "./utils";
+import validate from "./ValidateSignUp";
+import { FormProgress, PasswordInput } from "../controls";
 
 interface Props {
   next: (value: string, userid: string, authtoken: string) => void;
   close: () => void;
 }
 
-export const SignUp: React.FC<Props> = (props) => {
+const SignUp: React.FC<Props> = (props) => {
   const dimensions = Dimensions.get("window");
   const imageHeight = Math.round((dimensions.width * 9) / 16);
   const imageWidth = dimensions.width;
@@ -63,73 +44,6 @@ export const SignUp: React.FC<Props> = (props) => {
     password: "",
     confPassword: "",
   });
-
-  const validate = async () => {
-    let hasErrors = false;
-    let currentErrors: Values = {
-      username: "",
-      email: "",
-      dob: "",
-      password: "",
-      confPassword: "",
-    };
-    try {
-      // Validate the email using Yup
-      await email.validate(values.email);
-    } catch (e) {
-      currentErrors.email = "Please enter a valid email";
-      hasErrors = true;
-    }
-    // Checking that nothing is empty
-    if (values.username.length === 0) {
-      currentErrors.username = "Username is required";
-      hasErrors = true;
-    }
-    if (values.email.length === 0) {
-      currentErrors.email = "Email is required";
-      hasErrors = true;
-    }
-    if (
-      values.password !== values.confPassword ||
-      values.password.length === 0
-    ) {
-      currentErrors.confPassword = "The passwords do not match";
-      hasErrors = true;
-    }
-    // date is initalised to today, so if it's today the haven't changed it
-    if (isToday(date)) {
-      currentErrors.dob = "Date of Birth is required";
-      hasErrors = true;
-    }
-    // No errors occurred... Time to send it to the api
-    if (!hasErrors) {
-      // Try and post the sign-up info
-      fetch(API_URL + "/signup", {
-        method: "POST",
-        headers: {
-          email: values.email,
-          password: values.password,
-          yearOfBirth: date.getFullYear().toString(),
-          nickname: values.username,
-        },
-      })
-        // Convert the response to json
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.error === "Email is in use") {
-            // The email is already in use
-            currentErrors.email = "Email is in use";
-          } else if (response.message === "Signed Up") {
-            // Go to the next bit
-            props.next(values.username, response.userid, response.authtoken);
-          } else {
-            alert("An unexpected error has happened");
-          }
-        })
-        .catch((e) => alert("There was an error signing in"));
-    }
-    setErrors(currentErrors);
-  };
 
   let dateText = isToday(date) ? "Date Of Birth" : date.toDateString();
 
@@ -273,9 +187,7 @@ export const SignUp: React.FC<Props> = (props) => {
       </View>
       <FormProgress
         onSubmit={() => {
-          console.log("Here");
-
-          validate();
+          validate(values, date, setErrors, props.next);
         }}
         allowBack={false}
         selectedIdx={0}
@@ -311,3 +223,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 });
+
+export default SignUp;

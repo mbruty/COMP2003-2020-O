@@ -8,14 +8,14 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "../constants";
-import { FormProgress } from "./shared/FormProgress";
+import { CONSTANT_STYLES } from "../../constants";
+import { FormProgress } from "../controls";
 
 interface Props {
   next: () => void;
 }
 
-export const EmailConfirm: React.FC<Props> = (props) => {
+const EmailConfirm: React.FC<Props> = (props) => {
   const dimensions = Dimensions.get("window");
   const imageHeight = Math.round((dimensions.width * 9) / 16);
   const imageWidth = dimensions.width;
@@ -170,3 +170,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
+
+export default EmailConfirm;

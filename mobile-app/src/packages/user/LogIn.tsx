@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
-  Button,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -11,24 +9,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { CONSTANT_STYLES } from "./shared/constants";
-import { PasswordInput } from "./SignUpProcess/SignUp/PasswordInput";
-import * as yup from "yup";
-import { API_URL } from "./constants";
 
-export interface SignIn {
-  email: string;
-  password: string;
-  logInFailed?: boolean;
-}
+import { AwesomeTextInput } from "react-native-awesome-text-input";
+import { CONSTANT_STYLES } from "../../constants";
+import { PasswordInput } from "../controls";
+import { SignIn } from "./utils";
+import validate from "./ValidateLogin";
+
 const dimensions = Dimensions.get("window");
 const wHeight = dimensions.height;
 const wWidth = dimensions.width;
 
 const styles = StyleSheet.create({
   card: {
-    marginTop: -wHeight * 0.70,
+    marginTop: -wHeight * 0.7,
     padding: 50,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -74,8 +68,8 @@ interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const email = yup.string().email().required();
-export const LogIn: React.FC<Props> = ({ submit, setPage }) => {
+const LogIn: React.FC<Props> = ({ submit, setPage }) => {
+  
   const [values, setValues] = useState<SignIn>({
     email: "",
     password: "",
@@ -85,47 +79,8 @@ export const LogIn: React.FC<Props> = ({ submit, setPage }) => {
     password: "",
   });
 
-  const validate = async () => {
-    // Validate the fields before sending the request!
-
-    if (values.email.trim() === "") {
-      setValidated({ password: "", email: "Email cannot be empty" });
-      return;
-    } else if (values.password === "") {
-      setValidated({ email: "", password: "Password cannot be empty" });
-      return;
-    } else {
-      try {
-        await email.validate(values.email);
-      } catch (e) {
-        setValidated({ password: "", email: "Please enter a valid email" });
-        return;
-      }
-    }
-    // Valid fields, let's try and log in
-    fetch(API_URL + "/login", {
-      method: "POST",
-      headers: {
-        email: values.email,
-        password: values.password,
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        if (response.message === "Logged in") {
-          // It was a valid log in! Send the event to the props!
-          submit(response.authtoken);
-        } else {
-          // Failed log in, display an error
-
-          setValidated({ email: "", password: "", logInFailed: true });
-        }
-      })
-      .catch((e) => alert("There was an error signing in"));
-  };
-
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <Image style={styles.image} source={require("./log-in.png")} />
 
       <KeyboardAvoidingView
@@ -180,7 +135,7 @@ export const LogIn: React.FC<Props> = ({ submit, setPage }) => {
             Forgot Password?
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={validate}>
+        <TouchableOpacity onPress={() => { validate(values, setValidated, submit) }}>
           <View style={[styles.btn, CONSTANT_STYLES.BG_RED]}>
             <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
               LOG IN
@@ -201,3 +156,5 @@ export const LogIn: React.FC<Props> = ({ submit, setPage }) => {
     </ScrollView>
   );
 };
+
+export default LogIn;

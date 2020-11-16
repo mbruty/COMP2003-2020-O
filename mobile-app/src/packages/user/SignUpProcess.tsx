@@ -1,10 +1,9 @@
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { IData } from "./shared/IData";
-import { EmailConfirm } from "./SignUpProcess/EmailConfirm";
-import { IUser } from "./SignUpProcess/IUser";
-import { Preferences } from "./SignUpProcess/Preferences";
-import { SignUp } from "./SignUpProcess/SignUp";
+import EmailConfirm from "./EmailConfirm";
+import { IUser } from "./IUser";
+import Preferences from "./Preferences";
+import SignUp from "./SignUp";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>;
