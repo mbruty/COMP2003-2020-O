@@ -10,6 +10,7 @@ import { CONSTANT_STYLES } from "../../constants";
 import Settings from "../../resources/icons/settings";
 import Solo from "../../resources/icons/solo";
 import Group from "../../resources/icons/group";
+import { FontAwesome, FontAwesome5, Fontisto } from "@expo/vector-icons";
 
 interface Props {
   selectedIdx: number;
@@ -28,10 +29,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
   },
-  image: {
-    width: 40,
-    height: 40,
-  },
   touchable: {
     height: 50,
     width: 50,
@@ -46,22 +43,31 @@ export const Nav: React.FC<Props> = (props) => {
         style={styles.touchable}
         onPress={() => props.setPage(0)}
       >
-        <Solo />
+        <FontAwesome5
+          name="user-ninja"
+          size={30}
+          color={props.selectedIdx === 0 ? "#FD4040" : "#707070"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => props.setPage(1)}
-        style={[
-          styles.touchable,
-          { width: 75, height: 75, marginTop: -3, marginBottom: -25 },
-        ]}
+        style={[styles.touchable]}
       >
-        <Group />
+        <FontAwesome
+          name="group"
+          size={30}
+          color={props.selectedIdx === 1 ? "#FD4040" : "#707070"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.touchable, { marginTop: 4 }]}
         onPress={() => props.setPage(2)}
       >
-        <Settings />
+        <Fontisto
+          name="player-settings"
+          size={30}
+          color={props.selectedIdx === 2 ? "#FD4040" : "#707070"}
+        />
       </TouchableOpacity>
     </View>
   );
