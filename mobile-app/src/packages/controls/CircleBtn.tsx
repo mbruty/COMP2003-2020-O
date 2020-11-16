@@ -1,8 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
-import Heart from "../../resources/icons/heart";
-import NotInterested from "../../resources/icons/notInterested";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 interface Props {
   name: string;
   index: number;
@@ -16,14 +15,28 @@ export const CircleBtn: React.FC<Props> = (props) => {
   buttonStyle.push(
     props.selected ? CONSTANT_STYLES.BG_RED : CONSTANT_STYLES.BG_WHITE
   );
-  const image = props.selected ? <Heart /> : <NotInterested />;
   return (
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => props.setTouched(!props.selected, props.index)}
         style={buttonStyle}
       >
-        {() => image}
+        {props.selected && (
+          <MaterialCommunityIcons
+            style={styles.icon}
+            name="heart"
+            color="white"
+            size={32}
+          />
+        )}
+        {!props.selected && (
+          <MaterialIcons
+            style={styles.icon}
+            name="not-interested"
+            color="#707070"
+            size={32}
+          />
+        )}
       </TouchableOpacity>
       <Text
         allowFontScaling={false}
@@ -49,8 +62,6 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   icon: {
-    width: 32,
-    height: 32,
     marginLeft: 14,
     marginTop: 14,
   },
