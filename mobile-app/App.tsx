@@ -14,7 +14,7 @@ export default function App() {
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
 
-  const [page, setPage] = useState<string>("test");
+  const [page, setPage] = useState<string>("solo-swipe");
 
   // Render the different pages by name of page
   switch (page) {
@@ -34,14 +34,17 @@ export default function App() {
           <GroupTab />
         </SafeAreaView>
       );
-    case "test":
+    case "solo-swipe":
+      //This should be run from a container on the main page
       return (
           <SwipeCard
-            title="Burger"
-            imageURI="https://supervalu.co.uk/wp-content/uploads/2017/04/Burger.png"
+          //*Example data* Actual data can be pulled from database when we have it
+            title="Burgers"
+            imageURI="https://images.saymedia-content.com/.image/c_limit%2Ccs_srgb%2Cq_auto:good%2Cw_1024/MTc0Mzc4NTY2MjIwNjUzOTI4/best-burger-restaurant-names.webp"
             items={[
-              { text: "Gulten Free", enabled: true },
-              { text: "Kosher Option", enabled: false },
+              { text: "Vegetarian Options", enabled: true },
+              { text: "Gluten Free Options", enabled: true },
+              { text: "Kosher Options", enabled: false },
             ]}
           />
       );
