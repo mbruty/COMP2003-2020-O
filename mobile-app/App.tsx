@@ -1,52 +1,39 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { GroupTab } from "./App/GroupTab";
-import { LogIn } from "./App/LogIn";
-import { SignUpProcess } from "./App/SignUpProcess";
-import { IUser } from "./App/SignUpProcess/IUser";
-import { FormProgress } from "./App/SignUpProcess/shared/FormProgress";
-import AnimatedCard from "./App/GroupTab/AnimatedScroll/AnimatedCard";
-import { SwipeCard } from "./App/SwipeCard";
+import MainScreen from "./src/packages/main-sequence";
+import { LogIn, SignUpProcess } from "./src/packages/user";
+import { IUser } from "./src/packages/user/IUser";
 
 export default function App() {
-  const [user, setUser] = useState<IUser>({ fName: "Mike" });
+  const [user, setUser] = useState<IUser>();
 
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
+  
+  const [page, setPage] = useState<string>("log-in");
 
-  const [page, setPage] = useState<string>("solo-swipe");
+  const logIn = (token: string) => {
+    setUser({ authToken: token });
+    setPage("main");
+  };
 
   // Render the different pages by name of page
   switch (page) {
     case "sign-up":
-      return <SignUpProcess setPage={setPage} user={user} />;
+      return <SignUpProcess setUser={setUser} setPage={setPage} user={user} />;
       break;
     case "log-in":
       return (
         <SafeAreaView style={styles.container}>
-          <LogIn />
+          <LogIn setPage={setPage} submit={logIn} />
         </SafeAreaView>
       );
       break;
     case "main":
       return (
         <SafeAreaView style={styles.container}>
-          <GroupTab />
+          <MainScreen />
         </SafeAreaView>
-      );
-    case "solo-swipe":
-      //This should be run from a container on the main page
-      return (
-          <SwipeCard
-          //*Example data* Actual data can be pulled from database when we have it
-            title="Burgers"
-            imageURI="https://images.saymedia-content.com/.image/c_limit%2Ccs_srgb%2Cq_auto:good%2Cw_1024/MTc0Mzc4NTY2MjIwNjUzOTI4/best-burger-restaurant-names.webp"
-            items={[
-              { text: "Vegetarian Options", enabled: true },
-              { text: "Gluten Free Options", enabled: true },
-              { text: "Kosher Options", enabled: false },
-            ]}
-          />
       );
     default:
       return (

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL
 {
@@ -9,9 +10,13 @@ namespace api.Backend.Data.SQL
     {
         #region Methods
 
+        /// <summary>
+        /// Get the value(s) of the last autoincrmenetd fields
+        /// </summary>
+        /// <returns>Array of incremented ids</returns>
         private int[] FetchAutoIncrement()
         {
-            List<object[]> Data = Instance.Read($"SELECT LAST_INSERT_ID();");
+            List<object[]> Data = SQL.Instance.DoAsync(Instance.Read($"SELECT LAST_INSERT_ID();"));
             return Array.ConvertAll(Data[0], x => int.Parse(x.ToString()));
         }
 
@@ -25,12 +30,16 @@ namespace api.Backend.Data.SQL
 
         #endregion Constructors
 
-        public virtual bool Delete()
+        /// <summary>
+        /// Delete this object from the database
+        /// </summary>
+        /// <returns>If the delete was successful</returns>
+        public virtual async Task<bool> Delete()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
 
-            Column[] PrimaryKeys = table.PrimaryKeys, Fields = table.Fields;
+            Column[] PrimaryKeys = table.PrimaryKeys;
 
             List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
 
@@ -42,10 +51,15 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            return Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
+            return await Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
         }
 
-        public virtual bool Insert(bool FetchInsertedIds = false)
+        /// <summary>
+        /// Attempt to insert this into the db
+        /// </summary>
+        /// <param name="FetchInsertedIds">If we should fill auto incremeneted fields</param>
+        /// <returns>If the insert was successful</returns>
+        public virtual async Task<bool> Insert(bool FetchInsertedIds = false)
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -68,7 +82,7 @@ namespace api.Backend.Data.SQL
             }
             What = What.Trim().Remove(What.Length - 2, 1);
 
-            bool success = Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
+            bool success = await Instance.Execute($"INSERT INTO {table.Name} VALUES ({What})", Params);
 
             if (FetchInsertedIds && success)
             {
@@ -79,7 +93,11 @@ namespace api.Backend.Data.SQL
             return success;
         }
 
-        public virtual bool Update()
+        /// <summary>
+        /// Attempt to update this object in the db
+        /// </summary>
+        /// <returns>If the update was successful</returns>
+        public virtual async Task<bool> Update()
         {
             Type t = this.GetType();
             Table table = Binding.GetTable(t);
@@ -104,7 +122,7 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
-            return Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
+            return await Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
         }
     }
 }
