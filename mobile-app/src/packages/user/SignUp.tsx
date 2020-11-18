@@ -16,8 +16,8 @@ import { CONSTANT_STYLES } from "../../constants";
 import { isToday, Values } from "./utils";
 import validate from "./ValidateSignUp";
 import { FormProgress, PasswordInput } from "../controls";
-import Cancel from "../../resources/icons/cancel";
 import Banner from "./Banner";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Props {
   next: (value: string, userid: string, authtoken: string) => void;
@@ -60,7 +60,7 @@ const SignUp: React.FC<Props> = (props) => {
           props.close();
         }}
       >
-        <Cancel />
+        <Ionicons name="ios-close-circle-outline" size={32} color="black" />
       </TouchableOpacity>
       <Banner />
       <Text
