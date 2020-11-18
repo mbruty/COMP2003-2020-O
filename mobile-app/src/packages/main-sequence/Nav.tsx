@@ -7,9 +7,6 @@ import {
   Image,
 } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
-import Settings from "../../resources/icons/settings";
-import Solo from "../../resources/icons/solo";
-import Group from "../../resources/icons/group";
 import { FontAwesome, FontAwesome5, Fontisto } from "@expo/vector-icons";
 
 interface Props {

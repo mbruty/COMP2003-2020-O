@@ -1,3 +1,4 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   Image,
@@ -7,8 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import Visability from "../../resources/icons/visability";
-import VisabilityOff from "../../resources/icons/visabilityOff";
+import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
 
 interface StyleStructure {
   container: ViewStyle;
@@ -24,7 +24,6 @@ interface Props {
 
 const PasswordInput: React.FC<Props> = (props) => {
   const [showText, setShowText] = useState<boolean>(false);
-  const image = showText ? <Visability /> : <VisabilityOff />;
 
   return (
     <View>
@@ -38,7 +37,19 @@ const PasswordInput: React.FC<Props> = (props) => {
         style={{ position: "absolute", top: 38, right: 25 }}
         onPress={() => setShowText(!showText)}
       >
-        {() => image}
+        {showText ? (
+          <MaterialIcons
+            name="visibility"
+            size={24}
+            color={CONSTANT_COLOURS.DARK_GREY}
+          />
+        ) : (
+          <MaterialIcons
+            name="visibility-off"
+            size={24}
+            color={CONSTANT_COLOURS.DARK_GREY}
+          />
+        )}
       </TouchableOpacity>
     </View>
   );
