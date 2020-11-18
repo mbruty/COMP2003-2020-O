@@ -13,7 +13,7 @@ namespace api.Backend.Data.SQL
         /// <summary>
         /// Get the value(s) of the last autoincrmenetd fields
         /// </summary>
-        /// <returns>Array of incremented ids</returns>
+        /// <returns> Array of incremented ids </returns>
         private int[] FetchAutoIncrement()
         {
             List<object[]> Data = SQL.Instance.DoAsync(Instance.Read($"SELECT LAST_INSERT_ID();"));
@@ -33,7 +33,7 @@ namespace api.Backend.Data.SQL
         /// <summary>
         /// Delete this object from the database
         /// </summary>
-        /// <returns>If the delete was successful</returns>
+        /// <returns> If the delete was successful </returns>
         public virtual async Task<bool> Delete()
         {
             Type t = this.GetType();
@@ -57,8 +57,8 @@ namespace api.Backend.Data.SQL
         /// <summary>
         /// Attempt to insert this into the db
         /// </summary>
-        /// <param name="FetchInsertedIds">If we should fill auto incremeneted fields</param>
-        /// <returns>If the insert was successful</returns>
+        /// <param name="FetchInsertedIds"> If we should fill auto incremeneted fields </param>
+        /// <returns> If the insert was successful </returns>
         public virtual async Task<bool> Insert(bool FetchInsertedIds = false)
         {
             Type t = this.GetType();
@@ -96,7 +96,7 @@ namespace api.Backend.Data.SQL
         /// <summary>
         /// Attempt to update this object in the db
         /// </summary>
-        /// <returns>If the update was successful</returns>
+        /// <returns> If the update was successful </returns>
         public virtual async Task<bool> Update()
         {
             Type t = this.GetType();

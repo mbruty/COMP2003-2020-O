@@ -15,8 +15,8 @@ namespace api.Backend.Security
         /// <summary>
         /// Hash the given string
         /// </summary>
-        /// <param name="raw"></param>
-        /// <returns></returns>
+        /// <param name="raw"> </param>
+        /// <returns> </returns>
         public static string Hash(string raw)
         {
             return encoder.Encode(raw);
@@ -25,9 +25,9 @@ namespace api.Backend.Security
         /// <summary>
         /// Check if the raw matches the hash
         /// </summary>
-        /// <param name="raw">Unhashed string</param>
-        /// <param name="hash">Hashed string</param>
-        /// <returns></returns>
+        /// <param name="raw">  Unhashed string </param>
+        /// <param name="hash"> Hashed string </param>
+        /// <returns> </returns>
         public static bool Match(string raw, string hash)
         {
             return encoder.Compare(raw, hash);
