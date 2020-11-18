@@ -9,9 +9,8 @@
 
 import React from "react";
 import { Animated, Dimensions, StyleSheet, Text, View } from "react-native";
-import { CONSTANT_STYLES } from "../../shared/constants";
-import { CARD_HEIGHT as DEFAULT_CARD_HEIGHT } from "../shared/Card";
 import AnimatedCard from "./AnimatedCard";
+import { CARD_HEIGHT as DEFAULT_CARD_HEIGHT } from "./Card";
 export const MARGIN = 16;
 export const CARD_HEIGHT = DEFAULT_CARD_HEIGHT + MARGIN * 2;
 const { height: wHeight, width: wWidth } = Dimensions.get("window");
@@ -20,7 +19,7 @@ const styles: any = StyleSheet.create({
   card: {
     marginVertical: MARGIN,
     alignSelf: "center",
-    width: wWidth
+    width: wWidth,
   },
 });
 
@@ -29,10 +28,10 @@ interface GroupCardProps {
   index: number;
   type: number;
   name: any;
-  nextVisit?: string;
+  visitDate?: string;
 }
 
-const GroupCard = ({ type, y, index, name, nextVisit }: GroupCardProps) => {
+const GroupCard = ({ type, y, index, name, visitDate }: GroupCardProps) => {
   const position = Animated.subtract(index * CARD_HEIGHT, y);
   const isDisappearing = -CARD_HEIGHT;
   const isTop = 0;
@@ -68,7 +67,7 @@ const GroupCard = ({ type, y, index, name, nextVisit }: GroupCardProps) => {
       style={[styles.card, { opacity, transform: [{ translateY }, { scale }] }]}
       key={index}
     >
-      <AnimatedCard {...{ type }} name={name} nextVisit={nextVisit} />
+      <AnimatedCard {...{ type }} name={name} nextVisit={visitDate} />
     </Animated.View>
   );
 };

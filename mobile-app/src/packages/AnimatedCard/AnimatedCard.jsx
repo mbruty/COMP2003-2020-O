@@ -4,7 +4,7 @@ import Animated from "react-native-reanimated";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { Transition, Transitioning } from "react-native-reanimated";
 const { width } = Dimensions.get("window");
-import Card, { CARD_WIDTH } from "../shared/Card";
+import Card, { CARD_WIDTH } from "./Card";
 const { cond, eq, add, call, set, Value, event, or } = Animated;
 
 export default class AnimatedCard extends React.Component {
@@ -90,7 +90,7 @@ export default class AnimatedCard extends React.Component {
           maxPointers={1}
           onGestureEvent={this.onGestureEvent}
           onHandlerStateChange={this.onGestureEvent}
-          activeOffsetX={[-20, 20]}
+          activeOffsetX={[-10, 10]}
         >
           <Animated.View
             style={{
