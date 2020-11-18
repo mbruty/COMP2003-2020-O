@@ -1,4 +1,5 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -11,35 +12,45 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
-        #region Properties
-
-        public FoodChecks foodCheck
-        {
-            get { return Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId)?[0]; }
-        }
-
-        public Visit[] visits
-        {
-            get { return Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
-        }
-
-        #endregion Properties
-
         #region Methods
 
-        public override bool Delete()
+        public override async Task<bool> Delete()
         {
-            return base.Delete() && foodCheck.Delete();
+            return await base.Delete() && await (await GetFoodCheck()).Delete();
         }
 
-        public override bool Insert(bool FetchInsertedIds = false)
+        public async Task<FoodChecks> GetFoodCheck()
+        {
+            return (await Binding.GetTable<FoodChecks>().Select<FoodChecks>("id", this.CheckId))?[0];
+        }
+
+        public async Task<FoodOpinion[]> GetFoodOpinions()
+        {
+            return await Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("UserID", Id);
+        }
+
+        public async Task<RestaurantOpinion[]> GetRestaurantopinions()
+        {
+            return await Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("UserID", Id);
+        }
+
+        public async Task<Restaurant[]> GetRestaurants()
+        { return await Binding.GetTable<Restaurant>().Select<Restaurant>("OwnerID", Id); }
+
+        public async Task<Session> GetSession()
+        { return (await Binding.GetTable<Session>().Select<Session>("UserId", Id))?[0]; }
+
+        public async Task<Visit[]> GetVisits()
+        { return await Binding.GetTable<Visit>().Select<Visit>("UserId", Id); }
+
+        public override async Task<bool> Insert(bool FetchInsertedIds = false)
         {
             FoodChecks foodChecks = new FoodChecks();
-            foodChecks.Insert(true);
+            await foodChecks.Insert(true);
 
             this.CheckId = foodChecks.Id;
 
-            return base.Insert(FetchInsertedIds);
+            return await base.Insert(FetchInsertedIds);
         }
 
         #endregion Methods

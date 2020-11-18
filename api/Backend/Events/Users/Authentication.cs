@@ -3,6 +3,7 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Collections.Specialized;
+using System.Threading;
 
 namespace api.Backend.Events.Users
 {
@@ -11,16 +12,16 @@ namespace api.Backend.Events.Users
         #region Methods
 
         [WebEvent("/auth", "POST", false)]
-        public static void CheckAuth(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        public static async void CheckAuth(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            if (!Sessions.CheckSession(headers, ref response)) return;
+            if (!await Sessions.CheckSession(headers, response)) return;
 
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
         [WebEvent("/login", "POST", false)]
-        public static void Login(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        public static async void Login(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"];
 
@@ -31,7 +32,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = Binding.GetTable<User>().Select<User>("email", email);
+            User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
             if (users.Length == 0)
             {
@@ -47,7 +48,8 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            string Token = Sessions.AddSession(users[0]);
+            string Token = Sessions.RandomString();
+            await Sessions.AddSession(users[0], Token);
 
             response.AddToData("authtoken", Token);
             response.AddToData("userid", users[0].Id);
@@ -57,9 +59,9 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/signup", "POST", false)]
-        public static void SignUp(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        public static async void SignUp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"];
+            string email = headers["email"], password = headers["password"], yearOfBirth = headers["yearOfBirth"], nickname = headers["nickname"];
 
             if (email == null || password == null)
             {
@@ -68,7 +70,14 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = Binding.GetTable<User>().Select<User>("email", email);
+            if (!ValidityChecks.IsStrongPassword(password))
+            {
+                response.AddToData("error", "Password is too weak");
+                response.StatusCode = 401;
+                return;
+            }
+
+            User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
             if (users.Length > 0)
             {
@@ -77,8 +86,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User user = new User();
-            user.Email = email; user.Password = Security.Hashing.Hash(password);
+            User user = new User() { Email = email, Password = "PASSWORD PENDING" };
 
             if (!int.TryParse(yearOfBirth, out user.YearOfBirth))
             {
@@ -87,11 +95,20 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            user.Insert(true);
+            if (nickname != null) user.Nickname = nickname;
 
-            string Token = Sessions.AddSession(user);
+            if (!await user.Insert(true))
+            {
+                response.StatusCode = 501;
+                response.AddToData("error", "Database Insertion Failure");
+                return;
+            }
 
-            response.AddToData("authtoken", Token);
+            string token = Sessions.RandomString();
+
+            new Thread(async () => { user.Password = Hashing.Hash(password); await user.Update(); await Sessions.AddSession(user, token); }).Start();
+
+            response.AddToData("authtoken", token);
             response.AddToData("userid", user.Id);
 
             response.StatusCode = 200;
