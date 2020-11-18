@@ -17,6 +17,9 @@ RUN git clone --branch Development https://${git_user}:${git_pw}@github.com/mbru
 
 # Move in to the website folder
 WORKDIR COMP2003-2020-O/website
+
+RUN touch .env
+RUN echo PORT=5000 > .env
 # Install the dependencies
 RUN npm i
 
@@ -28,4 +31,4 @@ EXPOSE 5000:5000
 
 # End of install #
 # Run this every time the container is started
-CMD ["node", "src/server.js"]
+CMD ["node", "server.js"]
