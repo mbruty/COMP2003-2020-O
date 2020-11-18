@@ -44,12 +44,20 @@ create table `User` (
 );
 
 create table `Session` (
-	UserId int unique auto_increment not null,
+	UserId int unique not null,
     foreign key (UserId) references `User`(Id) on delete cascade on update cascade,
     
     SignedIn datetime default now(),
     AuthToken varchar(110) not null
 );
+
+DROP trigger IF EXISTS `SessionInsert`;
+DELIMITER $$
+create trigger SessionInsert before insert on `Session`
+	FOR EACH ROW BEGIN 
+		set NEW.SignedIn = now();
+	END;$$
+DELIMITER ;
 
 create table `Restaurant` (
 	Id int unique auto_increment not null,
