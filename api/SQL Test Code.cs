@@ -6,10 +6,10 @@ namespace api
     {
         #region Methods
 
-        public static void Run()
+        public static async void Run()
         {
             FoodChecks u = new FoodChecks();
-            u.Insert(true);
+            await u.Insert(true);
 
             //var p = Binding.GetTable<User>().Select<User>()[0].visits;
         }

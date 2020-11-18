@@ -11,10 +11,19 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/auth", "POST", false)]
-        public static async void CheckAuth(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent("/authcheck", "POST", false)]
+        public static async void CheckAuthHttp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             if (!await Sessions.CheckSession(headers, response)) return;
+
+            response.StatusCode = 200;
+            response.AddToData("message", "You are logged in");
+        }
+
+        [WebEvent("/authcheck")]
+        public static async void CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
+        {
+            if (!await Sessions.CheckSession(@event.Data, response)) return;
 
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
