@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import MainScreen from "./src/packages/main-sequence";
-import { LogIn, SignUpProcess } from "./src/packages/user";
-import { IUser } from "./src/packages/user/IUser";
+import MainScreen from "./packages/main-sequence";
+import { LogIn, SignUpProcess } from "./packages/user";
+import { IUser } from "./packages/user/IUser";
 
 export default function App() {
   const [user, setUser] = useState<IUser>();
 
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
-  
+
   const [page, setPage] = useState<string>("log-in");
 
   const logIn = (token: string) => {
