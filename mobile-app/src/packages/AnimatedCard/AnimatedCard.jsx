@@ -10,6 +10,8 @@ const { cond, eq, add, call, set, Value, event, or } = Animated;
 export default class AnimatedCard extends React.Component {
   constructor(props) {
     super(props);
+    this.handleSwipe = props.onSwipe;
+    this.cardIdx = props.index;
     this.dragX = new Value(0);
     this.absoluteX = new Value(0);
     this.offsetX = new Value(width / 2 - CARD_WIDTH / 2);
@@ -46,7 +48,7 @@ export default class AnimatedCard extends React.Component {
       this.ref.current.animateNextTransition();
     } else {
       // Open the thingy
-      alert("Open")
+      this.handleSwipe(this.cardIdx);
     }
   };
 
@@ -101,7 +103,11 @@ export default class AnimatedCard extends React.Component {
               ],
             }}
           >
-            <Card type={this.props.type} name={this.props.name} nextVisit={this.props.nextVisit} />
+            <Card
+              type={this.props.type}
+              name={this.props.name}
+              nextVisit={this.props.nextVisit}
+            />
           </Animated.View>
         </PanGestureHandler>
       </Transitioning.View>

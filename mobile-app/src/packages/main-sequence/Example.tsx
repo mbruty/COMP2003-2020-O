@@ -65,6 +65,7 @@ const cards = [
  */
 const handleSwipe = (index: number) => {
   //What to do when the user swipes on that card
+  alert("Swipe from " + index);
 };
 
 const Example: React.FC = (props) => {

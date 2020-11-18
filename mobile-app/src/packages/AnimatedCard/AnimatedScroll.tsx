@@ -54,6 +54,7 @@ const AnimatedScroll: React.FC<Props> = (props) => {
           {...{ index, y, type }}
           name={props.cards[index].name}
           visitDate={props.cards[index].visitDate}
+          onSwipe={props.handleSwipe}
         />
       )}
       keyExtractor={(item) => `${item.index}`}

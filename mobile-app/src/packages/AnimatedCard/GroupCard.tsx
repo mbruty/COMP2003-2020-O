@@ -29,9 +29,10 @@ interface GroupCardProps {
   type: number;
   name: any;
   visitDate?: string;
+  onSwipe: (index: number) => void;
 }
 
-const GroupCard = ({ type, y, index, name, visitDate }: GroupCardProps) => {
+const GroupCard = ({ type, y, index, name, visitDate, onSwipe }: GroupCardProps) => {
   const position = Animated.subtract(index * CARD_HEIGHT, y);
   const isDisappearing = -CARD_HEIGHT;
   const isTop = 0;
@@ -67,7 +68,13 @@ const GroupCard = ({ type, y, index, name, visitDate }: GroupCardProps) => {
       style={[styles.card, { opacity, transform: [{ translateY }, { scale }] }]}
       key={index}
     >
-      <AnimatedCard {...{ type }} name={name} nextVisit={visitDate} />
+      <AnimatedCard
+        {...{ type }}
+        name={name}
+        nextVisit={visitDate}
+        index={index}
+        onSwipe={onSwipe}
+      />
     </Animated.View>
   );
 };
