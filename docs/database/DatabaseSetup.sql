@@ -1,7 +1,6 @@
-Drop table if exists `Review`;
-Drop table if exists `Visit`;
-Drop table if exists `RestaurantOpinion`;
-
+DROP TABLE IF EXISTS `Review`;
+DROP TABLE IF EXISTS `Visit`;
+DROP TABLE IF EXISTS `RestaurantOpinion`;
 DROP TABLE IF EXISTS `LinkMenuFood`;
 DROP TABLE IF EXISTS `FoodItemTags`;
 DROP TABLE IF EXISTS `FoodItem`;
@@ -217,43 +216,44 @@ CREATE TABLE `LinkMenuFood` (
         REFERENCES FoodItem(FoodID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE `RestaurantOpinion` (
+    UserID INT NOT NULL,
+    RestaurantID INT NOT NULL,
+    RSwipeRight INT NOT NULL DEFAULT 0,
+    RSwipeLeft INT NOT NULL DEFAULT 0,
+    NeverShow BIT NOT NULL DEFAULT 0,
 
+    PRIMARY KEY (UserID, RestaurantID),
 
-
-
-
-create table `RestaurantOpinion` (
-	UserId int not null,
-	ResturantId int not null,
-    primary key (UserId, ResturantId),
-    foreign key (UserId) references `User`(Id) on delete restrict on update cascade,
-    foreign key (ResturantId) references `Restaurant`(Id) on delete restrict on update cascade,
-    
-    SwipeLeft int default 0,
-    SwipeRight int default 0,
-    NeverShow bit default 0
+    CONSTRAINT FK_UserInRestaurantOpinion FOREIGN KEY (UserID)
+        REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT FK_RestaurantInRestaurantOpinion FOREIGN KEY (RestaurantID)
+        REFERENCES Restaurant(RestaurantID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-create table `Visit` (
-	Id int unique auto_increment not null,
-    primary key (Id),
-    
-	UserId int not null,
-	ResturantId int not null,
-    foreign key (UserId) references `User`(Id) on delete restrict on update cascade,
-    foreign key (ResturantId) references `Restaurant`(Id) on delete restrict on update cascade,
-    
-    GroupSize TinyInt not null,
-    check (GroupSize>0),
-    
-	`Date` datetime default now()
+CREATE TABLE `Visit` (
+    VisitRef INT NOT NULL AUTO_INCREMENT,
+    RestaurantID INT NOT NULL,
+    UserID INT NOT NULL,
+    DateOfVisit DATETIME NOT NULL DEFAULT NOW(),
+    GroupSize TINYINT NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (VisitRef),
+
+    CONSTRAINT FK_UserInVisit FOREIGN KEY (UserID)
+        REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT FK_RestaurantInVisit FOREIGN KEY (RestaurantID)
+        REFERENCES Restaurant(RestaurantID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT CHK_GroupSize CHECK (GroupSize > 0)
 );
 
-create table `Review` (
-	VisitId int not null,
-    primary key (VisitId),
-    foreign key (VisitId) references `Visit`(Id) on delete restrict on update cascade,
-    
-    Rating tinyint,
-    check (Rating>0 AND Rating<=5)
+CREATE TABLE `Review` (
+    VisitRef INT NOT NULL,
+    Rating TINYINT NOT NULL,
+
+    PRIMARY KEY (VisitRef),
+
+    CONSTRAINT FK_VisitInReview FOREIGN KEY (VisitRef)
+        REFERENCES Visit(VisitRef) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT CHK_Rating CHECK (Rating BETWEEN 0 AND 10)
 );
