@@ -1,11 +1,12 @@
 Drop table if exists `Review`;
 Drop table if exists `Visit`;
-Drop table if exists `FoodOpinion`;
 Drop table if exists `RestaurantOpinion`;
 Drop table if exists `MenuItemTags`;
 Drop table if exists `MenuItem`;
-Drop table if exists `FoodTags`;
 
+DROP TABLE IF EXISTS `Days`;
+DROP TABLE IF EXISTS `FoodOpinion`;
+DROP TABLE IF EXISTS `FoodTags`;
 DROP TABLE IF EXISTS `Restaurant`;
 DROP TABLE IF EXISTS `Session`;
 DROP TABLE IF EXISTS `User`;
@@ -43,7 +44,7 @@ CREATE TABLE `User` (
     CONSTRAINT FK_FoodCheckInUser FOREIGN KEY (FoodCheckID) 
         REFERENCES FoodChecks(FoodCheckID) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_Email CHECK (Email LIKE '%@%.%'),
-    CONSTRAINT CHK_Nickname CHECK (Nickname REGEXP '[a-zA-Z]{3,}'),
+    CONSTRAINT CHK_Nickname CHECK (Nickname REGEXP '[a-zA-Z]{2,}'),
     CONSTRAINT CHK_DateOfBirth CHECK (DateOfBirth >= '1900-01-01')
 );
 
@@ -80,8 +81,42 @@ CREATE TABLE `Restaurant` (
     CONSTRAINT CHK_RestaurantPhone CHECK (Phone REGEXP '[0-9]{11}'),
     CONSTRAINT CHK_RestaurantEmail CHECK (Email LIKE '%@%.%'),
     CONSTRAINT CHK_RestaurantSite CHECK (`Site` LIKE '%://%.%')
-)
+);
 
+CREATE TABLE `FoodTags` (
+    FoodTagID INT NOT NULL AUTO_INCREMENT,
+    Tag VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (FoodTagID),
+    CONSTRAINT UNQ_FoodTagID UNIQUE (FoodTagID),
+    CONSTRAINT UNQ_FoodTag UNIQUE (Tag),
+
+    CONSTRAINT CHK_Tag CHECK (Tag REGEXP '[a-z]{3,}')
+);
+
+CREATE TABLE `FoodOpinion` (
+    UserID INT NOT NULL,
+    FoodTagID INT NOT NULL,
+    FOSwipeRight INT DEFAULT 0,
+    FOSwipeLeft INT DEFAULT 0,
+    NeverShow BIT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (UserID, FoodTagID),
+    CONSTRAINT UNQ_FoodOpinion UNIQUE (UserID, FoodTagID),
+
+    CONSTRAINT FK_UserInFoodOpinion FOREIGN KEY (UserID)
+        REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT FK_TagInFoodOpinion FOREIGN KEY (FoodTagID)
+        REFERENCES FoodTags(FoodTagID) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE `Days` (
+    DayRef VARCHAR(5) NOT NULL,
+    DayName VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (DayRef),
+    CONSTRAINT UNQ_Days UNIQUE (DayName)
+);
 
 
 
@@ -101,13 +136,6 @@ create table `MenuItem` (
     Price float not null
 );
 
-create table `FoodTags` (
-	Id int unique auto_increment not null,
-    Tag varchar(20) unique not null,
-	primary key (Id, Tag),
-    
-    check (Tag REGEXP '[a-zA-Z]{3,}')
-);
 
 create table `MenuItemTags` (
 	MenuId int not null,
@@ -117,16 +145,7 @@ create table `MenuItemTags` (
     foreign key (FoodTagId) references `FoodTags`(Id) on delete restrict on update cascade
 );
 
-create table `FoodOpinion` (
-	UserId int not null,
-    FoodTagId int not null,
-    primary key (UserId, FoodTagId),
-    foreign key (UserId) references `User`(Id) on delete restrict on update cascade,
-    foreign key (FoodTagId) references `FoodTags`(Id) on delete restrict on update cascade,
-    
-    SwipeRight int default 0,
-    NeverShow bit default 0
-);
+
 
 create table `RestaurantOpinion` (
 	UserId int not null,
