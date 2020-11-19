@@ -2,7 +2,7 @@ import { SignIn } from "../packages/user/utils";
 import ValidateLogin from "../packages/user/ValidateLogin";
 
 describe("Validate Login", () => {
-  it("Should return invalid email", async () => {
+  it("Catches a bad email", async () => {
     const values: SignIn = {
       email: "not_an_email@fake",
       password: "legit_password_1",
@@ -12,7 +12,7 @@ describe("Validate Login", () => {
     expect(errors.password).toBe("");
   });
 
-  it("Should return empty email message", async () => {
+  it("Catches an empty email", async () => {
     const values: SignIn = {
       email: "",
       password: "legit_password_1",
@@ -23,7 +23,7 @@ describe("Validate Login", () => {
     expect(errors.password).toBe("");
   });
 
-  it("Should return empty password and email", async () => {
+  it("Catches an empty email and password", async () => {
     const values: SignIn = {
       email: "",
       password: "",
