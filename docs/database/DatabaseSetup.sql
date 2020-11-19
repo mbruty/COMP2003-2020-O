@@ -5,73 +5,87 @@ Drop table if exists `RestaurantOpinion`;
 Drop table if exists `MenuItemTags`;
 Drop table if exists `MenuItem`;
 Drop table if exists `FoodTags`;
-Drop table if exists `Restaurant`;
-Drop table if exists `Session`;
-Drop table if exists `User`;
-Drop table if exists `FoodChecks`;
 
-create table `FoodChecks`(
-	Id int unique auto_increment not null,
-    primary key (Id),
-    
-	IsVegetarian bit default false,
-	IsVegan bit default false,
-	ContainsLactose bit default true,
-	ContainsNut bit default true,
-	ContainsGluten bit default false,
-	ContainsEgg bit default true,
-	ContainsSoy bit default true,
-	IsHallal bit default false,
-	IsKosher bit default false
+DROP TABLE IF EXISTS `Restaurant`;
+DROP TABLE IF EXISTS `Session`;
+DROP TABLE IF EXISTS `User`;
+DROP TABLE IF EXISTS `FoodChecks`;
+
+CREATE TABLE `FoodChecks` (
+	FoodCheckID INT NOT NULL AUTO_INCREMENT,
+
+    IsVegetarian BIT NOT NULL DEFAULT 0,
+    IsVegan BIT NOT NULL DEFAULT 0,
+    IsHalal BIT NOT NULL DEFAULT 0,
+    IsKosher BIT NOT NULL DEFAULT 0,
+    HasLactose BIT NOT NULL DEFAULT 1,
+    HasNuts BIT NOT NULL DEFAULT 1,
+    HasGluten BIT NOT NULL DEFAULT 1,
+    HasEgg BIT NOT NULL DEFAULT 1,
+    HasSoy BIT NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (FoodCheckID),
+    CONSTRAINT UNQ_FoodChecks UNIQUE (FoodCheckID)
 );
 
-create table `User` (
-	Id int unique auto_increment not null,
-    Email varchar(60) unique not null,
-    check (Email like '%@%.%'),
-    
-	primary key(Id),
-    
-    CheckId int not null,
-    foreign key (CheckId) references `FoodChecks`(Id) on delete restrict on update cascade,
-    
-    `Password` varchar(110) not null,
-    Nickname varchar(10) default 'User',
-    check (Nickname REGEXP '[a-zA-Z]{3,}'),
-    
-    YearOfBirth int not null,
-    check (YearOfBirth > 1900)
+CREATE TABLE `User` (
+    UserID INT NOT NULL AUTO_INCREMENT,
+    Email VARCHAR(60) NOT NULL,
+    FoodCheckID INT NOT NULL,
+    `Password` VARCHAR(110) NOT NULL,
+    Nickname VARCHAR(10) DEFAULT 'User',
+    DateOfBirth DATE NOT NULL,
+
+    PRIMARY KEY (UserID),
+    CONSTRAINT UNQ_UserID UNIQUE (UserID),
+    CONSTRAINT UNQ_UserEmail UNIQUE (Email),
+
+    CONSTRAINT FK_FoodCheckInUser FOREIGN KEY (FoodCheckID) 
+        REFERENCES FoodChecks(FoodCheckID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT CHK_Email CHECK (Email LIKE '%@%.%'),
+    CONSTRAINT CHK_Nickname CHECK (Nickname REGEXP '[a-zA-Z]{3,}'),
+    CONSTRAINT CHK_DateOfBirth CHECK (DateOfBirth >= '1900-01-01')
 );
 
-create table `Session` (
-	UserId int unique auto_increment not null,
-    foreign key (UserId) references `User`(Id) on delete cascade on update cascade,
-    
-    SignedIn datetime default now(),
-    AuthToken varchar(110) not null
+CREATE TABLE `Session` (
+    UserID INT NOT NULL,
+    SignedIn DATETIME NOT NULL DEFAULT NOW(),
+    AuthToken VARCHAR(110) NOT NULL,
+
+    PRIMARY KEY (UserID),
+    CONSTRAINT UNQ_SessionUserID UNIQUE (UserID),
+
+    CONSTRAINT FK_UserInSession FOREIGN KEY (UserID)
+        REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-create table `Restaurant` (
-	Id int unique auto_increment not null,
-    primary key (Id),
-    
-	OwnerId int not null,
-    foreign key (OwnerId) references `User`(Id) on delete restrict on update cascade,
-    
-    `Name` varchar(30) not null,
-    `Description` varchar(120) not null,
-    Longitude float not null,
-    Latitude float not null,
-    
-    Phone varchar(11) ,
-    check (Phone REGEXP '[0-9]{11}'),
-    
-    Email varchar(60),
-    check (Email like '%@%.%'),
-    
-    Site varchar(60),
-    check (Site like '%://%.%')
-);
+CREATE TABLE `Restaurant` (
+    RestaurantID INT NOT NULL AUTO_INCREMENT,
+    OwnerID INT NOT NULL,
+    RestaurantName NVARCHAR(60) NOT NULL,
+    RestaurantDescription NVARCHAR(120) NOT NULL,
+    Longitude FLOAT NOT NULL,
+    Latitude FLOAT NOT NULL,
+    Phone VARCHAR(11),
+    Email VARCHAR(60),
+    `Site` VARCHAR(60),
+
+    PRIMARY KEY (RestaurantID),
+    CONSTRAINT UNQ_RestaurantID UNIQUE (RestaurantID),
+
+    CONSTRAINT FK_OwnerInRestaurant FOREIGN KEY (OwnerID)
+        REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT CHK_RestaurantLongitude CHECK (Longitude BETWEEN -180 AND 180),
+    CONSTRAINT CHK_RestaurantLatitude CHECK (Latitude BETWEEN -90 AND 90),
+    CONSTRAINT CHK_RestaurantPhone CHECK (Phone REGEXP '[0-9]{11}'),
+    CONSTRAINT CHK_RestaurantEmail CHECK (Email LIKE '%@%.%'),
+    CONSTRAINT CHK_RestaurantSite CHECK (`Site` LIKE '%://%.%')
+)
+
+
+
+
+
 
 create table `MenuItem` (
 	Id int unique auto_increment not null,
