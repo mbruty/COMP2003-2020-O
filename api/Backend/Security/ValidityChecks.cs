@@ -10,8 +10,8 @@ namespace api.Backend.Security
         /// <summary>
         /// Checks if password is strong enough
         /// </summary>
-        /// <param name="pword"></param>
-        /// <returns></returns>
+        /// <param name="pword"> </param>
+        /// <returns> </returns>
         public static bool IsStrongPassword(string pword)
         {
             return pword.Length > 6 && pword.Count(x => Char.IsDigit(x)) > 0 && pword.Count(x => !Char.IsLetterOrDigit(x)) > 0;

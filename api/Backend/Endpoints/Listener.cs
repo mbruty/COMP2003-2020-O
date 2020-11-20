@@ -10,7 +10,7 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Handles the start of a request chain
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="result"> </param>
         private static async void PreHandle(IAsyncResult result)
         {
             //Get the object containing the request details
@@ -33,8 +33,8 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Start the HTTPListener
         /// </summary>
-        /// <param name="port">Port to listen on</param>
-        /// <param name="externalConnections">If we accept no local requests (requires admin)</param>
+        /// <param name="port">                Port to listen on </param>
+        /// <param name="externalConnections"> If we accept no local requests (requires admin) </param>
         public static void Start(int port = 3000, bool externalConnections = false)
         {
             listener = new HttpListener();

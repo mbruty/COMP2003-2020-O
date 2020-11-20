@@ -9,7 +9,7 @@ export default function App() {
 
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
-
+  
   const [page, setPage] = useState<string>("log-in");
 
   const logIn = (token: string) => {
