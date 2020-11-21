@@ -7,55 +7,55 @@ const cards = [
   {
     index: 1,
     type: 0,
-    name: "Big O Bois",
+    name: "Restaurant 1",
     visitDate: "09-12-20",
   },
   {
     index: 2,
     type: 1,
-    name: "Big O Bois",
+    name: "Restaurant 2",
     visitDate: "09-12-20",
   },
   {
     index: 3,
     type: 0,
-    name: "Big O Bois",
+    name: "Restaurant 3",
     visitDate: "09-12-20",
   },
   {
     index: 4,
     type: 1,
-    name: "Big O Bois",
+    name: "Restaurant 4",
     visitDate: "09-12-20",
   },
   {
     index: 5,
     type: 0,
-    name: "Big O Bois",
+    name: "Restaurant 5",
     visitDate: "09-12-20",
   },
   {
     index: 6,
     type: 1,
-    name: "Big O Bois",
+    name: "Restaurant 6",
     visitDate: "09-12-20",
   },
   {
     index: 7,
     type: 0,
-    name: "Big O Bois",
+    name: "Restaurant 7",
     visitDate: "09-12-20",
   },
   {
     index: 8,
     type: 1,
-    name: "Big O Bois",
+    name: "Restaurant 8",
     visitDate: "09-12-20",
   },
   {
     index: 9,
     type: 0,
-    name: "Big O Bois",
+    name: "Restaurant 9",
     visitDate: "09-12-20",
   },
 ];
@@ -68,10 +68,10 @@ const handleSwipe = (index: number) => {
   alert("Swipe from " + index);
 };
 
-const Example: React.FC = (props) => {
-  console.log("Hello");
+const RecentVisits: React.FC = (props) => {
+  //console.log("Hello");
 
   return <AnimatedScroll handleSwipe={handleSwipe} cards={cards} />;
 };
 
-export default Example;
+export default RecentVisits;

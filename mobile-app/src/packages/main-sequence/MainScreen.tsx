@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Example from "./Example";
+import RecentVisits from "./RecentVisits";
 import Nav from "./Nav";
 
 interface Props {}
@@ -52,7 +52,7 @@ const MainScreen: React.FC<Props> = (props) => {
         <View style={styles.screen}></View>
         <View style={styles.screen}></View>
         <View style={styles.screen}>
-          <Example />
+          <RecentVisits />
         </View>
         <View style={styles.screen}></View>
       </ScrollView>
