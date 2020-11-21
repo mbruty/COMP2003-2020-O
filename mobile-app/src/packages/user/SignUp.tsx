@@ -173,7 +173,11 @@ const SignUp: React.FC<Props> = (props) => {
       </View>
       <FormProgress
         onSubmit={() => {
-          validate(values, date, setErrors, props.next);
+          validate(values, date, props.next).then((errors) => {
+            if (errors) {
+              setErrors(errors);
+            }
+          });
         }}
         allowBack={false}
         selectedIdx={0}
