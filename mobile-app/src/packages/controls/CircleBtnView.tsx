@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { CircleBtn } from "./CircleBtn";
+const { width } = Dimensions.get("screen");
 
 interface Props {
   options: Array<string>;
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "flex-start",
+    justifyContent: width > 380 ? "flex-start" : "space-evenly",
     paddingLeft: 20,
     paddingTop: 5,
     paddingBottom: 0,
