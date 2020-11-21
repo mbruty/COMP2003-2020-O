@@ -48,7 +48,7 @@ CREATE TABLE `User` (
     CONSTRAINT FK_FoodCheckInUser FOREIGN KEY (FoodCheckID) 
         REFERENCES FoodChecks(FoodCheckID) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_Email CHECK (Email LIKE '%@%.%'),
-    CONSTRAINT CHK_Nickname CHECK (Nickname REGEXP '[a-zA-Z]{2,}'),
+    CONSTRAINT CHK_Nickname CHECK (Nickname REGEXP '[a-zA-Z]{1,}'),
     CONSTRAINT CHK_DateOfBirth CHECK (DateOfBirth >= '1900-01-01')
 );
 
@@ -84,7 +84,7 @@ CREATE TABLE `Restaurant` (
     CONSTRAINT CHK_RestaurantLatitude CHECK (Latitude BETWEEN -90 AND 90),
     CONSTRAINT CHK_RestaurantPhone CHECK (Phone REGEXP '[0-9]{11}'),
     CONSTRAINT CHK_RestaurantEmail CHECK (Email LIKE '%@%.%'),
-    CONSTRAINT CHK_RestaurantSite CHECK (`Site` LIKE '%://%.%')
+    CONSTRAINT CHK_RestaurantSite CHECK (`Site` LIKE '%.%')
 );
 
 CREATE TABLE `FoodTags` (
@@ -101,8 +101,9 @@ CREATE TABLE `FoodTags` (
 CREATE TABLE `FoodOpinion` (
     UserID INT NOT NULL,
     FoodTagID INT NOT NULL,
-    FOSwipeRight INT DEFAULT 0,
-    FOSwipeLeft INT DEFAULT 0,
+    SwipeRight INT DEFAULT 0,
+    SwipeLeft INT DEFAULT 0,
+    Favourite BIT NOT NULL DEFAULT 0,
     NeverShow BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (UserID, FoodTagID),
@@ -126,7 +127,7 @@ CREATE TABLE `OpeningHours` (
     RestaurantID INT NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     OpenTime TIME NOT NULL DEFAULT '08:00:00',
-    CloseTime TIME NOT NULL DEFAULT '21:00:00',
+    TimeServing TIME NOT NULL DEFAULT '14:00:00',
 
     PRIMARY KEY (RestaurantID, DayRef),
     CONSTRAINT UNQ_OpeningHours UNIQUE (RestaurantID, DayRef),
@@ -136,8 +137,7 @@ CREATE TABLE `OpeningHours` (
     CONSTRAINT FK_DayInOpeningHours FOREIGN KEY (DayRef)
         REFERENCES `Days`(DayRef) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_OpenTime CHECK (OpenTime BETWEEN '00:00:00' AND '24:00:00'),
-    CONSTRAINT CHK_CloseTime CHECK (CloseTime BETWEEN '00:00:00' AND '24:00:00'),
-    CONSTRAINT CHK_OpeningTimeRange CHECK (OpenTime < CloseTime)
+    CONSTRAINT CHK_CloseTime CHECK (CloseTime > '00:00:00')
 );
 
 CREATE TABLE `Menu` (
@@ -168,14 +168,15 @@ CREATE TABLE `MenuTimes` (
     MenuRestID INT NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     StartServing TIME NOT NULL,
-    StopServing TIME NOT NULL,
+    TimeServing TIME NOT NULL,
 
     PRIMARY KEY (MenuRestID, DayRef),
 
     CONSTRAINT FK_MenuRestLinkInTimes FOREIGN KEY (MenuRestID)
         REFERENCES LinkMenuRestaurant(MenuRestID) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK_DaysInMenuTimes FOREIGN KEY (DayRef)
-        REFERENCES `Days`(DayRef) ON UPDATE CASCADE ON DELETE RESTRICT
+        REFERENCES `Days`(DayRef) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT CHK_TimeServing CHECK (TimeServing > '00:00:00')
 );
 
 CREATE TABLE `FoodItem` (
@@ -183,7 +184,7 @@ CREATE TABLE `FoodItem` (
     FoodCheckID INT NOT NULL,
     FoodName VARCHAR(45) NOT NULL,
     FoodDescription VARCHAR(120) NOT NULL,
-    Price DECIMAL(8,2) NOT NULL DEFAULT 0.00,
+    Price DECIMAL(6,2) NOT NULL DEFAULT 1.00,
 
     PRIMARY KEY (FoodID),
 
@@ -219,8 +220,8 @@ CREATE TABLE `LinkMenuFood` (
 CREATE TABLE `RestaurantOpinion` (
     UserID INT NOT NULL,
     RestaurantID INT NOT NULL,
-    RSwipeRight INT NOT NULL DEFAULT 0,
-    RSwipeLeft INT NOT NULL DEFAULT 0,
+    SwipeRight INT NOT NULL DEFAULT 0,
+    SwipeLeft INT NOT NULL DEFAULT 0,
     NeverShow BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (UserID, RestaurantID),
