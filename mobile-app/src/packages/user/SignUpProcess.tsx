@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import EmailConfirm from "./EmailConfirm";
 import { IUser } from "./IUser";
-import Preferences from "./Preferences";
+import PreferencesController from "./PreferencesController";
 import SignUp from "./SignUp";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 let nick = "";
 
 const SignUpProcess: React.FC<Props> = (props) => {
-  const [pageNo, setPageNo] = useState<number>(0);
+  const [pageNo, setPageNo] = useState<number>(2);
   const submit = () => {
     props.setPage("main");
   };
@@ -37,12 +37,7 @@ const SignUpProcess: React.FC<Props> = (props) => {
     case 2:
       return (
         <SafeAreaView style={styles.container}>
-          <Preferences
-            authToken={props.user.authToken}
-            userId={props.user.id}
-            onSubmit={submit}
-            fName={nick}
-          />
+          <PreferencesController showBack={false} />
         </SafeAreaView>
       );
   }
