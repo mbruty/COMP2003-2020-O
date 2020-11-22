@@ -59,11 +59,18 @@ describe("Use pagination hook", () => {
     act(() => increment(2));
     expect(result.current[0]).toBe(2);
   });
-    it("Decrements page by a given amount", () => {
+  it("Decrements page by a given amount", () => {
     const { result } = renderHook(() => usePagination(10, 5));
     const [value, increment, decrement] = result.current;
     expect(value).toBe(10);
     act(() => decrement(2));
     expect(result.current[0]).toBe(8);
+  });
+  it("Doesn't increment over the max", () => {
+    const { result } = renderHook(() => usePagination(10, 5, 11));
+    const [value, increment, decrement] = result.current;
+    expect(value).toBe(10);
+    act(() => increment());
+    expect(result.current[0]).toBe(11);
   });
 });

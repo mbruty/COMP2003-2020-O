@@ -8,12 +8,17 @@ type Pagination = [
 
 const usePagination = (
   initial: number = 0,
-  stepSize: number = 1
+  stepSize: number = 1,
+  max: number = Number.MAX_SAFE_INTEGER
 ): Pagination => {
   const [value, setValue] = useState<number>(initial);
 
   const incrementPage = (step: number = stepSize) => {
-    setValue(value + step);
+    if (value + step <= max) {
+      setValue(value + step);
+    } else {
+      setValue(max);
+    }
   };
 
   const decrementPage = (step: number = stepSize) => {
