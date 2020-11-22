@@ -1,6 +1,15 @@
 import { useState } from "react";
 
-const usePagination = (initial: number = 0, stepSize: number = 1) => {
+type Pagination = [
+  value: number,
+  incrementer: (step?: number) => void,
+  decrementer: (step?: number) => void
+];
+
+const usePagination = (
+  initial: number = 0,
+  stepSize: number = 1
+): Pagination => {
   const [value, setValue] = useState<number>(initial);
 
   const incrementPage = (step: number = stepSize) => {
