@@ -1,139 +1,133 @@
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  Dimensions,
-  Image,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "../../constants";
-import { ChipView, CircleBtnView, FormProgress } from "../controls";
-import { submitPreferences } from "./submitPreferences";
-import Banner from "./Banner";
+import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
+import useToggle from "../../hooks/useToggle";
+import AwesomeAutoCompleteInput from "../controls/AwesomeAutoCompleteInput";
 
-// ToDo: Fetch this list from the API?
+interface Props {}
 
-const allergies = ["Lactose", "Nuts", "Gluten", "Soy", "Egg"];
-const typesOfFood = ["Fish", "Vegan", "Vegetarian", "Meat", "Halal", "Kosher"];
-
-interface Props {
-  fName: string;
-  setPage?: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: () => void;
-  authToken: string;
-  userId: string;
-}
-
-// The react-native way of doing width: 100vw; height: 100vh;
-const dimensions = Dimensions.get("window");
-const imageHeight = Math.round((dimensions.width * 9) / 16);
-const imageWidth = dimensions.width;
+const values = ["Burger", "Beans", "Big Booty Bitches"];
+let timeout;
 
 const Preferences: React.FC<Props> = (props) => {
-  const [allergiesBoolArr, setAllergiesBoolArr] = useState<Array<boolean>>(
-    new Array<boolean>(allergies.length).fill(true)
-  );
+  const [value, setValue] = useState<string>("");
 
-  const [foodBoolArr, setFoodBoolArr] = useState<Array<boolean>>(
-    new Array<boolean>(typesOfFood.length).fill(true)
-  );
+  const [showModal, toggleModal] = useToggle(false);
 
-  /* Set the allergies array to the value at the index
-    This will be used by the chips to update the state of the form on
-    a touch event from a chip 
-  */
-  const setAllergies = (touched: boolean, index: number) => {
-    let enabled = [...allergiesBoolArr];
-    enabled[index] = touched;
-    setAllergiesBoolArr(enabled);
+  const debounceInput = (text: string, delay: number = 500) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(
+      () =>
+        // Make API Call here
+        console.log(text),
+      delay
+    );
+    setValue(text);
   };
 
-  // Same as above, but for food types
-  const setFoodTypes = (touched: boolean, index: number) => {
-    let enabled = [...foodBoolArr];
-    enabled[index] = touched;
-    setFoodBoolArr(enabled);
-  };
-
-  const submit = async () => {
-    try {
-      await submitPreferences(
-        {
-          food: foodBoolArr,
-          allergies: allergiesBoolArr,
-        },
-        props.userId,
-        props.authToken
-      );
-      props.onSubmit();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const textStyle = [styles.text, CONSTANT_STYLES.TXT_DEFAULT];
   return (
-    <ScrollView>
-      <View style={{ elevation: 25 }}>
-        <Banner />
+    <ScrollView contentContainerStyle={styles.container}>
+      <Modal animationType="fade" transparent={true} visible={showModal}>
+        <TouchableWithoutFeedback onPress={toggleModal}>
+          <View style={styles.centeredView}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  onPress={toggleModal}
+                  style={{
+                    alignSelf: "flex-end",
+                    marginTop: -15,
+                  }}
+                >
+                  <AntDesign name="closecircleo" size={24} color="#AAA" />
+                </TouchableOpacity>
+                <Text style={{marginTop: -15}}>
+                  We won't show you any reccomendations that contains these tags
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+      <AwesomeAutoCompleteInput
+        autoComplete={values}
+        value={value}
+        setValue={debounceInput}
+      />
+      <Text style={[styles.txt, CONSTANT_STYLES.TXT_DEFAULT]}>
+        I like to eat
+      </Text>
+      <View style={styles.seperator} />
+      <View style={{ alignSelf: "flex-start" }}>
+        <TouchableOpacity
+          style={styles.txtContainer}
+          onPress={() => toggleModal()}
+        >
+          <Text style={[styles.txt, CONSTANT_STYLES.TXT_DEFAULT]}>
+            I don't like to eat
+          </Text>
+          <Ionicons
+            name="ios-information-circle-outline"
+            size={24}
+            color={CONSTANT_COLOURS.DARK_GREY}
+            style={{ paddingTop: 5, paddingLeft: 5 }}
+          />
+        </TouchableOpacity>
       </View>
-      <Text
-        allowFontScaling={false}
-        style={[styles.bannerText, CONSTANT_STYLES.TXT_BASE]}
-      >
-        Hi {props.fName},{"\n"}
-        what types of food can you{"\n"}
-        eat?
-      </Text>
-      <Text
-        allowFontScaling={false}
-        style={[textStyle, { marginTop: 0, marginBottom: 0 }]}
-      >
-        Types of food
-      </Text>
-      <CircleBtnView
-        options={typesOfFood}
-        touchedArray={foodBoolArr}
-        setTouched={setFoodTypes}
-      />
-      <Text allowFontScaling={false} style={[textStyle, { marginTop: 15 }]}>
-        Allergies / intolerance
-      </Text>
-      <ChipView
-        enabledArray={allergiesBoolArr}
-        setTouched={setAllergies}
-        chipNameList={allergies}
-      />
-      <FormProgress onSubmit={submit} allowBack={false} selectedIdx={2} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  text: {
-    margin: 15,
-    marginTop: 0,
-    fontSize: 25,
-    fontWeight: "bold",
+  container: {
+    flex: 1,
+    alignItems: "center",
   },
-  bannerText: {
-    position: "absolute",
-    top: 35,
-    left: 15,
-    fontSize: 30,
-    fontWeight: "bold",
-    elevation: 26,
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
-  submit: {
-    alignSelf: "flex-end",
-    marginRight: 40,
-    marginTop: 40,
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    width: "80%",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
   },
-  submitText: {
-    fontSize: 15,
-    fontWeight: "bold",
+  txtContainer: {
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    alignItems: "center",
+  },
+  txt: {
+    paddingLeft: 25,
+    paddingVertical: 15,
+    fontSize: 18,
+    alignSelf: "flex-start",
+  },
+  seperator: {
+    width: "90%",
+    borderColor: "#AAAAAA",
+    borderWidth: 1,
+    borderRadius: 5,
   },
 });
-
 export default Preferences;
