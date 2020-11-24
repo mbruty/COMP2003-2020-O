@@ -14,19 +14,7 @@ namespace api
         /// </summary>
         private static void Bind() //Link objects to a table
         {
-            Binding.Add<User>("User");
-            Binding.Add<Session>("Session");
-            Binding.Add<FoodChecks>("FoodChecks");
-
-            Binding.Add<Restaurant>("Restaurant");
-            Binding.Add<FoodTags>("FoodTags");
-            Binding.Add<MenuItem>("MenuItem");
-            Binding.Add<MenuItemTags>("MenuItemTags");
-
-            Binding.Add<FoodOpinion>("FoodOpinion");
-            Binding.Add<RestaurantOpinion>("RestaurantOpinion");
-            Binding.Add<Review>("Review");
-            Binding.Add<Visit>("Visit");
+            //Binding.Add<User>("User");
         }
 
         private static void Main(string[] args)
