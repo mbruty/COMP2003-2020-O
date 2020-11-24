@@ -137,7 +137,7 @@ CREATE TABLE `OpeningHours` (
     CONSTRAINT FK_DayInOpeningHours FOREIGN KEY (DayRef)
         REFERENCES `Days`(DayRef) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_OpenTime CHECK (OpenTime BETWEEN '00:00:00' AND '24:00:00'),
-    CONSTRAINT CHK_CloseTime CHECK (CloseTime > '00:00:00')
+    CONSTRAINT CHK_CloseTime CHECK (TimeServing > '00:00:00')
 );
 
 CREATE TABLE `Menu` (
