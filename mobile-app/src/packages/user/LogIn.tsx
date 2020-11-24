@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     width: wWidth,
     height: wHeight / 2,
     marginBottom: wHeight / 2,
-    marginLeft: -10
+    marginLeft: -10,
   },
   titleText: {
     fontWeight: "bold",
@@ -137,7 +137,11 @@ const LogIn: React.FC<Props> = ({ submit, setPage }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            validate(values, setValidated, submit);
+            validate(values, submit).then((errors) => {
+              if (errors) {
+                setValidated(errors);
+              }
+            });
           }}
         >
           <View style={[styles.btn, CONSTANT_STYLES.BG_RED]}>

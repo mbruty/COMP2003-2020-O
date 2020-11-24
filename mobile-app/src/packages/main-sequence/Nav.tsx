@@ -7,15 +7,15 @@ import {
   Image,
 } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
-import Settings from "../../resources/icons/settings";
-import Solo from "../../resources/icons/solo";
-import Group from "../../resources/icons/group";
 import { FontAwesome, FontAwesome5, Fontisto } from "@expo/vector-icons";
 
 interface Props {
   selectedIdx: number;
   setPage: (index: number) => void;
 }
+
+const inactive = require("../../resources/recent_inactive.png");
+const active = require("../../resources/recent_active.png");
 
 const { width } = Dimensions.get("screen");
 
@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export const Nav: React.FC<Props> = (props) => {
+const Nav: React.FC<Props> = (props) => {
+  const image = props.selectedIdx === 2 ? active : inactive;
   return (
     <View style={[CONSTANT_STYLES.BG_BASE_COLOUR, styles.container]}>
       <TouchableOpacity
@@ -60,15 +61,23 @@ export const Nav: React.FC<Props> = (props) => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.touchable, { marginTop: 4 }]}
+        style={styles.touchable}
         onPress={() => props.setPage(2)}
+      >
+        <Image source={image} style={{ height: 30, width: 30 }} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.touchable, { marginTop: 4 }]}
+        onPress={() => props.setPage(3)}
       >
         <Fontisto
           name="player-settings"
           size={30}
-          color={props.selectedIdx === 2 ? "#FD4040" : "#707070"}
+          color={props.selectedIdx === 3 ? "#FD4040" : "#707070"}
         />
       </TouchableOpacity>
     </View>
   );
 };
+
+export default Nav;
