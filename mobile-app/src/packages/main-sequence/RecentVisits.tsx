@@ -60,6 +60,10 @@ const cards = [
   },
 ];
 
+//New visits can be added to the list like this
+cards.push({index: 10, type: 1, name: "Restaurant 10", visitDate: "09-12-20"})
+
+
 /**
  * @param index The index of the card that has been swiped on
  */
