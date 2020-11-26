@@ -29,7 +29,10 @@ CREATE TABLE `FoodChecks` (
     HasEgg BIT NOT NULL DEFAULT 1,
     HasSoy BIT NOT NULL DEFAULT 1,
 
-    PRIMARY KEY (FoodCheckID)
+    PRIMARY KEY (FoodCheckID),
+
+    CONSTRAINT CHK_KosherHalalConflict CHECK (((IsHalal = 1) AND (IsKosher = 1)) != 1),
+    CONSTRAINT CK_VeganVegetarianConflict CHECK (((IsVegan = 1) AND (IsVegetarian = 1)) != 1)
 );
 
 CREATE TABLE `User` (
