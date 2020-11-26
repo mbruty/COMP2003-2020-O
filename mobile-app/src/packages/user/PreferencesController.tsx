@@ -17,12 +17,8 @@ const PreferencesController: React.FC<Props> = (props) => {
       <View style={styles.nav}>
         <Text style={styles.navText}>Preferences</Text>
       </View>
-      <Text>{page}</Text>
-      <Button onPress={() => increment()} title="Inc" />
-      <Button onPress={() => decrement()} title="Dec" />
-
-      {page === 0 && <Allergens />}
-      {page === 1 && <Preferences />}
+      {page === 0 && <Allergens inc={increment} />}
+      {page === 1 && <Preferences submit={() => null} showProgress={true} />}
     </View>
   );
 };
