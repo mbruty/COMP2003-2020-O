@@ -9,7 +9,7 @@ interface Props {
   // setValue: React.Dispatch<React.SetStateAction<string>>;
   setValue: any;
   value: string;
-  autoComplete: Array<string>;
+  autoComplete?: Array<string>;
 }
 
 const AwesomeAutoCompleteInput: React.FC<Props> = (props) => {
@@ -28,7 +28,7 @@ const AwesomeAutoCompleteInput: React.FC<Props> = (props) => {
           onChange={(newText) => props.setValue(newText.nativeEvent.text)}
         />
       </View>
-      {props.autoComplete.map((item, index) => (
+      {props.autoComplete?.map((item, index) => (
         <View
           style={[
             // Add a bottom radius to the end item
