@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
 import React from "react";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput } from "react-native-gesture-handler";
 import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
 
 interface Props {
@@ -10,6 +10,8 @@ interface Props {
   setValue: any;
   value: string;
   autoComplete?: Array<string>;
+  onLike: (tag: string) => void;
+  onDisLike: (tag: string) => void;
 }
 
 const AwesomeAutoCompleteInput: React.FC<Props> = (props) => {
@@ -43,7 +45,7 @@ const AwesomeAutoCompleteInput: React.FC<Props> = (props) => {
             },
           ]}
         >
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => props.onLike(item)}>
             <Ionicons
               name="ios-thumbs-up"
               size={24}
@@ -61,7 +63,7 @@ const AwesomeAutoCompleteInput: React.FC<Props> = (props) => {
           >
             {item}
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => props.onDisLike(item)}>
             <Ionicons
               name="ios-thumbs-down"
               style={{ paddingLeft: 25, paddingRight: 10, paddingVertical: 10 }}
