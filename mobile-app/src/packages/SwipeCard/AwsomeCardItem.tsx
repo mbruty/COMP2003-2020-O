@@ -1,7 +1,11 @@
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { colorForBackground } from "react-native-redash";
-import { CONSTANT_STYLES } from "./shared/constants";
+import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../constants";
 
 interface Props {
   text: string;
@@ -9,14 +13,23 @@ interface Props {
 }
 
 export const AwsomeCardItem: React.FC<Props> = ({ text, enabled }) => {
-  const image = enabled ? require("./heart.png") : require("./no-entry.png");
-  const backgroundColour = enabled ? CONSTANT_STYLES.BG_RED : CONSTANT_STYLES.BG_BASE_COLOUR;
-  
-
   return (
     <View style={[styles.infoBox]}>
       <View>
-        <Image style={[styles.icon]} source={image} />
+        {enabled && (
+          <View>
+            <AntDesign name="heart" size={24} color={CONSTANT_COLOURS.RED} />
+          </View>
+        )}
+        {!enabled && (
+          <View>
+            <MaterialIcons
+              name="not-interested"
+              size={24}
+              color={CONSTANT_COLOURS.DARK_GREY}
+            />
+          </View>
+        )}
       </View>
       <Text style={[styles.infoText]}>{text}</Text>
     </View>
@@ -26,7 +39,7 @@ export const AwsomeCardItem: React.FC<Props> = ({ text, enabled }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   infoBox: {
     paddingLeft: 10,
