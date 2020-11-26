@@ -30,7 +30,9 @@ CREATE TABLE `FoodChecks` (
     HasSoy BIT NOT NULL DEFAULT 1,
 
     PRIMARY KEY (FoodCheckID),
-    CONSTRAINT UNQ_FoodChecks UNIQUE (FoodCheckID)
+
+    CONSTRAINT CHK_KosherHalalConflict CHECK (((IsHalal = 1) AND (IsKosher = 1)) != 1),
+    CONSTRAINT CK_VeganVegetarianConflict CHECK (((IsVegan = 1) AND (IsVegetarian = 1)) != 1)
 );
 
 CREATE TABLE `User` (
@@ -42,7 +44,6 @@ CREATE TABLE `User` (
     DateOfBirth DATE NOT NULL,
 
     PRIMARY KEY (UserID),
-    CONSTRAINT UNQ_UserID UNIQUE (UserID),
     CONSTRAINT UNQ_UserEmail UNIQUE (Email),
 
     CONSTRAINT FK_FoodCheckInUser FOREIGN KEY (FoodCheckID) 
@@ -58,7 +59,6 @@ CREATE TABLE `Session` (
     AuthToken VARCHAR(110) NOT NULL,
 
     PRIMARY KEY (UserID),
-    CONSTRAINT UNQ_SessionUserID UNIQUE (UserID),
 
     CONSTRAINT FK_UserInSession FOREIGN KEY (UserID)
         REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT
@@ -76,7 +76,6 @@ CREATE TABLE `Restaurant` (
     `Site` VARCHAR(60),
 
     PRIMARY KEY (RestaurantID),
-    CONSTRAINT UNQ_RestaurantID UNIQUE (RestaurantID),
 
     CONSTRAINT FK_OwnerInRestaurant FOREIGN KEY (OwnerID)
         REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -92,7 +91,6 @@ CREATE TABLE `FoodTags` (
     Tag VARCHAR(20) NOT NULL,
 
     PRIMARY KEY (FoodTagID),
-    CONSTRAINT UNQ_FoodTagID UNIQUE (FoodTagID),
     CONSTRAINT UNQ_FoodTag UNIQUE (Tag),
 
     CONSTRAINT CHK_Tag CHECK (Tag REGEXP '[a-z]{3,}')
@@ -107,7 +105,6 @@ CREATE TABLE `FoodOpinion` (
     NeverShow BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (UserID, FoodTagID),
-    CONSTRAINT UNQ_FoodOpinion UNIQUE (UserID, FoodTagID),
 
     CONSTRAINT FK_UserInFoodOpinion FOREIGN KEY (UserID)
         REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -130,7 +127,6 @@ CREATE TABLE `OpeningHours` (
     TimeServing TIME NOT NULL DEFAULT '14:00:00',
 
     PRIMARY KEY (RestaurantID, DayRef),
-    CONSTRAINT UNQ_OpeningHours UNIQUE (RestaurantID, DayRef),
 
     CONSTRAINT FK_RestaurantInOpeningHours FOREIGN KEY (RestaurantID)
         REFERENCES Restaurant(RestaurantID) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -145,8 +141,7 @@ CREATE TABLE `Menu` (
     MenuName VARCHAR(20) NOT NULL DEFAULT 'Menu',
     IsChildMenu BIT NOT NULL DEFAULT 0,
 
-    PRIMARY KEY (MenuID),
-    CONSTRAINT UNQ_Menu UNIQUE (MenuID)
+    PRIMARY KEY (MenuID)
 );
 
 CREATE TABLE `LinkMenuRestaurant` (
