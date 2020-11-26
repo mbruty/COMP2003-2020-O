@@ -11,10 +11,13 @@ import {
 } from "react-native";
 import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
 import useToggle from "../../hooks/useToggle";
-import { ChipView } from "../controls";
+import { ChipView, FormProgress } from "../controls";
 import AwesomeAutoCompleteInput from "../controls/AwesomeAutoCompleteInput";
 
-interface Props {}
+interface Props {
+  showProgress?: boolean;
+  submit: () => void;
+}
 
 const values = ["Burger", "Beans", "Big Booty Bitches"];
 let timeout;
@@ -152,6 +155,13 @@ const Preferences: React.FC<Props> = (props) => {
           )}
         </View>
       </View>
+      {props.showProgress && (
+        <FormProgress
+          onSubmit={() => props.submit()}
+          allowBack={false}
+          selectedIdx={2}
+        />
+      )}
     </ScrollView>
   );
 };

@@ -27,7 +27,9 @@ const allergies = [
 ];
 const typesOfFood = ["Fish", "Vegan", "Vegetarian", "Meat", "Halal", "Kosher"];
 
-interface Props {}
+interface Props {
+  inc: () => void;
+}
 
 // The react-native way of doing width: 100vw; height: 100vh;
 const dimensions = Dimensions.get("window");
@@ -61,7 +63,12 @@ const Allergens: React.FC<Props> = (props) => {
         touchedArray={allergiesBoolArr}
         setTouched={setAllergies}
       />
-      <FormProgress onSubmit={() => null} allowBack={false} selectedIdx={2} />
+      <FormProgress
+        text="NEXT"
+        onSubmit={() => props.inc()}
+        allowBack={false}
+        selectedIdx={2}
+      />
     </ScrollView>
   );
 };
