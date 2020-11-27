@@ -3,11 +3,10 @@ import { Image, StyleSheet, Text, View, Dimensions } from "react-native";
 
 import data from "./data";
 import Swiper from "react-native-deck-swiper";
-import { Transitioning, Transition } from "react-native-reanimated";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import SwipeCard from "./SwipeCard";
-const { width } = Dimensions.get("window");
-
+import { TouchableOpacity } from "react-native-gesture-handler";
+const { height, width } = Dimensions.get("screen");
 const stackSize = 4;
 const colors = {
   red: "#EC2379",
@@ -17,54 +16,12 @@ const colors = {
   white: "#ffffff",
   black: "#000000",
 };
-const ANIMATION_DURATION = 200;
-
-const transition = (
-  <Transition.Sequence>
-    <Transition.Out
-      type="slide-bottom"
-      durationMs={ANIMATION_DURATION}
-      interpolation="easeIn"
-    />
-    <Transition.Together>
-      <Transition.In
-        type="fade"
-        durationMs={ANIMATION_DURATION}
-        delayMs={ANIMATION_DURATION / 2}
-      />
-      <Transition.In
-        type="slide-bottom"
-        durationMs={ANIMATION_DURATION}
-        delayMs={ANIMATION_DURATION / 2}
-        interpolation="easeOut"
-      />
-    </Transition.Together>
-  </Transition.Sequence>
-);
 
 const swiperRef = React.createRef();
-const transitionRef = React.createRef();
-
-const Card = ({ card }) => {
-  return (
-    <View style={styles.card}>
-      <Image source={{ uri: card.image }} style={styles.cardImage} />
-    </View>
-  );
-};
-
-const CardDetails = ({ index }) => (
-  <View key={data[index].id} style={{ alignItems: "center" }}>
-    <Text style={[styles.text, styles.heading]} numberOfLines={2}>
-      {data[index].name}
-    </Text>
-  </View>
-);
 
 export default function App() {
   const [index, setIndex] = React.useState(0);
   const onSwiped = () => {
-    transitionRef.current.animateNextTransition();
     setIndex((index + 1) % data.length);
   };
 
@@ -76,7 +33,11 @@ export default function App() {
           cards={data}
           cardIndex={index}
           renderCard={(card) => (
-            <SwipeCard items={card.tags} imageURI={card.image} />
+            <SwipeCard
+              items={card.tags}
+              title={card.name}
+              imageURI={card.image}
+            />
           )}
           backgroundColor={"transparent"}
           onSwiped={onSwiped}
@@ -132,33 +93,35 @@ export default function App() {
         />
       </View>
       <View style={styles.bottomContainer}>
-        <Transitioning.View
-          ref={transitionRef}
-          transition={transition}
-          style={styles.bottomContainerMeta}
-        >
-          <CardDetails index={index} />
-        </Transitioning.View>
         <View style={styles.bottomContainerButtons}>
-          <MaterialCommunityIcons.Button
-            name="close"
-            size={50}
-            backgroundColor="transparent"
-            underlayColor="transparent"
-            activeOpacity={0.3}
-            color={colors.red}
+          <TouchableOpacity
             onPress={() => swiperRef.current.swipeLeft()}
-          />
-          <AntDesign.Button
-            name="heart"
-            size={35}
-            style={{ marginTop: 8 }}
-            backgroundColor="transparent"
-            underlayColor="transparent"
-            activeOpacity={0.3}
-            color={colors.green}
+            style={[styles.btn, { marginRight: 20 }]}
+          >
+            <MaterialCommunityIcons.Button
+              name="close"
+              size={50}
+              backgroundColor="transparent"
+              underlayColor="transparent"
+              activeOpacity={0.3}
+              style={{ paddingLeft: 14 }}
+              color={colors.red}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn}
             onPress={() => swiperRef.current.swipeRight()}
-          />
+          >
+            <AntDesign.Button
+              name="heart"
+              size={35}
+              backgroundColor="transparent"
+              style={{ paddingLeft: 20 }}
+              underlayColor="transparent"
+              activeOpacity={0.3}
+              color={colors.green}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -175,8 +138,10 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   bottomContainer: {
-    flex: 0.45,
-    justifyContent: "flex-start",
+    display: "flex",
+    position: "absolute",
+    top: height - 230,
+    left: width / 2 - 90,
   },
   bottomContainerMeta: { alignContent: "flex-end", alignItems: "center" },
   bottomContainerButtons: {
@@ -194,6 +159,14 @@ const styles = StyleSheet.create({
     color: colors.white,
     backgroundColor: "transparent",
   },
-  heading: { fontSize: 24, marginBottom: 10, color: colors.gray },
-  price: { color: colors.blue, fontSize: 32, fontWeight: "500" },
+  btn: {
+    display: "flex",
+    justifyContent: "center",
+    width: 80,
+    height: 80,
+    backgroundColor: "#FFF",
+    borderRadius: 50,
+    borderColor: "#AAA",
+    borderWidth: 1,
+  },
 });
