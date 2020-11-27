@@ -96,6 +96,16 @@ namespace api.Backend.Data.SQL.AutoSQL
             return await Select<T>(new string[] { FieldName }, new object[] { FieldValue }, Limit);
         }
 
+        public async Task<T[]> Select<T>(int id, int Limit = 0) where T : Object, new()
+        {
+            return await Select<T>(new object[] { id }, Limit);
+        }
+
+        public async Task<T[]> Select<T>(uint id, int Limit = 0) where T : Object, new()
+        {
+            return await Select<T>(new object[] { id }, Limit);
+        }
+
         /// <summary>
         /// Select based on a specific set of collumns and values
         /// </summary>
