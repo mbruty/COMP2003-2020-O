@@ -42,14 +42,15 @@ CREATE TABLE `User` (
     `Password` VARCHAR(110) NOT NULL,
     Nickname VARCHAR(10) DEFAULT 'User',
     DateOfBirth DATE NOT NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (UserID),
     CONSTRAINT UNQ_UserEmail UNIQUE (Email),
 
     CONSTRAINT FK_FoodCheckInUser FOREIGN KEY (FoodCheckID) 
         REFERENCES FoodChecks(FoodCheckID) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT CHK_Email CHECK (Email LIKE '%@%.%'),
-    CONSTRAINT CHK_Nickname CHECK (Nickname REGEXP '[a-zA-Z]{1,}'),
+    CONSTRAINT CHK_Email CHECK ((Email LIKE '%@%.%') OR (Email = '-1')),
+    CONSTRAINT CHK_Nickname CHECK ((Nickname REGEXP '[a-zA-Z]{1,}') OR (Nickname = '-1')),
     CONSTRAINT CHK_DateOfBirth CHECK (DateOfBirth >= '1900-01-01')
 );
 
