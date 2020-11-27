@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace api.Backend.Data.Obj
 {
     public class Session : Object
     {
-        public uint UserID;
-
-        public DateTime SignedIn;
+        #region Fields
 
         public string AuthToken;
+        public DateTime SignedIn;
+        public uint UserID;
+
+        #endregion Fields
     }
 }

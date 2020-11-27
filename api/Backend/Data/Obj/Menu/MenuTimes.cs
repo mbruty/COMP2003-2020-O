@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace api.Backend.Data.Obj
 {
     public class MenuTimes : Object
     {
-        public uint MenuRestID;
+        #region Fields
 
         public string DayRef;
-
+        public uint MenuRestID;
         public DateTime StartServing, TimeServing;
+
+        #endregion Fields
     }
 }

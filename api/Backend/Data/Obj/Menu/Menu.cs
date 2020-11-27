@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace api.Backend.Data.Obj
+﻿namespace api.Backend.Data.Obj
 {
     public class Menu : Object
     {
+        #region Fields
+
+        public bool IsChildMenu;
         public uint MenuID;
 
         public string MenuName;
 
-        public bool IsChildMenu;
+        #endregion Fields
     }
 }

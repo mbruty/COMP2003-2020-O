@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace api.Backend.Data.Obj
+﻿namespace api.Backend.Data.Obj
 {
     public class FoodItemTags : Object
     {
+        #region Fields
+
         public uint FoodID, TagID;
+
+        #endregion Fields
     }
 }

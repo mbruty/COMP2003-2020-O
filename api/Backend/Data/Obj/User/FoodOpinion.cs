@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace api.Backend.Data.Obj
+﻿namespace api.Backend.Data.Obj
 {
     public class FoodOpinion : Object
     {
-        public uint UserID, FoodTagID;
-
-        public uint SwipeRight, SwipeLeft;
+        #region Fields
 
         public bool NeverShow, Favourite;
+        public uint SwipeRight, SwipeLeft;
+        public uint UserID, FoodTagID;
+
+        #endregion Fields
     }
 }

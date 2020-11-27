@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace api.Backend.Data.Obj
 {
     public class Visit : Object
     {
-        public uint VisitRef, ResturantID, UserID;
+        #region Fields
 
         public DateTime DateOfVisit;
-
         public UInt16 GroupSize;
+        public uint VisitRef, ResturantID, UserID;
+
+        #endregion Fields
     }
 }

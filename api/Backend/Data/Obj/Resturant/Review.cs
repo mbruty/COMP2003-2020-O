@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace api.Backend.Data.Obj
 {
     public class Review : Object
     {
-        public uint VisitRef;
+        #region Fields
 
         public UInt16 Rating;
+        public uint VisitRef;
+
+        #endregion Fields
     }
 }

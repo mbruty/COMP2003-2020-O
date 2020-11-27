@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace api.Backend.Data.Obj
+﻿namespace api.Backend.Data.Obj
 {
     public class LinkMenuResturant : Object
     {
-        public uint MenuRestID, MenuID, ResturantID;
+        #region Fields
 
         public bool AlwaysServe;
+        public uint MenuRestID, MenuID, ResturantID;
+
+        #endregion Fields
     }
 }
