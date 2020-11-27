@@ -5,7 +5,7 @@ import {
 } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../constants";
+import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
 
 interface Props {
   text: string;
@@ -17,8 +17,13 @@ export const AwsomeCardItem: React.FC<Props> = ({ text, enabled }) => {
     <View style={[styles.infoBox]}>
       <View>
         {enabled && (
-          <View>
-            <AntDesign name="heart" size={24} color={CONSTANT_COLOURS.RED} />
+          <View style={[styles.circle, CONSTANT_STYLES.BG_RED]}>
+            <AntDesign
+              name="heart"
+              style={{ alignSelf: "center" }}
+              size={24}
+              color="#FFF"
+            />
           </View>
         )}
         {!enabled && (
@@ -55,7 +60,13 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 15,
-    paddingTop: 15,
-    paddingLeft: 5,
+    paddingLeft: 10,
+    paddingTop: 10,
+  },
+  circle: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    justifyContent: "center",
   },
 });
