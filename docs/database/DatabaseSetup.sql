@@ -122,7 +122,7 @@ CREATE TABLE `Days` (
 );
 
 CREATE TABLE `OpeningHours` (
-    RestaurantID UNSIGNED INT NOT NULL,
+    RestaurantID INT UNSIGNED NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     OpenTime TIME NOT NULL DEFAULT '08:00:00',
     TimeServing TIME NOT NULL DEFAULT '14:00:00',
