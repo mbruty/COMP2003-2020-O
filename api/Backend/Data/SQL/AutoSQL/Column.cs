@@ -26,7 +26,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Create a column using data selected from SHOW COLUMNS FROM
         /// </summary>
-        /// <param name="rData">result from SHOW COLUMNS FROM</param>
+        /// <param name="rData"> result from SHOW COLUMNS FROM </param>
         public Column(object[] rData)
         {
             Field = (string)rData[0];
@@ -53,12 +53,12 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Check if the provided object, is compatible with the datatype of this column
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>If it is compatible</returns>
+        /// <param name="obj"> </param>
+        /// <returns> If it is compatible </returns>
         public bool FieldMatchesType(object obj)
         {
             Type t = obj.GetType();
-            return t.Name.ToLower().Contains(Type.ToLower()) || Type.ToLower().Contains(t.Name.ToLower()) || (t.Name == "String" && Type.StartsWith("varchar"));
+            return t.Name.ToLower().Contains(Type.ToLower()) || (Type.ToLower().Contains("int") && t.Name.ToLower().Contains("int")) || Type.ToLower().Contains(t.Name.ToLower()) || (t.Name == "String" && Type.StartsWith("varchar"));
         }
 
         public override string ToString()

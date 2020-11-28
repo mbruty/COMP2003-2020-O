@@ -45,7 +45,7 @@ namespace api.Backend.Events.Users
             User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
 
             Table table = Binding.GetTable<FoodChecks>();
-            FoodChecks[] foods = await table.Select<FoodChecks>("id", users[0].CheckId);
+            FoodChecks[] foods = await table.Select<FoodChecks>("id", users[0].FoodCheckID);
 
             foods[0].UpdateContents<FoodChecks>(headers);
 

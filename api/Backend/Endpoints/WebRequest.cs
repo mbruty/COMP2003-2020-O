@@ -13,9 +13,9 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Finds the appropriate event for the request and passes it along
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="Data"></param>
-        /// <param name="response"></param>
+        /// <param name="request">  </param>
+        /// <param name="Data">     </param>
+        /// <param name="response"> </param>
         private static void Handle(HttpListenerRequest request, string Data, ref HttpResponse response)
         {
             string url = request.RawUrl.ToLower(), method = request.HttpMethod.ToLower();
@@ -44,7 +44,7 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Extracts any Data before passing the request onwards
         /// </summary>
-        /// <param name="listenerContext"></param>
+        /// <param name="listenerContext"> </param>
         public static void PreHandle(HttpListenerContext listenerContext)
         {
             //Read any request data (from the body)
@@ -82,8 +82,8 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a cookie on to the json response
             /// </summary>
-            /// <param name="name"></param>
-            /// <param name="value"></param>
+            /// <param name="name">  </param>
+            /// <param name="value"> </param>
             public void AddCookie(string name, string value)
             {
                 cookies.Add(new Cookie(name, value));
@@ -92,8 +92,8 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a given object into the json response
             /// </summary>
-            /// <param name="Header"></param>
-            /// <param name="obj"></param>
+            /// <param name="Header"> </param>
+            /// <param name="obj">    </param>
             public void AddObjectToData(string Header, object obj)
             {
                 Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
@@ -102,8 +102,8 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a already stingable object, ie supports .ToString()
             /// </summary>
-            /// <param name="Header"></param>
-            /// <param name="stringable">.ToString() supporting object</param>
+            /// <param name="Header">     </param>
+            /// <param name="stringable"> .ToString() supporting object </param>
             public void AddToData(string Header, object stringable)
             {
                 Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
@@ -112,7 +112,7 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Finish up the response and send it back to the user
             /// </summary>
-            /// <param name="response"></param>
+            /// <param name="response"> </param>
             public virtual void Send(HttpListenerResponse response)
             {
                 response.StatusCode = StatusCode;
