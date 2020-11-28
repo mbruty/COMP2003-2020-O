@@ -1,4 +1,9 @@
-﻿namespace api.Backend.Data.Obj
+﻿using System;
+using System.Threading.Tasks;
+using api.Backend.Data.SQL.AutoSQL;
+using System.Collections.Generic;
+
+namespace api.Backend.Data.Obj
 {
     public class FoodItem : Object
     {
@@ -11,5 +16,19 @@
         public decimal Price;
 
         #endregion Fields
+
+        public async Task<FoodChecks> GetFoodCheck()
+        {
+            return (await Binding.GetTable<FoodChecks>().Select<FoodChecks>(FoodCheckID))?[0];
+        }
+
+        public async Task<FoodTags[]> GetFoodTags()
+        {
+            return await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
+                tables: "FoodItemTags,FoodTags",
+                where: "FoodItemTags.FoodID = @ParaFoodID AND FoodItemTags.TagID = FoodTags.FoodTagID",
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaFoodID", FoodID) }
+                );
+        }
     }
 }

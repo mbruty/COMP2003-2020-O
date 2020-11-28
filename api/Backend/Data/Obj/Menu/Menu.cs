@@ -25,5 +25,19 @@ namespace api.Backend.Data.Obj
                 Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaMenuID", MenuID) }
                 );
         }
+
+        public async Task<LinkMenuRestaurant[]> GetRestaurantLinks()
+        {
+            return await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>("MenuID",MenuID);
+        }
+
+        public async Task<Restaurant[]> GetRestaurants()
+        {
+            return await Binding.GetTable<Restaurant>().SelectCustom<Restaurant>(
+                tables: "LinkMenuResturant,Resturant",
+                where: "LinkMenuResturant.MenuID = @ParaMenuID AND LinkMenuResturant.ResturantID = Resturant.ResturantID",
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaMenuID", MenuID) }
+                );
+        }
     }
 }

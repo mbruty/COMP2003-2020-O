@@ -19,5 +19,10 @@ namespace api.Backend.Data.Obj
         {
             return (await Binding.GetTable<User>().Select<User>(UserID))?[0];
         }
+
+        public async Task<FoodTags> GetFoodTags()
+        {
+            return (await Binding.GetTable<FoodTags>().Select<FoodTags>(FoodTagID))?[0];
+        }
     }
 }
