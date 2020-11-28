@@ -8,7 +8,7 @@ namespace api.Backend.Data.Obj
 
         public string DayRef;
         public DateTime OpenTime, TimeServing;
-        public uint ResturantID;
+        public uint RestaurantID;
 
         #endregion Fields
     }

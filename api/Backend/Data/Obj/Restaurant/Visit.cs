@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
-    public class RestaurantOpinion : Object
+    public class Visit : Object
     {
         #region Fields
 
-        public bool NeverShow;
-        public uint SwipeRight, SwipeLeft;
-        public uint UserID, RestaurantID;
+        public DateTime DateOfVisit;
+        public UInt16 GroupSize;
+        public uint VisitRef, RestaurantID, UserID;
 
         #endregion Fields
 

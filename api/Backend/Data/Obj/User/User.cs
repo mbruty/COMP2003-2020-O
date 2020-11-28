@@ -27,14 +27,14 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<FoodOpinion>().Select<FoodOpinion>("UserID", UserID);
         }
 
-        public async Task<ResturantOpinion[]> GetResturantOpinions()
+        public async Task<RestaurantOpinion[]> GetRestaurantOpinions()
         {
-            return await Binding.GetTable<ResturantOpinion>().Select<ResturantOpinion>("UserID", UserID);
+            return await Binding.GetTable<RestaurantOpinion>().Select<RestaurantOpinion>("UserID", UserID);
         }
 
-        public async Task<Resturant[]> GetResturantsOwned()
+        public async Task<Restaurant[]> GetRestaurantsOwned()
         {
-            return await Binding.GetTable<Resturant>().Select<Resturant>("OwnerID", UserID);
+            return await Binding.GetTable<Restaurant>().Select<Restaurant>("OwnerID", UserID);
         }
 
         public async Task<Session> GetSession()

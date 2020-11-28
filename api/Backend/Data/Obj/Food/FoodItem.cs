@@ -8,7 +8,7 @@
 
         public string FoodName, FoodDescription;
 
-        public float Price;
+        public decimal Price;
 
         #endregion Fields
     }

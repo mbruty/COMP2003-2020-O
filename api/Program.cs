@@ -19,17 +19,17 @@ namespace api
             Binding.Add<FoodTags>();
 
             Binding.Add<LinkMenuFood>();
-            Binding.Add<LinkMenuResturant>();
+            Binding.Add<LinkMenuRestaurant>();
             Binding.Add<Menu>();
             Binding.Add<MenuTimes>();
 
             Binding.Add<OpeningHours>();
-            Binding.Add<Resturant>();
+            Binding.Add<Restaurant>();
             Binding.Add<Review>();
             Binding.Add<Visit>();
 
             Binding.Add<FoodOpinion>();
-            Binding.Add<ResturantOpinion>();
+            Binding.Add<RestaurantOpinion>();
             Binding.Add<Session>();
             Binding.Add<User>();
 
@@ -60,7 +60,7 @@ namespace api
             {
                 api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
                 Bind();
-                //SQL_Test_Code.Run();
+                SQL_Test_Code.Run();
 
                 api.Backend.Endpoints.WebListener.Start();
             }

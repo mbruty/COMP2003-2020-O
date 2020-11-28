@@ -179,7 +179,17 @@ namespace api.Backend.Data.SQL.AutoSQL
             string Lim = "";
             if (Limit > 0) Lim = $"LIMIT {Limit}";
 
-            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({where}) {Limit}");
+            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({where}) {Lim}");
+
+            return SetFieldValues<T>(Data);
+        }
+
+        public async Task<T[]> SelectCustom<T>(string Tables, string What = "*",  string where = "TRUE", int Limit = 0) where T : Object, new()
+        {
+            string Lim = "";
+            if (Limit > 0) Lim = $"LIMIT {Limit}";
+
+            List<object[]> Data = await SQL.Instance.Read($"SELECT {What} FROM {Tables} WHERE ({where}) {Lim}");
 
             return SetFieldValues<T>(Data);
         }
