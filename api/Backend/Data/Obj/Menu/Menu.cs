@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace api.Backend.Data.Obj
 {
@@ -18,7 +19,11 @@ namespace api.Backend.Data.Obj
 
         public async Task<FoodItem[]> GetFoodItems()
         {
-            return await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>("LinkMenuFood,FoodItem", "FoodItem.*",$"LinkMenuFood.MenuID = {MenuID} AND LinkMenuFood.FoodID = FoodItem.FoodID");
+            return await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>(
+                tables: "LinkMenuFood,FoodItem",
+                where: "LinkMenuFood.MenuID = @ParaMenuID AND LinkMenuFood.FoodID = FoodItem.FoodID",
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaMenuID", MenuID) }
+                );
         }
     }
 }
