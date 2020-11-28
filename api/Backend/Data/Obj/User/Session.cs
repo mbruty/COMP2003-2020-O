@@ -10,14 +10,16 @@ namespace api.Backend.Data.Obj
 
         public string AuthToken;
         public DateTime SignedIn;
-        public int UserId;
+        public uint UserID;
 
         #endregion Fields
 
         #region Methods
 
         public async Task<User> GetUser()
-        { return (await Binding.GetTable<User>().Select<User>("ID", UserId))?[0]; }
+        {
+            return (await Binding.GetTable<User>().Select<User>(UserID))?[0];
+        }
 
         #endregion Methods
     }

@@ -26,11 +26,11 @@ namespace api.Backend.Security
         /// <returns> The AuthToken to authenticate this session </returns>
         public static async Task AddSession(User user, string token)
         {
-            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id, 1);
+            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.UserID, 1);
 
             if (existing.Length == 0)
             {
-                new Thread(async () => { await new Session() { UserId = user.Id, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
+                new Thread(async () => { await new Session() { UserID = user.UserID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
             }
             else
             {

@@ -14,19 +14,27 @@ namespace api
         /// </summary>
         private static void Bind() //Link objects to a table
         {
-            Binding.Add<User>("User");
-            Binding.Add<Session>("Session");
-            Binding.Add<FoodChecks>("FoodChecks");
+            Binding.Add<FoodItem>();
+            Binding.Add<FoodItemTags>();
+            Binding.Add<FoodTags>();
 
-            Binding.Add<Restaurant>("Restaurant");
-            Binding.Add<FoodTags>("FoodTags");
-            Binding.Add<MenuItem>("MenuItem");
-            Binding.Add<MenuItemTags>("MenuItemTags");
+            Binding.Add<LinkMenuFood>();
+            Binding.Add<LinkMenuRestaurant>();
+            Binding.Add<Menu>();
+            Binding.Add<MenuTimes>();
 
-            Binding.Add<FoodOpinion>("FoodOpinion");
-            Binding.Add<RestaurantOpinion>("RestaurantOpinion");
-            Binding.Add<Review>("Review");
-            Binding.Add<Visit>("Visit");
+            Binding.Add<OpeningHours>();
+            Binding.Add<Restaurant>();
+            Binding.Add<Review>();
+            Binding.Add<Visit>();
+
+            Binding.Add<FoodOpinion>();
+            Binding.Add<RestaurantOpinion>();
+            Binding.Add<Session>();
+            Binding.Add<User>();
+
+            Binding.Add<Days>();
+            Binding.Add<FoodChecks>();
         }
 
         private static void Main(string[] args)
@@ -52,7 +60,7 @@ namespace api
             {
                 api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
                 Bind();
-                //SQL_Test_Code.Run();
+                SQL_Test_Code.Run();
 
                 api.Backend.Endpoints.WebListener.Start();
             }
