@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS `User`;
 DROP TABLE IF EXISTS `FoodChecks`;
 
 CREATE TABLE `FoodChecks` (
-	FoodCheckID INT NOT NULL AUTO_INCREMENT,
+	FoodCheckID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 
     IsVegetarian BIT NOT NULL DEFAULT 0,
     IsVegan BIT NOT NULL DEFAULT 0,
@@ -36,9 +36,9 @@ CREATE TABLE `FoodChecks` (
 );
 
 CREATE TABLE `User` (
-    UserID INT NOT NULL AUTO_INCREMENT,
+    UserID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     Email VARCHAR(60) NOT NULL,
-    FoodCheckID INT NOT NULL,
+    FoodCheckID INT UNSIGNED NOT NULL,
     `Password` VARCHAR(110) NOT NULL,
     Nickname VARCHAR(10) DEFAULT 'User',
     DateOfBirth DATE NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `User` (
 );
 
 CREATE TABLE `Session` (
-    UserID INT NOT NULL,
+    UserID INT UNSIGNED NOT NULL,
     SignedIn DATETIME NOT NULL DEFAULT NOW(),
     AuthToken VARCHAR(110) NOT NULL,
 
@@ -66,8 +66,8 @@ CREATE TABLE `Session` (
 );
 
 CREATE TABLE `Restaurant` (
-    RestaurantID INT NOT NULL AUTO_INCREMENT,
-    OwnerID INT NOT NULL,
+    RestaurantID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    OwnerID INT UNSIGNED NOT NULL,
     RestaurantName NVARCHAR(60) NOT NULL,
     RestaurantDescription NVARCHAR(120) NOT NULL,
     Longitude FLOAT NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE `Restaurant` (
 );
 
 CREATE TABLE `FoodTags` (
-    FoodTagID INT NOT NULL AUTO_INCREMENT,
+    FoodTagID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     Tag VARCHAR(20) NOT NULL,
 
     PRIMARY KEY (FoodTagID),
@@ -98,10 +98,10 @@ CREATE TABLE `FoodTags` (
 );
 
 CREATE TABLE `FoodOpinion` (
-    UserID INT NOT NULL,
-    FoodTagID INT NOT NULL,
-    SwipeRight INT DEFAULT 0,
-    SwipeLeft INT DEFAULT 0,
+    UserID INT UNSIGNED NOT NULL,
+    FoodTagID INT UNSIGNED NOT NULL,
+    SwipeRight INT UNSIGNED DEFAULT 0,
+    SwipeLeft INT UNSIGNED DEFAULT 0,
     Favourite BIT NOT NULL DEFAULT 0,
     NeverShow BIT NOT NULL DEFAULT 0,
 
@@ -122,7 +122,7 @@ CREATE TABLE `Days` (
 );
 
 CREATE TABLE `OpeningHours` (
-    RestaurantID INT NOT NULL,
+    RestaurantID INT UNSIGNED NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     OpenTime TIME NOT NULL DEFAULT '08:00:00',
     TimeServing TIME NOT NULL DEFAULT '14:00:00',
@@ -138,7 +138,7 @@ CREATE TABLE `OpeningHours` (
 );
 
 CREATE TABLE `Menu` (
-    MenuID INT NOT NULL AUTO_INCREMENT,
+    MenuID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     MenuName VARCHAR(20) NOT NULL DEFAULT 'Menu',
     IsChildMenu BIT NOT NULL DEFAULT 0,
 
@@ -146,9 +146,9 @@ CREATE TABLE `Menu` (
 );
 
 CREATE TABLE `LinkMenuRestaurant` (
-    MenuRestID INT NOT NULL AUTO_INCREMENT,
-    MenuID INT NOT NULL,
-    RestaurantID INT NOT NULL,
+    MenuRestID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    MenuID INT UNSIGNED NOT NULL,
+    RestaurantID INT UNSIGNED NOT NULL,
     AlwaysServe BIT NOT NULL DEFAULT 1,
 
     PRIMARY KEY (MenuRestID),
@@ -161,7 +161,7 @@ CREATE TABLE `LinkMenuRestaurant` (
 );
 
 CREATE TABLE `MenuTimes` (
-    MenuRestID INT NOT NULL,
+    MenuRestID INT UNSIGNED NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     StartServing TIME NOT NULL,
     TimeServing TIME NOT NULL,
@@ -176,8 +176,8 @@ CREATE TABLE `MenuTimes` (
 );
 
 CREATE TABLE `FoodItem` (
-    FoodID INT NOT NULL AUTO_INCREMENT,
-    FoodCheckID INT NOT NULL,
+    FoodID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    FoodCheckID INT UNSIGNED NOT NULL,
     FoodName VARCHAR(45) NOT NULL,
     FoodDescription VARCHAR(120) NOT NULL,
     Price DECIMAL(6,2) NOT NULL DEFAULT 1.00,
@@ -190,8 +190,8 @@ CREATE TABLE `FoodItem` (
 );
 
 CREATE TABLE `FoodItemTags` (
-    FoodID INT NOT NULL,
-    TagID INT NOT NULL,
+    FoodID INT UNSIGNED NOT NULL,
+    TagID INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (FoodID, TagID),
 
@@ -202,8 +202,8 @@ CREATE TABLE `FoodItemTags` (
 );
 
 CREATE TABLE `LinkMenuFood` (
-    MenuID INT NOT NULL,
-    FoodID INT NOT NULL,
+    MenuID INT UNSIGNED NOT NULL,
+    FoodID INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (MenuID, FoodID),
 
@@ -214,10 +214,10 @@ CREATE TABLE `LinkMenuFood` (
 );
 
 CREATE TABLE `RestaurantOpinion` (
-    UserID INT NOT NULL,
-    RestaurantID INT NOT NULL,
-    SwipeRight INT NOT NULL DEFAULT 0,
-    SwipeLeft INT NOT NULL DEFAULT 0,
+    UserID INT UNSIGNED NOT NULL,
+    RestaurantID INT UNSIGNED NOT NULL,
+    SwipeRight INT UNSIGNED NOT NULL DEFAULT 0,
+    SwipeLeft INT UNSIGNED NOT NULL DEFAULT 0,
     NeverShow BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (UserID, RestaurantID),
@@ -229,11 +229,11 @@ CREATE TABLE `RestaurantOpinion` (
 );
 
 CREATE TABLE `Visit` (
-    VisitRef INT NOT NULL AUTO_INCREMENT,
-    RestaurantID INT NOT NULL,
-    UserID INT NOT NULL,
+    VisitRef INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    RestaurantID INT UNSIGNED NOT NULL,
+    UserID INT UNSIGNED NOT NULL,
     DateOfVisit DATETIME NOT NULL DEFAULT NOW(),
-    GroupSize TINYINT NOT NULL DEFAULT 1,
+    GroupSize TINYINT UNSIGNED NOT NULL DEFAULT 1,
 
     PRIMARY KEY (VisitRef),
 
@@ -245,8 +245,8 @@ CREATE TABLE `Visit` (
 );
 
 CREATE TABLE `Review` (
-    VisitRef INT NOT NULL,
-    Rating TINYINT NOT NULL,
+    VisitRef INT UNSIGNED NOT NULL,
+    Rating TINYINT UNSIGNED NOT NULL,
 
     PRIMARY KEY (VisitRef),
 
