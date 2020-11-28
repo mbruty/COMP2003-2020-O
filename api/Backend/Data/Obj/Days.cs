@@ -2,6 +2,10 @@
 {
     public class Days : Object
     {
+        #region Fields
+
         public string DayRef, DayName;
+
+        #endregion Fields
     }
 }

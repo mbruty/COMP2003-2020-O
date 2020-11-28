@@ -14,14 +14,23 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
-        public async Task<User> GetUser()
-        {
-            return (await Binding.GetTable<User>().Select<User>(UserID))?[0];
-        }
+        #region Methods
 
         public async Task<Restaurant> GetRestaurant()
         {
             return (await Binding.GetTable<Restaurant>().Select<Restaurant>(RestaurantID))?[0];
         }
+
+        public async Task<Review> GetReview()
+        {
+            return (await Binding.GetTable<Review>().Select<Review>(VisitRef))?[0];
+        }
+
+        public async Task<User> GetUser()
+        {
+            return (await Binding.GetTable<User>().Select<User>(UserID))?[0];
+        }
+
+        #endregion Methods
     }
 }

@@ -1,8 +1,7 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
-using System.Threading.Tasks;
-using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -17,6 +16,8 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
+        #region Methods
+
         public async Task<FoodItem[]> GetFoodItems()
         {
             return await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>(
@@ -28,16 +29,18 @@ namespace api.Backend.Data.Obj
 
         public async Task<LinkMenuRestaurant[]> GetRestaurantLinks()
         {
-            return await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>("MenuID",MenuID);
+            return await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>("MenuID", MenuID);
         }
 
         public async Task<Restaurant[]> GetRestaurants()
         {
             return await Binding.GetTable<Restaurant>().SelectCustom<Restaurant>(
-                tables: "LinkMenuResturant,Resturant",
-                where: "LinkMenuResturant.MenuID = @ParaMenuID AND LinkMenuResturant.ResturantID = Resturant.ResturantID",
+                tables: "LinkMenuRestaurant,Restaurant",
+                where: "LinkMenuRestaurant.MenuID = @ParaMenuID AND LinkMenuRestaurant.RestaurantID = Restaurant.RestaurantID",
                 Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaMenuID", MenuID) }
                 );
         }
+
+        #endregion Methods
     }
 }

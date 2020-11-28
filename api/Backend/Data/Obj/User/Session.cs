@@ -1,5 +1,4 @@
-﻿using System;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
 using System.Threading.Tasks;
 
@@ -15,9 +14,13 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
+        #region Methods
+
         public async Task<User> GetUser()
         {
             return (await Binding.GetTable<User>().Select<User>(UserID))?[0];
         }
+
+        #endregion Methods
     }
 }

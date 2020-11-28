@@ -1,5 +1,4 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
-using System;
 using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
@@ -13,7 +12,6 @@ namespace api.Backend.Data.Obj
         public uint UserID, FoodTagID;
 
         #endregion Fields
-
 
         public async Task<User> GetUser()
         {

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -17,6 +17,8 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
+        #region Methods
+
         public async Task<FoodChecks> GetFoodCheck()
         {
             return (await Binding.GetTable<FoodChecks>().Select<FoodChecks>(FoodCheckID))?[0];
@@ -30,5 +32,7 @@ namespace api.Backend.Data.Obj
                 Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaFoodID", FoodID) }
                 );
         }
+
+        #endregion Methods
     }
 }

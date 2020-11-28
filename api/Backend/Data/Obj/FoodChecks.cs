@@ -2,6 +2,8 @@
 {
     public class FoodChecks : Object
     {
+        #region Fields
+
         public uint FoodCheckID;
 
         public bool IsVegetarian = false,
@@ -13,5 +15,7 @@
             HasGluten,
             HasEgg,
             HasSoy;
+
+        #endregion Fields
     }
 }

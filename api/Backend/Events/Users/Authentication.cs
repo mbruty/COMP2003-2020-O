@@ -2,9 +2,9 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
+using System;
 using System.Collections.Specialized;
 using System.Threading;
-using System;
 
 namespace api.Backend.Events.Users
 {

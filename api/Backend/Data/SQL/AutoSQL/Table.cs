@@ -184,14 +184,14 @@ namespace api.Backend.Data.SQL.AutoSQL
             return SetFieldValues<T>(Data);
         }
 
-        public async Task<T[]> SelectCustom<T>(string what = "*", string tables = null, string where = "TRUE", List<Tuple<string,object>> Params = null, int Limit = 0) where T : Object, new()
+        public async Task<T[]> SelectCustom<T>(string what = null, string tables = null, string where = "TRUE", List<Tuple<string, object>> Params = null, int Limit = 0) where T : Object, new()
         {
-            if (tables == null) tables = $"{Name}.*";
+            if (what == null) what = $"{Name}.*";
 
             string Lim = "";
             if (Limit > 0) Lim = $"LIMIT {Limit}";
 
-            List<object[]> Data = await SQL.Instance.Read($"SELECT {what} FROM {tables} WHERE ({where}) {Lim}",Params);
+            List<object[]> Data = await SQL.Instance.Read($"SELECT {what} FROM {tables} WHERE ({where}) {Lim}", Params);
 
             return SetFieldValues<T>(Data);
         }
