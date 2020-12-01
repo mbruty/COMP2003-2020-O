@@ -43,6 +43,7 @@ CREATE TABLE `User` (
     Nickname VARCHAR(10) DEFAULT 'User',
     DateOfBirth DATE NOT NULL,
     IsDeleted BIT NOT NULL DEFAULT 0,
+    IsVerified BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (UserID),
     CONSTRAINT UNQ_UserEmail UNIQUE (Email),
