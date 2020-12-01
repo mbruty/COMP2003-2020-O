@@ -16,7 +16,7 @@ DELIMITER //
 CREATE PROCEDURE `Run-RemoveUser` (IN input_email VARCHAR(60)) -- TO DO: Implement best-practice error handling techniques into this SP.
 BEGIN
 	UPDATE `User`
-    SET Email = '-1', `Password` = '-1', Nickname = '-1', IsDeleted = 1
+    SET Email = '-1', `Password` = '-1', Nickname = '-1', IsDeleted = 1, IsVerified = 0
     WHERE `User`.Email = input_email;
 END //
 DELIMITER ;
