@@ -52,7 +52,7 @@ const MainScreen: React.FC<Props> = (props) => {
         <View style={styles.screen}></View>
         <View style={styles.screen}></View>
         <View style={styles.screen}>
-          <RecentVisits />
+          <RecentVisits restaurantDetails={[{index: 1, type: 0, restaurantName: "Restaurant 1", restaurantVisitDate: "09-11-20"}, {index: 2, type: 1, restaurantName: "Restaurant 2", restaurantVisitDate: "15-11-20"}]}/>
         </View>
         <View style={styles.screen}></View>
       </ScrollView>

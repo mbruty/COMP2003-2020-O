@@ -1,9 +1,20 @@
 import React from "react";
 import AnimatedScroll from "../AnimatedCard/AnimatedScroll";
 
+export interface Details {
+  index: number;
+  type: number;
+  restaurantName: string;
+  restaurantVisitDate: string;
+}
+
+interface Props {
+  restaurantDetails: Array<Details>;
+}
+
 // Type is a number corresponding to the card style
 // See resources/card(n).png
-const cards = [
+/*const cards = [
   {
     index: 1,
     type: 0,
@@ -58,10 +69,11 @@ const cards = [
     name: "Restaurant 9",
     visitDate: "09-12-20",
   },
-];
+];*/
 
-//New visits can be added to the list like this
-cards.push({index: 10, type: 1, name: "Restaurant 10", visitDate: "09-12-20"})
+const cards = [];
+
+
 
 
 /**
@@ -72,8 +84,24 @@ const handleSwipe = (index: number) => {
   alert("Swipe from " + index);
 };
 
-const RecentVisits: React.FC = (props) => {
-  //console.log("Hello");
+const RecentVisits: React.FC<Props> = (props) => {
+
+  //Add visits to the card list
+  var i = 0;
+  while (i < 1){
+  props.restaurantDetails.forEach(element => {
+    cards.push({
+      index: element.index, 
+      type: element.type, name: 
+      element.restaurantName, 
+      visitDate: element.restaurantVisitDate})
+    //Only display the 10 most recent visits
+    if (cards.length > 10) {
+      cards.pop();
+    }
+    i = i + 1;
+  });
+}
 
   return <AnimatedScroll handleSwipe={handleSwipe} cards={cards} />;
 };
