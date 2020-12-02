@@ -1,4 +1,5 @@
 ﻿using api.Backend.Data.Obj;
+using api.Backend.Data.SQL.AutoSQL;
 
 namespace api
 {
@@ -8,10 +9,9 @@ namespace api
 
         public static async void Run()
         {
-            FoodChecks u = new FoodChecks();
-            await u.Insert(true);
+            Menu[] m = await Binding.GetTable<Menu>().Select<Menu>(1);
 
-            //var p = Binding.GetTable<User>().Select<User>()[0].visits;
+            FoodItem[] f = await m[0].GetFoodItems();
         }
 
         #endregion Methods

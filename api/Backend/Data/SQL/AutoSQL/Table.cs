@@ -96,6 +96,16 @@ namespace api.Backend.Data.SQL.AutoSQL
             return await Select<T>(new string[] { FieldName }, new object[] { FieldValue }, Limit);
         }
 
+        public async Task<T[]> Select<T>(int id, int Limit = 0) where T : Object, new()
+        {
+            return await Select<T>(new object[] { id }, Limit);
+        }
+
+        public async Task<T[]> Select<T>(uint id, int Limit = 0) where T : Object, new()
+        {
+            return await Select<T>(new object[] { id }, Limit);
+        }
+
         /// <summary>
         /// Select based on a specific set of collumns and values
         /// </summary>
@@ -169,7 +179,19 @@ namespace api.Backend.Data.SQL.AutoSQL
             string Lim = "";
             if (Limit > 0) Lim = $"LIMIT {Limit}";
 
-            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({where}) {Limit}");
+            List<object[]> Data = await SQL.Instance.Read($"SELECT * FROM {Name} WHERE ({where}) {Lim}");
+
+            return SetFieldValues<T>(Data);
+        }
+
+        public async Task<T[]> SelectCustom<T>(string what = null, string tables = null, string where = "TRUE", List<Tuple<string, object>> Params = null, int Limit = 0) where T : Object, new()
+        {
+            if (what == null) what = $"{Name}.*";
+
+            string Lim = "";
+            if (Limit > 0) Lim = $"LIMIT {Limit}";
+
+            List<object[]> Data = await SQL.Instance.Read($"SELECT {what} FROM {tables} WHERE ({where}) {Lim}", Params);
 
             return SetFieldValues<T>(Data);
         }

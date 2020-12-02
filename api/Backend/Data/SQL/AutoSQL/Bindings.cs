@@ -39,9 +39,14 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <param name="Table"> </param>
-        public static void Add<T>(string Table)
+        public static void Add<T>(string Table) where T : Obj.Object, new()
         {
             bindings.Add(new Binding(typeof(T), Table));
+        }
+
+        public static void Add<T>() where T : Obj.Object, new()
+        {
+            bindings.Add(new Binding(typeof(T), new T().GetType().Name));
         }
 
         /// <summary>
