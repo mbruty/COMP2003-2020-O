@@ -69,8 +69,6 @@ const handleSwipe = (index: number) => {
 };
 
 const Example: React.FC = (props) => {
-  console.log("Hello");
-
   return <AnimatedScroll handleSwipe={handleSwipe} cards={cards} />;
 };
 

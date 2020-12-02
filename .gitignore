@@ -1,3 +1,4 @@
 deploy_key
 .env
 api/obj
+image-handler/node_modules
