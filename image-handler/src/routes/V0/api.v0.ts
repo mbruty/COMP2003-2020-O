@@ -3,12 +3,10 @@ import express from "express";
 import axios from "axios";
 import { apiURI } from "../../constants";
 
+const images = require("./images");
 const router = express.Router();
 
-router.use(auth);
-
-router.get("/", (req, res) => {
-  res.sendStatus(200);
-});
+// router.use(auth);
+router.use("/images", images);
 
 export default router;
