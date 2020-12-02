@@ -23,10 +23,12 @@ interface Props {
   allowBack: boolean;
   onSubmit: () => void;
   onBack?: () => void;
+  text?: string;
 }
 const FormProgress: React.FC<Props> = (props) => {
   const dimensions = Dimensions.get("window");
   const imageWidth = dimensions.width;
+  const text = props.text || "SUMBIT";
   return (
     <>
       <View
@@ -75,7 +77,7 @@ const FormProgress: React.FC<Props> = (props) => {
             allowFontScaling={false}
             style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}
           >
-            SUBMIT
+            {text}
           </Text>
         </TouchableOpacity>
       </View>

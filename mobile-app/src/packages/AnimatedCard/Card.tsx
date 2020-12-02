@@ -1,8 +1,6 @@
 import React from "react";
 import { Dimensions, Image, StyleSheet, Text } from "react-native";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import Animated, { Value } from "react-native-reanimated";
-import { CONSTANT_STYLES } from "../../shared/constants";
+import { CONSTANT_STYLES } from "../../constants";
 
 const { width } = Dimensions.get("window");
 const ratio = 228 / 362;
@@ -40,10 +38,10 @@ export default ({ type, name, nextVisit }: CardProps) => {
   let source: number;
   switch (type) {
     case 0:
-      source = require("../AnimatedScroll/Card/card1.png");
+      source = require("../../resources/card0.png");
       break;
     case 1:
-      source = require("../AnimatedScroll/Card/card2.png");
+      source = require("../../resources/card1.png");
       break;
     default:
       throw Error("Invalid card style");
@@ -65,10 +63,19 @@ export default ({ type, name, nextVisit }: CardProps) => {
         style={[
           styles.titleTxt,
           CONSTANT_STYLES.TXT_BASE,
+          { top: 75, left: 25, fontSize: 16, fontWeight: "normal" },
+        ]}
+      >
+        {"Date of Visit: " + nextVisit}
+      </Text>
+      <Text
+        style={[
+          styles.titleTxt,
+          CONSTANT_STYLES.TXT_BASE,
           { top: 120, left: 25, fontSize: 16, fontWeight: "normal" },
         ]}
       >
-        {"Next Visit: " + nextVisit}
+        {"Swipe for more info ---->"}
       </Text>
     </>
   );

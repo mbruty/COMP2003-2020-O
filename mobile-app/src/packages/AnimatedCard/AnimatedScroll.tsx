@@ -9,8 +9,7 @@
 
 import React, { useRef } from "react";
 import { Animated, FlatList } from "react-native";
-import { Cards } from "./shared/Card";
-import GroupCard from "./AnimatedScroll/GroupCard";
+import GroupCard from "./GroupCard";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 const useLazyRef = <T extends object>(initializer: () => T) => {
@@ -20,64 +19,17 @@ const useLazyRef = <T extends object>(initializer: () => T) => {
   }
   return ref.current;
 };
-const cards = [
-  {
-    index: 1,
-    type: 0,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 2,
-    type: 1,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 3,
-    type: 0,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 4,
-    type: 1,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 5,
-    type: 0,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 6,
-    type: 1,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 7,
-    type: 0,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 8,
-    type: 1,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-  {
-    index: 9,
-    type: 0,
-    name: "Big O Bois",
-    nextVisit: "09-12-20",
-  },
-];
+interface Props {
+  cards: Array<{
+    index: number;
+    type: number;
+    name: string;
+    visitDate: string;
+  }>;
+  handleSwipe: (index: number) => void;
+}
 
-const AnimatedScroll = () => {
+const AnimatedScroll: React.FC<Props> = (props) => {
   const y = useLazyRef(() => new Animated.Value(0));
   const onScroll = useLazyRef(() =>
     Animated.event(
@@ -96,9 +48,14 @@ const AnimatedScroll = () => {
       scrollEventThrottle={16}
       bounces={false}
       {...{ onScroll }}
-      data={cards}
+      data={props.cards}
       renderItem={({ index, item: { type } }) => (
-        <GroupCard {...{ index, y, type }} name={cards[index].name} nextVisit={cards[index].nextVisit}/>
+        <GroupCard
+          {...{ index, y, type }}
+          name={props.cards[index].name}
+          visitDate={props.cards[index].visitDate}
+          onSwipe={props.handleSwipe}
+        />
       )}
       keyExtractor={(item) => `${item.index}`}
     />
