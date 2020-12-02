@@ -63,10 +63,19 @@ export default ({ type, name, nextVisit }: CardProps) => {
         style={[
           styles.titleTxt,
           CONSTANT_STYLES.TXT_BASE,
-          { top: 120, left: 25, fontSize: 16, fontWeight: "normal" },
+          { top: 75, left: 25, fontSize: 16, fontWeight: "normal" },
         ]}
       >
         {"Date of Visit: " + nextVisit}
+      </Text>
+      <Text
+        style={[
+          styles.titleTxt,
+          CONSTANT_STYLES.TXT_BASE,
+          { top: 120, left: 25, fontSize: 16, fontWeight: "normal" },
+        ]}
+      >
+        {"Swipe for more info ---->"}
       </Text>
     </>
   );
