@@ -13,8 +13,8 @@ function App() {
       createMuiTheme({
         palette: {
           background: {
-            paper: prefersDarkMode ? "#424242" : "#FFF",
-            default: prefersDarkMode ? "#303030" : "#FFF",
+            paper: prefersDarkMode ? "#303030" : "#FFF",
+            default: prefersDarkMode ? "#212121" : "#FFF",
           },
           primary: {
             light: "#7986cb",
@@ -32,9 +32,9 @@ function App() {
         className="App"
         style={{ backgroundColor: theme.palette.background.default }}
       >
-        <Nav />
-        <p>{prefersDarkMode.toString()}</p>
-        <h1>hello</h1>
+        <Nav
+          colour={prefersDarkMode ? "#333333" : theme.palette.primary.main}
+        />
       </div>
     </ThemeProvider>
   );

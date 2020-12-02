@@ -79,7 +79,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+interface Props {
+  colour: string;
+}
+const PrimarySearchAppBar: React.FC<Props> = (props) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -163,7 +166,7 @@ export default function PrimarySearchAppBar() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static">
+      <AppBar style={{ backgroundColor: props.colour }} position="static">
         <Toolbar>
           <IconButton
             edge="start"
@@ -219,4 +222,6 @@ export default function PrimarySearchAppBar() {
       {renderMenu}
     </div>
   );
-}
+};
+
+export default PrimarySearchAppBar;
