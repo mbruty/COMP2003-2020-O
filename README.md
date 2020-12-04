@@ -29,6 +29,8 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 
 ### TypeScript
 
+<br>
+
 - [ ] Run the tslint extension
 - [ ] Run Prettier (Shift + alt + f)
 - [ ] Run the file formatter `npx destiny -w "src/**/*.*"`
@@ -38,11 +40,24 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 - [ ] Variables and other functions use camelCaps
 - [ ] For constant's please use UPPER_CASE_SNAKE_CASE
 
+<br>
+
 ### C#
 
 - Comment Chunks of code to explain function
-
 - Keep functions under 30 lines
+
+<br>
+
+### MySQL
+
+- Triggers are prefixed with **TGR_**
+- Large transactions within stored procedures and triggers are sandwiched with a **//** delimiter
+- Stored procedures are prefixed with **Run-**
+- Procedures, triggers and tables use the **DROP {object} IF EXISTS** tag before the script is run
+
+<br>
+<br>
 
 ## What We Are Using
 
@@ -216,6 +231,20 @@ You're able to run the project locally without docker, but on the server we will
 9. Running the API
    `sudo docker container run devapi dotnet build`
    `sudo docker container run devapi --configuration Release`
+
+---
+
+## MySQL Stored Procedures
+
+### Run-RemoveUser
+
+> **This SP takes 1 parameter:**  
+> *name* `input_email` *type* `varchar(60)`  
+
+Use this stored procedure to safely remove a user's personal data whilst leaving data associated with them in-tact.  
+This helps to preserve information the reccomender might need to work effectively.  
+A user's email address, nickname and password is deleted so the ID is no longer linked to a real person.  
+
 
 ---
 
