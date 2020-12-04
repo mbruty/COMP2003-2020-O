@@ -4,12 +4,11 @@ SQL Trigger Setup:
     It will delete triggers if they currently exist in the database.
     The triggers are explained within this comment bracket of the script.
 
-    TGR_DeleteFoodItem removes a FoodCheck associated with a menu item to be removed.
-    It's the only loose end that isn't covered currently by an ON DELETE CASCADE tag. Users currently cannot be deleted.
+    TGR_DeleteFoodItem removes the FoodCheck associated with the menu item to be removed.
 
     TRG_InsertUser automatically assigns a default FoodCheck to a newly created user.
     
-    TGR_InsertFoodItem responds similarly to its InsertUser counterpart.
+    TGR_InsertFoodItem responds similarly to its InsertUser counterpart by creating a default FoodCheck.
 */
 
 DROP TRIGGER IF EXISTS TGR_DeleteFoodItem;
