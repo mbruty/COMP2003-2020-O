@@ -18,6 +18,7 @@ SQL Procedure Setup:
 */
 
 DROP PROCEDURE IF EXISTS `Run-RemoveUser`;
+DROP PROCEDURE IF EXISTS `Run-PermaDeleteUser`;
 
 DELIMITER //
 CREATE PROCEDURE `Run-RemoveUser` (IN input_email VARCHAR(60)) -- TO DO: Implement best-practice error handling techniques into this SP & deal with restaurant owner problem.
@@ -28,7 +29,7 @@ BEGIN
 END //
 
 
-CREATE PROCEDURE `Run-PermaDeleteUser` (IN input_id INT) -- TO DO: Implement best-practice error handling techniques into this SP
+CREATE PROCEDURE `Run-PermaDeleteUser` (IN input_id INT) -- TO DO: Implement best-practice error handling techniques into this SP.
 BEGIN
     DELETE FROM `User`
     WHERE UserID = input_id;
