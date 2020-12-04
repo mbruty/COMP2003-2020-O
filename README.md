@@ -245,6 +245,15 @@ Use this stored procedure to safely remove a user's personal data whilst leaving
 This helps to preserve information the reccomender might need to work effectively.  
 A user's email address, nickname and password is deleted so the ID is no longer linked to a real person.  
 
+### Run-PermaDeleteUser
+
+> **This SP takes 1 parameter:**  
+> *name* `input_id` *type* `int`  
+
+Use this stored procedure to completely remove a user from the database and all their data without preserving it.  
+This is not safe or helpful, so put it to seldom use.  
+A user's ID is required for safety reasons.  
+Cannot be completed if the user owns a restaurant.
 
 ---
 
