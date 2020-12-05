@@ -53,13 +53,14 @@ SQL Procedure Setup:
 
 DROP PROCEDURE IF EXISTS `Run-RemoveUser`;
 DROP PROCEDURE IF EXISTS `Run-PermaDeleteUser`;
-DROP FUNCTION IF EXISTS `Run-GenerateUserData`;
+DROP PROCEDURE IF EXISTS `Run-GenerateUserData`;
 
 DROP FUNCTION IF EXISTS `Func-RandomSelection`;
 DROP FUNCTION IF EXISTS `Func-CountDelimiters`;
 DROP FUNCTION IF EXISTS `Func-RandomNumber`;
 DROP FUNCTION IF EXISTS `Func-GetEmailStarts`;
 DROP FUNCTION IF EXISTS `Func-GetDomains`;
+DROP FUNCTION IF EXISTS `Func-GetNicknames`;
 
 DELIMITER //
 CREATE PROCEDURE `Run-RemoveUser` (IN input_email VARCHAR(60)) -- TO DO: Deal with restaurant owner problem.
@@ -77,28 +78,35 @@ BEGIN
 END //
 
 
-CREATE FUNCTION `Run-GenerateUserData` ()
-RETURNS VARCHAR(100)
-DETERMINISTIC
+CREATE PROCEDURE `Run-GenerateUserData` ()
 BEGIN
     DECLARE list_of_email_starts_former VARCHAR(10000);
     DECLARE list_of_email_starts_latter VARCHAR(10000);
     DECLARE list_of_email_comps VARCHAR(10000);
     DECLARE list_of_email_domains VARCHAR(10000);
+    DECLARE list_of_nicknames VARCHAR(10000);
     DECLARE data_email VARCHAR(60);
     DECLARE data_password VARCHAR(110);
+    DECLARE data_nickname VARCHAR(10);
+    DECLARE data_birthday VARCHAR(10);
 
     SET list_of_email_starts_former = `Func-GetEmailStarts`();
     SET list_of_email_starts_latter = `Func-GetEmailStarts`();
     SET list_of_email_comps = `Func-GetEmailStarts`();
     SET list_of_email_domains = `Func-GetDomains`();
+    SET list_of_nicknames = `Func-GetNicknames`();
 
     SET data_email = CONCAT(`Func-RandomSelection`(list_of_email_starts_former), '.', `Func-RandomSelection`(list_of_email_starts_latter), '@', 
     `Func-RandomSelection`(list_of_email_comps), `Func-RandomSelection`(list_of_email_comps), '.', `Func-RandomSelection`(list_of_email_domains));
 
     SET data_password = 'XxXxX';
 
-    RETURN data_email;
+    SET data_nickname = `Func-RandomSelection`(list_of_nicknames);
+
+    SET data_birthday = CONCAT(`Func-RandomNumber`(1900, 2018), '-', `Func-RandomNumber`(1, 12), '-', `Func-RandomNumber`(1, 27));
+
+    INSERT INTO `User` (Email, `Password`, Nickname, DateOfBirth)
+    VALUES (data_email, data_password, data_nickname, data_birthday);
 END //
 
 
