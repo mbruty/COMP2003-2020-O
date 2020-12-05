@@ -67,7 +67,9 @@ END //
 
 CREATE PROCEDURE `Run-GenerateUserData` (IN input_quantity INT)
 BEGIN
+    DECLARE list_of_email_starts VARCHAR(10000);
 
+    SET list_of_email_starts = `Func-GetEmailStarts`();
 END //
 
 
@@ -128,6 +130,22 @@ BEGIN
     SET return_rand = ROUND(gen_rand * (max_val - min_val) + min_val); -- Number is converted to a useful whole number.
 
     RETURN return_rand; -- Return the final generated value.
+END //
+
+
+CREATE FUNCTION `Func-GetEmailStarts` ()
+RETURNS VARCHAR(10000)
+DETERMINISTIC
+BEGIN
+    DECLARE sending_info VARCHAR(10000);
+
+    SET sending_info = 
+    'joseph$paul$milky$booty$clown$sexy$sly$garbage$henry$mike$oscar$jack$alex$reef$luke$shirley$creamy$gregor$animals$stub$crispy$indian$romania$
+    finland$french$crazy$incredible$customer$rumor$rushing$barrel$mole$finished$dilemma$annual$overall$image$soul$digress$wet$tasty$tasteless$
+    horny$kicking$wasp$max$fording$john$glados$kingsly$mary$sally$george$fred$paula$little$young$grandad$mother$bible$christmas$sweaty$gong$
+    ninja$batman$hedge$vaginal$vertical$machar$davies$lakin$denman$bruty$mann$atkinson$jake$howell$megan$dyer$horoscope$direction$homosexual$
+    manner$decorative$relative$syndrome$bark$cat$crosswalk$swarm$borrow$object$code$list$peace$lingering$urgent&gradual$69$420$large$promise$
+    cropping$spectrum$shocking$dripping$boobs$coffee$dosage$destructive$related$old$keeping$house$swimming$turnip$lover$sitter$kisser$taster$'
 END //
 
 
