@@ -24,6 +24,7 @@ SQL Procedure Setup:
         - There is no array variable in MySQL; input a varchar string where each selectable value is proceeded by a $ symbol.
         - The list string cannot exceed 10,000 characters.
         - The function then does a lot of clever things and eventually returns one item from the makeshift list.
+        - It uses the Func-CountDelimiters and Func-RandomNumber custom functions to achieve this; ensure they are present on the server.
 
     Func-CountDelimiters is a function used to count how many times a $ symbol appears in a given string.
         - A string is inserted into the function. This string's max length cannot exceed 10,000 characters.
@@ -76,17 +77,30 @@ CREATE FUNCTION `Func-RandomSelection` (select_these VARCHAR(10000))
 RETURNS VARCHAR(10000)
 DETERMINISTIC
 BEGIN
-    -- Here, we determine the number of items in this makeshift list and we assign the total to a variable called item_count.
+    -- At the start of the function, we must declare all the variables we are to use throughout. Failure to do so will result in a problem.
     DECLARE item_count INT;
-    SET item_count = Func-CountDelimiters(select_these);
+    DECLARE item_number INT;
+    DECLARE temp_truncated_list VARCHAR(10000);
+    DECLARE selected_item VARCHAR(10000);
+
+    -- Here, we determine the number of items in this makeshift list and we assign the total to a variable called item_count.
+    SET item_count = `Func-CountDelimiters`(select_these);
 
     -- Here, we randomly generate a number between 1 and the total number of items present in the makeshift list of items.
-    DECLARE item_number INT;
-    SET item_number = Func-RandomNumber(1, item_count);
+    SET item_number = `Func-RandomNumber`(1, item_count);
 
     -- At this stage, we truncate the list string at x delimiter, where x is the randomly generated value we got previously. Remember, the $ is our delimiter.
-    DECLARE temp_truncated_list VARCHAR(10000);
     SET temp_truncated_list = SUBSTRING_INDEX(select_these, '$', item_number);
+
+    -- If the item selected is the first one, it is just returned, as it won't have any delimiters. Otherwise, remove the other items and return the randomly selected one.
+    IF (`Func-CountDelimiters`(temp_truncated_list) > 0) THEN
+        selected_item = SUBSTRING_INDEX(temp_truncated_list, '$', -1);
+    ELSE
+        selected_item = temp_truncated_list;
+    END IF;
+
+    -- This is the RETURN command.
+    RETURN selected_item;
 END //
 
 
