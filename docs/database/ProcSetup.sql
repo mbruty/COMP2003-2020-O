@@ -22,13 +22,14 @@ SQL Procedure Setup:
 
     Func-RandomSelection is a function used to select one random inserted data item from a list of them.
         - There is no array variable in MySQL; input a varchar string where each selectable value is proceeded by a $ symbol.
+        - The list string cannot exceed 10,000 characters.
         - The function then does a lot of clever things and eventually returns one item from the makeshift list.
 
     Func-CountDelimiters is a function used to count how many times a $ symbol appears in a given string.
-        - A string is inserted into the function.
+        - A string is inserted into the function. This string's max length cannot exceed 10,000 characters.
         - An integer is outputted.
         - Only $ symbols are counted at this current time.
-        - A fine piece of work this one.
+        - I'm very proud of this one.
 
     Func-RandomNumber is a function used to return a random integer value between a minimum and maximum (both inclusive).
         - You enter the min and the max.
@@ -71,18 +72,25 @@ END //
 
 
 
-CREATE FUNCTION `Func-RandomSelection` (select_these VARCHAR(MAX))
-RETURNS VARCHAR(MAX)
+CREATE FUNCTION `Func-RandomSelection` (select_these VARCHAR(10000))
+RETURNS VARCHAR(10000)
 DETERMINISTIC
 BEGIN
+    -- Here, we determine the number of items in this makeshift list and we assign the total to a variable called item_count.
     DECLARE item_count INT;
     SET item_count = Func-CountDelimiters(select_these);
 
+    -- Here, we randomly generate a number between 1 and the total number of items present in the makeshift list of items.
+    DECLARE item_number INT;
+    SET item_number = Func-RandomNumber(1, item_count);
 
+    -- At this stage, we truncate the list string at x delimiter, where x is the randomly generated value we got previously. Remember, the $ is our delimiter.
+    DECLARE temp_truncated_list VARCHAR(10000);
+    SET temp_truncated_list = SUBSTRING_INDEX(select_these, '$', item_number);
 END //
 
 
-CREATE FUNCTION `Func-CountDelimiters` (input_string VARCHAR(MAX))
+CREATE FUNCTION `Func-CountDelimiters` (input_string VARCHAR(10000))
 RETURNS INT
 DETERMINISTIC
 BEGIN
