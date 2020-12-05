@@ -255,6 +255,15 @@ This is not safe or helpful, so put it to seldom use.
 A user's ID is required for safety reasons.  
 Cannot be completed if the user owns a restaurant.
 
+### Run-GenerateUserData
+
+> **This SP takes 0 parameters**  
+
+If you run this stored procedure on the server, it will randomly generate a user record.  
+This is good to run for testing and is safe.  
+In its current iteration, you may get an error from the procedure randomly generating a pre-existing email. If this happens, the record simply won't be added.  
+This feature is experimental and will be updated in a future build.
+
 ---
 
 ## How the Branches Work

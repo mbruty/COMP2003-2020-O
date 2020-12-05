@@ -20,6 +20,12 @@ SQL Procedure Setup:
         - All other records will be eliminated via a simple ON DELETE CASCADE command.
         - For safety purposes, you must enter the user's database ID.
 
+    Run-GenerateUserData will place random user records into the database.
+        - Only one user is generated per call.
+        - The email address, date of birth and nickname are randomly generated.
+        - Password will always be "XXx".
+        - The associated FoodCheck will be the default.
+
     Func-RandomSelection is a function used to select one random inserted data item from a list of them.
         - There is no array variable in MySQL; input a varchar string where each selectable value is proceeded by a $ symbol.
         - The list string cannot exceed 10,000 characters.
@@ -45,6 +51,10 @@ SQL Procedure Setup:
         - These are all real domains.
         - Will be prefixed with a full stop eventually.
         - Feel free to add.
+
+    Func-GetNicknames is a function used to return our list of nicknames.
+        - Feel free to add.
+        - Remember they are separated in a string by $ signs.
 */
 
 
@@ -61,6 +71,8 @@ DROP FUNCTION IF EXISTS `Func-RandomNumber`;
 DROP FUNCTION IF EXISTS `Func-GetEmailStarts`;
 DROP FUNCTION IF EXISTS `Func-GetDomains`;
 DROP FUNCTION IF EXISTS `Func-GetNicknames`;
+
+
 
 DELIMITER //
 CREATE PROCEDURE `Run-RemoveUser` (IN input_email VARCHAR(60)) -- TO DO: Deal with restaurant owner problem.
@@ -80,6 +92,7 @@ END //
 
 CREATE PROCEDURE `Run-GenerateUserData` ()
 BEGIN
+    -- All our variables are declared first. We have to do this before the procedure gets underway.
     DECLARE list_of_email_starts_former VARCHAR(10000);
     DECLARE list_of_email_starts_latter VARCHAR(10000);
     DECLARE list_of_email_comps VARCHAR(10000);
@@ -90,21 +103,27 @@ BEGIN
     DECLARE data_nickname VARCHAR(10);
     DECLARE data_birthday VARCHAR(10);
 
+    -- Our lists of respective data items are fetched from their appropriate functions.
     SET list_of_email_starts_former = `Func-GetEmailStarts`();
     SET list_of_email_starts_latter = `Func-GetEmailStarts`();
     SET list_of_email_comps = `Func-GetEmailStarts`();
     SET list_of_email_domains = `Func-GetDomains`();
     SET list_of_nicknames = `Func-GetNicknames`();
 
+    -- An email is pieced together using the CONCAT function. The format is: "[random_word].[random_word]@[randomword][randomword].[randomdomain]"
     SET data_email = CONCAT(`Func-RandomSelection`(list_of_email_starts_former), '.', `Func-RandomSelection`(list_of_email_starts_latter), '@', 
     `Func-RandomSelection`(list_of_email_comps), `Func-RandomSelection`(list_of_email_comps), '.', `Func-RandomSelection`(list_of_email_domains));
 
-    SET data_password = 'XxXxX';
+    -- Password isn't randomly generated; just "XXx".
+    SET data_password = 'XXx';
 
+    -- A nickname is set randomly.
     SET data_nickname = `Func-RandomSelection`(list_of_nicknames);
 
+    -- A date of birth is randomly generated using our random-number-gen function. The day values won't exceed 27 to ensure max compatability.
     SET data_birthday = CONCAT(`Func-RandomNumber`(1900, 2018), '-', `Func-RandomNumber`(1, 12), '-', `Func-RandomNumber`(1, 27));
 
+    -- This is the MySQL command to insert data.
     INSERT INTO `User` (Email, `Password`, Nickname, DateOfBirth)
     VALUES (data_email, data_password, data_nickname, data_birthday);
 END //
