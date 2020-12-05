@@ -35,6 +35,16 @@ SQL Procedure Setup:
     Func-RandomNumber is a function used to return a random integer value between a minimum and maximum (both inclusive).
         - You enter the min and the max.
         - A random value is selected between the two using mathematics magic.
+
+    Func-GetEmailStarts is a function used to return our list of random email starting words.
+        - Just a weird mix of words.
+        - Every word is proceeded by a $ sign.
+        - Feel free to add.
+    
+    Func-GetDomains is a function used to return our list of email domains.
+        - These are all real domains.
+        - Will be prefixed with a full stop eventually.
+        - Feel free to add.
 */
 
 
@@ -43,11 +53,13 @@ SQL Procedure Setup:
 
 DROP PROCEDURE IF EXISTS `Run-RemoveUser`;
 DROP PROCEDURE IF EXISTS `Run-PermaDeleteUser`;
-DROP PROCEDURE IF EXISTS `Run-GenerateUserData`;
+DROP FUNCTION IF EXISTS `Run-GenerateUserData`;
 
 DROP FUNCTION IF EXISTS `Func-RandomSelection`;
 DROP FUNCTION IF EXISTS `Func-CountDelimiters`;
 DROP FUNCTION IF EXISTS `Func-RandomNumber`;
+DROP FUNCTION IF EXISTS `Func-GetEmailStarts`;
+DROP FUNCTION IF EXISTS `Func-GetDomains`;
 
 DELIMITER //
 CREATE PROCEDURE `Run-RemoveUser` (IN input_email VARCHAR(60)) -- TO DO: Deal with restaurant owner problem.
@@ -65,11 +77,28 @@ BEGIN
 END //
 
 
-CREATE PROCEDURE `Run-GenerateUserData` (IN input_quantity INT)
+CREATE FUNCTION `Run-GenerateUserData` ()
+RETURNS VARCHAR(100)
+DETERMINISTIC
 BEGIN
-    DECLARE list_of_email_starts VARCHAR(10000);
+    DECLARE list_of_email_starts_former VARCHAR(10000);
+    DECLARE list_of_email_starts_latter VARCHAR(10000);
+    DECLARE list_of_email_comps VARCHAR(10000);
+    DECLARE list_of_email_domains VARCHAR(10000);
+    DECLARE data_email VARCHAR(60);
+    DECLARE data_password VARCHAR(110);
 
-    SET list_of_email_starts = `Func-GetEmailStarts`();
+    SET list_of_email_starts_former = `Func-GetEmailStarts`();
+    SET list_of_email_starts_latter = `Func-GetEmailStarts`();
+    SET list_of_email_comps = `Func-GetEmailStarts`();
+    SET list_of_email_domains = `Func-GetDomains`();
+
+    SET data_email = CONCAT(`Func-RandomSelection`(list_of_email_starts_former), '.', `Func-RandomSelection`(list_of_email_starts_latter), '@', 
+    `Func-RandomSelection`(list_of_email_comps), `Func-RandomSelection`(list_of_email_comps), '.', `Func-RandomSelection`(list_of_email_domains));
+
+    SET data_password = 'XxXxX';
+
+    RETURN data_email;
 END //
 
 
@@ -96,14 +125,15 @@ BEGIN
 
     -- If the item selected is the first one, it is just returned, as it won't have any delimiters. Otherwise, remove the other items and return the randomly selected one.
     IF (`Func-CountDelimiters`(temp_truncated_list) > 0) THEN
-        selected_item = SUBSTRING_INDEX(temp_truncated_list, '$', -1);
+        SET selected_item = SUBSTRING_INDEX(temp_truncated_list, '$', -1);
     ELSE
-        selected_item = temp_truncated_list;
+        SET selected_item = temp_truncated_list;
     END IF;
 
     -- This is the RETURN command.
     RETURN selected_item;
 END //
+
 
 
 CREATE FUNCTION `Func-CountDelimiters` (input_string VARCHAR(10000))
@@ -116,6 +146,7 @@ BEGIN
 
     RETURN del_count; -- Counter value is returned.
 END //
+
 
 
 CREATE FUNCTION `Func-RandomNumber` (min_val INT, max_val INT)
@@ -133,6 +164,7 @@ BEGIN
 END //
 
 
+
 CREATE FUNCTION `Func-GetEmailStarts` ()
 RETURNS VARCHAR(10000)
 DETERMINISTIC
@@ -140,13 +172,37 @@ BEGIN
     DECLARE sending_info VARCHAR(10000);
 
     SET sending_info = 
-    'joseph$paul$milky$booty$clown$sexy$sly$garbage$henry$mike$oscar$jack$alex$reef$luke$shirley$creamy$gregor$animals$stub$crispy$indian$romania$
-    finland$french$crazy$incredible$customer$rumor$rushing$barrel$mole$finished$dilemma$annual$overall$image$soul$digress$wet$tasty$tasteless$
-    horny$kicking$wasp$max$fording$john$glados$kingsly$mary$sally$george$fred$paula$little$young$grandad$mother$bible$christmas$sweaty$gong$
-    ninja$batman$hedge$vaginal$vertical$machar$davies$lakin$denman$bruty$mann$atkinson$jake$howell$megan$dyer$horoscope$direction$homosexual$
-    manner$decorative$relative$syndrome$bark$cat$crosswalk$swarm$borrow$object$code$list$peace$lingering$urgent&gradual$69$420$large$promise$
-    cropping$spectrum$shocking$dripping$boobs$coffee$dosage$destructive$related$old$keeping$house$swimming$turnip$lover$sitter$kisser$taster$'
+    'joseph$paul$milky$booty$clown$sexy$sly$garbage$henry$mike$oscar$jack$alex$reef$luke$shirley$creamy$gregor$animals$stub$crispy$indian$romania$finland$french$crazy$incredible$customer$rumor$rushing$barrel$mole$finished$dilemma$annual$overall$image$soul$digress$wet$tasty$tasteless$horny$kicking$wasp$max$fording$john$glados$kingsly$mary$sally$george$fred$paula$little$young$grandad$mother$bible$christmas$sweaty$gong$ninja$batman$hedge$vaginal$vertical$machar$davies$lakin$denman$bruty$mann$atkinson$jake$howell$megan$dyer$horoscope$direction$homosexual$manner$decorative$relative$syndrome$bark$cat$crosswalk$swarm$borrow$object$code$list$peace$lingering$urgent$gradual$69$420$large$promise$cropping$spectrum$shocking$dripping$boobs$coffee$dosage$destructive$related$old$keeping$house$swimming$turnip$lover$sitter$kisser$taster$';
+
+    RETURN sending_info;
 END //
 
+
+
+CREATE FUNCTION `Func-GetDomains` ()
+RETURNS VARCHAR(10000)
+DETERMINISTIC
+BEGIN
+    DECLARE sending_info VARCHAR(10000);
+
+    SET sending_info = 
+    'com$org$int$net$edu$gov$mil$ac$ad$af$ar$bb$bd$br$bz$ca$ch$ci$cx$de$eg$eu$fr$ge$gr$ie$in$it$kp$li$lt$mc$me$ms$mx$no$ph$py$se$tz$uk$us$va$biz$builders$buzz$cloud$dance$eco$gle$life$lol$network$social$';
+
+    RETURN sending_info;
+END //
+
+
+
+CREATE FUNCTION `Func-GetNicknames` ()
+RETURNS VARCHAR(10000)
+DETERMINISTIC
+BEGIN
+    DECLARE sending_info VARCHAR(10000);
+
+    SET sending_info = 
+    'Fiend$Axeman$Tim$X$River$Pig$Susan$Dicky$Criminal$Legs$Chimney$Goats$Secular$Max$Jo$Joy$Kites$xXSadManXx$KillAll$Devil$Grogu$Mando$Luke$JackMach$Oliver$MoonMan$FishLad$TheJuice$Magical$Umm$Six$Katie$Bruv$Henry$Lovebird$Michael$Joan$Phil$Tommy$Mac$Sacks$Tulip$Firefly$ONION$GooGoo$lowercase$Townsy$Sim$Cam$';
+
+    RETURN sending_info;
+END //
 
 DELIMITER ;
