@@ -28,7 +28,11 @@ SQL Procedure Setup:
         - A string is inserted into the function.
         - An integer is outputted.
         - Only $ symbols are counted at this current time.
-        - A fine piece of magic this one.
+        - A fine piece of work this one.
+
+    Func-RandomNumber is a function used to return a random integer value between a minimum and maximum (both inclusive).
+        - You enter the min and the max.
+        - A random value is selected between the two using mathematics magic.
 */
 
 
@@ -41,6 +45,7 @@ DROP PROCEDURE IF EXISTS `Run-GenerateUserData`;
 
 DROP FUNCTION IF EXISTS `Func-RandomSelection`;
 DROP FUNCTION IF EXISTS `Func-CountDelimiters`;
+DROP FUNCTION IF EXISTS `Func-RandomNumber`;
 
 DELIMITER //
 CREATE PROCEDURE `Run-RemoveUser` (IN input_email VARCHAR(60)) -- TO DO: Deal with restaurant owner problem.
@@ -70,6 +75,9 @@ CREATE FUNCTION `Func-RandomSelection` (select_these VARCHAR(MAX))
 RETURNS VARCHAR(MAX)
 DETERMINISTIC
 BEGIN
+    DECLARE item_count INT;
+    SET item_count = Func-CountDelimiters(select_these);
+
 
 END //
 
@@ -78,9 +86,26 @@ CREATE FUNCTION `Func-CountDelimiters` (input_string VARCHAR(MAX))
 RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE delCount INT; -- Counter is declared here.
-    SET delCount = (LENGTH(input_string) - LENGTH(REPLACE(input_string, "$", ""))); -- Counter is filled with a value equal to number of delimiters.
-    RETURN delCount; -- Counter value is returned.
+    DECLARE del_count INT; -- Counter is declared here.
+
+    SET del_count = (LENGTH(input_string) - LENGTH(REPLACE(input_string, "$", ""))); -- Counter is assigned a value equal to number of delimiters.
+
+    RETURN del_count; -- Counter value is returned.
+END //
+
+
+CREATE FUNCTION `Func-RandomNumber` (min_val INT, max_val INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE gen_rand FLOAT; -- Declare the variable to assign random numbers to.
+    DECLARE return_rand INT; -- Declare the variable to return random number.
+
+    SET gen_rand = RAND(); -- Random number between 0 and 1 is generated.
+
+    SET return_rand = ROUND(gen_rand * (max_val - min_val) + min_val); -- Number is converted to a useful whole number.
+
+    RETURN return_rand; -- Return the final generated value.
 END //
 
 
