@@ -69,8 +69,8 @@ CREATE TABLE `Session` (
 CREATE TABLE `Restaurant` (
     RestaurantID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     OwnerID INT UNSIGNED NOT NULL,
-    RestaurantName NVARCHAR(60) NOT NULL,
-    RestaurantDescription NVARCHAR(120) NOT NULL,
+    RestaurantName CHAR(60) CHARACTER SET UTF8MB4 NOT NULL, -- Prev. NVARCHAR(60)
+    RestaurantDescription CHAR(120) CHARACTER SET UTF8MB4 NOT NULL, -- Prev. NVARCHAR(120)
     Longitude FLOAT NOT NULL,
     Latitude FLOAT NOT NULL,
     Phone VARCHAR(11),
