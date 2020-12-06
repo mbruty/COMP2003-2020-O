@@ -24,7 +24,7 @@ export const CircleBtn: React.FC<Props> = (props) => {
         {props.selected && (
           <MaterialCommunityIcons
             style={styles.icon}
-            name="heart"
+            name="checkbox-marked-circle-outline"
             color="white"
             size={32}
           />

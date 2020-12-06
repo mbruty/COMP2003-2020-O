@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Example from "./Example";
+import RecentVisits from "./RecentVisits";
 import Nav from "./Nav";
+import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
+import SoloPage from "./SoloPage";
 
 interface Props {}
 
@@ -16,9 +18,6 @@ const styles = StyleSheet.create({
   screen: {
     height: height,
     width: width,
-    backgroundColor: "#fafafa",
-    borderColor: "#aaaaaa",
-    borderWidth: 2,
   },
 });
 
@@ -49,10 +48,12 @@ const MainScreen: React.FC<Props> = (props) => {
         horizontal={true}
         style={styles.container}
       >
-        <View style={styles.screen}></View>
+        <View style={styles.screen}>
+          <AnimatedSwipe />
+        </View>
         <View style={styles.screen}></View>
         <View style={styles.screen}>
-          <Example />
+          <RecentVisits restaurantDetails={[]}/>
         </View>
         <View style={styles.screen}></View>
       </ScrollView>

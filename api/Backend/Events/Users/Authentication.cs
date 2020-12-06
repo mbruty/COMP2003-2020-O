@@ -21,7 +21,7 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/authcheck")]
+        [WebEvent("/authcheck", "GET")]
         public static async void CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
         {
             if (!await Sessions.CheckSession(@event.Data, response)) return;

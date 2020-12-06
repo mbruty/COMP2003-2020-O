@@ -29,6 +29,8 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 
 ### TypeScript
 
+<br>
+
 - [ ] Run the tslint extension
 - [ ] Run Prettier (Shift + alt + f)
 - [ ] Run the file formatter `npx destiny -w "src/**/*.*"`
@@ -38,11 +40,26 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 - [ ] Variables and other functions use camelCaps
 - [ ] For constant's please use UPPER_CASE_SNAKE_CASE
 
+<br>
+
 ### C#
 
 - Comment Chunks of code to explain function
-
 - Keep functions under 30 lines
+
+<br>
+
+### MySQL
+
+- Triggers are prefixed with **TGR_**
+- Table names and names of objects with reserved terms are always enclosed with **backticks**
+- Large transactions within stored procedures, functions and triggers are sandwiched with a **//** delimiter
+- Stored procedures are prefixed with **Run-**
+- Stored function are prefixed with **Func-**
+- Procedures, functions, triggers and tables use the **DROP {object} IF EXISTS** tag before the script is run
+
+<br>
+<br>
 
 ## What We Are Using
 
@@ -216,6 +233,54 @@ You're able to run the project locally without docker, but on the server we will
 9. Running the API
    `sudo docker container run devapi dotnet build`
    `sudo docker container run devapi --configuration Release`
+
+---
+
+## MySQL Stored Procedures
+
+### Run-RemoveUser
+
+> **This SP takes 1 parameter:**  
+> *name* `input_email` *type* `varchar(60)`  
+
+Use this stored procedure to safely remove a user's personal data whilst leaving data associated with them in-tact.  
+This helps to preserve information the reccomender might need to work effectively.  
+A user's email address, nickname and password is deleted so the ID is no longer linked to a real person.  
+
+### Run-PermaDeleteUser
+
+> **This SP takes 1 parameter:**  
+> *name* `input_id` *type* `int`  
+
+Use this stored procedure to completely remove a user from the database and all their data without preserving it.  
+This is not safe or helpful, so put it to seldom use.  
+A user's ID is required for safety reasons.  
+Cannot be completed if the user owns a restaurant.
+
+### Run-GenerateUserData
+
+> **This SP takes 0 parameters**  
+
+If you run this stored procedure on the server, it will randomly generate a user record.  
+This is good to run for testing and is safe.  
+In its current iteration, you may get an error from the procedure randomly generating a pre-existing email. If this happens, the record simply won't be added.  
+This feature is experimental and will be updated in a future build.
+
+---
+
+## MySQL Database Documentation
+
+### Entity Relationship Diagram (Version 5.7)
+
+*This diagram is up to date as of 06/12/20.*
+
+<br>
+
+<p>
+  <img alt="The entity relationship diagram associated with the project." width="720" height="598" src="https://i.imgur.com/tdf1aY6.png">
+</p>
+
+<br>
 
 ---
 
