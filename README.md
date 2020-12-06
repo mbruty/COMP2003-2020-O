@@ -52,9 +52,11 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 ### MySQL
 
 - Triggers are prefixed with **TGR_**
-- Large transactions within stored procedures and triggers are sandwiched with a **//** delimiter
+- Table names and names of objects with reserved terms are always enclosed with **backticks**
+- Large transactions within stored procedures, functions and triggers are sandwiched with a **//** delimiter
 - Stored procedures are prefixed with **Run-**
-- Procedures, triggers and tables use the **DROP {object} IF EXISTS** tag before the script is run
+- Stored function are prefixed with **Func-**
+- Procedures, functions, triggers and tables use the **DROP {object} IF EXISTS** tag before the script is run
 
 <br>
 <br>
@@ -263,6 +265,22 @@ If you run this stored procedure on the server, it will randomly generate a user
 This is good to run for testing and is safe.  
 In its current iteration, you may get an error from the procedure randomly generating a pre-existing email. If this happens, the record simply won't be added.  
 This feature is experimental and will be updated in a future build.
+
+---
+
+## MySQL Database Documentation
+
+### Entity Relationship Diagram (Version 5.7)
+
+*This diagram is up to date as of 06/12/20.*
+
+<br>
+
+<p>
+  <img alt="The entity relationship diagram associated with the project." width="720" height="598" src="https://i.imgur.com/tdf1aY6.png">
+</p>
+
+<br>
 
 ---
 
