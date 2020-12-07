@@ -23,7 +23,7 @@ SQL Procedure Setup:
     Run-GenerateUserData will place random user records into the database.
         - Only one user is generated per call.
         - The email address, date of birth and nickname are randomly generated.
-        - Password will always be "XXx".
+        - Password will always be Password1; it has been hashed in the database.
         - The associated FoodCheck will be the default.
 
     Func-RandomSelection is a function used to select one random inserted data item from a list of them.
@@ -114,8 +114,8 @@ BEGIN
     SET data_email = CONCAT(`Func-RandomSelection`(list_of_email_starts_former), '.', `Func-RandomSelection`(list_of_email_starts_latter), '@', 
     `Func-RandomSelection`(list_of_email_comps), `Func-RandomSelection`(list_of_email_comps), '.', `Func-RandomSelection`(list_of_email_domains));
 
-    -- Password isn't randomly generated; just "XXx".
-    SET data_password = 'XXx';
+    -- Password isn't randomly generated; this is C# hashing our generic random user password: "Password1"
+    SET data_password = '$s2$16384$8$1$BWKGGLGBwbZy9xn8SoaY9mnd9QOEdjYwchPA1bY5SJc=$p+gFRy0GH1Wrz++b46Waxy/QihPX+naXhx9+muUVuJ8=';
 
     -- A nickname is set randomly.
     SET data_nickname = `Func-RandomSelection`(list_of_nicknames);
@@ -199,7 +199,7 @@ BEGIN
     DECLARE sending_info VARCHAR(10000);
 
     SET sending_info = 
-    'joseph$paul$milky$booty$clown$sexy$sly$garbage$henry$mike$oscar$jack$alex$reef$luke$shirley$creamy$gregor$animals$stub$crispy$indian$romania$finland$french$crazy$incredible$customer$rumor$rushing$barrel$mole$finished$dilemma$annual$overall$image$soul$digress$wet$tasty$tasteless$horny$kicking$wasp$max$fording$john$glados$kingsly$mary$sally$george$fred$paula$little$young$grandad$mother$bible$christmas$sweaty$gong$ninja$batman$hedge$vaginal$vertical$machar$davies$lakin$denman$bruty$mann$atkinson$jake$howell$megan$dyer$horoscope$direction$homosexual$manner$decorative$relative$syndrome$bark$cat$crosswalk$swarm$borrow$object$code$list$peace$lingering$urgent$gradual$69$420$large$promise$cropping$spectrum$shocking$dripping$boobs$coffee$dosage$destructive$related$old$keeping$house$swimming$turnip$lover$sitter$kisser$taster$';
+    'joseph$paul$milky$forest$cranberry$tobias$entry$sales$cleaning$fishy$lana$knob$igloo$party$trousers$harold$bill$william$kate$alia$marge$kitty$wolf$conspiracy$andrew$millie$booty$clown$sexy$sly$garbage$henry$mike$oscar$jack$alex$reef$luke$shirley$creamy$gregor$animals$stub$crispy$indian$romania$finland$french$crazy$incredible$customer$rumor$rushing$barrel$mole$finished$dilemma$annual$overall$image$soul$digress$wet$tasty$tasteless$horny$kicking$wasp$max$fording$john$glados$kingsly$mary$sally$george$fred$paula$little$young$grandad$mother$bible$christmas$sweaty$gong$ninja$batman$hedge$vaginal$vertical$machar$davies$lakin$denman$bruty$mann$atkinson$jake$howell$megan$dyer$horoscope$direction$homosexual$manner$decorative$relative$syndrome$bark$cat$crosswalk$swarm$borrow$object$code$list$peace$lingering$urgent$gradual$69$420$large$promise$cropping$spectrum$shocking$dripping$boobs$coffee$dosage$destructive$related$old$keeping$house$swimming$turnip$lover$sitter$kisser$taster$';
 
     RETURN sending_info;
 END //
@@ -227,7 +227,7 @@ BEGIN
     DECLARE sending_info VARCHAR(10000);
 
     SET sending_info = 
-    'Fiend$Axeman$Tim$X$River$Pig$Susan$Dicky$Criminal$Legs$Chimney$Goats$Secular$Max$Jo$Joy$Kites$xXSadManXx$KillAll$Devil$Grogu$Mando$Luke$JackMach$Oliver$MoonMan$FishLad$TheJuice$Magical$Umm$Six$Katie$Bruv$Henry$Lovebird$Michael$Joan$Phil$Tommy$Mac$Sacks$Tulip$Firefly$ONION$GooGoo$lowercase$Townsy$Sim$Cam$';
+    'Fiend$Axeman$Tim$X$River$Choco$Clubs$Hubby$Lola$Fingers$JK$Star$BowlingFan$Mario$Luigi$Bowser$Superman$Wondergirl$Pig$Susan$Dicky$Criminal$Legs$Chimney$Goats$Secular$Max$Jo$Joy$Kites$xXSadManXx$KillAll$Devil$Grogu$Mando$Luke$JackMach$Oliver$MoonMan$FishLad$TheJuice$Magical$Umm$Six$Katie$Bruv$Henry$Lovebird$Michael$Joan$Phil$Tommy$Mac$Sacks$Tulip$Firefly$ONION$GooGoo$lowercase$Townsy$Sim$Cam$';
 
     RETURN sending_info;
 END //
