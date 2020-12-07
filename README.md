@@ -259,11 +259,14 @@ Cannot be completed if the user owns a restaurant.
 
 ### Run-GenerateUserData
 
-> **This SP takes 0 parameters**  
+> **This SP takes 1 parameter**  
+> *name* `num_of_users` *type* `int`
 
-If you run this stored procedure on the server, it will randomly generate a user record.  
+If you run this stored procedure on the server, it will randomly generate one or many user records.  
+Devs using this SP should specify how many users they want to randomly generate.  
 This is good to run for testing and is safe.  
 In its current iteration, you may get an error from the procedure randomly generating a pre-existing email. If this happens, the record simply won't be added.  
+There are 22,580,726,450 combinations of potential emails that can be generated.  
 This feature is experimental and will be updated in a future build.
 
 ---

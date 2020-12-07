@@ -21,8 +21,9 @@ SQL Procedure Setup:
         - For safety purposes, you must enter the user's database ID.
 
     Run-GenerateUserData will place random user records into the database.
-        - Only one user is generated per call.
+        - Many users can be generated at once by inserting into the procedure how many you would like.
         - The email address, date of birth and nickname are randomly generated.
+        - Email is unique and two of the same could be generated, however there are 22,580,726,450 combinations.
         - Password will always be Password1; it has been hashed in the database.
         - The associated FoodCheck will be the default.
 
@@ -90,7 +91,7 @@ BEGIN
 END //
 
 
-CREATE PROCEDURE `Run-GenerateUserData` ()
+CREATE PROCEDURE `Run-GenerateUserData` (IN num_of_users INT)
 BEGIN
     -- All our variables are declared first. We have to do this before the procedure gets underway.
     DECLARE list_of_email_starts_former VARCHAR(10000);
@@ -102,6 +103,8 @@ BEGIN
     DECLARE data_password VARCHAR(110);
     DECLARE data_nickname VARCHAR(10);
     DECLARE data_birthday VARCHAR(10);
+    
+    DECLARE loop_counter INT;
 
     -- Our lists of respective data items are fetched from their appropriate functions.
     SET list_of_email_starts_former = `Func-GetEmailStarts`();
@@ -110,22 +113,37 @@ BEGIN
     SET list_of_email_domains = `Func-GetDomains`();
     SET list_of_nicknames = `Func-GetNicknames`();
 
-    -- An email is pieced together using the CONCAT function. The format is: "[random_word].[random_word]@[randomword][randomword].[randomdomain]"
-    SET data_email = CONCAT(`Func-RandomSelection`(list_of_email_starts_former), '.', `Func-RandomSelection`(list_of_email_starts_latter), '@', 
-    `Func-RandomSelection`(list_of_email_comps), `Func-RandomSelection`(list_of_email_comps), '.', `Func-RandomSelection`(list_of_email_domains));
+    -- Loop counter is set to 0 before the loop starts.
+    SET loop_counter = 0;
 
     -- Password isn't randomly generated; this is C# hashing our generic random user password: "Password1"
     SET data_password = '$s2$16384$8$1$BWKGGLGBwbZy9xn8SoaY9mnd9QOEdjYwchPA1bY5SJc=$p+gFRy0GH1Wrz++b46Waxy/QihPX+naXhx9+muUVuJ8=';
 
-    -- A nickname is set randomly.
-    SET data_nickname = `Func-RandomSelection`(list_of_nicknames);
+    gen_loop: LOOP
 
-    -- A date of birth is randomly generated using our random-number-gen function. The day values won't exceed 27 to ensure max compatability.
-    SET data_birthday = CONCAT(`Func-RandomNumber`(1900, 2018), '-', `Func-RandomNumber`(1, 12), '-', `Func-RandomNumber`(1, 27));
+        -- If we hit the limit the admin wants then we can just end the procedure and, by extension, the loop.
+        IF loop_counter = num_of_users THEN
+            LEAVE gen_loop;
+        END IF;
 
-    -- This is the MySQL command to insert data.
-    INSERT INTO `User` (Email, `Password`, Nickname, DateOfBirth)
-    VALUES (data_email, data_password, data_nickname, data_birthday);
+        -- Increase the loop counter by 1.
+        SET loop_counter = loop_counter + 1;
+
+        -- An email is pieced together using the CONCAT function. The format is: "[random_word].[random_word]@[randomword][randomword].[randomdomain]"
+        SET data_email = CONCAT(`Func-RandomSelection`(list_of_email_starts_former), '.', `Func-RandomSelection`(list_of_email_starts_latter), '@', 
+        `Func-RandomSelection`(list_of_email_comps), `Func-RandomSelection`(list_of_email_comps), '.', `Func-RandomSelection`(list_of_email_domains));
+
+        -- A nickname is set randomly.
+        SET data_nickname = `Func-RandomSelection`(list_of_nicknames);
+
+        -- A date of birth is randomly generated using our random-number-gen function. The day values won't exceed 27 to ensure max compatability.
+        SET data_birthday = CONCAT(`Func-RandomNumber`(1900, 2018), '-', `Func-RandomNumber`(1, 12), '-', `Func-RandomNumber`(1, 27));
+
+        -- This is the MySQL command to insert data.
+        INSERT INTO `User` (Email, `Password`, Nickname, DateOfBirth)
+        VALUES (data_email, data_password, data_nickname, data_birthday);
+
+    END LOOP;
 END //
 
 
@@ -227,7 +245,7 @@ BEGIN
     DECLARE sending_info VARCHAR(10000);
 
     SET sending_info = 
-    'Fiend$Axeman$Tim$X$River$Choco$Clubs$Hubby$Lola$Fingers$JK$Star$BowlingFan$Mario$Luigi$Bowser$Superman$Wondergirl$Pig$Susan$Dicky$Criminal$Legs$Chimney$Goats$Secular$Max$Jo$Joy$Kites$xXSadManXx$KillAll$Devil$Grogu$Mando$Luke$JackMach$Oliver$MoonMan$FishLad$TheJuice$Magical$Umm$Six$Katie$Bruv$Henry$Lovebird$Michael$Joan$Phil$Tommy$Mac$Sacks$Tulip$Firefly$ONION$GooGoo$lowercase$Townsy$Sim$Cam$';
+    'Fiend$Axeman$GrimThing$Ryan$C$Gravy$Bottle$Timber$Kesh$FastMan$Superbad$Ginger$Jesus$Oscar$Alex$Reef$Jake$Mike$Jack$Lucky$Horse$Wagner$Jiles$Willow$Tim$X$River$Choco$Clubs$Hubby$Lola$Fingers$JK$Star$BowlingFan$Mario$Luigi$Bowser$Superman$Wondergirl$Pig$Susan$Dicky$Criminal$Legs$Chimney$Goats$Secular$Max$Jo$Joy$Kites$xXSadManXx$KillAll$Devil$Grogu$Mando$Luke$JackMach$Oliver$MoonMan$FishLad$TheJuice$Magical$Umm$Six$Katie$Bruv$Henry$Lovebird$Michael$Joan$Phil$Tommy$Mac$Sacks$Tulip$Firefly$ONION$GooGoo$lowercase$Townsy$Sim$Cam$';
 
     RETURN sending_info;
 END //
