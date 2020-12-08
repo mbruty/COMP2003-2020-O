@@ -105,8 +105,8 @@ namespace api.Backend.Endpoints
             /// <param name="obj">    </param>
             public void AddObjectToData(string Header, object obj)
             {
-                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
-                else Data[Header] = JToken.FromObject(obj);
+                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj)));
+                else Data.Property("Time").Value = JToken.FromObject(obj);
             }
 
             /// <summary>
@@ -117,7 +117,7 @@ namespace api.Backend.Endpoints
             public void AddToData(string Header, object stringable)
             {
                 if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
-                else Data[Header] = stringable.ToString();
+                else Data.Property("Time").Value = stringable.ToString();
             }
 
             /// <summary>
