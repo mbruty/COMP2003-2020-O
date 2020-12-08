@@ -246,7 +246,11 @@ You're able to run the project locally without docker, but on the server we will
    `sudo docker container run devapi dotnet build`
    `sudo docker container run devapi --configuration Release`
 
+<br>
+
 ---
+
+<br>
 
 ## MySQL Stored Procedures
 
@@ -271,7 +275,7 @@ Cannot be completed if the user owns a restaurant.
 
 ### Run-GenerateUserData
 
-> **This SP takes 1 parameter**  
+> **This SP takes 1 parameter:**  
 > *name* `num_of_users` *type* `int`
 
 If you run this stored procedure on the server, it will randomly generate one or many user records.  
@@ -279,9 +283,66 @@ Devs using this SP should specify how many users they want to randomly generate.
 This is good to run for testing and is safe.  
 In its current iteration, you may get an error from the procedure randomly generating a pre-existing email. If this happens, the record simply won't be added.  
 There are 22,580,726,450 combinations of potential emails that can be generated.  
-This feature is experimental and will be updated in a future build.
+This feature is experimental and continues to be developed.
+
+## MySQL Stored Functions
+
+### Func-RandomSelection
+
+> **This function takes 1 parameter:**  
+> *name* `select_these` *type* `varchar(10000)`
+
+MySQL doesn't use arrays or lists. This is because MySQL is less of a programming language and more of a database scripting/query language.  
+With that in mind, this function selects one random element from a string list of items.  
+The items are stored in a variable-length string (max 10000 characters). After each item, place a $ symbol separator.  
+This might looks like: "Andrew$Paula$Toby$". In that example, the function will randomly either Andrew, Paula or Toby and return it to us.  
+The function is quite complex; view the ProcSetup.sql file for a deeper understanding of how it works.
+
+### Func-CountDelimiters
+
+> **This function takes 1 parameter:**  
+> *name* `input_string` *type* `varchar(10000)`
+
+This function takes an input variable-length string (max 10000 characters).  
+It counts how many $ symbols are present within the string.  
+In a future build, we might build functionality allowing for the specifying of the delimiter character(s).
+
+### Func-RandomNumber
+
+> **This function takes 2 parameters:**  
+> *name* `min_val` *type* `int`  
+> *name* `max_val` *type* `int`
+
+The purpose of this function is to generate random numbers.  
+One may specify the range using the min_val and max_val parameters.  
+Both of these parameter values are inclusive of the value range, meaning they both have the potential to be generated also.
+
+### Func-GetEmailStarts
+
+> **This function takes 0 parameters**  
+
+This function will return a list of words (that could be used in a real-world email address).  
+The string of words is separated by $ symbols.
+
+### Func-GetDomains
+
+> **This function takes 0 parameters**  
+
+This function will return a list of Internet TLDs (that could be used in a real-world email address).  
+The string of domains is separated by $ symbols.
+
+### Func-GetNicknames
+
+> **This function takes 0 parameters**  
+
+This function will return a list of nicknames.  
+The string of nicknames is separated by $ symbols.
+
+<br>
 
 ---
+
+<br>
 
 ## MySQL Database Documentation
 
@@ -298,6 +359,8 @@ This feature is experimental and will be updated in a future build.
 <br>
 
 ---
+
+<br>
 
 ## How the Branches Work
 
