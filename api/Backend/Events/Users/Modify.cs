@@ -13,12 +13,13 @@ namespace api.Backend.Events.Users
         [WebEvent("/modify/user", "DELETE", false, SecurityGroup.User)]
         public static async void DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
+                User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
 
-            await users[0].Delete();
+                await users[0].Delete();
 
-            response.AddToData("message", "Deleted User");
-            response.StatusCode = 200;
+                response.AddToData("message", "Deleted User");
+                response.StatusCode = 200;
+            
         }
 
         [WebEvent("/modify/user", "PUT", false, SecurityGroup.User)]
