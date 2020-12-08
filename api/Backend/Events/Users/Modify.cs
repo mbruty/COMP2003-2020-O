@@ -74,7 +74,7 @@ namespace api.Backend.Events.Users
             User[] users = await table.Select<User>("id", headers["userid"]);
 
             users[0].Password = Hashing.Hash(headers["password"]);
-            await users[0].Update();
+            await users[0].UpdatePassword();
 
             response.AddToData("message", "Updated User Password");
             response.StatusCode = 200;
