@@ -312,9 +312,4 @@ This feature is experimental and will be updated in a future build.
 
 ---
 
-### Colour Scheme
-Don't forget to use this graphic for colour scheming:
-
-<p>
-  <img alt="Colour scheme graphic for project." width="300" height="450" src="https://i.imgur.com/S4dBZak.png">
-</p>
+## UI Styling Information
