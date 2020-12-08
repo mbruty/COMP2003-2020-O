@@ -103,8 +103,9 @@ namespace api.Backend.Endpoints
             /// </summary>
             /// <param name="Header"> </param>
             /// <param name="obj">    </param>
-            public void AddObjectToData(string Header, object obj)
+            public void AddObjectToData(string Header, Data.Obj.Object obj)
             {
+                obj = obj.Purge();
                 if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj)));
                 else Data.Property("Time").Value = JToken.FromObject(obj);
             }

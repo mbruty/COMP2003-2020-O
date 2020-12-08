@@ -17,6 +17,12 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
+        public override Object Purge()
+        {
+            User u = (User)this.MemberwiseClone();
+            u.Password = "REDACTED";
+            return u;
+        }
         public async Task<bool> UpdatePassword()
         {
            return await SQL.Instance.Execute("UPDATE User SET password=@pword where userid=@uid",
