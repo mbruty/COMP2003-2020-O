@@ -12,20 +12,16 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/authcheck", "POST", false)]
+        [WebEvent("/authcheck", "POST", false, SecurityGroup.User)]
         public static async void CheckAuthHttp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            if (!await Sessions.CheckSession(headers, response)) return;
-
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/authcheck", "GET")]
+        [WebEvent("/authcheck", "GET", false, SecurityGroup.User)]
         public static async void CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
         {
-            if (!await Sessions.CheckSession(@event.Data, response)) return;
-
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
@@ -116,7 +112,7 @@ namespace api.Backend.Events.Users
 
             string token = Sessions.RandomString();
 
-            new Thread(async () => { user.Password = Hashing.Hash(password); await user.Update(); await Sessions.AddSession(user, token); }).Start();
+            /*new Thread(async () => { */user.Password = Hashing.Hash(password); await user.UpdatePassword(); await Sessions.AddSession(user, token);/* }).Start();*/
 
             response.AddToData("authtoken", token);
             response.AddToData("userid", user.UserID);

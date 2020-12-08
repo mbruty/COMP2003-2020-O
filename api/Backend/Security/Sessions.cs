@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Security
 {
+    public enum SecurityGroup
+    {
+        None,
+        User,
+        Administrator
+    }
+
     public static class Sessions
     {
         #region Fields
@@ -38,13 +45,39 @@ namespace api.Backend.Security
             }
         }
 
-        /// <summary>
-        /// Checks if the req headers contain a valid session
-        /// </summary>
-        /// <param name="headers">  </param>
-        /// <param name="response"> </param>
-        /// <returns> If the session is valid </returns>
-        public static async Task<bool> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
+        public static async Task<SecurityGroup> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response)
+        {
+            if (await CheckSession(headers, response))
+            {
+                //Logic to determine if is admin
+                return SecurityGroup.User;
+            }
+            else
+            {
+                return SecurityGroup.None;
+            }
+        }
+
+        public static async Task<SecurityGroup> GetSecurityGroup(JToken Auth, WebSockets.SocketResponse response)
+        {
+            if (await CheckSession(Auth, response))
+            {
+                //Logic to determine if is admin
+                return SecurityGroup.User;
+            }
+            else
+            {
+                return SecurityGroup.None;
+            }
+        }
+
+            /// <summary>
+            /// Checks if the req headers contain a valid session
+            /// </summary>
+            /// <param name="headers">  </param>
+            /// <param name="response"> </param>
+            /// <returns> If the session is valid </returns>
+            public static async Task<bool> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
         {
             string userid = headers["userid"], authtoken = headers["authtoken"];
 
