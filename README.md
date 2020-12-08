@@ -1,19 +1,33 @@
-# COMP2003 - Group O Project
+# Plymouth University COMP2003 : Group O Collaborative Project
 
-## Track and Taste
+## Track and Taste (Recommender System)
 
-### Members
+<br>
+
+### Members:
+
+#### Technical Leads
 
 - [Michael Bruty](https://github.com/mbruty)
 - [Oscar Davies](https://github.com/Jaminima)
+
+#### Scrum Masters
+
 - [Reef Lakin](https://github.com/ReefLakin)
 - [Alex Denman](https://github.com/AlexDenman47674)
+
+#### Product Owners
+
 - [Luke Mann](https://github.com/lukemann04)
 - [Jack Machar](https://github.com/JWKMachar)
 
-### Project Vision
+<br>
 
-To produce a mobile application to recommend local restaurants to groups or individuals based on their previous likes and dislikes for restaurants.
+### Project Vision:
+
+The main focus of the project is a mobile application. The app records user preferences in an effort to recommend them nearby restaurants and/or menu items it believes they will enjoy. The recommender uses the data regarding a user's previous interactions with the app, predetermined likes and dislikes, as well as their dietry requirements to ensure it is recommending valuable things. The data will be stored using a MySQL database. Restaurant owners can interact with their establishment and its respective data via a web interface and RESTful API we will also be developing.
+
+<br>
 
 ### Branches
 
@@ -25,11 +39,12 @@ To produce a mobile application to recommend local restaurants to groups or indi
 
 _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _to mark is as done_.
 
+---
+
 ## Code Style Guide
 
 ### TypeScript
 
-<br>
 
 - [ ] Run the tslint extension
 - [ ] Run Prettier (Shift + alt + f)
@@ -40,14 +55,12 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 - [ ] Variables and other functions use camelCaps
 - [ ] For constant's please use UPPER_CASE_SNAKE_CASE
 
-<br>
 
 ### C#
 
 - Comment Chunks of code to explain function
 - Keep functions under 30 lines
 
-<br>
 
 ### MySQL
 
@@ -58,8 +71,7 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 - Stored function are prefixed with **Func-**
 - Procedures, functions, triggers and tables use the **DROP {object} IF EXISTS** tag before the script is run
 
-<br>
-<br>
+---
 
 ## What We Are Using
 
