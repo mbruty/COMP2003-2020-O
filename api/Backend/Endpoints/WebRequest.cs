@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace api.Backend.Endpoints
 {
@@ -16,8 +18,10 @@ namespace api.Backend.Endpoints
         /// <param name="request">  </param>
         /// <param name="Data">     </param>
         /// <param name="response"> </param>
-        private static void Handle(HttpListenerRequest request, string Data, ref HttpResponse response)
+        private static async Task<HttpResponse> Handle(HttpListenerRequest request, string Data)
         {
+            HttpResponse response = new HttpResponse();
+
             string url = request.RawUrl.ToLower(), method = request.HttpMethod.ToLower();
 
             //Find and then run the appriproate web event
@@ -25,12 +29,20 @@ namespace api.Backend.Endpoints
 
             if (tMethod.Length > 0)
             {
-                try { tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); }
-                catch (Exception e)
+                if (tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel <= await Security.Sessions.GetSecurityGroup(request.Headers, response))
                 {
-                    response.StatusCode = 505;
-                    response.AddToData("error", "A Server Error has Occured!");
-                    Console.WriteLine(e);
+                    try { Task T = (Task)tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); T.Wait(); }
+                    catch (Exception e)
+                    {
+                        response.StatusCode = 505;
+                        response.AddToData("error", "A Server Error has Occured!");
+                        Console.WriteLine(e);
+                    }
+                }
+                else
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Insignificant permissions");
                 }
             }
             else
@@ -39,22 +51,22 @@ namespace api.Backend.Endpoints
                 response.StatusCode = 404;
                 response.AddToData("error", "Page not found");
             }
+
+            return response;
         }
 
         /// <summary>
         /// Extracts any Data before passing the request onwards
         /// </summary>
         /// <param name="listenerContext"> </param>
-        public static void PreHandle(HttpListenerContext listenerContext)
+        public static async void PreHandle(HttpListenerContext listenerContext)
         {
             //Read any request data (from the body)
             StreamReader stream = new StreamReader(listenerContext.Request.InputStream);
             string streamString = stream.ReadToEnd();
 
-            HttpResponse response = new HttpResponse();
-
             //Pass the request on
-            Handle(listenerContext.Request, streamString, ref response);
+            HttpResponse response = await Handle(listenerContext.Request, streamString);
 
             //Send the request
             response.Send(listenerContext.Response);
@@ -94,9 +106,11 @@ namespace api.Backend.Endpoints
             /// </summary>
             /// <param name="Header"> </param>
             /// <param name="obj">    </param>
-            public void AddObjectToData(string Header, object obj)
+            public void AddObjectToData(string Header, Data.Obj.Object obj)
             {
-                Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
+                obj = obj.Purge();
+                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj)));
+                else Data.Property(Header).Value = JToken.FromObject(obj);
             }
 
             /// <summary>
@@ -106,7 +120,8 @@ namespace api.Backend.Endpoints
             /// <param name="stringable"> .ToString() supporting object </param>
             public void AddToData(string Header, object stringable)
             {
-                Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
+                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
+                else Data.Property(Header).Value = stringable.ToString();
             }
 
             /// <summary>
@@ -116,6 +131,8 @@ namespace api.Backend.Endpoints
             public virtual void Send(HttpListenerResponse response)
             {
                 response.StatusCode = StatusCode;
+
+                if (response.StatusCode == 200) Data.Property("error")?.Remove();
 
                 response.Headers.Add("Access-Control-Allow-Origin", "*"); //Do Not Touch
 

@@ -5,6 +5,7 @@ using api.Backend.Security;
 using System;
 using System.Collections.Specialized;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace api.Backend.Events.Users
 {
@@ -12,26 +13,22 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/authcheck", "POST", false)]
-        public static async void CheckAuthHttp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent("/authcheck", "POST", false, SecurityGroup.User)]
+        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            if (!await Sessions.CheckSession(headers, response)) return;
-
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/authcheck", "GET")]
-        public static async void CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
+        [WebEvent("/authcheck", "GET", false, SecurityGroup.User)]
+        public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
         {
-            if (!await Sessions.CheckSession(@event.Data, response)) return;
-
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
         [WebEvent("/login", "POST", false)]
-        public static async void Login(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task Login(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"];
 
@@ -69,7 +66,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/signup", "POST", false)]
-        public static async void SignUp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task SignUp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"], dateOfBirth = headers["dateOfBirth"], nickname = headers["nickname"];
 
@@ -116,7 +113,7 @@ namespace api.Backend.Events.Users
 
             string token = Sessions.RandomString();
 
-            new Thread(async () => { user.Password = Hashing.Hash(password); await user.Update(); await Sessions.AddSession(user, token); }).Start();
+            new Thread(async () => { user.Password = Hashing.Hash(password); await user.UpdatePassword(); await Sessions.AddSession(user, token); }).Start();
 
             response.AddToData("authtoken", token);
             response.AddToData("userid", user.UserID);
