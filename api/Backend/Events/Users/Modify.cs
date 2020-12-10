@@ -26,7 +26,7 @@ namespace api.Backend.Events.Users
         public static async void ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("id", headers["userid"]);
+            User[] users = await table.Select<User>("userid", headers["userid"]);
 
             users[0].UpdateContents<User>(headers);
 
@@ -39,10 +39,10 @@ namespace api.Backend.Events.Users
         {
             if (!await Sessions.CheckSession(headers, response)) return;
 
-            User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 
             Table table = Binding.GetTable<FoodChecks>();
-            FoodChecks[] foods = await table.Select<FoodChecks>("id", users[0].FoodCheckID);
+            FoodChecks[] foods = await table.Select<FoodChecks>("userid", users[0].FoodCheckID);
 
             foods[0].UpdateContents<FoodChecks>(headers);
 
@@ -72,7 +72,7 @@ namespace api.Backend.Events.Users
             if (!await Sessions.CheckSession(headers, response)) return;
 
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("id", headers["userid"]);
+            User[] users = await table.Select<User>("userid", headers["userid"]);
 
             users[0].Password = Hashing.Hash(headers["password"]);
             await users[0].UpdatePassword();

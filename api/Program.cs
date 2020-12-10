@@ -1,6 +1,5 @@
 ﻿using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
-using api.Backend.Data.SQL.Caching;
 using System;
 using System.Linq;
 
@@ -40,7 +39,6 @@ namespace api
 
         private static void Main(string[] args)
         {
-
             //To run on dev server
             if (args.Contains("-d"))
             {
@@ -62,7 +60,7 @@ namespace api
             {
                 api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
                 Bind();
-                SQL_Test_Code.Run();
+                //SQL_Test_Code.Run();
 
                 api.Backend.Endpoints.WebListener.Start();
             }
