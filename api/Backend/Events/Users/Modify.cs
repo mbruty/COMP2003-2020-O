@@ -3,6 +3,7 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 
 namespace api.Backend.Events.Users
 {
@@ -11,7 +12,7 @@ namespace api.Backend.Events.Users
         #region Methods
 
         [WebEvent("/modify/user", "DELETE", false, SecurityGroup.User)]
-        public static async void DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
                 User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
 
@@ -23,7 +24,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/modify/user", "PUT", false, SecurityGroup.User)]
-        public static async void ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             Table table = Binding.GetTable<User>();
             User[] users = await table.Select<User>("userid", headers["userid"]);
@@ -35,7 +36,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/modify/user/foods", "PUT", false, SecurityGroup.User)]
-        public static async void ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             if (!await Sessions.CheckSession(headers, response)) return;
 
@@ -51,7 +52,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/modify/user/password", "POST", false, SecurityGroup.User)]
-        public static async void ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string password = headers["password"];
 

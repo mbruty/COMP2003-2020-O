@@ -13,7 +13,7 @@ namespace api.Backend.Data.Obj
         public string Email, Password, Nickname;
         public uint FoodCheckID;
         public uint UserID;
-        public bool IsDeleted;
+        public bool IsDeleted, IsVerified;
 
         #endregion Fields
 

@@ -33,7 +33,7 @@ namespace api.Backend.Security
         /// <returns> The AuthToken to authenticate this session </returns>
         public static async Task AddSession(User user, string token)
         {
-            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.UserID, 1);
+            Session[] existing = await Binding.GetTable<Session>().Select<Session>("userid", user.UserID, 1);
 
             if (existing.Length == 0)
             {

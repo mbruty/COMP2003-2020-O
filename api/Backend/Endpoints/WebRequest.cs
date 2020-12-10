@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace api.Backend.Endpoints
 {
@@ -17,8 +18,10 @@ namespace api.Backend.Endpoints
         /// <param name="request">  </param>
         /// <param name="Data">     </param>
         /// <param name="response"> </param>
-        private static async void Handle(HttpListenerRequest request, string Data, HttpResponse response)
+        private static async Task<HttpResponse> Handle(HttpListenerRequest request, string Data)
         {
+            HttpResponse response = new HttpResponse();
+
             string url = request.RawUrl.ToLower(), method = request.HttpMethod.ToLower();
 
             //Find and then run the appriproate web event
@@ -28,7 +31,7 @@ namespace api.Backend.Endpoints
             {
                 if (tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel <= await Security.Sessions.GetSecurityGroup(request.Headers, response))
                 {
-                    try { tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); }
+                    try { Task T = (Task)tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); T.Wait(); }
                     catch (Exception e)
                     {
                         response.StatusCode = 505;
@@ -48,22 +51,22 @@ namespace api.Backend.Endpoints
                 response.StatusCode = 404;
                 response.AddToData("error", "Page not found");
             }
+
+            return response;
         }
 
         /// <summary>
         /// Extracts any Data before passing the request onwards
         /// </summary>
         /// <param name="listenerContext"> </param>
-        public static void PreHandle(HttpListenerContext listenerContext)
+        public static async void PreHandle(HttpListenerContext listenerContext)
         {
             //Read any request data (from the body)
             StreamReader stream = new StreamReader(listenerContext.Request.InputStream);
             string streamString = stream.ReadToEnd();
 
-            HttpResponse response = new HttpResponse();
-
             //Pass the request on
-            Handle(listenerContext.Request, streamString, response);
+            HttpResponse response = await Handle(listenerContext.Request, streamString);
 
             //Send the request
             response.Send(listenerContext.Response);
@@ -107,7 +110,7 @@ namespace api.Backend.Endpoints
             {
                 obj = obj.Purge();
                 if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj)));
-                else Data.Property("Time").Value = JToken.FromObject(obj);
+                else Data.Property(Header).Value = JToken.FromObject(obj);
             }
 
             /// <summary>
@@ -118,7 +121,7 @@ namespace api.Backend.Endpoints
             public void AddToData(string Header, object stringable)
             {
                 if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
-                else Data.Property("Time").Value = stringable.ToString();
+                else Data.Property(Header).Value = stringable.ToString();
             }
 
             /// <summary>
