@@ -13,7 +13,7 @@ namespace api.Backend.Data.Redis
         private void CacheObject<T>(T UncachedObject) where T : SQL.Object, new()
         {
             string CacheableObject = JsonConvert.SerializeObject(UncachedObject);
-            Redis.Instance.SetStringWithExpiration(GetKey<T>(UncachedObject), CacheableObject);
+            Redis.Instance.SetStringWithExpiration(GetKey<T>(UncachedObject), JToken.FromObject(CacheableObject).ToString());
         }
 
         //private string GetKey<T>(T Object) where T : SQL.Object, new()
