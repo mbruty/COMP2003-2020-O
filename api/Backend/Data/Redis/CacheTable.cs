@@ -86,9 +86,9 @@ namespace api.Backend.Data.Redis
             {
                 //Logic To Find And Return A Cached Object
                 string FieldSearch = GetKey(value);
-                if (await Redis.Instance.HasKey(FieldSearch))
-                {
-                    return new T[] { JToken.Parse(await Redis.Instance.GetString(FieldSearch)).ToObject<T>() };
+                var data = await Redis.Instance.GetString(FieldSearch);
+                if (data != null) {
+                    return new T[] { JToken.Parse(data).ToObject<T>() };
                 }
                 T[] Data = await base.Select<T>(FieldNames, FieldValues, Limit);
                 if (Data.Length > 0) CacheObject<T>(Data[0]);

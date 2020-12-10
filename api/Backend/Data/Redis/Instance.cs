@@ -28,8 +28,6 @@ namespace api.Backend.Data.Redis
         /// <returns> The value associated to the key </returns>
         public static async Task<string> GetString(string key)
         {
-            // The key is needed, reset the expiration on it
-            await database.KeyExpireAsync(key, EXPIRATION);
             return await database.StringGetAsync(key);
         }
 
