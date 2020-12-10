@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import DatePicker from "@react-native-community/datetimepicker";
 import {
   Dimensions,
@@ -14,10 +14,11 @@ import { AwesomeTextInput } from "react-native-awesome-text-input";
 import { TouchableOpacity } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
 import { isToday, Values } from "./utils";
-import validate from "./ValidateSignUp";
+import validate, { Params } from "./ValidateSignUp";
 import { FormProgress, PasswordInput } from "../controls";
 import Banner from "./Banner";
 import { Ionicons } from "@expo/vector-icons";
+import useDebouncer from "../../hooks/useDebouncer";
 
 interface Props {
   next: (value: string, userid: string, authtoken: string) => void;
@@ -25,7 +26,8 @@ interface Props {
 }
 
 const { width } = Dimensions.get("window");
-const SignUp: React.FC<Props> = (props) => {
+
+const SignUp: React.FC<Props> = ({ next, close }) => {
   const [values, setValues] = useState<Values>({
     username: "",
     email: "",
@@ -43,6 +45,11 @@ const SignUp: React.FC<Props> = (props) => {
     password: "",
     confPassword: "",
   });
+  let debounceValidate = useMemo(
+    () => (debounceValidate = useDebouncer<Params>(validate, 1500)),
+    []
+  );
+  useMemo(() => debounceValidate({ values, date, next, setErrors }), [values]);
 
   let dateText = isToday(date) ? "Date Of Birth" : date.toDateString();
 
@@ -57,7 +64,7 @@ const SignUp: React.FC<Props> = (props) => {
           opacity: 0.5,
         }}
         onPress={() => {
-          props.close();
+          close();
         }}
       >
         <Ionicons name="ios-close-circle-outline" size={32} color="black" />
@@ -72,7 +79,7 @@ const SignUp: React.FC<Props> = (props) => {
       <View style={[styles.txtContainer, { width: width - 100 }]}>
         <KeyboardAvoidingView>
           <AwesomeTextInput
-            label="Username"
+            label="Nickname"
             customStyles={{
               title: CONSTANT_STYLES.TXT_DEFAULT,
             }}
@@ -173,11 +180,7 @@ const SignUp: React.FC<Props> = (props) => {
       </View>
       <FormProgress
         onSubmit={() => {
-          validate(values, date, props.next).then((errors) => {
-            if (errors) {
-              setErrors(errors);
-            }
-          });
+          validate({ values, date, setErrors, submit: true, next: next });
         }}
         allowBack={false}
         selectedIdx={0}
