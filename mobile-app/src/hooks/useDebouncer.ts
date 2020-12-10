@@ -5,7 +5,9 @@ const useDebouncer = <T>(
   let timeout;
   const func = (value: T) => {
     clearTimeout(timeout);
-    setTimeout(() => callBack(value), delay);
+    timeout = setTimeout(() => {
+      callBack(value);
+    }, delay);
   };
   return func;
 };
