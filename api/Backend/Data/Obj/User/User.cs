@@ -1,7 +1,7 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -12,22 +12,10 @@ namespace api.Backend.Data.Obj
         public DateTime DateOfBirth;
         public string Email, Password, Nickname;
         public uint FoodCheckID;
-        public uint UserID;
         public bool IsDeleted, IsVerified;
+        public uint UserID;
 
         #endregion Fields
-
-        public override Object Purge()
-        {
-            User u = (User)this.MemberwiseClone();
-            u.Password = "REDACTED";
-            return u;
-        }
-        public async Task<bool> UpdatePassword()
-        {
-           return await SQL.Instance.Execute("UPDATE User SET password=@pword where userid=@uid",
-                new List<Tuple<string, object>>() { new Tuple<string, object>("pword",Password), new Tuple<string, object>("uid",UserID) });
-        }
 
         #region Methods
 
@@ -59,6 +47,19 @@ namespace api.Backend.Data.Obj
         public async Task<Visit[]> GetVisits()
         {
             return await Binding.GetTable<Visit>().Select<Visit>("UserID", UserID);
+        }
+
+        public override Object Purge()
+        {
+            User u = (User)this.MemberwiseClone();
+            u.Password = "REDACTED";
+            return u;
+        }
+
+        public async Task<bool> UpdatePassword()
+        {
+            return await SQL.Instance.Execute("UPDATE User SET password=@pword where userid=@uid",
+                 new List<Tuple<string, object>>() { new Tuple<string, object>("pword", Password), new Tuple<string, object>("uid", UserID) });
         }
 
         #endregion Methods

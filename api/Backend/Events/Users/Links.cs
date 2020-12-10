@@ -9,6 +9,8 @@ namespace api.Backend.Events.Users
 {
     public static class Fetch
     {
+        #region Methods
+
         [WebEvent("/fetch/user/me", "GET", false, SecurityGroup.User)]
         public static async Task GetUserData(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
@@ -17,5 +19,7 @@ namespace api.Backend.Events.Users
             response.AddObjectToData("user", users[0]);
             response.StatusCode = 200;
         }
+
+        #endregion Methods
     }
 }

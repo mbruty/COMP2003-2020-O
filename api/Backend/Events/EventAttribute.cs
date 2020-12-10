@@ -1,12 +1,10 @@
-﻿using System;
+﻿using api.Backend.Security;
+using System;
 using System.Linq;
 using System.Reflection;
-using api.Backend.Security;
 
 namespace api.Backend.Events
 {
-    
-
     /// <summary>
     /// Tags an event with what path and Method triggers it
     /// </summary>
@@ -21,9 +19,9 @@ namespace api.Backend.Events
             .SelectMany(x => x.GetMethods())
             .Where(x => x.GetCustomAttributes(typeof(Events.WebEvent), false).FirstOrDefault() != null).ToArray();
 
+        public SecurityGroup secuirtyLevel = SecurityGroup.None;
         public string urlPath, method;
         public bool WebSocket = false;
-        public SecurityGroup secuirtyLevel = SecurityGroup.None;
 
         #endregion Fields
 

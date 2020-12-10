@@ -11,7 +11,9 @@ namespace api.Backend.Data.Redis
         private static readonly string connString = $"{Security.Redis_Connection_Details.host},password={Security.Redis_Connection_Details.pword}";
 
         // ToDo: Figure out what to set this to... 5 Seconds just for testing
-        private static readonly TimeSpan EXPIRATION = new TimeSpan(0, 0, 5);
+        private static readonly TimeSpan EXPIRATION = new TimeSpan(0, 5, 0);
+
+        private static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connString);
 
         #endregion Fields
 
@@ -24,13 +26,10 @@ namespace api.Backend.Data.Redis
         /// <returns> The value associated to the key </returns>
         public static async Task<string> GetString(string key)
         {
-            using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connString))
-            {
-                IDatabase database = redis.GetDatabase();
-                // The key is needed, reset the expiration on it
-                await database.KeyExpireAsync(key, EXPIRATION);
-                return await database.StringGetAsync(key);
-            }
+            IDatabase database = redis.GetDatabase();
+            // The key is needed, reset the expiration on it
+            await database.KeyExpireAsync(key, EXPIRATION);
+            return await database.StringGetAsync(key);
         }
 
         /// <summary>
@@ -40,11 +39,8 @@ namespace api.Backend.Data.Redis
         /// <returns> A boolean value wether the database contains that key </returns>
         public static async Task<bool> HasKey(string key)
         {
-            using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connString))
-            {
-                IDatabase database = redis.GetDatabase();
-                return await database.KeyExistsAsync(key);
-            }
+            IDatabase database = redis.GetDatabase();
+            return await database.KeyExistsAsync(key);
         }
 
         /// <summary>
@@ -54,11 +50,8 @@ namespace api.Backend.Data.Redis
         /// <param name="value"> The value to store </param>
         public static async void SetStringWithExpiration(string key, string value)
         {
-            using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connString))
-            {
-                IDatabase database = redis.GetDatabase();
-                await database.StringSetAsync(key, value, EXPIRATION);
-            }
+            IDatabase database = redis.GetDatabase();
+            await database.StringSetAsync(key, value, EXPIRATION);
         }
 
         #endregion Methods
