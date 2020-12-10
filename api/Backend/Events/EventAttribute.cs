@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using api.Backend.Security;
 
 namespace api.Backend.Events
 {
+    
+
     /// <summary>
     /// Tags an event with what path and Method triggers it
     /// </summary>
@@ -20,28 +23,25 @@ namespace api.Backend.Events
 
         public string urlPath, method;
         public bool WebSocket = false;
+        public SecurityGroup secuirtyLevel = SecurityGroup.None;
 
         #endregion Fields
 
         #region Constructors
 
-        public WebEvent(string urlPath, string Method)
-        {
-            this.urlPath = urlPath.ToLower();
-            this.method = Method.ToLower();
-        }
-
-        public WebEvent(string urlPath, bool WebSocket = true)
+        public WebEvent(string urlPath, bool WebSocket = true, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
             this.urlPath = urlPath.ToLower();
             this.WebSocket = WebSocket;
+            this.secuirtyLevel = RequiredAuth;
         }
 
-        public WebEvent(string urlPath, string Method, bool WebSocket = false)
+        public WebEvent(string urlPath, string Method, bool WebSocket = false, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
             this.urlPath = urlPath.ToLower();
             this.method = Method.ToLower();
             this.WebSocket = WebSocket;
+            this.secuirtyLevel = RequiredAuth;
         }
 
         #endregion Constructors

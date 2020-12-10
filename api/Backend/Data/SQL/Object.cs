@@ -14,10 +14,10 @@ namespace api.Backend.Data.SQL
         /// Get the value(s) of the last autoincrmenetd fields
         /// </summary>
         /// <returns> Array of incremented ids </returns>
-        private int[] FetchAutoIncrement()
+        private uint[] FetchAutoIncrement()
         {
             List<object[]> Data = SQL.Instance.DoAsync(Instance.Read($"SELECT LAST_INSERT_ID();"));
-            return Array.ConvertAll(Data[0], x => int.Parse(x.ToString()));
+            return Array.ConvertAll(Data[0], x => uint.Parse(x.ToString()));
         }
 
         #endregion Methods
@@ -86,7 +86,7 @@ namespace api.Backend.Data.SQL
 
             if (FetchInsertedIds && success)
             {
-                int[] Ids = FetchAutoIncrement();
+                uint[] Ids = FetchAutoIncrement();
 
                 t.GetField(Fields.First(x => x.IsAutoIncrement)?.Field)?.SetValue(this, Ids[0]);
             }

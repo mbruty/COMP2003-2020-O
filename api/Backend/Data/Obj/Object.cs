@@ -9,7 +9,10 @@ namespace api.Backend.Data.Obj
     public class Object : SQL.Object
     {
         #region Methods
-
+        public virtual Object Purge()
+        {
+            return this;
+        }
         public async void UpdateContents<T>(NameValueCollection headers) where T : SQL.Object, new()
         {
             Type t = typeof(T);

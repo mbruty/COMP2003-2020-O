@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Linq;
 
 namespace api.Backend.Endpoints
 {
@@ -16,7 +17,7 @@ namespace api.Backend.Endpoints
         /// <param name="request">  </param>
         /// <param name="Data">     </param>
         /// <param name="response"> </param>
-        private static void Handle(HttpListenerRequest request, string Data, ref HttpResponse response)
+        private static async void Handle(HttpListenerRequest request, string Data, HttpResponse response)
         {
             string url = request.RawUrl.ToLower(), method = request.HttpMethod.ToLower();
 
@@ -25,12 +26,20 @@ namespace api.Backend.Endpoints
 
             if (tMethod.Length > 0)
             {
-                try { tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); }
-                catch (Exception e)
+                if (tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel <= await Security.Sessions.GetSecurityGroup(request.Headers, response))
                 {
-                    response.StatusCode = 505;
-                    response.AddToData("error", "A Server Error has Occured!");
-                    Console.WriteLine(e);
+                    try { tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); }
+                    catch (Exception e)
+                    {
+                        response.StatusCode = 505;
+                        response.AddToData("error", "A Server Error has Occured!");
+                        Console.WriteLine(e);
+                    }
+                }
+                else
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Insignificant permissions");
                 }
             }
             else
@@ -54,7 +63,7 @@ namespace api.Backend.Endpoints
             HttpResponse response = new HttpResponse();
 
             //Pass the request on
-            Handle(listenerContext.Request, streamString, ref response);
+            Handle(listenerContext.Request, streamString, response);
 
             //Send the request
             response.Send(listenerContext.Response);
@@ -94,9 +103,11 @@ namespace api.Backend.Endpoints
             /// </summary>
             /// <param name="Header"> </param>
             /// <param name="obj">    </param>
-            public void AddObjectToData(string Header, object obj)
+            public void AddObjectToData(string Header, Data.Obj.Object obj)
             {
-                Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
+                obj = obj.Purge();
+                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj)));
+                else Data.Property("Time").Value = JToken.FromObject(obj);
             }
 
             /// <summary>
@@ -106,7 +117,8 @@ namespace api.Backend.Endpoints
             /// <param name="stringable"> .ToString() supporting object </param>
             public void AddToData(string Header, object stringable)
             {
-                Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
+                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
+                else Data.Property("Time").Value = stringable.ToString();
             }
 
             /// <summary>
@@ -116,6 +128,8 @@ namespace api.Backend.Endpoints
             public virtual void Send(HttpListenerResponse response)
             {
                 response.StatusCode = StatusCode;
+
+                if (response.StatusCode == 200) Data.Property("error")?.Remove();
 
                 response.Headers.Add("Access-Control-Allow-Origin", "*"); //Do Not Touch
 
