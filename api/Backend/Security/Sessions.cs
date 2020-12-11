@@ -1,6 +1,7 @@
 ﻿using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Specialized;
 using System.Threading;
@@ -8,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Security
 {
+    public enum SecurityGroup
+    {
+        None,
+        User,
+        Administrator
+    }
+
     public static class Sessions
     {
         #region Fields
@@ -21,15 +29,15 @@ namespace api.Backend.Security
         /// <summary>
         /// Create a login session for the User
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns>The AuthToken to authenticate this session</returns>
+        /// <param name="user"> </param>
+        /// <returns> The AuthToken to authenticate this session </returns>
         public static async Task AddSession(User user, string token)
         {
-            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.Id, 1);
+            Session[] existing = await Binding.GetTable<Session>().Select<Session>("userid", user.UserID, 1);
 
             if (existing.Length == 0)
             {
-                new Thread(async () => { await new Session() { UserId = user.Id, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
+                new Thread(async () => { await new Session() { UserID = user.UserID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
             }
             else
             {
@@ -40,9 +48,9 @@ namespace api.Backend.Security
         /// <summary>
         /// Checks if the req headers contain a valid session
         /// </summary>
-        /// <param name="headers"></param>
-        /// <param name="response"></param>
-        /// <returns>If the session is valid</returns>
+        /// <param name="headers">  </param>
+        /// <param name="response"> </param>
+        /// <returns> If the session is valid </returns>
         public static async Task<bool> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
         {
             string userid = headers["userid"], authtoken = headers["authtoken"];
@@ -78,6 +86,69 @@ namespace api.Backend.Security
             }
 
             return true;
+        }
+
+        public static async Task<bool> CheckSession(JToken Auth, WebSockets.SocketResponse response)
+        {
+            string userid = Auth["userid"].ToString(), authtoken = Auth["authtoken"].ToString();
+
+            if (userid == null || authtoken == null)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing email or authtoken");
+                return false;
+            }
+
+            if (!int.TryParse(userid, out int uid))
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "User id is invalid");
+                return false;
+            }
+
+            Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
+
+            if (sessions.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Session does not exist");
+                return false;
+            }
+
+            if (!Hashing.Match(authtoken, sessions[0].AuthToken))
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Authtoken is incorrect");
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async Task<SecurityGroup> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response)
+        {
+            if (await CheckSession(headers, response))
+            {
+                //Logic to determine if is admin
+                return SecurityGroup.User;
+            }
+            else
+            {
+                return SecurityGroup.None;
+            }
+        }
+
+        public static async Task<SecurityGroup> GetSecurityGroup(JToken Auth, WebSockets.SocketResponse response)
+        {
+            if (await CheckSession(Auth, response))
+            {
+                //Logic to determine if is admin
+                return SecurityGroup.User;
+            }
+            else
+            {
+                return SecurityGroup.None;
+            }
         }
 
         public static string RandomString(int length = 32)

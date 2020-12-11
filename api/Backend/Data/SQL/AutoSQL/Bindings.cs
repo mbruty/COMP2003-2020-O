@@ -12,7 +12,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         #region Fields
 
         private readonly Type ObjType;
-        private readonly Table table;
+        private readonly Redis.CacheTable table;
         public static List<Binding> bindings = new List<Binding>();
 
         #endregion Fields
@@ -22,12 +22,12 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Link the Obj to the Table
         /// </summary>
-        /// <param name="Obj"></param>
-        /// <param name="Table"></param>
+        /// <param name="Obj">   </param>
+        /// <param name="Table"> </param>
         public Binding(Type Obj, string Table)
         {
             this.ObjType = Obj;
-            this.table = Instance.tables.First(x => x.Name.ToLower() == Table.ToLower());
+            this.table = (Redis.CacheTable)Instance.tables.First(x => x.Name.ToLower() == Table.ToLower());
         }
 
         #endregion Constructors
@@ -37,18 +37,23 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Create a link between T and Table
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="Table"></param>
-        public static void Add<T>(string Table)
+        /// <typeparam name="T"> </typeparam>
+        /// <param name="Table"> </param>
+        public static void Add<T>(string Table) where T : Obj.Object, new()
         {
             bindings.Add(new Binding(typeof(T), Table));
+        }
+
+        public static void Add<T>() where T : Obj.Object, new()
+        {
+            bindings.Add(new Binding(typeof(T), new T().GetType().Name));
         }
 
         /// <summary>
         /// Create a link between objType and Table
         /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="Table"></param>
+        /// <param name="objType"> </param>
+        /// <param name="Table">   </param>
         public static void Add(Type objType, string Table)
         {
             bindings.Add(new Binding(objType, Table));
@@ -57,9 +62,9 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Get the table that is bound to type T
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static Table GetTable<T>()
+        /// <typeparam name="T"> </typeparam>
+        /// <returns> </returns>
+        public static Redis.CacheTable GetTable<T>()
         {
             return bindings.First(x => x.ObjType == typeof(T))?.table;
         }
@@ -67,9 +72,9 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <summary>
         /// Get the table that is bound to type objType
         /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        public static Table GetTable(Type objType)
+        /// <param name="objType"> </param>
+        /// <returns> </returns>
+        public static Redis.CacheTable GetTable(Type objType)
         {
             return bindings.First(x => x.ObjType == objType)?.table;
         }

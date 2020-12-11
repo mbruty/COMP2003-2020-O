@@ -1,25 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useMemo } from "react";
+import Nav from "./Nav";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import "./App.css";
 
 function App() {
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  console.log(prefersDarkMode);
+
+  const theme = useMemo(
+    () =>
+      createMuiTheme({
+        palette: {
+          background: {
+            paper: prefersDarkMode ? "#303030" : "#FFF",
+            default: prefersDarkMode ? "#212121" : "#FFF",
+          },
+          primary: {
+            light: "#7986cb",
+            main: "#3f51b5",
+            dark: "#303f9f",
+          },
+          type: prefersDarkMode ? "dark" : "light",
+        },
+      }),
+    [prefersDarkMode]
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div
+        className="App"
+        style={{ backgroundColor: theme.palette.background.default }}
+      >
+        <Nav
+          colour={prefersDarkMode ? "#333333" : theme.palette.primary.main}
+        />
+      </div>
+    </ThemeProvider>
   );
 }
 

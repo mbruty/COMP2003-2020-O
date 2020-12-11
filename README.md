@@ -1,19 +1,33 @@
-# COMP2003 - Group O Project
+# Plymouth University COMP2003 : Group O Collaborative Project
 
-## Track and Taste
+## Track and Taste (Recommender System)
 
-### Members
+<br>
+
+### Members:
+
+#### Technical Leads
 
 - [Michael Bruty](https://github.com/mbruty)
 - [Oscar Davies](https://github.com/Jaminima)
+
+#### Scrum Masters
+
 - [Reef Lakin](https://github.com/ReefLakin)
 - [Alex Denman](https://github.com/AlexDenman47674)
+
+#### Product Owners
+
 - [Luke Mann](https://github.com/lukemann04)
 - [Jack Machar](https://github.com/JWKMachar)
 
-### Project Vision
+<br>
 
-To produce a mobile application to recommend local restaurants to groups or individuals based on their previous likes and dislikes for restaurants.
+### Project Vision:
+
+The main focus of the project is a mobile application. The app records user preferences in an effort to recommend them nearby restaurants and/or menu items it believes they will enjoy. The recommender uses the data regarding a user's previous interactions with the app, predetermined likes and dislikes, as well as their dietry requirements to ensure it is recommending valuable things. The data will be stored using a MySQL database. Restaurant owners can interact with their establishment and its respective data via a web interface and RESTful API we will also be developing.
+
+<br>
 
 ### Branches
 
@@ -25,9 +39,12 @@ To produce a mobile application to recommend local restaurants to groups or indi
 
 _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _to mark is as done_.
 
+---
+
 ## Code Style Guide
 
 ### TypeScript
+
 
 - [ ] Run the tslint extension
 - [ ] Run Prettier (Shift + alt + f)
@@ -38,11 +55,23 @@ _Note: below is a checklist for you to use, change the_ `- [ ]` _to a_ `- [X]` _
 - [ ] Variables and other functions use camelCaps
 - [ ] For constant's please use UPPER_CASE_SNAKE_CASE
 
+
 ### C#
 
 - Comment Chunks of code to explain function
-
 - Keep functions under 30 lines
+
+
+### MySQL
+
+- Triggers are prefixed with **TGR_**
+- Table names and names of objects with reserved terms are always enclosed with **backticks**
+- Large transactions within stored procedures, functions and triggers are sandwiched with a **//** delimiter
+- Stored procedures are prefixed with **Run-**
+- Stored function are prefixed with **Func-**
+- Procedures, functions, triggers and tables use the **DROP {object} IF EXISTS** tag before the script is run
+
+---
 
 ## What We Are Using
 
@@ -217,7 +246,121 @@ You're able to run the project locally without docker, but on the server we will
    `sudo docker container run devapi dotnet build`
    `sudo docker container run devapi --configuration Release`
 
+<br>
+
 ---
+
+<br>
+
+## MySQL Stored Procedures
+
+### Run-RemoveUser
+
+> **This SP takes 1 parameter:**  
+> *name* `input_email` *type* `varchar(60)`  
+
+Use this stored procedure to safely remove a user's personal data whilst leaving data associated with them in-tact.  
+This helps to preserve information the reccomender might need to work effectively.  
+A user's email address, nickname and password is deleted so the ID is no longer linked to a real person.  
+
+### Run-PermaDeleteUser
+
+> **This SP takes 1 parameter:**  
+> *name* `input_id` *type* `int`  
+
+Use this stored procedure to completely remove a user from the database and all their data without preserving it.  
+This is not safe or helpful, so put it to seldom use.  
+A user's ID is required for safety reasons.  
+Cannot be completed if the user owns a restaurant.
+
+### Run-GenerateUserData
+
+> **This SP takes 1 parameter:**  
+> *name* `num_of_users` *type* `int`
+
+If you run this stored procedure on the server, it will randomly generate one or many user records.  
+Devs using this SP should specify how many users they want to randomly generate.  
+This is good to run for testing and is safe.  
+In its current iteration, you may get an error from the procedure randomly generating a pre-existing email. If this happens, the record simply won't be added.  
+There are 22,580,726,450 combinations of potential emails that can be generated.  
+This feature is experimental and continues to be developed.
+
+## MySQL Stored Functions
+
+### Func-RandomSelection
+
+> **This function takes 1 parameter:**  
+> *name* `select_these` *type* `varchar(10000)`
+
+MySQL doesn't use arrays or lists. This is because MySQL is less of a programming language and more of a database scripting/query language.  
+With that in mind, this function selects one random element from a string list of items.  
+The items are stored in a variable-length string (max 10000 characters). After each item, place a $ symbol separator.  
+This might looks like: "Andrew$Paula$Toby$". In that example, the function will randomly either Andrew, Paula or Toby and return it to us.  
+The function is quite complex; view the ProcSetup.sql file for a deeper understanding of how it works.
+
+### Func-CountDelimiters
+
+> **This function takes 1 parameter:**  
+> *name* `input_string` *type* `varchar(10000)`
+
+This function takes an input variable-length string (max 10000 characters).  
+It counts how many $ symbols are present within the string.  
+In a future build, we might build functionality allowing for the specifying of the delimiter character(s).
+
+### Func-RandomNumber
+
+> **This function takes 2 parameters:**  
+> *name* `min_val` *type* `int`  
+> *name* `max_val` *type* `int`
+
+The purpose of this function is to generate random numbers.  
+One may specify the range using the min_val and max_val parameters.  
+Both of these parameter values are inclusive of the value range, meaning they both have the potential to be generated also.
+
+### Func-GetEmailStarts
+
+> **This function takes 0 parameters**  
+
+This function will return a list of words (that could be used in a real-world email address).  
+The string of words is separated by $ symbols.
+
+### Func-GetDomains
+
+> **This function takes 0 parameters**  
+
+This function will return a list of Internet TLDs (that could be used in a real-world email address).  
+The string of domains is separated by $ symbols.
+
+### Func-GetNicknames
+
+> **This function takes 0 parameters**  
+
+This function will return a list of nicknames.  
+The string of nicknames is separated by $ symbols.
+
+<br>
+
+---
+
+<br>
+
+## MySQL Database Documentation
+
+### Entity Relationship Diagram (Version 5.7)
+
+*This diagram is up to date as of 06/12/20.*
+
+<br>
+
+<p>
+  <img alt="The entity relationship diagram associated with the project." width="720" height="598" src="https://i.imgur.com/tdf1aY6.png">
+</p>
+
+<br>
+
+---
+
+<br>
 
 ## How the Branches Work
 
@@ -232,9 +375,4 @@ You're able to run the project locally without docker, but on the server we will
 
 ---
 
-### Colour Scheme
-Don't forget to use this graphic for colour scheming:
-
-<p>
-  <img alt="Colour scheme graphic for project." width="300" height="450" src="https://i.imgur.com/S4dBZak.png">
-</p>
+## UI Styling Information

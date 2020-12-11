@@ -7,4 +7,5 @@ packages/
 .idea/
 *.jpg
 Backend/Security/SQL-Connection-Details.cs
+Backend/Security/Redis-Connection-Details.cs
 api/obj/
