@@ -9,7 +9,11 @@ describe("Validate Sign Up inputs", () => {
       confPassword: "notastrongpassword",
       dob: new Date(),
     };
-    const result = await ValidateSignUp(values, new Date("01-01-2020"));
+    const result = await ValidateSignUp({
+      values,
+      date: new Date("01-01-2020"),
+      submit: true,
+    });
     expect(result.confPassword).toBe(
       "Please enter a strong password\n8 Characters in length; Atleast:\n\t1 Number,\n\t1 Symbol,\n\t1 Uppercase Character,\n\t1 Lowercase Character"
     );
@@ -22,7 +26,11 @@ describe("Validate Sign Up inputs", () => {
       confPassword: "Super_Secure_Password1",
       dob: new Date(),
     };
-    const result = await ValidateSignUp(values, new Date("01-01-2020"));
+    const result = await ValidateSignUp({
+      values,
+      date: new Date("01-01-2020"),
+      submit: true,
+    });
     expect(result.email).toBe("Please enter a valid email");
   });
   it("Catches an empty email", async () => {
@@ -33,8 +41,12 @@ describe("Validate Sign Up inputs", () => {
       confPassword: "Super_Secure_Password1",
       dob: new Date(),
     };
-    const result = await ValidateSignUp(values, new Date("01-01-2020"));
-    expect(result.email).toBe("Email is required");
+    const result = await ValidateSignUp({
+      values,
+      date: new Date("01-01-2020"),
+      submit: true,
+    });
+    expect(result.email).toBe("Email is required!");
   });
   it("Catches an empty username", async () => {
     const values: Values = {
@@ -44,8 +56,12 @@ describe("Validate Sign Up inputs", () => {
       confPassword: "Super_Secure_Password1",
       dob: new Date(),
     };
-    const result = await ValidateSignUp(values, new Date("01-01-2020"));
-    expect(result.username).toBe("Username is required");
+    const result = await ValidateSignUp({
+      values,
+      date: new Date("01-01-2020"),
+      submit: true,
+    });
+    expect(result.username).toBe("Username is required!");
   });
   it("Catches an empty password", async () => {
     const values: Values = {
@@ -55,9 +71,13 @@ describe("Validate Sign Up inputs", () => {
       confPassword: "Super_Secure_Password1",
       dob: new Date(),
     };
-    const result = await ValidateSignUp(values, new Date("01-01-2020"));
+    const result = await ValidateSignUp({
+      values,
+      date: new Date("01-01-2020"),
+      submit: true,
+    });
     expect(result.confPassword).toBe(
-      "Passwords cannot be empty\nPlease enter a strong password\n8 Characters in length; Atleast:\n\t1 Number,\n\t1 Symbol,\n\t1 Uppercase Character,\n\t1 Lowercase Character"
+      "Password is required!The passwords do not match"
     );
   });
   it("Catches an empty confirm password", async () => {
@@ -68,8 +88,14 @@ describe("Validate Sign Up inputs", () => {
       confPassword: "",
       dob: new Date(),
     };
-    const result = await ValidateSignUp(values, new Date("01-01-2020"));
-    expect(result.confPassword).toBe("Passwords cannot be empty\n");
+    const result = await ValidateSignUp({
+      values,
+      date: new Date("01-01-2020"),
+      submit: true,
+    });
+    expect(result.confPassword).toBe(
+      "Password is required!The passwords do not match"
+    );
   });
   it("Catches Date of Birth being today", async () => {
     const values: Values = {
@@ -79,7 +105,11 @@ describe("Validate Sign Up inputs", () => {
       confPassword: "",
       dob: new Date(),
     };
-    const result = await ValidateSignUp(values, new Date());
+    const result = await ValidateSignUp({
+      values,
+      date: new Date(),
+      submit: true,
+    });
     expect(result.dob).toBe("Date of Birth is required");
   });
   it("Catches Date of Birth being in the future", async () => {
@@ -92,7 +122,11 @@ describe("Validate Sign Up inputs", () => {
     };
     //Could allow erros if this app is still being used in the year 2100,
     //but hopefully I'll be dead by then
-    const result = await ValidateSignUp(values, new Date("01-01-2100"));
+    const result = await ValidateSignUp({
+      values,
+      date: new Date("01-01-2100"),
+      submit: true,
+    });
     expect(result.dob).toBe("Date of Birth cannot be in the future");
   });
 });
