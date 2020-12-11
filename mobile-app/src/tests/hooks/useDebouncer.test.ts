@@ -71,4 +71,20 @@ describe("useDebouncer tests", () => {
     expect(debounceMe).toBeCalledWith("Hello world");
     expect(debounceMeTwo).toBeCalledWith("Goodbye world");
   });
+  it("Debounces with a function that uses two values", async () => {
+    interface debounceProps {
+      value: String;
+      id: Number;
+    }
+
+    const func = jest.fn((values: debounceProps) => {
+      if (values.value && values.id) {
+        return true;
+      } else return false;
+    });
+    const debouncer = useDebouncer<debounceProps>(func, 100);
+    debouncer({ value: "Yes", id: 1 });
+    await delay(100);
+    expect(func).toBeCalled();
+  });
 });
