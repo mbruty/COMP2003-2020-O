@@ -42,7 +42,7 @@ namespace api.Backend.Endpoints
                 else
                 {
                     response.StatusCode = 401;
-                    response.AddToData("error", "Insignificant permissions");
+                    //response.AddToData("error", "Insignificant permissions");
                 }
             }
             else

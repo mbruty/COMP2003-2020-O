@@ -98,7 +98,7 @@ namespace api.Backend.Events.Users
             if (!DateTime.TryParse(dateOfBirth, out user.DateOfBirth))
             {
                 response.StatusCode = 401;
-                response.AddToData("error", "Year of Birth is invalid");
+                response.AddToData("error", "Date of Birth is invalid");
                 return;
             }
 

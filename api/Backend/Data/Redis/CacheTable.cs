@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace api.Backend.Data.Redis
 {
@@ -13,7 +14,7 @@ namespace api.Backend.Data.Redis
         private void CacheObject<T>(T UncachedObject) where T : SQL.Object, new()
         {
             string CacheableObject = JsonConvert.SerializeObject(UncachedObject);
-            Redis.Instance.SetStringWithExpiration(GetKey<T>(UncachedObject), CacheableObject);
+            Redis.Instance.SetStringWithExpiration(GetKey<T>(UncachedObject).ToString(), JToken.FromObject(CacheableObject).ToString());
         }
 
         //private string GetKey<T>(T Object) where T : SQL.Object, new()
@@ -22,12 +23,18 @@ namespace api.Backend.Data.Redis
         //    return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(Object).ToString()}";
         //}
 
-        private string GetKey<T>(object[] PrimaryKeyValues) where T : SQL.Object, new()
+        private object GetKey<T>(T sqlObj) where T : SQL.Object, new()
+        {
+            Type t = new T().GetType();
+            return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(sqlObj)}";
+        }
+
+        private string GetKey(object[] PrimaryKeyValues)
         {
             return $"{Name}-{PrimaryKeyValues[0]}";
         }
 
-        private string GetKey<T>(object PrimaryKeyValue) where T : SQL.Object, new()
+        private string GetKey(object PrimaryKeyValue)
         {
             return $"{Name}-{PrimaryKeyValue}";
         }
@@ -45,7 +52,7 @@ namespace api.Backend.Data.Redis
         public override async Task<T[]> Select<T>(object[] PrimaryKeyValues, int Limit = 0)
         {
             //Logic To Find And Return A Cached Object
-            string KeySearch = GetKey<T>(PrimaryKeyValues);
+            string KeySearch = GetKey(PrimaryKeyValues);
             if (await Redis.Instance.HasKey(KeySearch))
             {
                 return new T[] { JToken.Parse(await Redis.Instance.GetString(KeySearch)).ToObject<T>() };
@@ -78,10 +85,10 @@ namespace api.Backend.Data.Redis
             if (value != null)
             {
                 //Logic To Find And Return A Cached Object
-                string FieldSearch = GetKey<T>(value);
-                if (await Redis.Instance.HasKey(FieldSearch))
-                {
-                    return new T[] { JToken.Parse(await Redis.Instance.GetString(FieldSearch)).ToObject<T>() };
+                string FieldSearch = GetKey(value);
+                var data = await Redis.Instance.GetString(FieldSearch);
+                if (data != null) {
+                    return new T[] { JToken.Parse(data).ToObject<T>() };
                 }
                 T[] Data = await base.Select<T>(FieldNames, FieldValues, Limit);
                 if (Data.Length > 0) CacheObject<T>(Data[0]);
