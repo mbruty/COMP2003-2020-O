@@ -9,12 +9,12 @@
         public bool IsVegetarian = false,
             IsVegan = false,
             IsHalal = false,
-            IsKosher,
-            HasLactose,
-            HasNuts,
-            HasGluten,
-            HasEgg,
-            HasSoy;
+            IsKosher = false,
+            HasLactose = true,
+            HasNuts = true,
+            HasGluten = true,
+            HasEgg = true,
+            HasSoy = true;
 
         #endregion Fields
     }

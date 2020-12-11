@@ -60,7 +60,7 @@ namespace api
             {
                 api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
                 Bind();
-                SQL_Test_Code.Run();
+                //SQL_Test_Code.Run();
 
                 api.Backend.Endpoints.WebListener.Start();
             }
