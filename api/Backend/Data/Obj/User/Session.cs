@@ -14,18 +14,18 @@ namespace api.Backend.Data.Obj
 
         #endregion Fields
 
-        public override Object Purge()
-        {
-            Session u = (Session)this.MemberwiseClone();
-            u.AuthToken = "REDACTED";
-            return u;
-        }
-
         #region Methods
 
         public async Task<User> GetUser()
         {
             return (await Binding.GetTable<User>().Select<User>(UserID))?[0];
+        }
+
+        public override Object Purge()
+        {
+            Session u = (Session)this.MemberwiseClone();
+            u.AuthToken = "REDACTED";
+            return u;
         }
 
         #endregion Methods

@@ -8,7 +8,7 @@ namespace api.Backend.Data.SQL.AutoSQL
     {
         #region Fields
 
-        public static Table[] tables;
+        public static Redis.CacheTable[] tables;
 
         #endregion Fields
 
@@ -21,7 +21,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         {
             Task<List<object[]>> t = SQL.Instance.Read("SHOW tables");
             t.Wait();
-            tables = t.Result.Select(x => new Table((string)x[0])).ToArray();
+            tables = t.Result.Select(x => new Redis.CacheTable((string)x[0])).ToArray();
         }
 
         #endregion Methods
