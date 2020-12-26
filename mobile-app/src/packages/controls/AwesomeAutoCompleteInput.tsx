@@ -58,7 +58,7 @@ const AwesomeAutoCompleteInput: React.FC<Props> = (props) => {
           <Text
             style={[
               CONSTANT_STYLES.TXT_DEFAULT,
-              { textAlignVertical: "center" },
+              { alignSelf: "center" },
             ]}
           >
             {item}
