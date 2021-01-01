@@ -33,7 +33,11 @@ namespace api.Backend.Security
         /// <returns> The AuthToken to authenticate this session </returns>
         public static async Task AddSession(User user, string token)
         {
-            Session[] existing = await Binding.GetTable<Session>().Select<Session>("userid", user.UserID, 1);
+            Data.Redis.CacheTable t = Binding.GetTable<Session>();
+
+            Session[] existing = await t.Select<Session>("userid", user.UserID, 1);
+
+            Data.Redis.Instance.InvalidateKey(t.GetKey(existing[0]).ToString());
 
             if (existing.Length == 0)
             {
