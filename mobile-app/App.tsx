@@ -24,9 +24,9 @@ export default function App() {
       break;
     case "log-in":
       return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
           <LogIn setPage={setPage} submit={logIn} />
-        </SafeAreaView>
+        </View>
       );
       break;
     case "main":
