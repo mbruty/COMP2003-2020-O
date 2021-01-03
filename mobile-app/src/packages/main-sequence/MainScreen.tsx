@@ -5,6 +5,7 @@ import RecentVisits from "./RecentVisits";
 import Nav from "./Nav";
 import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
 import SmartPage from "react-native-smart-page";
+import { CONSTANT_COLOURS } from "../../constants";
 
 interface Props {}
 
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
   screen: {
     height: height,
     width: width,
+    backgroundColor: CONSTANT_COLOURS.BG_BASE
   },
 });
 
