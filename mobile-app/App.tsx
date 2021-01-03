@@ -10,7 +10,7 @@ export default function App() {
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
   
-  const [page, setPage] = useState<string>("log-in");
+  const [page, setPage] = useState<string>("main");
 
   const logIn = (token: string) => {
     setUser({ authToken: token });
@@ -31,9 +31,9 @@ export default function App() {
       break;
     case "main":
       return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
           <MainScreen />
-        </SafeAreaView>
+        </View>
       );
     default:
       return (
