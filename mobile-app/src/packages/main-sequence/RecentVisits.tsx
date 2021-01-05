@@ -1,5 +1,5 @@
 import React from "react";
-import AnimatedScroll from "../AnimatedCard/AnimatedScroll";
+import AnimatedScroll, { CardProps } from "../AnimatedCard/AnimatedScroll";
 
 export interface Details {
   index: number;
@@ -9,10 +9,9 @@ export interface Details {
 }
 
 interface Props {
-  restaurantDetails: Array<Details>;
+  restaurants: Array<CardProps>;
 }
 
-const cards = [];
 
 /**
  * @param index The index of the card that has been swiped on
@@ -22,26 +21,10 @@ const handleSwipe = (index: number) => {
   alert("Swipe from " + index);
 };
 
-const RecentVisits: React.FC<Props> = (props) => {
-
-  //Add visits to the card list
-  var i = 0;
-  if (props.restaurantDetails.length > 0){
-   while (i < 1){
-     props.restaurantDetails.forEach(element => {
-        cards.push({
-         index: element.index, 
-         type: element.type, name: 
-         element.restaurantName, 
-         visitDate: element.restaurantVisitDate})
-       //Only display the 10 most recent visits
-       if (cards.length > 10) {
-          cards.pop();
-       }
-        i = i + 1;
-     });
-   }
-  }
+const RecentVisits: React.FC<Props> = ({restaurants}) => {
+  // Select the 10 most recent cards
+  // Possibly move this over to the api??
+  const cards = restaurants.slice(0, restaurants.length > 10 ? 10 : restaurants.length);
   return <AnimatedScroll handleSwipe={handleSwipe} cards={cards} />;
 };
 

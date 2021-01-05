@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import EmailConfirm from "./EmailConfirm";
 import { IUser } from "./IUser";
 import PreferencesController from "./PreferencesController";
@@ -36,9 +36,9 @@ const SignUpProcess: React.FC<Props> = (props) => {
       return <EmailConfirm next={next} />;
     case 2:
       return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
           <PreferencesController showBack={false} />
-        </SafeAreaView>
+        </View>
       );
   }
 };

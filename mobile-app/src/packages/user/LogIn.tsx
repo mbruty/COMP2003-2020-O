@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     width: wWidth,
     height: wHeight / 2,
     marginBottom: wHeight / 2,
-    marginLeft: -10,
+    marginLeft: -43,
   },
   titleText: {
     fontWeight: "bold",
@@ -81,7 +81,7 @@ const LogIn: React.FC<Props> = ({ submit, setPage }) => {
   });
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <View style={{ width: wWidth, height: wHeight }}>
       <LogInSvg style={styles.image} />
       <KeyboardAvoidingView
         style={[styles.card, CONSTANT_STYLES.BG_BASE_COLOUR]}
@@ -161,7 +161,7 @@ const LogIn: React.FC<Props> = ({ submit, setPage }) => {
           <Text style={CONSTANT_STYLES.TXT_RED}> Sign Up</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
-    </ScrollView>
+    </View>
   );
 };
 

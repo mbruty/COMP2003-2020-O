@@ -5,7 +5,7 @@ function SvgComponent(props) {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
-      width={415}
+      width={500}
       height={366}
       viewBox="0 0 415 366"
       {...props}
