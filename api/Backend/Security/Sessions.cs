@@ -85,6 +85,8 @@ namespace api.Backend.Security
                 return false;
             }
 
+            response.StatusCode = 200;
+
             return true;
         }
 

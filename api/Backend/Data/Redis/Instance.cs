@@ -15,6 +15,8 @@ namespace api.Backend.Data.Redis
 
         private static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connString);
 
+        public static IDatabase database = redis.GetDatabase();
+
         #endregion Fields
 
         #region Methods
@@ -26,9 +28,6 @@ namespace api.Backend.Data.Redis
         /// <returns> The value associated to the key </returns>
         public static async Task<string> GetString(string key)
         {
-            IDatabase database = redis.GetDatabase();
-            // The key is needed, reset the expiration on it
-            await database.KeyExpireAsync(key, EXPIRATION);
             return await database.StringGetAsync(key);
         }
 
@@ -39,7 +38,6 @@ namespace api.Backend.Data.Redis
         /// <returns> A boolean value wether the database contains that key </returns>
         public static async Task<bool> HasKey(string key)
         {
-            IDatabase database = redis.GetDatabase();
             return await database.KeyExistsAsync(key);
         }
 
@@ -50,7 +48,6 @@ namespace api.Backend.Data.Redis
         /// <param name="value"> The value to store </param>
         public static async void SetStringWithExpiration(string key, string value)
         {
-            IDatabase database = redis.GetDatabase();
             await database.StringSetAsync(key, value, EXPIRATION);
         }
 
