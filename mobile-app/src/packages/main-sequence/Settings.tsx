@@ -7,19 +7,24 @@ import { AwesomeTextInput } from "react-native-awesome-text-input";
 const Settings: React.FC = () => {
   const [modalVisiblePassword, setModalVisiblePassword] = useState(false);
   const [modalVisibleName, setModalVisibleName] = useState(false);
+  const [distance, setDistance] = useState(25);
   
   return (
-      <View>
-        <Text style={styles.text}>Distance Preferences</Text>
-
+      <View style={{paddingHorizontal: 25}}>
+        <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between", paddingTop: 25}}>
+          <Text style={styles.text}>Maximum Distance:</Text>
+          <Text style={styles.text}>{distance} miles</Text>
+        </View>
         <Slider
           style={{height: 50}}
           minimumValue={1}
-          maximumValue={10}
-          step={0.5}
+          maximumValue={100}
+          value={distance}
+          step={1}
           minimumTrackTintColor="#FF0000"
           maximumTrackTintColor="#000000"
           thumbTintColor="#808080"
+          onValueChange={newValue => setDistance(newValue)}
         />
 
         <Text style={styles.text}>Food Preferences</Text>
