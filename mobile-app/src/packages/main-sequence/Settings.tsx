@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-//import "./App.css";
 import Slider from '@react-native-community/slider';
 import {Text, View, Button, Modal, Alert, StyleSheet, TouchableOpacity} from "react-native";
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
-//import ReactSlider from 'react-slider';
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { blue } from "react-native-redash";
 
 const Settings: React.FC = () => {
   const [modalVisiblePassword, setModalVisiblePassword] = useState(false);
@@ -33,7 +30,6 @@ const Settings: React.FC = () => {
             transparent={true}
             visible={modalVisiblePassword}
             onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
               setModalVisiblePassword(false);
             }}
         >
@@ -94,7 +90,6 @@ const Settings: React.FC = () => {
             transparent={true}
             visible={modalVisibleName}
             onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
               setModalVisibleName(false);
             }}
         >
