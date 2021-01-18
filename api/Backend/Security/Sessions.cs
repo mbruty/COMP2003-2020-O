@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Security
 {
+    public enum SecurityGroup
+    {
+        None,
+        User,
+        Administrator
+    }
+
     public static class Sessions
     {
         #region Fields
@@ -26,7 +33,7 @@ namespace api.Backend.Security
         /// <returns> The AuthToken to authenticate this session </returns>
         public static async Task AddSession(User user, string token)
         {
-            Session[] existing = await Binding.GetTable<Session>().Select<Session>("UserId", user.UserID, 1);
+            Session[] existing = await Binding.GetTable<Session>().Select<Session>("userid", user.UserID, 1);
 
             if (existing.Length == 0)
             {
@@ -78,6 +85,8 @@ namespace api.Backend.Security
                 return false;
             }
 
+            response.StatusCode = 200;
+
             return true;
         }
 
@@ -116,6 +125,32 @@ namespace api.Backend.Security
             }
 
             return true;
+        }
+
+        public static async Task<SecurityGroup> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response)
+        {
+            if (await CheckSession(headers, response))
+            {
+                //Logic to determine if is admin
+                return SecurityGroup.User;
+            }
+            else
+            {
+                return SecurityGroup.None;
+            }
+        }
+
+        public static async Task<SecurityGroup> GetSecurityGroup(JToken Auth, WebSockets.SocketResponse response)
+        {
+            if (await CheckSession(Auth, response))
+            {
+                //Logic to determine if is admin
+                return SecurityGroup.User;
+            }
+            else
+            {
+                return SecurityGroup.None;
+            }
         }
 
         public static string RandomString(int length = 32)

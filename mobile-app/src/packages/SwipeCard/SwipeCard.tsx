@@ -46,7 +46,7 @@ const SwipeCard: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0)",

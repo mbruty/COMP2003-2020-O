@@ -1,4 +1,5 @@
-﻿using System;
+﻿using api.Backend.Security;
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -18,6 +19,7 @@ namespace api.Backend.Events
             .SelectMany(x => x.GetMethods())
             .Where(x => x.GetCustomAttributes(typeof(Events.WebEvent), false).FirstOrDefault() != null).ToArray();
 
+        public SecurityGroup secuirtyLevel = SecurityGroup.None;
         public string urlPath, method;
         public bool WebSocket = false;
 
@@ -25,23 +27,19 @@ namespace api.Backend.Events
 
         #region Constructors
 
-        public WebEvent(string urlPath, string Method)
-        {
-            this.urlPath = urlPath.ToLower();
-            this.method = Method.ToLower();
-        }
-
-        public WebEvent(string urlPath, bool WebSocket = true)
+        public WebEvent(string urlPath, bool WebSocket = true, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
             this.urlPath = urlPath.ToLower();
             this.WebSocket = WebSocket;
+            this.secuirtyLevel = RequiredAuth;
         }
 
-        public WebEvent(string urlPath, string Method, bool WebSocket = false)
+        public WebEvent(string urlPath, string Method, bool WebSocket = false, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
             this.urlPath = urlPath.ToLower();
             this.method = Method.ToLower();
             this.WebSocket = WebSocket;
+            this.secuirtyLevel = RequiredAuth;
         }
 
         #endregion Constructors

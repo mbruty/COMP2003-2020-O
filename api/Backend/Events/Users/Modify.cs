@@ -3,6 +3,7 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 
 namespace api.Backend.Events.Users
 {
@@ -10,11 +11,9 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/modify/user", "DELETE", false)]
-        public static async void DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent("/modify/user", "DELETE", false, SecurityGroup.User)]
+        public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            if (!await Sessions.CheckSession(headers, response)) return;
-
             User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
 
             await users[0].Delete();
@@ -23,13 +22,11 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user", "PUT", false)]
-        public static async void ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent("/modify/user", "PUT", false, SecurityGroup.User)]
+        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            if (!await Sessions.CheckSession(headers, response)) return;
-
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("id", headers["userid"]);
+            User[] users = await table.Select<User>("userid", headers["userid"]);
 
             users[0].UpdateContents<User>(headers);
 
@@ -37,15 +34,15 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user/foods", "PUT", false)]
-        public static async void ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent("/modify/user/foods", "PUT", false, SecurityGroup.User)]
+        public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             if (!await Sessions.CheckSession(headers, response)) return;
 
-            User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 
             Table table = Binding.GetTable<FoodChecks>();
-            FoodChecks[] foods = await table.Select<FoodChecks>("id", users[0].FoodCheckID);
+            FoodChecks[] foods = await table.Select<FoodChecks>("userid", users[0].FoodCheckID);
 
             foods[0].UpdateContents<FoodChecks>(headers);
 
@@ -53,8 +50,8 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user/password", "POST", false)]
-        public static async void ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent("/modify/user/password", "POST", false, SecurityGroup.User)]
+        public static async Task ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string password = headers["password"];
 
@@ -75,10 +72,10 @@ namespace api.Backend.Events.Users
             if (!await Sessions.CheckSession(headers, response)) return;
 
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("id", headers["userid"]);
+            User[] users = await table.Select<User>("userid", headers["userid"]);
 
             users[0].Password = Hashing.Hash(headers["password"]);
-            await users[0].Update();
+            await users[0].UpdatePassword();
 
             response.AddToData("message", "Updated User Password");
             response.StatusCode = 200;

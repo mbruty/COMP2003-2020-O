@@ -12,7 +12,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         #region Fields
 
         private readonly Type ObjType;
-        private readonly Table table;
+        private readonly Redis.CacheTable table;
         public static List<Binding> bindings = new List<Binding>();
 
         #endregion Fields
@@ -27,7 +27,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         public Binding(Type Obj, string Table)
         {
             this.ObjType = Obj;
-            this.table = Instance.tables.First(x => x.Name.ToLower() == Table.ToLower());
+            this.table = (Redis.CacheTable)Instance.tables.First(x => x.Name.ToLower() == Table.ToLower());
         }
 
         #endregion Constructors
@@ -64,7 +64,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <returns> </returns>
-        public static Table GetTable<T>()
+        public static Redis.CacheTable GetTable<T>()
         {
             return bindings.First(x => x.ObjType == typeof(T))?.table;
         }
@@ -74,7 +74,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// </summary>
         /// <param name="objType"> </param>
         /// <returns> </returns>
-        public static Table GetTable(Type objType)
+        public static Redis.CacheTable GetTable(Type objType)
         {
             return bindings.First(x => x.ObjType == objType)?.table;
         }

@@ -4,7 +4,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import RecentVisits from "./RecentVisits";
 import Nav from "./Nav";
 import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
-import SoloPage from "./SoloPage";
+import SmartPage from "react-native-smart-page";
+import { CONSTANT_COLOURS } from "../../constants";
 
 interface Props {}
 
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
   screen: {
     height: height,
     width: width,
+    backgroundColor: CONSTANT_COLOURS.BG_BASE
   },
 });
 
@@ -27,36 +29,43 @@ const MainScreen: React.FC<Props> = (props) => {
   const [pageIdx, setPageIdx] = useState<number>(0);
   const setPage = (index: number) => {
     console.log(scrollRef);
-    scrollRef.current.scrollTo({ x: index * width, y: 0, animated: true });
+    pageRef.current.flingToPage(index, 0.99);
     // If you don't know about the setTimeout 0 trick and why it's needed
     // Please educate yourself on it before touching this
     setTimeout(() => setPageIdx(index), 0);
   };
 
+  const pageRef = React.createRef();
+
   return (
     <>
       <Nav setPage={setPage} selectedIdx={pageIdx} />
-      <ScrollView
-        ref={scrollRef}
-        onMomentumScrollEnd={(e) =>
-          setPageIdx(Math.ceil(e.nativeEvent.contentOffset.x / width))
-        }
-        showsHorizontalScrollIndicator={false}
-        disableIntervalMomentum={true}
-        snapToInterval={width}
-        decelerationRate="fast"
-        horizontal={true}
-        style={styles.container}
+      <SmartPage
+        loadMinimal={false}
+        ref={pageRef}
+        onPageSelected={(index: number) => {
+          setPageIdx(index);
+        }}
+        sensitiveScroll={false}
       >
         <View style={styles.screen}>
           <AnimatedSwipe />
         </View>
         <View style={styles.screen}></View>
         <View style={styles.screen}>
-          <RecentVisits restaurantDetails={[]}/>
+          <RecentVisits
+            restaurants={[
+              {
+                index: 0,
+                name: "The Bruty's Arms",
+                type: 0,
+                visitDate: "25-12-2020",
+              },
+            ]}
+          />
         </View>
         <View style={styles.screen}></View>
-      </ScrollView>
+      </SmartPage>
     </>
   );
 };
