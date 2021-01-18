@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import RecentVisits from "./RecentVisits";
+import Settings from "./Settings";
 import Nav from "./Nav";
 import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
 import SmartPage from "react-native-smart-page";
@@ -64,7 +65,9 @@ const MainScreen: React.FC<Props> = (props) => {
             ]}
           />
         </View>
-        <View style={styles.screen}></View>
+        <View style={styles.screen}>
+          <Settings />
+        </View>
       </SmartPage>
     </>
   );
