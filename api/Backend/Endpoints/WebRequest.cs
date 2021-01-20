@@ -106,6 +106,18 @@ namespace api.Backend.Endpoints
             /// </summary>
             /// <param name="Header"> </param>
             /// <param name="obj">    </param>
+            public void AddObjectToData(string Header, Data.Obj.Object[] obj)
+            {
+                foreach (Data.Obj.Object o in obj) { o.Purge(); }
+                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JArray.FromObject(obj)));
+                else Data.Property(Header).Value = JArray.FromObject(obj);
+            }
+
+            /// <summary>
+            /// Add a given object into the json response
+            /// </summary>
+            /// <param name="Header"> </param>
+            /// <param name="obj">    </param>
             public void AddObjectToData(string Header, Data.Obj.Object obj)
             {
                 obj = obj.Purge();
