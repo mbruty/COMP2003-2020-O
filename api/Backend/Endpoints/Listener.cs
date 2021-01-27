@@ -35,7 +35,7 @@ namespace api.Backend.Endpoints
         /// </summary>
         /// <param name="port">                Port to listen on </param>
         /// <param name="externalConnections"> If we accept no local requests (requires admin) </param>
-        public static void Start(int port = 3000, bool externalConnections = false)
+        public static void Start(int port = 5000, bool externalConnections = false)
         {
             listener = new HttpListener();
 
