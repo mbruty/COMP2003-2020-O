@@ -14,7 +14,7 @@ namespace api.Backend.Events.Users
         [WebEvent("/modify/user", "DELETE", false, SecurityGroup.User)]
         public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            User[] users = await Binding.GetTable<User>().Select<User>("id", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 
             await users[0].Delete();
 
