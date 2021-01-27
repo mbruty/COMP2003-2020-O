@@ -37,14 +37,13 @@ namespace api.Backend.Security
 
             Session[] existing = await t.Select<Session>("userid", user.UserID, 1);
 
-            Data.Redis.Instance.InvalidateKey(t.GetKey(existing[0]).ToString());
-
             if (existing.Length == 0)
             {
                 new Thread(async () => { await new Session() { UserID = user.UserID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
             }
             else
             {
+                Data.Redis.Instance.InvalidateKey(t.GetKey(existing[0]).ToString());
                 new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
             }
         }
