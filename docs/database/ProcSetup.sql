@@ -76,11 +76,11 @@ DROP FUNCTION IF EXISTS `Func-GetNicknames`;
 
 
 DELIMITER //
-CREATE PROCEDURE `Run-RemoveUser` (IN input_email VARCHAR(60)) -- TO DO: Deal with restaurant owner problem.
+CREATE PROCEDURE `Run-RemoveUser` (IN input_id int) -- TO DO: Deal with restaurant owner problem.
 BEGIN
 	UPDATE `User`
     SET Email = '-1', `Password` = '-1', Nickname = '-1', IsDeleted = 1, IsVerified = 0
-    WHERE `User`.Email = input_email;
+    WHERE `User`.UserID = input_id;
 END //
 
 
