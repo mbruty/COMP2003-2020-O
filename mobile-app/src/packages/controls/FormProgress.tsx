@@ -63,14 +63,14 @@ const FormProgress: React.FC<Props> = (props) => {
                 ? CONSTANT_STYLES.BG_LIGHT_GREY
                 : CONSTANT_STYLES.BG_DARK_GREY,
               styles.btn,
-              { left: 25, bottom: 0 },
+              { left: 25, bottom: 50 },
             ]}
           >
             <Text style={[CONSTANT_STYLES.TXT_BASE, styles.txt]}>BACK</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          style={[CONSTANT_STYLES.BG_RED, styles.btn, { right: 25, bottom: 0 }]}
+          style={[CONSTANT_STYLES.BG_RED, styles.btn, { right: 25, bottom: 50 }]}
           onPress={props.onSubmit}
         >
           <Text
@@ -87,10 +87,10 @@ const FormProgress: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: "flex", 
     flexDirection: "row",
     padding: 15,
-    paddingTop: 25,
+    marginTop: 50,
   },
   line: {
     height: 2,
