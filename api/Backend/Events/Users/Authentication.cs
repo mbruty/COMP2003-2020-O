@@ -2,8 +2,10 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Specialized;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace api.Backend.Events.Users
         #region Methods
 
         [WebEvent("/authcheck", "POST", false, SecurityGroup.User)]
-        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
@@ -28,9 +30,11 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/login", "POST", false)]
-        public static async Task Login(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task Login(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
-            string email = headers["email"], password = headers["password"];
+            // Convert the string to a credential object
+            LoginCredentials creds = JsonConvert.DeserializeObject<LoginCredentials>(Data);
+            string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
             {
@@ -41,6 +45,9 @@ namespace api.Backend.Events.Users
 
             User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
+            // Hello back-end friend-o's... Isn't it a bad idea to tell the user exactly what is wrong?
+            // Saying email is not in use feels kinda exploitable
+            // - Mike, Feb 2021
             if (users.Length == 0)
             {
                 response.StatusCode = 401;
@@ -58,6 +65,8 @@ namespace api.Backend.Events.Users
             string Token = Sessions.RandomString();
             await Sessions.AddSession(users[0], Token);
 
+            response.AddCookie("authtoken", Token, new DateTime(9999, 12, 1), false, "/");
+            // We're using the auth token from the body in the mobile app
             response.AddToData("authtoken", Token);
             response.AddToData("userid", users[0].UserID);
 
@@ -66,7 +75,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/signup", "POST", false)]
-        public static async Task SignUp(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             string email = headers["email"], password = headers["password"], dateOfBirth = headers["dateOfBirth"], nickname = headers["nickname"];
 
@@ -123,5 +132,11 @@ namespace api.Backend.Events.Users
         }
 
         #endregion Methods
+    }
+
+    public class LoginCredentials
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }
