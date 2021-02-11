@@ -82,7 +82,6 @@ namespace api.Backend.Endpoints
         public class HttpResponse
         {
             #region Fields
-
             private CookieCollection cookies = new CookieCollection();
             public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}"); //Time always provided
             public int StatusCode = 500;
@@ -94,11 +93,14 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a cookie on to the json response
             /// </summary>
-            /// <param name="name">  </param>
-            /// <param name="value"> </param>
-            public void AddCookie(string name, string value)
+            /// <param name="name"> Cookie Name </param>
+            /// <param name="value"> Cookie Value </param>
+            /// <param name="expiration"> When the cookie should expire </param>
+            /// <param name="isHttpOnly"> If the cookie should be HTTP only </param>
+            /// <param name="path"> The path for the cookie to bind to </param>
+            public void AddCookie(string name, string value, DateTime expiration, bool isHttpOnly, string path)
             {
-                cookies.Add(new Cookie(name, value));
+                cookies.Add(new Cookie { Name = name, Value = value, Expires = expiration, HttpOnly = isHttpOnly, Path = path });
             }
 
             /// <summary>
