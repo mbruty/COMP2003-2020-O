@@ -65,7 +65,8 @@ namespace api.Backend.Events.Users
             string Token = Sessions.RandomString();
             await Sessions.AddSession(users[0], Token);
 
-            response.AddCookie("authtoken", Token, new DateTime(9999, 12, 1), false, "/");
+            // Add a cookie for the website
+            response.AddCookie("authtoken", Token, new DateTime(9999, 12, 1), true, "/");
             // We're using the auth token from the body in the mobile app
             response.AddToData("authtoken", Token);
             response.AddToData("userid", users[0].UserID);
