@@ -1,30 +1,36 @@
-import Axios from "axios";
 import express from "express";
 import { apiURI } from "../constants";
+const fetch = require("node-fetch");
 
-const auth = (
+const auth = async (
   req: express.Request,
   res: express.Response,
   next: () => void
 ) => {
-  Axios({
-    method: "POST",
-    url: apiURI + "/authcheck",
-    headers: {
-      authtoken: req.headers.authtoken,
-      userid: req.headers.userid,
-    },
-  })
-    .then((response) => {
+  try {
+    if (req.headers.cookie) {
+      const result = await fetch(apiURI + "/authcheck", {
+        method: "POST",
+        headers: {
+          cookie: req.headers.cookie,
+        },
+      });
+      const response = await result.json();
+
       // This isn't neccesary as a bad login should throw an error...
       // but just incase
-      if (response.data.message === "You are logged in") {
+      if (response.message === "You are logged in") {
         next();
       } else {
         res.sendStatus(401);
       }
-    })
-    .catch((err) => res.sendStatus(401));
+    } else {
+      res.sendStatus(401);
+    }
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(401);
+  }
 };
 
 export default auth;
