@@ -31,7 +31,7 @@ const logo = {
 
 const router = express.Router();
 
-router.post("/", upload.single("image"), auth, async (req: any, res) => {
+router.post("/icon", upload.single("image"), auth, async (req: any, res) => {
   const ext = path.extname(req.file.originalname).toLowerCase();
   const user_id = req.headers.cookie.split("&user_id=")[1];
   const tmp_path = path.join(__dirname, "../../../tmp/" + user_id + ext);
