@@ -73,13 +73,14 @@ const validate = async ({ values, date, next, setErrors, submit }: Params) => {
   }
   // No errors occurred... Time to send it to the api
   if (!hasErrors && submit) {
+    
     // Try and post the sign-up info
     fetch(API_URL + "/signup", {
       method: "POST",
       headers: {
         email: values.email,
         password: values.password,
-        yearOfBirth: date.getFullYear().toString(),
+        dateOfBirth: date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay(),
         nickname: values.username,
       },
     })
@@ -93,7 +94,7 @@ const validate = async ({ values, date, next, setErrors, submit }: Params) => {
           // Go to the next bit
           next(values.username, response.userid, response.authtoken);
         } else {
-          alert("An unexpected error has happened");
+          alert(JSON.stringify(response));
         }
       })
       .catch((e) => alert("There was an error creating your account"));

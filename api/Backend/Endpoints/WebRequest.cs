@@ -10,6 +10,11 @@ namespace api.Backend.Endpoints
 {
     public static class WebRequest
     {
+        // These are the web origins
+        // All origins will use the usual header aproach for carrying auth tokens
+        // But as this isn't allowed in the browser, we are using cookies! (nom)
+        // If we end up changing domain names, this is where you change it
+        public static string[] SpecialOrigins = new string[] { "http://localhost:5500", "http://localhost:3000", "http://devsite.trackandtaste.com/" };
         #region Methods
 
         /// <summary>
@@ -17,7 +22,6 @@ namespace api.Backend.Endpoints
         /// </summary>
         /// <param name="request">  </param>
         /// <param name="Data">     </param>
-        /// <param name="response"> </param>
         private static async Task<HttpResponse> Handle(HttpListenerRequest request, string Data)
         {
             HttpResponse response = new HttpResponse();
@@ -52,6 +56,13 @@ namespace api.Backend.Endpoints
                 response.AddToData("error", "Page not found");
             }
 
+            string origin = request.Headers.Get("Origin");
+
+            if (SpecialOrigins.Contains(origin))
+            {
+                response.AddCrossOriginResponse(origin);
+            }
+
             return response;
         }
 
@@ -82,10 +93,10 @@ namespace api.Backend.Endpoints
         public class HttpResponse
         {
             #region Fields
-
             private CookieCollection cookies = new CookieCollection();
             public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}"); //Time always provided
             public int StatusCode = 500;
+            public string crossOriginResponse = null;
 
             #endregion Fields
 
@@ -94,11 +105,14 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a cookie on to the json response
             /// </summary>
-            /// <param name="name">  </param>
-            /// <param name="value"> </param>
-            public void AddCookie(string name, string value)
+            /// <param name="name"> Cookie Name </param>
+            /// <param name="value"> Cookie Value </param>
+            /// <param name="expiration"> When the cookie should expire </param>
+            /// <param name="isHttpOnly"> If the cookie should be HTTP only </param>
+            /// <param name="path"> The path for the cookie to bind to </param>
+            public void AddCookie(string name, string value, bool isHttpOnly, string path)
             {
-                cookies.Add(new Cookie(name, value));
+                cookies.Add(new Cookie { Name = name, Value = value, HttpOnly = isHttpOnly, Path = path });
             }
 
             /// <summary>
@@ -136,6 +150,11 @@ namespace api.Backend.Endpoints
                 else Data.Property(Header).Value = stringable.ToString();
             }
 
+            public void AddCrossOriginResponse(string origin)
+            {
+                crossOriginResponse = origin;
+            }
+
             /// <summary>
             /// Finish up the response and send it back to the user
             /// </summary>
@@ -146,8 +165,17 @@ namespace api.Backend.Endpoints
 
                 if (response.StatusCode == 200) Data.Property("error")?.Remove();
 
-                response.Headers.Add("Access-Control-Allow-Origin", "*"); //Do Not Touch
 
+                response.Headers.Add("Access-Control-Allow-Credentials", "true"); 
+
+                if (crossOriginResponse != null)
+                {
+                    response.Headers.Add("Access-Control-Allow-Origin", crossOriginResponse);
+                }
+                else
+                {
+                    response.Headers.Add("Access-Control-Allow-Origin", "*"); //Do Not Touch
+                }
                 response.ContentType = "application/json"; //All requests WILL be sent in json form
                 response.Cookies = cookies;
 

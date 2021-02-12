@@ -36,8 +36,10 @@ const SignUp: React.FC<Props> = ({ next, close }) => {
     confPassword: "",
   });
 
+  const isIos = Platform.OS === "ios";
+
   const [date, setDate] = useState<Date>(new Date());
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(isIos);
   const [errors, setErrors] = useState<Values>({
     username: "",
     email: "",
@@ -54,7 +56,7 @@ const SignUp: React.FC<Props> = ({ next, close }) => {
   let dateText = isToday(date) ? "Date Of Birth" : date.toDateString();
 
   return (
-    <ScrollView>
+    <View style={{ height: Dimensions.get("screen").height }}>
       <TouchableOpacity
         style={{
           position: "absolute",
@@ -141,10 +143,22 @@ const SignUp: React.FC<Props> = ({ next, close }) => {
             {errors.confPassword}
           </Text>
         )}
-        <TouchableOpacity
-          style={styles.dateInput}
-          onPress={() => setShowDatePicker(true)}
-        >
+        {!isIos && (
+          <TouchableOpacity
+            style={styles.dateInput}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text
+              style={[
+                CONSTANT_STYLES.TXT_DEFAULT,
+                { fontSize: 18, marginLeft: 5, marginTop: 15, paddingLeft: 5 },
+              ]}
+            >
+              {dateText}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {isIos && (
           <Text
             style={[
               CONSTANT_STYLES.TXT_DEFAULT,
@@ -153,7 +167,7 @@ const SignUp: React.FC<Props> = ({ next, close }) => {
           >
             {dateText}
           </Text>
-        </TouchableOpacity>
+        )}
         {errors.dob !== "" && (
           <Text
             style={[CONSTANT_STYLES.TXT_RED, styles.errTxt, { marginTop: 15 }]}
@@ -185,7 +199,7 @@ const SignUp: React.FC<Props> = ({ next, close }) => {
         allowBack={false}
         selectedIdx={0}
       />
-    </ScrollView>
+    </View>
   );
 };
 

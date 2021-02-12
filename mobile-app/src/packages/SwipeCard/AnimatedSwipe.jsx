@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, View, Dimensions } from "react-native";
 
 import data from "./data";
 import Swiper from "react-native-deck-swiper";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather as Icon } from "@expo/vector-icons";
 import SwipeCard from "./SwipeCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 const { height, width } = Dimensions.get("screen");
@@ -27,102 +27,82 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.swiperContainer}>
-        <Swiper
-          ref={swiperRef}
-          cards={data}
-          cardIndex={index}
-          renderCard={(card) => (
-            <SwipeCard
-              items={card.tags}
-              title={card.name}
-              imageURI={card.image}
-            />
-          )}
-          backgroundColor={"transparent"}
-          onSwiped={onSwiped}
-          onTapCard={() => null}
-          cardVerticalMargin={50}
-          stackSize={stackSize}
-          stackScale={10}
-          stackSeparation={14}
-          animateOverlayLabelsOpacity
-          animateCardOpacity
-          disableTopSwipe
-          disableBottomSwipe
-          overlayLabels={{
-            left: {
-              title: "NOPE",
-              style: {
-                label: {
-                  backgroundColor: colors.red,
-                  borderColor: colors.red,
-                  color: colors.white,
-                  borderWidth: 1,
-                  fontSize: 24,
-                },
-                wrapper: {
-                  flexDirection: "column",
-                  alignItems: "flex-end",
-                  justifyContent: "flex-start",
-                  marginTop: 20,
-                  marginLeft: -20,
-                },
+      <Swiper
+        ref={swiperRef}
+        cards={data}
+        cardIndex={index}
+        renderCard={(card) => (
+          <SwipeCard
+            items={card.tags}
+            title={card.name}
+            imageURI={card.image}
+          />
+        )}
+        backgroundColor={"transparent"}
+        onSwiped={onSwiped}
+        onTapCard={() => null}
+        cardVerticalMargin={50}
+        stackSize={stackSize}
+        stackScale={10}
+        stackSeparation={14}
+        animateOverlayLabelsOpacity
+        animateCardOpacity
+        disableTopSwipe
+        disableBottomSwipe
+        overlayLabels={{
+          left: {
+            title: "NOPE",
+            style: {
+              label: {
+                backgroundColor: colors.red,
+                borderColor: colors.red,
+                color: colors.white,
+                borderWidth: 1,
+                fontSize: 24,
+              },
+              wrapper: {
+                flexDirection: "column",
+                alignItems: "flex-end",
+                justifyContent: "flex-start",
+                marginTop: 20,
+                marginLeft: -20,
               },
             },
-            right: {
-              title: "LIKE",
-              style: {
-                label: {
-                  backgroundColor: colors.blue,
-                  borderColor: colors.blue,
-                  color: colors.white,
-                  borderWidth: 1,
-                  fontSize: 24,
-                },
-                wrapper: {
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  justifyContent: "flex-start",
-                  marginTop: 20,
-                  marginLeft: 20,
-                },
+          },
+          right: {
+            title: "LIKE",
+            style: {
+              label: {
+                backgroundColor: colors.blue,
+                borderColor: colors.blue,
+                color: colors.white,
+                borderWidth: 1,
+                fontSize: 24,
+              },
+              wrapper: {
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "flex-start",
+                marginTop: 20,
+                marginLeft: 20,
               },
             },
-          }}
-        />
-      </View>
-      <View style={styles.bottomContainer}>
-        <View style={styles.bottomContainerButtons}>
-          <TouchableOpacity
-            onPress={() => swiperRef.current.swipeLeft()}
-            style={[styles.btn, { marginRight: 20 }]}
-          >
-            <MaterialCommunityIcons.Button
-              name="close"
-              size={50}
-              backgroundColor="transparent"
-              underlayColor="transparent"
-              activeOpacity={0.3}
-              style={{ paddingLeft: 14 }}
-              color={colors.red}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => swiperRef.current.swipeRight()}
-          >
-            <AntDesign.Button
-              name="heart"
-              size={35}
-              backgroundColor="transparent"
-              style={{ paddingLeft: 20 }}
-              underlayColor="transparent"
-              activeOpacity={0.3}
-              color={colors.green}
-            />
-          </TouchableOpacity>
-        </View>
+          },
+        }}
+      />
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.circle}
+          onPress={() => swiperRef.current.swipeLeft()}
+        >
+          <Icon name="x" size={32} color="#ec5288" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.circle}
+          onPress={() => swiperRef.current.swipeRight()}
+        >
+          <Icon name="heart" size={32} color="#6ee3b4" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -130,43 +110,34 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  swiperContainer: {
-    flex: 1,
-    marginTop: -30,
-    zIndex: 2,
-  },
-  bottomContainer: {
     display: "flex",
-    position: "absolute",
-    top: height - 230,
-    left: width / 2 - 90,
-  },
-  bottomContainerMeta: { alignContent: "flex-end", alignItems: "center" },
-  bottomContainerButtons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+    height: height - 100,
   },
   text: {
     textAlign: "center",
     fontSize: 50,
     backgroundColor: "transparent",
   },
-  done: {
-    textAlign: "center",
-    fontSize: 30,
-    color: colors.white,
-    backgroundColor: "transparent",
+  footer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    padding: 16,
+    position: "absolute",
+    width: width,
+    bottom: 50,
   },
-  btn: {
-    display: "flex",
+  circle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    padding: 12,
     justifyContent: "center",
-    width: 80,
-    height: 80,
-    backgroundColor: "#FFF",
-    borderRadius: 50,
-    borderColor: "#AAA",
-    borderWidth: 1,
+    alignItems: "center",
+    backgroundColor: "white",
+    shadowColor: "gray",
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.18,
+    shadowRadius: 2,
   },
 });

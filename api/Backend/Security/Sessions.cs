@@ -58,6 +58,32 @@ namespace api.Backend.Security
         {
             string userid = headers["userid"], authtoken = headers["authtoken"];
 
+            // Get any cookie data there is
+            // Will return null if there isn't a cookie field
+            string cookiedata = headers.Get("Cookie");
+
+            // If the cookie sent is the auth token, let's parse it!
+            // If there is a userid or an auth token, we don't want to parse it
+            // As including cookies is automatically done by the browser, they will always be there
+            // And there is no way of getting rid of them when the user trys to re-log-in
+            if (cookiedata != null && cookiedata.StartsWith("authtoken=") && userid == null && authtoken == null)
+            {
+                // Remove the "authtoken=" bit
+                cookiedata = cookiedata.Substring(10);
+                string[] data = cookiedata.Split("&user_id=");
+
+                // If the data is less than 2, it's a broken request
+                if(data.Length != 2)
+                {
+                    response.StatusCode = 400;
+                    response.AddToData("error", "Broken Cookie in request, try clering your cookies");
+                    return false;
+                }
+                // Let's override the current userid and authtoken
+                // This is because the browser will be sending the data in a cookie
+                authtoken = data[0];
+                userid = data[1];
+            }
             if (userid == null || authtoken == null)
             {
                 response.StatusCode = 401;
