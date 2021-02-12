@@ -78,11 +78,13 @@ namespace api.Backend.Events.Users
         [WebEvent("/signup", "POST", false)]
         public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
-            string email = headers["email"], password = headers["password"], dateOfBirth = headers["dateOfBirth"], nickname = headers["nickname"];
+            // Convert the string to a credential object
+            User creds = JsonConvert.DeserializeObject<User>(Data);
+            string email = creds.Email, password = creds.Password, dateOfBirth = creds.DateOfBirth.ToString(), nickname = creds.Nickname;
 
             if (email == null || password == null)
             {
-                response.StatusCode = 401;
+                response.StatusCode = 400;
                 response.AddToData("error", "Missing email or password");
                 return;
             }
@@ -90,7 +92,7 @@ namespace api.Backend.Events.Users
             if (!ValidityChecks.IsStrongPassword(password))
             {
                 response.AddToData("error", "Password is too weak");
-                response.StatusCode = 401;
+                response.StatusCode = 400;
                 return;
             }
 
@@ -98,7 +100,7 @@ namespace api.Backend.Events.Users
 
             if (users.Length > 0)
             {
-                response.StatusCode = 401;
+                response.StatusCode = 208;
                 response.AddToData("error", "Email is in use");
                 return;
             }
@@ -116,7 +118,7 @@ namespace api.Backend.Events.Users
 
             if (!await user.Insert(true))
             {
-                response.StatusCode = 501;
+                response.StatusCode = 500;
                 response.AddToData("error", "Database Insertion Failure");
                 return;
             }
@@ -127,6 +129,7 @@ namespace api.Backend.Events.Users
 
             response.AddToData("authtoken", token);
             response.AddToData("userid", user.UserID);
+            response.AddCookie("authtoken", token + "&user_id=" + user.UserID, true, "/");
 
             response.StatusCode = 200;
             response.AddToData("message", "Signed Up");
