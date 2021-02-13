@@ -1,18 +1,21 @@
-import React from "react";
-import { useHistory } from "react-router";
-import IUser from "./interfaces/IUser";
-interface Props {
-  user: IUser;
-}
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { API_URL } from "./constants";
 
-const Home: React.FC<Props> = (props) => {
+const Home: React.FC = (props) => {
   const history = useHistory();
-  if (props.user.authToken) {
-    return <h1>Home Page</h1>;
-  } else {
-    history.push("log-in");
-  }
-  return null;
+  useEffect(() => {
+    fetch(API_URL + "/authcheck", {
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    }).then((response) => {
+      if (response.status === 401) {
+        history.push("/log-in");
+      }
+    });
+  }, []);
+  return <h1>Home Page</h1>;
 };
 
 export default Home;
