@@ -14,7 +14,7 @@ namespace api.Backend.Endpoints
         // All origins will use the usual header aproach for carrying auth tokens
         // But as this isn't allowed in the browser, we are using cookies! (nom)
         // If we end up changing domain names, this is where you change it
-        public static string[] SpecialOrigins = new string[] { "http://localhost:5500", "http://localhost:3000", "http://devsite.trackandtaste.com/" };
+        public static string[] SpecialOrigins = new string[] { "http://localhost:5500", "http://localhost:3000", "http://devsite.trackandtaste.com" };
         #region Methods
 
         /// <summary>
