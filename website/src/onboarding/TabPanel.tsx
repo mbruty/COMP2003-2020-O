@@ -6,7 +6,6 @@ interface Props {
   value: any;
 }
 
-
 const TabPanel: React.FC<Props> = (props) => {
   const { children, value, index, ...other } = props;
 
@@ -18,7 +17,7 @@ const TabPanel: React.FC<Props> = (props) => {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <h1>{index}</h1>}
+      {value === index && props.children}
     </div>
   );
 };

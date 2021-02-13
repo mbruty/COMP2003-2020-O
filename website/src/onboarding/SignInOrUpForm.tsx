@@ -6,8 +6,12 @@ import TabPanel from "./TabPanel";
 import { makeStyles, Paper } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
+import LogInForm from "./LogInForm";
 
-interface Props {}
+interface Props {
+  tabIdx: number;
+  setTabIdx: React.Dispatch<React.SetStateAction<number>>;
+}
 
 function a11yProps(index: any) {
   return {
@@ -22,11 +26,9 @@ const useStyles = makeStyles({
   },
 });
 
-const Form: React.FC<Props> = (props) => {
-  const [value, setValue] = React.useState(0);
-
+const Form: React.FC<Props> = ({ tabIdx, setTabIdx }) => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
+    setTabIdx(newValue);
   };
 
   return (
@@ -34,7 +36,7 @@ const Form: React.FC<Props> = (props) => {
       <Paper square>
         <Tabs
           centered
-          value={value}
+          value={tabIdx}
           indicatorColor="primary"
           textColor="primary"
           onChange={handleChange}
@@ -51,13 +53,13 @@ const Form: React.FC<Props> = (props) => {
           />
         </Tabs>
       </Paper>
-      <TabPanel value={value} index={0}>
-        Item One
+      <TabPanel value={tabIdx} index={0}>
+        <LogInForm />
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={tabIdx} index={1}>
         Item Two
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel value={tabIdx} index={2}>
         Item Three
       </TabPanel>
     </>
