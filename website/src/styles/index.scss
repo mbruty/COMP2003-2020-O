@@ -1,9 +1,9 @@
 @media (prefers-color-scheme: dark) {
-  @import 'dark';
+  @import "dark";
 }
 
 @media (prefers-color-scheme: light) {
-  @import 'light';
+  @import "light";
 }
 
 .app {
@@ -17,6 +17,15 @@ main {
   padding-top: 25px;
   // 100 viewport height - nav bar height - padding top
   height: calc(100vh - 64px - 25px);
+
+  form.login-container {
+    margin-top: 25px;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 40% 40%;
+    gap: 1rem 5%;
+
+  }
 }
 
 // Overwiting the original color
