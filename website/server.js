@@ -7,7 +7,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 if(!port){
   console.error("Please define the port in .env");
