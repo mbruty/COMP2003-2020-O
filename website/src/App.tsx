@@ -2,10 +2,11 @@ import React, { useMemo } from "react";
 import Nav from "./Nav";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import "./styles/index.css";
+import "./styles/index.scss";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./Home";
 import LogIn from "./onboarding/LogIn";
+
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = useMemo(
@@ -27,10 +28,6 @@ function App() {
     [prefersDarkMode]
   );
 
-  const authToken = useMemo(
-    () => window.localStorage.getItem("auth-token"),
-    []
-  );
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -43,11 +40,7 @@ function App() {
         <main>
           <BrowserRouter>
             <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <Home user={{ authToken: authToken }} />}
-              />
+              <Route exact path="/" render={() => <Home />} />
               <Route exact path="/log-in" render={() => <LogIn />} />
             </Switch>
           </BrowserRouter>
