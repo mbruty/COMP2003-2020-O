@@ -7,6 +7,7 @@ import { makeStyles, Paper } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import LogInForm from "./LogInForm";
+import { useTheme } from "@material-ui/core/styles";
 
 interface Props {
   tabIdx: number;
@@ -30,6 +31,10 @@ const Form: React.FC<Props> = ({ tabIdx, setTabIdx }) => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabIdx(newValue);
   };
+
+  const theme = useTheme();
+
+console.log(theme);
 
   return (
     <>
