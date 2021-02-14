@@ -10,10 +10,15 @@
   height: 100vh;
 }
 
+#drawer > :first-child {
+ padding-top: 64px;
+}
+
 main {
   display: grid;
   align-items: start;
   justify-content: center;
+  margin-top: 64px;
   padding-top: 25px;
   // 100 viewport height - nav bar height - padding top
   height: calc(100vh - 64px - 25px);
