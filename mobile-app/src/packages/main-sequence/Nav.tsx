@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingTop: 50,
     flexDirection: "row",
+    backgroundColor: "white",
     justifyContent: "space-around",
   },
   touchable: {
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
 const Nav: React.FC<Props> = (props) => {
   const image = props.selectedIdx === 2 ? active : inactive;
   return (
-    <View style={[CONSTANT_STYLES.BG_BASE_COLOUR, styles.container]}>
+    <View style={[styles.container]}>
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => props.setPage(0)}
@@ -67,7 +68,7 @@ const Nav: React.FC<Props> = (props) => {
         <Image source={image} style={{ height: 30, width: 30 }} />
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.touchable, { marginTop: 4 }]}
+        style={[styles.touchable]}
         onPress={() => props.setPage(3)}
       >
         <Fontisto
