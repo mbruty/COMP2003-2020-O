@@ -1,13 +1,14 @@
 import React, { useMemo } from "react";
-import Nav from "./Nav";
+import Nav from "./nav/Nav";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import "./App.css";
+import "./styles/index.scss";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Home from "./Home";
+import LogIn from "./onboarding/LogIn";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  console.log(prefersDarkMode);
-
   const theme = useMemo(
     () =>
       createMuiTheme({
@@ -17,24 +18,33 @@ function App() {
             default: prefersDarkMode ? "#212121" : "#FFF",
           },
           primary: {
-            light: "#7986cb",
-            main: "#3f51b5",
-            dark: "#303f9f",
+            light: "#ff776c",
+            main: prefersDarkMode ? "#FD4040" : "#ff776c",
+            dark: prefersDarkMode ? "#c20018" : "#FD4040",
           },
           type: prefersDarkMode ? "dark" : "light",
         },
       }),
     [prefersDarkMode]
   );
+
   return (
     <ThemeProvider theme={theme}>
       <div
-        className="App"
+        className="app"
         style={{ backgroundColor: theme.palette.background.default }}
       >
         <Nav
-          colour={prefersDarkMode ? "#333333" : theme.palette.primary.main}
+          colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
         />
+        <main>
+          <BrowserRouter>
+            <Switch>
+              <Route exact path="/" render={() => <Home />} />
+              <Route exact path="/log-in" render={() => <LogIn />} />
+            </Switch>
+          </BrowserRouter>
+        </main>
       </div>
     </ThemeProvider>
   );

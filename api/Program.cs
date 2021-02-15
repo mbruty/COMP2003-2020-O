@@ -50,7 +50,7 @@ namespace api
             // To run on the production server
             else if (args.Contains("-p"))
             {
-                api.Backend.Data.SQL.Instance.Start("root", "tat", Backend.Security.SQL_Connection_Details.DevPword, "prodsql.trackandtaste.com");
+                api.Backend.Data.SQL.Instance.Start("root", "tat", Backend.Security.SQL_Connection_Details.ProdPword, "prodsql.trackandtaste.com");
                 Bind();
 
                 api.Backend.Endpoints.WebListener.Start(444, true);
@@ -58,11 +58,11 @@ namespace api
             //Run locally
             else
             {
-                api.Backend.Data.SQL.Instance.Start("root", "tat", "Jaminima48");
+                api.Backend.Data.SQL.Instance.Start("root", "tat", Backend.Security.SQL_Connection_Details.DevPword, "devsql.trackandtaste.com", "3307");
                 Bind();
                 //SQL_Test_Code.Run();
 
-                api.Backend.Endpoints.WebListener.Start();
+                api.Backend.Endpoints.WebListener.Start(5000);
             }
 
             //Prevent The App Closing

@@ -11,16 +11,15 @@
   <body>
     <div id="app"></div>
     <form
-      action="http://localhost:8000/v0/images"
+      action="http://localhost:8000/v0/images/icon"
       method="post"
       enctype="multipart/form-data"
     >
       <label
         >Upload Your Image
-        <input type="file" name="image" />
+        <input type="file" accept="image/jpg,image/jpeg,image/png" name="image" />
       </label>
       <button type="submit">Submit</button>
     </form>
-    <script></script>
   </body>
 </html>
