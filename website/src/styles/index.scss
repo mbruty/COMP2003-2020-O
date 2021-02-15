@@ -37,3 +37,16 @@ main {
 .MuiAppBar-colorPrimary {
   color: white !important;
 }
+
+@media only screen and (max-device-width: 500px) {
+  #drawer-closed > div {
+    width: 0;
+  }
+
+  #drawer-open > div {
+    width: 100vw;
+  }
+  main form.login-container {
+    grid-template-columns: 95%;
+  }
+}
