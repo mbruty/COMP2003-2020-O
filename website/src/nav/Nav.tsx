@@ -299,7 +299,7 @@ export default function Nav(props: Props) {
       {renderMobileMenu}
       {renderMenu}
       <Drawer
-        id="drawer"
+        id={open ? "drawer-open" : "drawer-closed"}
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,

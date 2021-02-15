@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import Nav from "./Nav";
+import Nav from "./nav/Nav";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import "./styles/index.scss";
