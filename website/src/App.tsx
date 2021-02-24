@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import Nav from "./Nav";
+import Nav from "./nav/Nav";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import "./styles/index.scss";
@@ -18,9 +18,9 @@ function App() {
             default: prefersDarkMode ? "#212121" : "#FFF",
           },
           primary: {
-            light: "#7986cb",
-            main: "#55b0ed",
-            dark: "#5564ed",
+            light: "#ff776c",
+            main: prefersDarkMode ? "#FD4040" : "#ff776c",
+            dark: prefersDarkMode ? "#c20018" : "#FD4040",
           },
           type: prefersDarkMode ? "dark" : "light",
         },
@@ -35,7 +35,7 @@ function App() {
         style={{ backgroundColor: theme.palette.background.default }}
       >
         <Nav
-          colour={prefersDarkMode ? "#333333" : theme.palette.primary.main}
+          colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
         />
         <main>
           <BrowserRouter>

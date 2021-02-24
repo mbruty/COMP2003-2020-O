@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import RecentVisits from "./RecentVisits";
@@ -7,8 +7,11 @@ import Nav from "./Nav";
 import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
 import SmartPage from "react-native-smart-page";
 import { CONSTANT_COLOURS } from "../../constants";
+import getUserInfo from "../requests/getUserInfo";
 
-interface Props {}
+interface Props {
+  logOut: () => void;
+}
 
 const { height, width } = Dimensions.get("window");
 
@@ -27,6 +30,7 @@ const styles = StyleSheet.create({
 let scrollRef = React.createRef<ScrollView | undefined>();
 
 const MainScreen: React.FC<Props> = (props) => {
+  const [user, setUser] = useState();
   const [pageIdx, setPageIdx] = useState<number>(0);
   const setPage = (index: number) => {
     console.log(scrollRef);
@@ -36,6 +40,9 @@ const MainScreen: React.FC<Props> = (props) => {
     setTimeout(() => setPageIdx(index), 0);
   };
 
+  useEffect(() => {
+    getUserInfo();
+  }, [])
   const pageRef = React.createRef();
 
   return (
@@ -66,7 +73,7 @@ const MainScreen: React.FC<Props> = (props) => {
           />
         </View>
         <View style={styles.screen}>
-          <Settings />
+          <Settings logOut={props.logOut} />
         </View>
       </SmartPage>
     </>

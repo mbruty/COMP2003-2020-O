@@ -10,10 +10,15 @@
   height: 100vh;
 }
 
+#drawer > :first-child {
+ padding-top: 64px;
+}
+
 main {
   display: grid;
   align-items: start;
   justify-content: center;
+  margin-top: 64px;
   padding-top: 25px;
   // 100 viewport height - nav bar height - padding top
   height: calc(100vh - 64px - 25px);
@@ -31,4 +36,17 @@ main {
 // Overwiting the original color
 .MuiAppBar-colorPrimary {
   color: white !important;
+}
+
+@media only screen and (max-device-width: 500px) {
+  #drawer-closed > div {
+    width: 0;
+  }
+
+  #drawer-open > div {
+    width: 100vw;
+  }
+  main form.login-container {
+    grid-template-columns: 95%;
+  }
 }

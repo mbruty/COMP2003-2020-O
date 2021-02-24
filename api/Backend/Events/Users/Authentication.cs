@@ -127,6 +127,13 @@ namespace api.Backend.Events.Users
 
             new Thread(async () => { user.Password = Hashing.Hash(password); await user.UpdatePassword(); await Sessions.AddSession(user, token); }).Start();
 
+            // Send confirmation email
+            Random r = new Random();
+            string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
+            Email.SendConfirmation(nickname, code, email);
+
+            // ToDo: Update the database with the code
+
             response.AddToData("authtoken", token);
             response.AddToData("userid", user.UserID);
             response.AddCookie("authtoken", token + "&user_id=" + user.UserID, true, "/");
