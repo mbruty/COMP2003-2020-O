@@ -1,6 +1,5 @@
 import { auth } from "../../middleware";
 import express from "express";
-import axios from "axios";
 import { apiURI } from "../../constants";
 
 const images = require("./images");

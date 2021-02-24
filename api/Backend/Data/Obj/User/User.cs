@@ -62,6 +62,18 @@ namespace api.Backend.Data.Obj
                  new List<Tuple<string, object>>() { new Tuple<string, object>("pword", Password), new Tuple<string, object>("uid", UserID) });
         }
 
+        public async override Task<bool> Delete()
+        {
+            return await SQL.Instance.Execute("CALL `Run-RemoveUser`(@id)",
+                new List<Tuple<string, object>>() { new Tuple<string, object>("id",UserID) });
+        }
+
+        public async Task<bool> PermDelete()
+        {
+            return await SQL.Instance.Execute("CALL `Run-PermaDeleteUser`(@id)",
+                new List<Tuple<string, object>>() { new Tuple<string, object>("id", UserID) });
+        }
+
         #endregion Methods
     }
 }

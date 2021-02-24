@@ -23,18 +23,18 @@ namespace api.Backend.Data.Redis
         //    return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(Object).ToString()}";
         //}
 
-        private object GetKey<T>(T sqlObj) where T : SQL.Object, new()
+        public object GetKey<T>(T sqlObj) where T : SQL.Object, new()
         {
             Type t = new T().GetType();
             return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(sqlObj)}";
         }
 
-        private string GetKey(object[] PrimaryKeyValues)
+        public string GetKey(object[] PrimaryKeyValues)
         {
             return $"{Name}-{PrimaryKeyValues[0]}";
         }
 
-        private string GetKey(object PrimaryKeyValue)
+        public string GetKey(object PrimaryKeyValue)
         {
             return $"{Name}-{PrimaryKeyValue}";
         }
