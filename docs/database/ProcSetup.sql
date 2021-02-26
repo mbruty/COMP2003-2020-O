@@ -147,6 +147,14 @@ BEGIN
 END //
 
 
+CREATE PROCEDURE `Run-VerifyRestaurant` (IN input_id INT)
+BEGIN
+    UPDATE `Restaurant`
+    SET IsVerified = 1
+    WHERE `Restaurant`.RestaurantID = input_id;
+END //
+
+
 
 
 CREATE FUNCTION `Func-RandomSelection` (select_these VARCHAR(10000))
