@@ -20,16 +20,16 @@ interface Props {
 
 const Group: React.FC<Props> = (props) => {
   return (
+    <View>
       <View style={styles.box}>
-          <View style={styles.spacer} />
-          <View
+                  <View
             style={{
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
             }}
           >
-            <Text style={styles.text}>Enter a Group Code:</Text>
+            <Text style={styles.title}>Enter a Group Code:</Text>
           </View>
           <AwesomeTextInput
                 customStyles={{
@@ -51,8 +51,13 @@ const Group: React.FC<Props> = (props) => {
                   </View>
                 </TouchableOpacity>
             </View>
+      </View>
 
-            <Text style={styles.text}>---------or---------</Text>
+            <View style={styles.spacerContainer}>
+              <View style={styles.spacer1} />
+              <Text style={styles.text}>OR</Text>
+              <View style={styles.spacer1} />
+            </View>
 
             <View style={styles.btnContainer}>
                 <TouchableOpacity
@@ -62,12 +67,12 @@ const Group: React.FC<Props> = (props) => {
                 >
                   <View style={[styles.btn]}>
                     <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
-                      CREATE GROUP
+                      CREATE A GROUP
                     </Text>
                   </View>
                 </TouchableOpacity>
             </View>
-      </View>
+    </View>
   );
 };
 
@@ -105,7 +110,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 10,
     borderRadius: 5,
-    backgroundColor: "#369aff",
+    backgroundColor: "#c22000",
   },
   btnTxt: {
     textAlign: "center",
@@ -116,6 +121,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     width: "75%",
+    alignSelf: "center",
+    paddingTop: 5,
   },
   box: {
     backgroundColor: "white",
@@ -128,6 +135,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignSelf: "center",
     marginTop: 15,
+    marginBottom: 15,
   },
   title: {
     fontWeight: "bold",
@@ -147,6 +155,21 @@ const styles = StyleSheet.create({
   spacer: {
     width: "100%",
     marginTop: 20,
+    height: 1,
+    borderColor: "#CCC",
+    borderWidth: 1,
+    borderRadius: 2,
+  },
+  spacerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    paddingLeft: 10,
+    marginBottom: 15,
+  },
+  spacer1: {
+    width: "45%",
+    marginTop: 17,
     height: 1,
     borderColor: "#CCC",
     borderWidth: 1,
