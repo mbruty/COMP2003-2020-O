@@ -132,7 +132,8 @@ namespace api.Backend.Events.Users
             string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
             Email.SendConfirmation(nickname, code, email);
 
-            // ToDo: Update the database with the code
+            // Update the database with the code
+            Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
 
             response.AddToData("authtoken", token);
             response.AddToData("userid", user.UserID);
@@ -142,6 +143,33 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Signed Up");
         }
 
+        [WebEvent("/validatecode", "POST", false)]
+        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        {
+            ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);
+            if(validation.UserID == null || validation.Code == null)
+            {
+                // Bad Request
+                response.StatusCode = 400;
+                return;
+            }
+
+            string code = await Backend.Data.Redis.Instance.GetString($"signup-code:{validation.UserID}");
+            // Correct code!
+            if(code == validation.Code)
+            {
+                response.StatusCode = 200;
+                // ToDo: Update the mysql db to set the user to confirmed
+                // Remove the key
+                Backend.Data.Redis.Instance.InvalidateKey($"signup-code:{validation.UserID}");
+            }
+            else
+            {
+                response.StatusCode = 400;
+                response.AddToData("reason", "Invalid Code");
+            }
+        }
+
         #endregion Methods
     }
 
@@ -149,5 +177,11 @@ namespace api.Backend.Events.Users
     {
         public string Email { get; set; }
         public string Password { get; set; }
+    }
+
+    public class ValidationCode
+    {
+        public string UserID { get; set; }
+        public string Code { get; set; }
     }
 }
