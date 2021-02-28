@@ -12,7 +12,7 @@ namespace api.Backend.Data.Obj
         public float Longitude, Latitude;
         public uint RestaurantID, OwnerID;
 
-        public string RestaurantName, RestaurantDescription, Phone, Email, Site;
+        public string RestaurantName, RestaurantDescription, Phone, Email, Site, WebhookURI;
 
         #endregion Fields
 
