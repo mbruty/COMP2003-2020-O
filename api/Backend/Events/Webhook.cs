@@ -17,12 +17,7 @@ namespace api.Backend.Events.Restaurants
         [WebEvent("/book", "POST", false)]
         public static async Task BookWebHook(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
-            Restaurant[] restaurants = await Binding.GetTable<Restaurant>().Select<Restaurant>("RestaurantID", 1, 1);
-            if (restaurants.Length != 1 || restaurants[0].WebhookURI == null)
-            {
-                response.StatusCode = 404;
-                return;
-            }
+            int restaurantID;
             try
             {
                 Book data = JsonConvert.DeserializeObject<Book>(Data);
@@ -31,12 +26,20 @@ namespace api.Backend.Events.Restaurants
                 {
                     throw new Exception("Bad request");
                 }
+                restaurantID = data.RestaurantID;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 response.StatusCode = 400;
                 return;
             }
+            Restaurant[] restaurants = await Binding.GetTable<Restaurant>().Select<Restaurant>("RestaurantID", restaurantID, 1);
+            if (restaurants.Length != 1 || restaurants[0].WebhookURI == null)
+            {
+                response.StatusCode = 404;
+                return;
+            }
+
             WebRequest forwarding = WebRequest.Create(restaurants[0].WebhookURI);
             forwarding.Method = "POST";
             forwarding.ContentType = "application/json";
@@ -75,11 +78,51 @@ namespace api.Backend.Events.Restaurants
             }
         }
 
-        public class Book
+        [WebEvent("/webhook", "PUT", false, SecurityGroup.User)]
+        public static async Task UpdateWebhook(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        {
+            UpdateData data = JsonConvert.DeserializeObject<UpdateData>(Data);
+            Restaurant[] restaurants = await Binding.GetTable<Restaurant>().Select<Restaurant>("RestaurantID", data.RestaurantID, 1);
+            if(restaurants.Length < 1)
+            {
+                response.StatusCode = 404;
+                return;
+            }
+
+            int uid = Convert.ToInt32(headers.Get("userid"));
+            if(restaurants[0].OwnerID != uid)
+            {
+                response.StatusCode = 401;
+                return;
+            }
+
+            bool containsHttpMethod = data.WebhookURI.StartsWith("http://") || data.WebhookURI.StartsWith("https://");
+            if (!containsHttpMethod)
+            {
+                response.StatusCode = 400;
+                response.AddToData("Error", "IncorrectURI");
+                return;
+            }
+
+            restaurants[0].WebhookURI = data.WebhookURI;
+            // Invalidate cache key
+            Backend.Data.Redis.Instance.InvalidateKey($"Restaurant-{data.RestaurantID}");
+            bool updated = await restaurants[0].UpdateWebhook();
+            response.StatusCode = updated ? 200 : 500;
+        }
+
+        private class Book
         {
             public DateTime Date { get; set; }
             public int RestaurantID { get; set; }
             public int PartySize { get; set; }
+        }
+
+        private class UpdateData
+        {
+            public int RestaurantID { get; set; }
+            public string WebhookURI { get; set; }
+
         }
     }
 }

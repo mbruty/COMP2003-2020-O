@@ -56,6 +56,12 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Visit>().Select<Visit>("RestaurantID", RestaurantID);
         }
 
+        public async Task<bool> UpdateWebhook()
+        {
+            return await SQL.Instance.Execute("UPDATE Restaurant SET WebhookURI=@uri where RestaurantID=@id",
+                 new List<Tuple<string, object>>() { new Tuple<string, object>("uri", WebhookURI), new Tuple<string, object>("id", RestaurantID) });
+        }
+
         #endregion Methods
     }
 }
