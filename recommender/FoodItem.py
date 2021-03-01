@@ -1,8 +1,9 @@
 class FoodItem:
     #initialier for the class
-    def __init__(self, inID, inFoodTags):
+    def __init__(self, inID, inFoodTags, inRestaurant):
         self.ID = inID
         self.FoodTags = inFoodTags
+        self.Restaurant = inRestaurant
     
     #prints all relevant info stored on the class (for testing)
     def printInfo(self):
