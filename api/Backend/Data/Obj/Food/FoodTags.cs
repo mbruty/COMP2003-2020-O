@@ -8,6 +8,15 @@
 
         public string Tag;
 
+        public FoodTags()
+        {
+        }
+
+        public FoodTags(string _tag)
+        {
+            Tag = _tag;
+        }
+
         #endregion Fields
     }
 }
