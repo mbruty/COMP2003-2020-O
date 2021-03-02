@@ -10,18 +10,13 @@ namespace api.Backend.Endpoints
 {
     public static class WebRequest
     {
-        // These are the web origins
-        // All origins will use the usual header aproach for carrying auth tokens
-        // But as this isn't allowed in the browser, we are using cookies! (nom)
-        // If we end up changing domain names, this is where you change it
-        public static string[] SpecialOrigins = new string[] { "http://localhost:5500", "http://localhost:3000", "http://devsite.trackandtaste.com" };
         #region Methods
 
         /// <summary>
         /// Finds the appropriate event for the request and passes it along
         /// </summary>
-        /// <param name="request">  </param>
-        /// <param name="Data">     </param>
+        /// <param name="request"> </param>
+        /// <param name="Data">    </param>
         private static async Task<HttpResponse> Handle(HttpListenerRequest request, string Data)
         {
             HttpResponse response = new HttpResponse();
@@ -66,6 +61,17 @@ namespace api.Backend.Endpoints
             return response;
         }
 
+        #endregion Methods
+
+        #region Fields
+
+        // These are the web origins All origins will use the usual header aproach for carrying auth
+        // tokens But as this isn't allowed in the browser, we are using cookies! (nom) If we end up
+        // changing domain names, this is where you change it
+        public static string[] SpecialOrigins = new string[] { "http://localhost:5500", "http://localhost:3000", "http://devsite.trackandtaste.com" };
+
+        #endregion Fields
+
         /// <summary>
         /// Extracts any Data before passing the request onwards
         /// </summary>
@@ -83,20 +89,17 @@ namespace api.Backend.Endpoints
             response.Send(listenerContext.Response);
         }
 
-        #endregion Methods
-
-        #region Classes
-
         /// <summary>
         /// Holds any data to be returned
         /// </summary>
         public class HttpResponse
         {
             #region Fields
+
             private CookieCollection cookies = new CookieCollection();
+            public string crossOriginResponse = null;
             public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}"); //Time always provided
             public int StatusCode = 500;
-            public string crossOriginResponse = null;
 
             #endregion Fields
 
@@ -105,14 +108,19 @@ namespace api.Backend.Endpoints
             /// <summary>
             /// Add a cookie on to the json response
             /// </summary>
-            /// <param name="name"> Cookie Name </param>
-            /// <param name="value"> Cookie Value </param>
+            /// <param name="name">       Cookie Name </param>
+            /// <param name="value">      Cookie Value </param>
             /// <param name="expiration"> When the cookie should expire </param>
             /// <param name="isHttpOnly"> If the cookie should be HTTP only </param>
-            /// <param name="path"> The path for the cookie to bind to </param>
+            /// <param name="path">       The path for the cookie to bind to </param>
             public void AddCookie(string name, string value, bool isHttpOnly, string path)
             {
                 cookies.Add(new Cookie { Name = name, Value = value, HttpOnly = isHttpOnly, Path = path });
+            }
+
+            public void AddCrossOriginResponse(string origin)
+            {
+                crossOriginResponse = origin;
             }
 
             /// <summary>
@@ -150,11 +158,6 @@ namespace api.Backend.Endpoints
                 else Data.Property(Header).Value = stringable.ToString();
             }
 
-            public void AddCrossOriginResponse(string origin)
-            {
-                crossOriginResponse = origin;
-            }
-
             /// <summary>
             /// Finish up the response and send it back to the user
             /// </summary>
@@ -165,8 +168,7 @@ namespace api.Backend.Endpoints
 
                 if (response.StatusCode == 200) Data.Property("error")?.Remove();
 
-
-                response.Headers.Add("Access-Control-Allow-Credentials", "true"); 
+                response.Headers.Add("Access-Control-Allow-Credentials", "true");
 
                 if (crossOriginResponse != null)
                 {
@@ -188,7 +190,5 @@ namespace api.Backend.Endpoints
 
             #endregion Methods
         }
-
-        #endregion Classes
     }
 }

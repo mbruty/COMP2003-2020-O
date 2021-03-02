@@ -8,6 +8,10 @@
 
         public string Tag;
 
+        #endregion Fields
+
+        #region Constructors
+
         public FoodTags()
         {
         }
@@ -17,6 +21,6 @@
             Tag = _tag;
         }
 
-        #endregion Fields
+        #endregion Constructors
     }
 }

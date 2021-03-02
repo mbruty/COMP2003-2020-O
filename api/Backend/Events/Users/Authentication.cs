@@ -5,7 +5,6 @@ using api.Backend.Security;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Specialized;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,12 @@ namespace api.Backend.Events.Users
 {
     public static class Authentication
     {
+        #region Fields
+
         private static Regex codePattern = new Regex(@"\d{3}-\d{3}-\d{3}");
+
+        #endregion Fields
+
         #region Methods
 
         [WebEvent("/authcheck", "POST", false, SecurityGroup.User)]
@@ -47,8 +51,8 @@ namespace api.Backend.Events.Users
 
             User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
-            // Hello back-end friend-o's... Isn't it a bad idea to tell the user exactly what is wrong?
-            // Saying email is not in use feels kinda exploitable
+            // Hello back-end friend-o's... Isn't it a bad idea to tell the user exactly what is
+            // wrong? Saying email is not in use feels kinda exploitable
             // - Mike, Feb 2021
             if (users.Length == 0)
             {
@@ -75,6 +79,39 @@ namespace api.Backend.Events.Users
 
             response.StatusCode = 200;
             response.AddToData("message", "Logged in");
+        }
+
+        [WebEvent("/resendcode", "POST", false, SecurityGroup.User)]
+        public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        {
+            UserIdWithToken user = JsonConvert.DeserializeObject<UserIdWithToken>(Data);
+            // Get the user
+            User[] users = await Binding.GetTable<User>().Select<User>("UserID", user.UserID, 1);
+
+            // Users will always be of length 1 if they exist, and 0 if they don't as we're
+            // selecting by pk
+            if (users.Length == 0)
+            {
+                response.StatusCode = 404;
+                response.AddToData("error", "User not found");
+                return;
+            }
+
+            // If the user is already verified
+            if (users[0].IsVerified)
+            {
+                // 208: Already Reported
+                response.StatusCode = 208;
+                return;
+            }
+
+            // Send confirmation email
+            Random r = new Random();
+            string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
+            Email.SendConfirmation(users[0].Nickname, code, users[0].Email);
+
+            // Update the database with the code
+            Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
         }
 
         [WebEvent("/signup", "POST", false)]
@@ -145,14 +182,22 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent("/resendcode", "POST", false, SecurityGroup.User)]
-        public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        [WebEvent("/validatecode", "POST", false)]
+        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
-            UserIdWithToken user = JsonConvert.DeserializeObject<UserIdWithToken>(Data);
-            // Get the user
-            User[] users = await Binding.GetTable<User>().Select<User>("UserID", user.UserID, 1);
+            ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);
+            if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
+            {
+                // Bad Request
+                response.StatusCode = 400;
+                return;
+            }
 
-            // Users will always be of length 1 if they exist, and 0 if they don't as we're selecting by pk
+            // Get the user
+            User[] users = await Binding.GetTable<User>().Select<User>("UserID", validation.UserID, 1);
+
+            // Users will always be of length 1 if they exist, and 0 if they don't as we're
+            // selecting by pk
             if (users.Length == 0)
             {
                 response.StatusCode = 404;
@@ -168,49 +213,10 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            // Send confirmation email
-            Random r = new Random();
-            string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
-            Email.SendConfirmation(users[0].Nickname, code, users[0].Email);
-
-            // Update the database with the code
-            Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
-        }
-
-        [WebEvent("/validatecode", "POST", false)]
-        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
-        {
-            ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);
-            if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
-            {
-                // Bad Request
-                response.StatusCode = 400;
-                return;
-            }
-
-            // Get the user
-            User[] users = await Binding.GetTable<User>().Select<User>("UserID", validation.UserID, 1);
-
-            // Users will always be of length 1 if they exist, and 0 if they don't as we're selecting by pk
-            if (users.Length == 0)
-            {
-                response.StatusCode = 404;
-                response.AddToData("error", "User not found");
-                return;
-            }
-
-            // If the user is already verified
-            if(users[0].IsVerified)
-            {
-                // 208: Already Reported
-                response.StatusCode = 208;
-                return;
-            }
-
             string code = await Backend.Data.Redis.Instance.GetString($"signup-code:{validation.UserID}");
 
             // Correct code!
-            if(code == validation.Code)
+            if (code == validation.Code)
             {
                 response.StatusCode = 200;
 
@@ -241,19 +247,31 @@ namespace api.Backend.Events.Users
 
     public class LoginCredentials
     {
+        #region Properties
+
         public string Email { get; set; }
         public string Password { get; set; }
-    }
 
-    public class ValidationCode
-    {
-        public string UserID { get; set; }
-        public string Code { get; set; }
+        #endregion Properties
     }
 
     public class UserIdWithToken
     {
-        public string UserID { get; set; }
+        #region Properties
+
         public string AuthToken { get; set; }
+        public string UserID { get; set; }
+
+        #endregion Properties
+    }
+
+    public class ValidationCode
+    {
+        #region Properties
+
+        public string Code { get; set; }
+        public string UserID { get; set; }
+
+        #endregion Properties
     }
 }

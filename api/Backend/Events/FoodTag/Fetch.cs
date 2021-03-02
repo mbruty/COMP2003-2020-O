@@ -1,10 +1,10 @@
-﻿using api.Backend.Security;
+﻿using api.Backend.Data.Obj;
+using api.Backend.Data.SQL.AutoSQL;
+using api.Backend.Endpoints;
+using api.Backend.Security;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-using api.Backend.Endpoints;
-using api.Backend.Data.SQL.AutoSQL;
-using api.Backend.Data.Obj;
-using System.Collections.Generic;
 
 namespace api.Backend.Events.FoodTag
 {
@@ -18,7 +18,7 @@ namespace api.Backend.Events.FoodTag
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
                 where: "Tag LIKE CONCAT('%', @str, '%')",
                 tables: "FoodTags",
-                Params: new List<System.Tuple<string, object>> { new System.Tuple<string, object> ("str", headers["string"] ) });
+                Params: new List<System.Tuple<string, object>> { new System.Tuple<string, object>("str", headers["string"]) });
 
             response.AddObjectToData("tags", tags);
             response.StatusCode = 200;
