@@ -74,6 +74,12 @@ namespace api.Backend.Data.Obj
                 new List<Tuple<string, object>>() { new Tuple<string, object>("id", UserID) });
         }
 
+        public async Task<bool> UpdateIsVerified()
+        {
+            return await SQL.Instance.Execute("UPDATE User SET IsVerified=@verified where userid=@uid",
+                new List<Tuple<string, object>>() { new Tuple<string, object>("verified", IsVerified), new Tuple<string, object>("uid", UserID) });
+        }
+
         #endregion Methods
     }
 }

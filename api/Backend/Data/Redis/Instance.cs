@@ -56,6 +56,16 @@ namespace api.Backend.Data.Redis
             await database.StringSetAsync(key, value, EXPIRATION);
         }
 
+        public static async void SetStringWithExpiration(string key, string value, TimeSpan expiration)
+        {
+            await database.StringSetAsync(key, value, expiration);
+        }
+
+        public static async void InvalidateKey(string key)
+        {
+            await database.KeyDeleteAsync(key);
+        }
+
         #endregion Methods
     }
 }

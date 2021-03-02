@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 });
 
 interface Props {
-  submit: (token: string) => void;
+  submit: () => void;
   setPage: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -106,6 +106,7 @@ const LogIn: React.FC<Props> = ({ submit, setPage }) => {
           </Text>
         )}
         <AwesomeTextInput
+          autoCapitalize="none"
           keyboardType="email-address"
           customStyles={{
             title: CONSTANT_STYLES.TXT_DEFAULT,
