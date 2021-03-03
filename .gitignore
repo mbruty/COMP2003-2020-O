@@ -2,3 +2,4 @@ deploy_key
 .env
 api/obj
 image-handler/node_modules
+image-handler/track-and-taste-f63b50cd16a1.json
