@@ -1,5 +1,5 @@
 class FoodItem:
-    #initialier for the class
+    #initialiser for the class
     def __init__(self, inID, inFoodTags, inRestaurant):
         self.ID = inID
         self.FoodTags = inFoodTags
