@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "track-and-taste",
+  "private_key_id": "cee43c7463f308fac5db1b86ef487764d2741292",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCogDn6JLSmHey4\n61BbcNzFz9oem/STnVh+LGgD9JCNhvFZ0aB4/7rR4pIPswljFoU6rXQR8DmZ3mpC\nXDWWORXGtuKZwVAVbbxspmtxhem9eSV2wkZymae6Cw99f6oZ4XxCFwwqCdP1lDYK\n5KquBxTfK76kXTbY0KuAD/XAvepZwxwwx+4sdmXRb+xRPCjM4S/cKsPOsEyMOQLt\nAYOsmdifL3QmoRM208JHosQFv89sqOXj84jOM9xtR7ZGyLOTJKnedENOHiJ27WlL\nPPWrIyxdzTxOUqArt22Kg8oyKlJVkFp/lCoCwZCG6yjlucIACOmMtu/968Y6o1Wa\nbDZlFa4HAgMBAAECggEAURzIy/13aK/nEG1WVW5TGHYiDbINXjHUM4i02ZKVM0vO\nSup6UUTpbbefkCcjUau5nrF4ulnloIhMpn003ofET9Ah7Nn97xLQLY0/E3rfNfJn\ncm+68de9wfUpE8Ss4aCF7Fqj5Giuu/0Itt20u+l0xqmMMBsfF+f7Zr5IEuxZL7PQ\nhDdC2NdJfDf1G/FjbF2E2s8e7Jp+zewP+dOtTJTDYelQXhgofMQfmEIwutvnxvFq\n7TTO5KuYo6KWIyemmBCkcfBRp+TI6oVGpxnpqYBYREOO2tTciLHFyJRwpXO1yED/\n0zFiWJeIShgkf71gGD+ukOmhuxc54UEdoVTbtnhsoQKBgQDWMBSej+wo/46oQdWg\nJ6htjJNX1pbfckA8H8zW5b2fOWgrGYRW55e/woxPjc2KHODhLH4yXMDs30ahXd7A\nkMhrHK/DS9EoHifyuzxMq2V8LLJOkcvRfOoHSM279+lxqdY0zijvVW7bQM7JHMu/\nbnTpUEqMGbGsfitPUCKW2hM3LQKBgQDJZPdqnblAQ7M6nZSx4smtHOQ8pZxeVFdg\nrADpJcCJlKzgzKU8J+wYGgZx5VOHBFaPlc0Sdo6lCUmtScm0LALAw73Iz8aHQTBO\nkhNI/deTZW3/Pp9Z4nUf7rqv65qIvbgRusHQ4PtSno6Cc5TIdG6mnQSp9qfVswgV\nlzn4Qel6gwKBgQCeT7tt14L+aqXOx5pWXfmnvxfI/NtXHONNjVOiIv0dCxlrgdjH\nQzZujiWXR4B8bQvqYzCDmPsgGYfjDbbvLhR01ycyen+F34Q3bR0MrkK8nWzNlgXI\nOUPhTnaCUKNDV/zz2s122PavKB+vlpEiVUokiSwQkY05qafpX5mxVk6NoQKBgQC0\nnvoLQ8O2cEFZS6TlWUmZGbVU8w7nxurKx9jVQUeJ3K6jusZiykdDYmvvUEZ2bBya\nEDbo3S2XtFnAsdHV5jbd3W/jnv0lpwCFJxtmtkrWZfyeE/LksWZsKjaCumJRSx2/\nwOg8xtqAQbX8J18D3PC0O1TIfnAOB9AzVPrnvW2BswKBgD9nfPXUnHzzt3h9qjyl\nMSiN1HwywAo8pYDh1As4r4QSBZtLMBFono91By9jdoV9Lo5tzSBhUoKI7iVCMm8/\nXiryUc+iCrjPAR9CIsRMJaQmCxpVumMt/PkyGKibZ61XAVbh8adSiZ29UT8XnWzI\nkWcmWdnHyBZ+9AOlz9Z/YBnx\n-----END PRIVATE KEY-----\n",
+  "client_email": "upload@track-and-taste.iam.gserviceaccount.com",
+  "client_id": "101103859691792811674",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/upload%40track-and-taste.iam.gserviceaccount.com"
+}
