@@ -17,11 +17,11 @@ export const Files = () => {
 
   return (
     <div>
-      {data.files.map(x => (
+      {data.files.map((x) => (
         <img
           style={{ width: 200 }}
           key={x}
-          src={`https://storage.googleapis.com/tat-image/${x}`}
+          src={`https://storage.googleapis.com/tat-img/${x}`}
           alt={x}
         />
       ))}
