@@ -2,9 +2,10 @@ const { ApolloServer, gql } = require("apollo-server-express");
 const path = require("path");
 const express = require("express");
 const { Storage } = require("@google-cloud/storage");
-const sharp = require("sharp");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+require("dotenv").config();
+
 const files = [];
 
 const typeDefs = gql`
@@ -17,18 +18,11 @@ const typeDefs = gql`
 `;
 
 const gc = new Storage({
-  keyFilename: path.join(__dirname, "../track-and-taste-cee43c7463f3.json"),
-  projectId: "track-and-taste",
+  keyFilename: path.join(__dirname, "./comp2003-4313e0d1b519.json"),
+  projectId: "comp2003",
 });
 
-const imgBucket = gc.bucket("tat-image");
-
-const transformer = sharp().resize({
-  width: 200,
-  height: 200,
-  fit: sharp.fit.contain,
-  position: sharp.strategy.centre,
-});
+const imgBucket = gc.bucket("tat-img");
 
 const resolvers = {
   Query: {
@@ -40,7 +34,6 @@ const resolvers = {
       console.log(_);
       await new Promise((res) =>
         createReadStream()
-          .pipe(transformer)
           .pipe(
             imgBucket.file(filename).createWriteStream({
               resumable: false,
@@ -81,6 +74,9 @@ app.use(
 );
 server.applyMiddleware({ app });
 
-app.listen(4000, () => {
-  console.log(`🚀  Server ready at http://localhost:4000/`);
+const port = process.env.PORT || 8080;
+
+console.log(port);
+app.listen(port, () => {
+  console.log(`🚀  Server ready at http://localhost:${port}/`);
 });
