@@ -13,65 +13,66 @@ import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
 import { reset } from "../includeAuth";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { Page } from "./GroupPageRouter";
 
 interface Props {
-  logOut: () => void;
+  setPage: React.Dispatch<React.SetStateAction<Page>>;
 }
 
-const Group: React.FC<Props> = (props) => {
+const GroupPage: React.FC<Props> = (props) => {
   return (
     <View>
       <View style={styles.box}>
-                  <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={styles.title}>Enter a Group Code:</Text>
+        </View>
+        <AwesomeTextInput
+          customStyles={{
+            title: CONSTANT_STYLES.TXT_DEFAULT,
+            container: { marginTop: 25 },
+          }}
+          label="Group Code"
+        />
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log("Join Group Clicked");
             }}
           >
-            <Text style={styles.title}>Enter a Group Code:</Text>
-          </View>
-          <AwesomeTextInput
-                customStyles={{
-                  title: CONSTANT_STYLES.TXT_DEFAULT,
-                  container: { marginTop: 25 },
-                }}
-                label="Group Code"
-            />
-            <View style={styles.btnContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    console.log("Join Group Clicked");
-                  }}
-                >
-                  <View style={[styles.btn]}>
-                    <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
-                      JOIN GROUP
+            <View style={[styles.btn]}>
+              <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
+                JOIN GROUP
                     </Text>
-                  </View>
-                </TouchableOpacity>
             </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
-            <View style={styles.spacerContainer}>
-              <View style={styles.spacer1} />
-              <Text style={styles.text}>OR</Text>
-              <View style={styles.spacer1} />
-            </View>
+      <View style={styles.spacerContainer}>
+        <View style={styles.spacer1} />
+        <Text style={styles.text}>OR</Text>
+        <View style={styles.spacer1} />
+      </View>
 
-            <View style={styles.btnContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    console.log("Create Group Clicked");
-                  }}
-                >
-                  <View style={[styles.btn]}>
-                    <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
-                      CREATE A GROUP
+      <View style={styles.btnContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            props.setPage(Page.map_view);
+          }}
+        >
+          <View style={[styles.btn]}>
+            <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
+              CREATE A GROUP
                     </Text>
-                  </View>
-                </TouchableOpacity>
-            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 10,
     borderRadius: 5,
-    backgroundColor: "#c22000",
+    backgroundColor: CONSTANT_COLOURS.RED,
   },
   btnTxt: {
     textAlign: "center",
@@ -177,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Group;
+export default GroupPage;
