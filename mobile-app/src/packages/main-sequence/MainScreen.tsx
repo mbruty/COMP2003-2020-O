@@ -9,6 +9,7 @@ import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
 import SmartPage from "react-native-smart-page";
 import { CONSTANT_COLOURS } from "../../constants";
 import getUserInfo from "../requests/getUserInfo";
+import GroupPageRouter from "./GroupPageRouter";
 
 interface Props {
   logOut: () => void;
@@ -32,6 +33,7 @@ let scrollRef = React.createRef<ScrollView | undefined>();
 
 const MainScreen: React.FC<Props> = (props) => {
   const [user, setUser] = useState();
+  const [scrollEnabled, setScrollEnabled] = React.useState<boolean>(false);
   const [pageIdx, setPageIdx] = useState<number>(0);
   const setPage = (index: number) => {
     console.log(scrollRef);
@@ -56,12 +58,13 @@ const MainScreen: React.FC<Props> = (props) => {
           setPageIdx(index);
         }}
         sensitiveScroll={false}
+        scrollEnabled={scrollEnabled}
       >
         <View style={styles.screen}>
           <AnimatedSwipe />
         </View>
         <View style={styles.screen}>
-          <GroupPage logOut={props.logOut} />
+          <GroupPageRouter />
         </View>
         <View style={styles.screen}>
           <RecentVisits
