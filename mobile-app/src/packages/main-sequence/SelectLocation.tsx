@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, StyleSheet, Text, View, BackHandler } from "react-native";
+import { Button, StyleSheet, Text, View, BackHandler, Dimensions } from "react-native";
 import { Page } from "./GroupPageRouter";
 import * as Location from 'expo-location';
 import MapView, { LatLng, Marker, Circle } from "react-native-maps";
@@ -15,13 +15,26 @@ interface Props {
   setScrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   scrollEnabled: boolean;
 }
-let once = true;
+
+let mapRef = null;
+
 const mile2meter = (distance: number) => distance * 1609.344;
 
 const SelectLocation: React.FC<Props> = (props) => {
   const [distance, setDistance] = React.useState(1);
 
   const [markerLocation, setMarkerLocation] = React.useState<LatLng | undefined>();
+
+  React.useEffect(() => {
+    if (mapRef) {
+      mapRef.animateToRegion({
+        latitude: markerLocation.latitude,
+        longitude: markerLocation.longitude
+      });
+    } else {
+      console.log("Nope");
+    }
+  }, [markerLocation])
 
   React.useEffect(() => {
     const backAction = () => {
@@ -35,6 +48,7 @@ const SelectLocation: React.FC<Props> = (props) => {
     );
     return () => backHandler.remove();
   }, []);
+
 
   React.useEffect(() => {
     (async () => {
@@ -58,16 +72,19 @@ const SelectLocation: React.FC<Props> = (props) => {
     return (
       <View style={styles.container}>
         <MapView
+        loadingEnabled={true}
+          showsUserLocation={true}
           style={styles.map}
           initialRegion={{
             latitude: markerLocation.latitude,
             longitude: markerLocation.longitude,
             latitudeDelta: 0.05,
-            longitudeDelta: 0.05
+            longitudeDelta: 0.05,
           }}
           onPress={e => {
             setMarkerLocation(e.nativeEvent.coordinate)
           }}
+          ref={ref => { mapRef = ref; }}
         >
           <Marker coordinate={markerLocation}>
 
@@ -103,7 +120,6 @@ const SelectLocation: React.FC<Props> = (props) => {
         </View>
         <View style={{
           width: "100%",
-          bottom: "10%"
         }}>
           <TouchableOpacity onPress={async () => {
             const userLocation = await Location.getCurrentPositionAsync({});
@@ -169,7 +185,7 @@ const SelectLocation: React.FC<Props> = (props) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </View >
     );
   } else {
     return null;
@@ -181,6 +197,8 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    height: Dimensions.get("screen").height - 100
+
   },
   map: {
     ...StyleSheet.absoluteFillObject,
