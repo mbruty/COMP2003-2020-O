@@ -3,7 +3,8 @@ import GroupPage from "./GroupPage";
 import SelectLocation from "./SelectLocation";
 
 interface Props {
-
+  setScrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  scrollEnabled: boolean;
 }
 
 export enum Page {
@@ -14,11 +15,16 @@ export enum Page {
 
 const GroupPageRouter: React.FC<Props> = (props) => {
   const [page, setPage] = React.useState<Page>(Page.join_create);
+  if(page !== Page.map_view && props.scrollEnabled == false) {
+    props.setScrollEnabled(true);
+  }
   switch (page) {
     case Page.join_create:
       return <GroupPage setPage={setPage} />
     case Page.map_view:
-      return <SelectLocation setPage={setPage} />;
+      return <SelectLocation scrollEnabled={props.scrollEnabled} setScrollEnabled={props.setScrollEnabled} onSave={() => {
+        setPage(Page.swipe);
+      }} setPage={setPage} />;
   }
   return null;
 }

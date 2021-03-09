@@ -33,8 +33,28 @@ let scrollRef = React.createRef<ScrollView | undefined>();
 
 const MainScreen: React.FC<Props> = (props) => {
   const [user, setUser] = useState();
-  const [scrollEnabled, setScrollEnabled] = React.useState<boolean>(false);
+  const [scrollEnabled, setScrollEnabled] = React.useState<boolean>(true);
   const [pageIdx, setPageIdx] = useState<number>(0);
+
+  const disableScroll = () => {
+    // Doing it like this to prevent re-render's if the scroll is already disabled
+    if(scrollEnabled) {
+      setScrollEnabled(false);
+    }
+  }
+
+  const enablescroll = () => {
+    
+    if(!scrollEnabled) {
+
+      console.log("Enabling scroll");
+      
+      setScrollEnabled(true);
+    }
+  }
+
+  enablescroll.bind(this);
+
   const setPage = (index: number) => {
     console.log(scrollRef);
     pageRef.current.flingToPage(index, 0.99);
@@ -64,7 +84,7 @@ const MainScreen: React.FC<Props> = (props) => {
           <AnimatedSwipe />
         </View>
         <View style={styles.screen}>
-          <GroupPageRouter />
+          <GroupPageRouter setScrollEnabled={setScrollEnabled} scrollEnabled={scrollEnabled}/>
         </View>
         <View style={styles.screen}>
           <RecentVisits

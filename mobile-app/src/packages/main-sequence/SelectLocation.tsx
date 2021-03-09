@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View, BackHandler } from "react-native";
 import { Page } from "./GroupPageRouter";
 import * as Location from 'expo-location';
 import MapView, { LatLng, Marker, Circle } from "react-native-maps";
@@ -7,17 +7,35 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { CONSTANT_COLOURS } from "../../constants";
 import Slider from "@react-native-community/slider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
   onSave: () => void;
+  setScrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  scrollEnabled: boolean;
 }
-
+let once = true;
 const mile2meter = (distance: number) => distance * 1609.344;
 
 const SelectLocation: React.FC<Props> = (props) => {
   const [distance, setDistance] = React.useState(1);
 
   const [markerLocation, setMarkerLocation] = React.useState<LatLng | undefined>();
+
+  React.useEffect(() => {
+    const backAction = () => {
+      props.setPage(Page.join_create);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
+
   React.useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
@@ -34,8 +52,9 @@ const SelectLocation: React.FC<Props> = (props) => {
     })();
   }, []);
   if (markerLocation) {
-    console.log("Showing map");
-
+    if (props.scrollEnabled) {
+      props.setScrollEnabled(false);
+    }
     return (
       <View style={styles.container}>
         <MapView
@@ -62,46 +81,93 @@ const SelectLocation: React.FC<Props> = (props) => {
             strokeWidth={2}
           />
         </MapView>
-        <View style={styles.box}>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles.text}>Maximum Distance:</Text>
-            <Text style={styles.text}>{Math.round(distance * 10) / 10} miles</Text>
-          </View>
-          <Slider
-            style={{ height: 50 }}
-            minimumValue={0}
-            maximumValue={10}
-            value={distance}
-            step={0.1}
-            minimumTrackTintColor={CONSTANT_COLOURS.RED}
-            maximumTrackTintColor="#AAAAAA"
-            thumbTintColor={CONSTANT_COLOURS.RED}
-            onValueChange={(newValue) => setDistance(newValue)}
-          />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles.text}>Min</Text>
-            <Text style={styles.text}>Max</Text>
-          </View >
-          <TouchableOpacity onPress={async () => {
-            await AsyncStorage.setItem("location", JSON.stringify({latlon: markerLocation, distance: Math.round(distance * 10) / 10}));
-            props.onSave();
-          }}>
-            <View style={styles.btn}>
-              <Text style={[styles.text, { color: "white" }]}>Save Location</Text>
-            </View>
+        <View style={{
+          position: "absolute",
+          top: 20,
+          left: 20,
+        }}>
+          <TouchableOpacity style={{
+            backgroundColor: "white",
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            borderRadius: 100,
+            marginBottom: 15
+          }}
+            onPress={() => {
+              props.setPage(Page.join_create);
+            }}>
+            <MaterialCommunityIcons name="keyboard-backspace" size={24} color="black" />
           </TouchableOpacity>
+
+
+        </View>
+        <View style={{
+          width: "100%",
+          bottom: "10%"
+        }}>
+          <TouchableOpacity onPress={async () => {
+            const userLocation = await Location.getCurrentPositionAsync({});
+
+            setMarkerLocation({
+              latitude: userLocation.coords.latitude,
+              longitude: userLocation.coords.longitude,
+            });
+          }}
+            style={{
+              backgroundColor: CONSTANT_COLOURS.RED,
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              width: 44,
+              height: 44,
+              borderRadius: 100,
+              marginLeft: "auto",
+              marginRight: 20,
+              marginBottom: 15
+            }}>
+            <MaterialIcons name="my-location" size={24} color="white" />
+          </TouchableOpacity>
+          <View style={[styles.box]}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingTop: 10
+              }}
+            >
+              <Text style={styles.text}>Maximum Distance:</Text>
+              <Text style={styles.text}>{Math.round(distance * 10) / 10} miles</Text>
+            </View>
+            <Slider
+              style={{ height: 50 }}
+              minimumValue={0}
+              maximumValue={10}
+              value={distance}
+              step={0.1}
+              minimumTrackTintColor={CONSTANT_COLOURS.RED}
+              maximumTrackTintColor="#AAAAAA"
+              thumbTintColor={CONSTANT_COLOURS.RED}
+              onValueChange={(newValue) => setDistance(newValue)}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={styles.text}>Min</Text>
+              <Text style={styles.text}>Max</Text>
+            </View >
+            <TouchableOpacity onPress={async () => {
+              await AsyncStorage.setItem("location", JSON.stringify({ latlon: markerLocation, distance: Math.round(distance * 10) / 10 }));
+              props.onSave();
+            }}>
+              <View style={styles.btn}>
+                <Text style={[styles.text, { color: "white" }]}>Save Location</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -127,17 +193,24 @@ const styles = StyleSheet.create({
     color: CONSTANT_COLOURS.DARK_GREY,
   },
   box: {
-    position: "absolute",
-    bottom: "15%",
     backgroundColor: "white",
-    width: "95%",
+    width: "100%",
+    paddingBottom: 50,
     display: "flex",
     flexDirection: "column",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     borderColor: "#AAAAAA",
     borderWidth: 1,
     alignSelf: "center",
+    shadowColor: "black",
+    shadowOffset: {
+      height: -5,
+      width: 0
+    },
+    shadowOpacity: 0.2,
+    elevation: 2,
+    paddingHorizontal: 35,
   },
   btn: {
     width: "80%",
