@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, SectionList, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import RecentVisits from "./RecentVisits";
 import Settings from "./Settings";
@@ -42,19 +42,7 @@ const MainScreen: React.FC<Props> = (props) => {
       setScrollEnabled(false);
     }
   }
-
-  const enablescroll = () => {
-    
-    if(!scrollEnabled) {
-
-      console.log("Enabling scroll");
-      
-      setScrollEnabled(true);
-    }
-  }
-
-  enablescroll.bind(this);
-
+  
   const setPage = (index: number) => {
     console.log(scrollRef);
     pageRef.current.flingToPage(index, 0.99);
@@ -67,6 +55,13 @@ const MainScreen: React.FC<Props> = (props) => {
     getUserInfo();
   }, [])
   const pageRef = React.createRef();
+
+  useEffect(() => {
+    if(!scrollEnabled) {
+      console.log("Enabling scroll");
+      setScrollEnabled(true);
+    }
+  }, [pageIdx]);
 
   return (
     <>
