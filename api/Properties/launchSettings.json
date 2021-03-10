@@ -2,6 +2,9 @@
   "profiles": {
     "api": {
       "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }
