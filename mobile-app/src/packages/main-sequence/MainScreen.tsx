@@ -94,7 +94,7 @@ const MainScreen: React.FC<Props> = (props) => {
           />
         </View>
         <View style={styles.screen}>
-          <Settings logOut={props.logOut} />
+          <Settings scrollEnabled={scrollEnabled} setScrollEnabled={setScrollEnabled} logOut={props.logOut} />
         </View>
       </SmartPage>
     </>

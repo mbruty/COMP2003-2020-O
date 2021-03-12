@@ -10,10 +10,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 interface Props {
-  setPage: React.Dispatch<React.SetStateAction<Page>>;
+  setPage?: React.Dispatch<React.SetStateAction<Page>>;
   onSave: () => void;
-  setScrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollEnabled: boolean;
+  onBack?: () => void;
+  isGroup: boolean;
 }
 
 let mapRef = null;
@@ -21,6 +21,8 @@ let mapRef = null;
 const mile2meter = (distance: number) => distance * 1609.344;
 
 const SelectLocation: React.FC<Props> = (props) => {
+
+
   const [distance, setDistance] = React.useState(1);
 
   const [markerLocation, setMarkerLocation] = React.useState<LatLng | undefined>();
@@ -37,8 +39,23 @@ const SelectLocation: React.FC<Props> = (props) => {
   }, [markerLocation])
 
   React.useEffect(() => {
+    if (!props.isGroup) {
+      (async () => {
+        const settings = JSON.parse(await AsyncStorage.getItem("location"));
+        if (settings) {
+          setMarkerLocation(settings.latlon);
+          setDistance(settings.distance);
+        }
+      })();
+    }
+  }, [])
+
+  React.useEffect(() => {
     const backAction = () => {
-      props.setPage(Page.join_create);
+      if (props.setPage)
+        props.setPage(Page.join_create);
+      else
+        props.onBack();
       return true;
     };
 
@@ -65,14 +82,17 @@ const SelectLocation: React.FC<Props> = (props) => {
       });
     })();
   }, []);
+
   if (markerLocation) {
-    if (props.scrollEnabled) {
-      props.setScrollEnabled(false);
-    }
     return (
       <View style={styles.container}>
         <MapView
-        loadingEnabled={true}
+          onResponderStart={() => console.log("Ha")}
+          compassOffset={{
+            x: 0,
+            y: 25
+          }}
+          loadingEnabled={true}
           showsUserLocation={true}
           style={styles.map}
           initialRegion={{
@@ -111,7 +131,10 @@ const SelectLocation: React.FC<Props> = (props) => {
             marginBottom: 15
           }}
             onPress={() => {
-              props.setPage(Page.join_create);
+              if (props.setPage)
+                props.setPage(Page.join_create);
+              else
+                props.onBack();
             }}>
             <MaterialCommunityIcons name="keyboard-backspace" size={24} color="black" />
           </TouchableOpacity>
@@ -176,7 +199,15 @@ const SelectLocation: React.FC<Props> = (props) => {
               <Text style={styles.text}>Max</Text>
             </View >
             <TouchableOpacity onPress={async () => {
-              await AsyncStorage.setItem("location", JSON.stringify({ latlon: markerLocation, distance: Math.round(distance * 10) / 10 }));
+              if (props.isGroup) {
+                await AsyncStorage.setItem("groupLocation", JSON.stringify({ latlon: markerLocation, distance: Math.round(distance * 10) / 10 }));
+              } else {
+                const settings = JSON.parse(await AsyncStorage.getItem("location"));
+                console.log("Settings:", settings);
+                await AsyncStorage.setItem("location", JSON.stringify({ ...settings, latlon: markerLocation, distance: Math.round(distance * 10) / 10 }));
+                const settings2 = JSON.parse(await AsyncStorage.getItem("location"));
+                console.log("Settings2:", settings2);
+              }
               props.onSave();
             }}>
               <View style={styles.btn}>
@@ -188,6 +219,7 @@ const SelectLocation: React.FC<Props> = (props) => {
       </View >
     );
   } else {
+
     return null;
   }
 }
@@ -197,7 +229,8 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    height: Dimensions.get("screen").height - 100
+    height: Dimensions.get("screen").height - 100,
+    zIndex: 100
 
   },
   map: {

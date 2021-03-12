@@ -27,7 +27,7 @@ const GroupPageRouter: React.FC<Props> = (props) => {
     case Page.join_create:
       return <GroupPage setPage={setPage} />
     case Page.map_view:
-      return <SelectLocation scrollEnabled={props.scrollEnabled} setScrollEnabled={props.setScrollEnabled} onSave={() => {
+      return <SelectLocation isGroup onSave={() => {
         setPage(Page.swipe);
       }} setPage={setPage} />;
   }
