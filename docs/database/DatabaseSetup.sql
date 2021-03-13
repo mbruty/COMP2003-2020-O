@@ -76,6 +76,7 @@ CREATE TABLE `Restaurant` (
     Phone VARCHAR(11),
     Email VARCHAR(60),
     `Site` VARCHAR(60),
+    IsVerified BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (RestaurantID),
 
@@ -91,6 +92,7 @@ CREATE TABLE `Restaurant` (
 CREATE TABLE `FoodTags` (
     FoodTagID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     Tag VARCHAR(20) NOT NULL,
+    DateAdded DATE,
 
     PRIMARY KEY (FoodTagID),
     CONSTRAINT UNQ_FoodTag UNIQUE (Tag),
@@ -179,7 +181,8 @@ CREATE TABLE `MenuTimes` (
 CREATE TABLE `FoodItem` (
     FoodID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     FoodCheckID INT UNSIGNED NOT NULL,
-    FoodName VARCHAR(45) NOT NULL,
+    FoodName VARCHAR(60) NOT NULL,
+    FoodNameShort VARCHAR(20),
     FoodDescription VARCHAR(120) NOT NULL,
     Price DECIMAL(6,2) NOT NULL DEFAULT 1.00,
 
