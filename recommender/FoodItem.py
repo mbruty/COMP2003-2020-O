@@ -18,7 +18,10 @@ class FoodItem:
     def addFoodTag(self, newFoodTag):
         self.FoodTags.add(newFoodTag)
 
-
+class FoodRecommendation:
+    def __init__(self, restaurantID, avgRating):
+        self.restaurantID = restaurantID
+        self.avgRating = avgRating
 
 #CLASS TESTING CODE
 #Burger = FoodItem(1, { 1, 2, 3})
