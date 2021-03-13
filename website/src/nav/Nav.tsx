@@ -16,17 +16,25 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import { Badge, InputBase, Menu, MenuItem } from '@material-ui/core';
+import { Badge, Button, InputBase, Menu, MenuItem } from '@material-ui/core';
 import MoreIcon from "@material-ui/icons/MoreVert";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import { AccountCircle } from '@material-ui/icons';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     grow: {
       flexGrow: 1,
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightRegular,
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -130,6 +138,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+const dummyData = ["The Bruty's Arms", "The Royal Davies", "The Lakin's Head"]
+
 interface Props {
   colour: string;
 }
@@ -137,6 +147,7 @@ interface Props {
 export default function Nav(props: Props) {
   const classes = useStyles();
   const theme = useTheme();
+  const [expanded, setExpanded] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -169,6 +180,8 @@ export default function Nav(props: Props) {
   const handleMobileMenuOpen = (event: any) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  const [selectedRestaurant, setSelectedRestaurant] = React.useState<string>(dummyData[0]);
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -318,7 +331,38 @@ export default function Nav(props: Props) {
             }),
           }}
         >
+
           <List>
+            <ListItem button onClick={() => {
+              if (!open) {
+                setOpen(true);
+                setExpanded(true)
+              }
+            }}>
+              {!open && <ListItemIcon><ExpandMoreIcon /></ListItemIcon>}
+              {open &&
+                <Accordion onChange={() => setExpanded(!expanded)} expanded={expanded} style={{ width: "100%" }} id="select-restaurant">
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography className={classes.heading}>{selectedRestaurant}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <div style={{ display: "flex", flexFlow: "column nowrap", width: "100%" }}>
+                      {dummyData.map((restaurant) => (
+                        <div style={{ marginBottom: "5px" }}>
+                          <Button onClick={() => { setSelectedRestaurant(restaurant); setExpanded(false) }} style={{ width: "100%" }}>{restaurant}</Button>
+                          <Divider />
+                        </div>
+
+                      ))}
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+              }
+            </ListItem>
             {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
               <ListItem button key={text}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
