@@ -232,28 +232,32 @@ export default function Nav(props: Props) {
     <div className={classes.grow}>
       <AppBar style={{ backgroundColor: props.colour }} className={classes.appBar} >
         <Toolbar>
-          <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}
-            >
-              <MenuIcon />
-            </IconButton>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerClose}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: !open,
-              })}
-            >
-              <ChevronLeftIcon/>
-            </IconButton>
+          {window.location.pathname !== "/log-in" &&
+            <>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                className={clsx(classes.menuButton, {
+                  [classes.hide]: open,
+                })}
+              >
+                <MenuIcon />
+              </IconButton>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerClose}
+                edge="start"
+                className={clsx(classes.menuButton, {
+                  [classes.hide]: !open,
+                })}
+              >
+                <ChevronLeftIcon />
+              </IconButton>
+            </>
+          }
           <Typography className={classes.title} variant="h6" noWrap>
             Track and Taste Dashboard
           </Typography>
@@ -298,38 +302,41 @@ export default function Nav(props: Props) {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      <Drawer
-        id={open ? "drawer-open" : "drawer-closed"}
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
+      {window.location.pathname !== "/log-in" &&
+
+        <Drawer
+          id={open ? "drawer-open" : "drawer-closed"}
+          variant="permanent"
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+          })}
+          classes={{
+            paper: clsx({
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            }),
+          }}
+        >
+          <List>
+            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {['All mail', 'Trash', 'Spam'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+      }
     </div>
   )
 }
