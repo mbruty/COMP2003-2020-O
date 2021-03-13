@@ -10,7 +10,7 @@
   height: 100vh;
 }
 
-#drawer > :first-child {
+#drawer-open > :first-child, #drawer-closed > :first-child {
  padding-top: 64px;
 }
 
