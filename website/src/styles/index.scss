@@ -10,7 +10,7 @@
   height: 100vh;
 }
 
-#drawer > :first-child {
+#drawer-open > :first-child, #drawer-closed > :first-child {
  padding-top: 64px;
 }
 
@@ -49,4 +49,12 @@ main {
   main form.login-container {
     grid-template-columns: 95%;
   }
+}
+
+#select-restaurant > div:first-of-type:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+#select-restaurant > div:first-of-type{
+  transition: background-color 0.2 ease-in;
 }
