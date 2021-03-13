@@ -285,6 +285,25 @@ In its current iteration, you may get an error from the procedure randomly gener
 There are 22,580,726,450 combinations of potential emails that can be generated.  
 This feature is experimental and continues to be developed.
 
+### Run-VerifyRestaurant
+
+> **This SP takes 1 parameter:**  
+> *name* `input_id` *type* `int` 
+
+This SP is used to quickly verify Restaurants.  
+Sets the IsVerified field to true (1).  
+Currently doesn't do it the other way around, but it hopefully will in the future.
+
+### Run-ResetRecommendations
+
+> **This SP takes 1 parameter:**  
+> *name* `input_id` *type* `int` 
+
+Used to remove the food opinion history of a user.
+This would be their own choice, activated by clicking the respective button in their Settings.
+Useful if they drastically change their preferences.
+Takes the user's ID as an argument.
+
 ## MySQL Stored Functions
 
 ### Func-RandomSelection
@@ -346,14 +365,14 @@ The string of nicknames is separated by $ symbols.
 
 ## MySQL Database Documentation
 
-### Entity Relationship Diagram (Version 5.7)
+### Entity Relationship Diagram (Version 5.8)
 
-*This diagram is up to date as of 06/12/20.*
+*This diagram is up to date as of 03/03/21.*
 
 <br>
 
 <p>
-  <img alt="The entity relationship diagram associated with the project." width="720" height="598" src="https://i.imgur.com/tdf1aY6.png">
+  <img alt="The entity relationship diagram associated with the project." width="720" height="598" src="https://i.imgur.com/2unOxkt.png">
 </p>
 
 <br>

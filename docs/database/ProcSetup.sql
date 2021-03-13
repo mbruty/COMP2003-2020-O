@@ -27,6 +27,14 @@ SQL Procedure Setup:
         - Password will always be Password1; it has been hashed in the database.
         - The associated FoodCheck will be the default.
 
+    Run-VerifyRestaurant will quickly verify a selected restaurant.
+        - Takes the RestaurantID as a parameter.
+        - Used to "activate" a restaurant after one of the admins has verified it.
+
+    Run-ResetRecommendations removes all food opinion history of a user.
+        - Useful when a user drastically changes their preferences.
+        - Simply deletes all of the FoodOpinion records associated with them.
+
     Func-RandomSelection is a function used to select one random inserted data item from a list of them.
         - There is no array variable in MySQL; input a varchar string where each selectable value is proceeded by a $ symbol.
         - The list string cannot exceed 10,000 characters.
@@ -65,6 +73,8 @@ SQL Procedure Setup:
 DROP PROCEDURE IF EXISTS `Run-RemoveUser`;
 DROP PROCEDURE IF EXISTS `Run-PermaDeleteUser`;
 DROP PROCEDURE IF EXISTS `Run-GenerateUserData`;
+DROP PROCEDURE IF EXISTS `Run-VerifyRestaurant`;
+DROP PROCEDURE IF EXISTS `Run-ResetRecommendations`;
 
 DROP FUNCTION IF EXISTS `Func-RandomSelection`;
 DROP FUNCTION IF EXISTS `Func-CountDelimiters`;
@@ -144,6 +154,21 @@ BEGIN
         VALUES (data_email, data_password, data_nickname, data_birthday);
 
     END LOOP;
+END //
+
+
+CREATE PROCEDURE `Run-VerifyRestaurant` (IN input_id INT)
+BEGIN
+    UPDATE `Restaurant`
+    SET IsVerified = 1
+    WHERE `Restaurant`.RestaurantID = input_id;
+END //
+
+
+CREATE PROCEDURE `Run-ResetRecommendations` (IN input_id INT)
+BEGIN
+    DELETE FROM `FoodOpinion`
+    WHERE `FoodOpinion`.UserID = input_id;
 END //
 
 
