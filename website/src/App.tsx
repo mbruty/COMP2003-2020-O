@@ -6,6 +6,7 @@ import "./styles/index.scss";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./Home";
 import LogIn from "./onboarding/LogIn";
+import DragNDrop from "./file-upload/DragNDrop";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -28,6 +29,7 @@ function App() {
     [prefersDarkMode]
   );
 
+
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -42,6 +44,7 @@ function App() {
             <Switch>
               <Route exact path="/" render={() => <Home />} />
               <Route exact path="/log-in" render={() => <LogIn />} />
+              <Route exact path="/upload" render={() => <DragNDrop />} />
             </Switch>
           </BrowserRouter>
         </main>

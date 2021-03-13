@@ -58,3 +58,14 @@ main {
 #select-restaurant > div:first-of-type{
   transition: background-color 0.2 ease-in;
 }
+
+.drag-n-drop-container {
+  width: 50vmin !important;
+  height: 50vmin !important;
+  border: 1px dashed #aaaaaa;
+  display: grid;
+  place-items: center ;
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 15px;
+}
