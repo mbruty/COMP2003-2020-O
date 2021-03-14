@@ -2,18 +2,29 @@ const { ApolloServer, gql } = require("apollo-server-express");
 const path = require("path");
 const express = require("express");
 const { Storage } = require("@google-cloud/storage");
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const sharp = require("sharp");
+const fetch = require("node-fetch");
+const { json } = require("express");
 require("dotenv").config();
 
-const files = [];
-
 const typeDefs = gql`
+  input CropInput {
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int
+  }
+
+  input AuthInput {
+    userid: String,
+    authtoken: String
+  }
   type Query {
     files: [String]
   }
   type Mutation {
-    uploadFile(file: Upload!): Boolean
+    uploadFile(file: Upload!, crop: CropInput!, auth: AuthInput!, foodID: Int!): Boolean
   }
 `;
 
@@ -29,41 +40,53 @@ const resolvers = {
     files: () => files,
   },
   Mutation: {
-    uploadFile: async (_, { file }) => {
-      const { createReadStream, filename } = await file;
-      console.log(_);
-      await new Promise((res) =>
+    uploadFile: async (_, { file, crop, auth, foodID }) => {
+      const { createReadStream } = await file;
+      const authcheck = await fetch("http://devapi.trackandtaste.com/authcheck", {
+        method: "POST",
+        headers: { 'userid': auth.userid, 'authtoken': auth.authtoken }
+      });
+      if(authcheck.status !== 200)
+        return false;
+      // const transformer = sharp().extract({
+      //   width: 200,
+      //   height: 200,
+      //   fit: sharp.fit.contain,
+      //   position: sharp.strategy.centre
+      // })
+      const extract = sharp().extract({
+        width: crop.width,
+        height: crop.height,
+        top: crop.y,
+        left: crop.x
+      })
+      await new Promise((res) => {
         createReadStream()
+          .pipe(extract)
+          // .pipe(transformer)
           .pipe(
-            imgBucket.file(filename).createWriteStream({
+            imgBucket.file(`${foodID}.png`).createWriteStream({
               resumable: false,
               gzip: true,
             })
-          )
-          .on("finish", res)
-      );
+          ).on("finish", res)
 
-      files.push(filename);
+      });
 
+
+      console.log("here");
       return true;
     },
   },
 };
 
-const context = ({ req, res }) => {
-  // Set this header to the url when pushing to production
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  // Do authentication here
-  console.log(req.cookies);
-};
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context,
 });
 const app = express();
-app.use(cookieParser());
+
 app.use(
   cors({
     credentials: true,
