@@ -19,7 +19,7 @@ const uploadFileMutation = gql`
 const defaultCrop = {
   crop: { x: 0, y: 0 },
   zoom: 1,
-  aspect: 4 / 3,
+  aspect: 5 / 6,
 }
 interface Props {
   foodID: number;
@@ -59,16 +59,13 @@ const DragNDrop: React.FC<Props> = (props) => {
 
       uploadFile({ variables: { file, crop: { x: cropData.x, y: cropData.y, width: cropData.width, height: cropData.height }, auth, foodID: props.foodID } })
         .then(() => {
+          setUploading({ uploadClicked: true, uploading: false });
           delay(400)
             .then(() => {
-              setUploading({ uploadClicked: true, uploading: false });
-              delay(400)
-                .then(() => {
-                  destroyUrl();
-                  setFile(undefined);
-                  setUploading({ uploadClicked: false, uploading: false });
-                  setCropState(defaultCrop);
-                })
+              destroyUrl();
+              setFile(undefined);
+              setUploading({ uploadClicked: false, uploading: false });
+              setCropState(defaultCrop);
             })
         })
         .catch(e => console.error(e));
