@@ -138,10 +138,21 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const dummyData = ["The Bruty's Arms", "The Royal Davies", "The Lakin's Head"]
 
 interface Props {
   colour: string;
+  restaurants: Array<{
+    id: number;
+    name: string;
+  }>;
+  selectedRestaurant: {
+    id: number;
+    name: string;
+  };
+  setSelectedRestaurant: React.Dispatch<React.SetStateAction<{
+    id: number;
+    name: string;
+  }>>;
 }
 
 export default function Nav(props: Props) {
@@ -180,8 +191,6 @@ export default function Nav(props: Props) {
   const handleMobileMenuOpen = (event: any) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-
-  const [selectedRestaurant, setSelectedRestaurant] = React.useState<string>(dummyData[0]);
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -347,13 +356,13 @@ export default function Nav(props: Props) {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography className={classes.heading}>{selectedRestaurant}</Typography>
+                    <Typography className={classes.heading}>{props.selectedRestaurant.name}</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <div style={{ display: "flex", flexFlow: "column nowrap", width: "100%" }}>
-                      {dummyData.map((restaurant) => (
+                      {props.restaurants.map((restaurant) => (
                         <div style={{ marginBottom: "5px" }}>
-                          <Button onClick={() => { setSelectedRestaurant(restaurant); setExpanded(false) }} style={{ width: "100%" }}>{restaurant}</Button>
+                          <Button onClick={() => { props.setSelectedRestaurant(restaurant); setExpanded(false) }} style={{ width: "100%" }}>{restaurant.name}</Button>
                           <Divider />
                         </div>
 
