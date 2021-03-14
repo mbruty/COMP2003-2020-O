@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderMinus, faFolderOpen, faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import Cropper from "react-easy-crop";
 import LoadingBtn from "./LoadingBtn";
-import { deflate } from "node:zlib";
 
 
 
