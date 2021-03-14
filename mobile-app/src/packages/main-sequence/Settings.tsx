@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
 import {
   Text,
@@ -9,60 +9,151 @@ import {
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Switch,
+  ScrollView,
 } from "react-native";
+import * as Location from 'expo-location';
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { reset } from "../includeAuth";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import deleteUser from "../requests/deleteUser";
+import MapView, { LatLng, Marker, Circle } from "react-native-maps";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import SelectLocation from "./SelectLocation";
+
+const mile2meter = (distance: number) => distance * 1609.344;
 
 interface Props {
   logOut: () => void;
+  setScrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  scrollEnabled: boolean;
 }
+
+let mapRef = null;
+
 
 const Settings: React.FC<Props> = (props) => {
   const [modalVisiblePassword, setModalVisiblePassword] = useState(false);
   const [modalVisibleName, setModalVisibleName] = useState(false);
   const [modalVisibleDelete, setModalVisibleDelete] = useState(false);
   const [distance, setDistance] = useState(25);
+  const [toggle, setToggle] = useState<boolean>(true);
+  const [showMap, setShowMap] = useState<boolean>(false);
+
+  const [markerLocation, setMarkerLocation] = React.useState<LatLng | undefined>();
+
+  React.useEffect(() => {
+    if (mapRef) {
+      mapRef.animateToRegion({
+        latitude: markerLocation.latitude,
+        longitude: markerLocation.longitude
+      });
+    } else {
+      console.log("Nope");
+    }
+  }, [markerLocation])
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const settings = JSON.parse(await AsyncStorage.getItem("location"));
+        console.log("settings", settings);
+        
+        setToggle(settings.toggle);
+        setDistance(settings.distance);
+        setMarkerLocation(settings.latlon);
+      } catch (e) {
+        console.log(e);
+
+        // Couldn't get settings... Just continue with defaults
+      }
+    })();
+  }, [showMap])
+
+  React.useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+
+      const userLocation = await Location.getCurrentPositionAsync({});
+
+      setMarkerLocation({
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+      });
+    })();
+  }, []);
 
   // Is any modal showing?
   const modalShowing = modalVisibleName || modalVisiblePassword || modalVisibleDelete;
+  if (showMap) {
+    return (
+      <SelectLocation isGroup={false} onSave={() => setShowMap(false)} onBack={() => setShowMap(false)} />
+    )
+  }
   return (
-    <View style={{ opacity: modalShowing ? 0.2 : 1 }}>
-      <View style={{ paddingHorizontal: 25 }}>
+    <ScrollView style={{ opacity: modalShowing ? 0.2 : 1 }}>
+      <View style={{ paddingHorizontal: 25, paddingBottom: 200 }}>
         <Text style={styles.title}>Distance Preferences</Text>
         <View style={styles.box}>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles.text}>Maximum Distance:</Text>
-            <Text style={styles.text}>{distance} miles</Text>
+          <View style={[styles.mapContainer]}>
+            {markerLocation &&
+              <MapView
+                compassOffset={{
+                  x: 0,
+                  y: 25
+                }}
+                showsUserLocation={true}
+                style={styles.map}
+                region={{
+                  latitude: markerLocation.latitude,
+                  longitude: markerLocation.longitude,
+                  latitudeDelta: 0.05,
+                  longitudeDelta: 0.05,
+                }}
+                ref={ref => { mapRef = ref; }}
+              >
+                <Marker coordinate={markerLocation} />
+                <Circle
+                  center={markerLocation}
+                  radius={mile2meter(distance)}
+                  fillColor="rgba(255, 255, 255, 0.4)"
+                  strokeColor="rgba(0,0,0,0.5)"
+                  zIndex={25}
+                  strokeWidth={2}
+                />
+              </MapView>
+            }
           </View>
-          <Slider
-            style={{ height: 50 }}
-            minimumValue={1}
-            maximumValue={100}
-            value={distance}
-            step={1}
-            minimumTrackTintColor={CONSTANT_COLOURS.RED}
-            maximumTrackTintColor="#AAAAAA"
-            thumbTintColor={CONSTANT_COLOURS.RED}
-            onValueChange={(newValue) => setDistance(newValue)}
-          />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles.text}>Min</Text>
-            <Text style={styles.text}>Max</Text>
+          <TouchableOpacity onPress={() => setShowMap(true)} style={{ backgroundColor: "rgba(0,0,0,0.05)", borderRadius: 20, marginTop: 10 }}>
+            <Text style={[styles.text]}>Open Distance Preferences</Text>
+          </TouchableOpacity>
+          <View style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            marginTop: 10
+          }}>
+            <Text style={styles.text}>Always use my current location</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#19e664" }}
+              thumbColor={"#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => {
+                (async () => {
+                  try {
+                    const settings = JSON.parse(await AsyncStorage.getItem("location"));
+                    console.log("Settings:", settings);
+                    await AsyncStorage.setItem("location", JSON.stringify({ ...settings, toggle: !toggle }));
+                  } catch (e) {
+                    console.log("error", e);
+                  }
+                })().then(() => setToggle(!toggle));
+              }}
+              value={toggle}
+            />
           </View>
         </View>
         <View style={styles.spacer} />
@@ -205,7 +296,7 @@ const Settings: React.FC<Props> = (props) => {
           >
             <View style={[styles.filledContainer]}>
               <Text style={styles.title}>Are you sure you want to delete your account?</Text>
-              <View style={[styles.btnContainer, {marginTop: 20}]}>
+              <View style={[styles.btnContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
                   onPress={(e) => {
                     console.log(e)
@@ -272,7 +363,7 @@ const Settings: React.FC<Props> = (props) => {
           <Text style={styles.danger}>Delete Account</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -282,6 +373,15 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0)",
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 10,
+
+  },
+  mapContainer: {
+    width: "100%",
+    height: 150,
   },
   filledContainer: {
     display: "flex",

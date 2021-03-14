@@ -14,7 +14,7 @@ const Home: React.FC = (props) => {
         history.push("/log-in");
       }
     });
-  }, []);
+  }, [history]);
   return <h1>Home Page</h1>;
 };
 

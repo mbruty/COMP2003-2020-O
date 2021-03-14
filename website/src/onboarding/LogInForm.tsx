@@ -39,6 +39,11 @@ const LogInForm: React.FC = () => {
           }),
         });
 
+        const body = await result.json();
+
+        localStorage.setItem("auth", JSON.stringify({userid: body.userid, authtoken: body.authtoken}));
+        
+
         if (result.status === 401) {
           setErrorText("Invalid email or password");
         } else if (result.status === 200) {
