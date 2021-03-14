@@ -12,7 +12,7 @@ namespace api.Backend.Data.Obj
         public float Longitude, Latitude;
         public uint RestaurantID, OwnerID;
 
-        public string RestaurantName, RestaurantDescription, Phone, Email, Site;
+        public string RestaurantName, RestaurantDescription, Phone, Email, Site, WebhookURI;
 
         #endregion Fields
 
@@ -54,6 +54,12 @@ namespace api.Backend.Data.Obj
         public async Task<Visit[]> GetVisits()
         {
             return await Binding.GetTable<Visit>().Select<Visit>("RestaurantID", RestaurantID);
+        }
+
+        public async Task<bool> UpdateWebhook()
+        {
+            return await SQL.Instance.Execute("UPDATE Restaurant SET WebhookURI=@uri where RestaurantID=@id",
+                 new List<Tuple<string, object>>() { new Tuple<string, object>("uri", WebhookURI), new Tuple<string, object>("id", RestaurantID) });
         }
 
         #endregion Methods
