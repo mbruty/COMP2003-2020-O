@@ -48,12 +48,12 @@ const resolvers = {
       });
       if(authcheck.status !== 200)
         return false;
-      // const transformer = sharp().extract({
-      //   width: 200,
-      //   height: 200,
-      //   fit: sharp.fit.contain,
-      //   position: sharp.strategy.centre
-      // })
+      const transformer = sharp().resize({
+        width: 400,
+        height: 480,
+        fit: sharp.fit.contain,
+        position: sharp.strategy.centre
+      })
       const extract = sharp().extract({
         width: crop.width,
         height: crop.height,
@@ -63,7 +63,7 @@ const resolvers = {
       await new Promise((res) => {
         createReadStream()
           .pipe(extract)
-          // .pipe(transformer)
+          .pipe(transformer)
           .pipe(
             imgBucket.file(`${foodID}.png`).createWriteStream({
               resumable: false,
