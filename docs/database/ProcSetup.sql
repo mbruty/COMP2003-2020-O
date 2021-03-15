@@ -174,6 +174,7 @@ BEGIN
 END //
 
 
+-- Requires documentation within README, along with the associated function.
 CREATE PROCEDURE `Run-GetRestaurantsWithinDistance` (IN user_lat FLOAT, IN user_long FLOAT, IN max_distance INT, IN order_date_ref VARCHAR(5), IN order_time TIME)
 BEGIN
     DECLARE present_day_ref VARCHAR(5);
