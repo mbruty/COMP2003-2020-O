@@ -367,7 +367,7 @@ The string of nicknames is separated by $ symbols.
 
 ### Entity Relationship Diagram (Version 5.8)
 
-*This diagram is up to date as of 03/03/21.*
+*This diagram is not currently up-to-date. Latest version is 5.8.1.*
 
 <br>
 
