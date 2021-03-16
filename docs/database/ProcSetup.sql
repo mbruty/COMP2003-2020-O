@@ -304,11 +304,11 @@ BEGIN
     RETURN CASE
                WHEN day_num = 1 THEN 'SUN'
                WHEN day_num = 2 THEN 'MON'
-               WHEN day_num = 2 THEN 'TUES'
-               WHEN day_num = 2 THEN 'WED'
-               WHEN day_num = 2 THEN 'THURS'
-               WHEN day_num = 2 THEN 'FRI'
-               WHEN day_num = 2 THEN 'SAT'
+               WHEN day_num = 3 THEN 'TUES'
+               WHEN day_num = 4 THEN 'WED'
+               WHEN day_num = 5 THEN 'THURS'
+               WHEN day_num = 6 THEN 'FRI'
+               WHEN day_num = 7 THEN 'SAT'
         END;
 END //
 
