@@ -1,9 +1,11 @@
-import { Button, Paper } from "@material-ui/core";
-import React, { useState } from "react";
+import { Paper } from "@material-ui/core";
+import React from "react";
 import LogInStepper from "./LogInSteeper";
 import SignInForm from "./SignInOrUpForm";
 
-interface Props {}
+interface Props {
+  refresh: () => void;
+}
 
 const LogIn: React.FC<Props> = (props) => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -12,7 +14,13 @@ const LogIn: React.FC<Props> = (props) => {
   const renderPage = () => {
     switch (activeStep) {
       case 0:
-        return <SignInForm tabIdx={tabIdx} setTabIdx={setTabIdx} />;
+        return (
+          <SignInForm
+            tabIdx={tabIdx}
+            setTabIdx={setTabIdx}
+            refresh={props.refresh}
+          />
+        );
       default:
         return null;
     }

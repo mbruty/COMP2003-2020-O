@@ -8,7 +8,11 @@ import Home from "./Home";
 import LogIn from "./onboarding/LogIn";
 import DragNDrop from "./file-upload/DragNDrop";
 
-const dummyData = [{ id: 1, name: "The Bruty's Arms" }, { id: 2, name: "The Royal Davies" }, { id: 3, name: "The Lakin's Head" }]
+const dummyData = [
+  { id: 1, name: "The Bruty's Arms" },
+  { id: 2, name: "The Royal Davies" },
+  { id: 3, name: "The Lakin's Head" },
+];
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -31,7 +35,16 @@ function App() {
     [prefersDarkMode]
   );
 
-  const [selectedRestaurant, setSelectedRestaurant] = React.useState<{ id: number, name: string }>(dummyData[0]);
+  // Just here to cause the nav to re-render after log-in
+  const [updateState, setUpdateState] = React.useState(false);
+
+  const refresh = () => setUpdateState(!updateState);
+
+  const [selectedRestaurant, setSelectedRestaurant] = React.useState<{
+    id: number;
+    name: string;
+  }>(dummyData[0]);
+  
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -48,8 +61,16 @@ function App() {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" render={() => <Home />} />
-              <Route exact path="/log-in" render={() => <LogIn />} />
-              <Route exact path="/upload" render={() => <DragNDrop foodID={1} />} />
+              <Route
+                exact
+                path="/log-in"
+                render={() => <LogIn refresh={refresh} />}
+              />
+              <Route
+                exact
+                path="/upload"
+                render={() => <DragNDrop foodID={1} />}
+              />
             </Switch>
           </BrowserRouter>
         </main>
