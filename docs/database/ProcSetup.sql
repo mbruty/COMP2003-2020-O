@@ -76,6 +76,7 @@ DROP PROCEDURE IF EXISTS `Run-GenerateUserData`;
 DROP PROCEDURE IF EXISTS `Run-VerifyRestaurant`;
 DROP PROCEDURE IF EXISTS `Run-ResetRecommendations`;
 DROP PROCEDURE IF EXISTS `Run-GetRestaurantsWithinDistance`;
+DROP PROCEDURE IF EXISTS `Run-GetFoodChecksByID`;
 
 DROP FUNCTION IF EXISTS `Func-RandomSelection`;
 DROP FUNCTION IF EXISTS `Func-CountDelimiters`;
@@ -174,7 +175,6 @@ BEGIN
 END //
 
 
--- Requires documentation within README, along with the associated function.
 CREATE PROCEDURE `Run-GetRestaurantsWithinDistance` (IN user_lat FLOAT, IN user_long FLOAT, IN max_distance INT, IN order_date_ref VARCHAR(5), IN order_time TIME)
 BEGIN
     DECLARE present_day_ref VARCHAR(5);
@@ -191,6 +191,14 @@ BEGIN
         * cos( radians( Longitude ) - radians(user_long) ) + sin( radians(user_lat) ) * sin(radians(Latitude)) ) ) < max_distance
     AND ADDTIME(StartServing, TimeServing) > ADDTIME(present_time, '1:00')
     AND DayRef = present_day_ref;
+END //
+
+
+    -- Requires README documentation.
+CREATE PROCEDURE `Run-GetFoodChecksByID` (IN input_id INT)
+BEGIN
+    SELECT * FROM FoodChecks 
+    WHERE FoodCheckID = (SELECT FoodCheckID FROM User WHERE UserID = input_id);
 END //
 
 
