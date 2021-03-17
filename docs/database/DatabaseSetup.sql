@@ -66,6 +66,19 @@ CREATE TABLE `Session` (
         REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE `RestaurantAdmin` (
+    RAdminID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    Email VARCHAR(60) NOT NULL,
+    `Password` VARCHAR(110) NOT NULL,
+    IsVerified BIT NOT NULL DEFAULT 0,
+    DashLayout VARCHAR(64),
+
+    PRIMARY KEY (RAdminID),
+    CONSTRAINT UNQ_UserEmail UNIQUE (Email),
+
+    CONSTRAINT CHK_Email CHECK ((Email LIKE '%@%.%') OR (Email = '-1'))
+);
+
 CREATE TABLE `Restaurant` (
     RestaurantID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     OwnerID INT UNSIGNED NOT NULL,
