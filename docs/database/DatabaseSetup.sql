@@ -80,7 +80,7 @@ CREATE TABLE `RestaurantAdmin` (
     PRIMARY KEY (RAdminID),
     CONSTRAINT UNQ_UserEmail UNIQUE (Email),
 
-    CONSTRAINT CHK_Email CHECK ((Email LIKE '%@%.%') OR (Email = '-1'))
+    CONSTRAINT CHK_AdminEmail CHECK ((Email LIKE '%@%.%') OR (Email = '-1'))
 );
 
 CREATE TABLE `RAdminSession` (
