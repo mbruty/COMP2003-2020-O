@@ -12,6 +12,7 @@ import { useTheme } from "@material-ui/core/styles";
 interface Props {
   tabIdx: number;
   setTabIdx: React.Dispatch<React.SetStateAction<number>>;
+  refresh: () => void;
 }
 
 function a11yProps(index: any) {
@@ -27,14 +28,14 @@ const useStyles = makeStyles({
   },
 });
 
-const Form: React.FC<Props> = ({ tabIdx, setTabIdx }) => {
+const Form: React.FC<Props> = ({ tabIdx, setTabIdx, refresh }) => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabIdx(newValue);
   };
 
   const theme = useTheme();
 
-console.log(theme);
+  console.log(theme);
 
   return (
     <>
@@ -59,7 +60,7 @@ console.log(theme);
         </Tabs>
       </Paper>
       <TabPanel value={tabIdx} index={0}>
-        <LogInForm />
+        <LogInForm refresh={refresh} />
       </TabPanel>
       <TabPanel value={tabIdx} index={1}>
         Item Two
