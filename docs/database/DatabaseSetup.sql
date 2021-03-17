@@ -119,7 +119,7 @@ CREATE TABLE `Restaurant` (
 
 CREATE TABLE `RestaurantVerification` (
     RestaurantID INT UNSIGNED NOT NULL,
-    AuthToken VARCHAR(200) NOT NULL,
+    QRCode VARCHAR(200) NOT NULL,
 
     PRIMARY KEY (RestaurantID),
 
