@@ -12,6 +12,8 @@ DROP TABLE IF EXISTS `Days`;
 DROP TABLE IF EXISTS `FoodOpinion`;
 DROP TABLE IF EXISTS `FoodTags`;
 DROP TABLE IF EXISTS `Restaurant`;
+DROP TABLE IF EXISTS `RAdminSession`;
+DROP TABLE IF EXISTS `RestaurantAdmin`;
 DROP TABLE IF EXISTS `Session`;
 DROP TABLE IF EXISTS `User`;
 DROP TABLE IF EXISTS `FoodChecks`;
@@ -79,6 +81,17 @@ CREATE TABLE `RestaurantAdmin` (
     CONSTRAINT CHK_Email CHECK ((Email LIKE '%@%.%') OR (Email = '-1'))
 );
 
+CREATE TABLE `RAdminSession` (
+    RAdminID INT UNSIGNED NOT NULL,
+    SignedIn DATETIME NOT NULL DEFAULT NOW(),
+    AuthToken VARCHAR(110) NOT NULL,
+
+    PRIMARY KEY (RAdminID),
+
+    CONSTRAINT FK_AdminInSession FOREIGN KEY (RAdminID)
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 CREATE TABLE `Restaurant` (
     RestaurantID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     OwnerID INT UNSIGNED NOT NULL,
@@ -94,7 +107,7 @@ CREATE TABLE `Restaurant` (
     PRIMARY KEY (RestaurantID),
 
     CONSTRAINT FK_OwnerInRestaurant FOREIGN KEY (OwnerID)
-        REFERENCES User(UserID) ON UPDATE CASCADE ON DELETE RESTRICT,
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_RestaurantLongitude CHECK (Longitude BETWEEN -180 AND 180),
     CONSTRAINT CHK_RestaurantLatitude CHECK (Latitude BETWEEN -90 AND 90),
     CONSTRAINT CHK_RestaurantPhone CHECK (Phone REGEXP '[0-9]{11}'),
