@@ -308,6 +308,7 @@ END //
 
 CREATE FUNCTION `Func-DayToRef` (day_num int)
 RETURNS VARCHAR(5)
+DETERMINISTIC
 BEGIN
     RETURN CASE
                WHEN day_num = 1 THEN 'SUN'
