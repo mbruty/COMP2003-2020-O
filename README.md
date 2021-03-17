@@ -290,7 +290,7 @@ This feature is experimental and continues to be developed.
 > **This SP takes 1 parameter:**  
 > *name* `input_id` *type* `int` 
 
-This SP is used to quickly verify Restaurants.  
+This SP is used to quickly verify Restaurants.   
 Sets the IsVerified field to true (1).  
 Currently doesn't do it the other way around, but it hopefully will in the future.
 
@@ -299,10 +299,23 @@ Currently doesn't do it the other way around, but it hopefully will in the futur
 > **This SP takes 1 parameter:**  
 > *name* `input_id` *type* `int` 
 
-Used to remove the food opinion history of a user.
-This would be their own choice, activated by clicking the respective button in their Settings.
-Useful if they drastically change their preferences.
+Used to remove the food opinion history of a user.  
+This would be their own choice, activated by clicking the respective button in their Settings.  
+Useful if they drastically change their preferences.  
 Takes the user's ID as an argument.
+
+### Run-GetRestaurantsWithinDistance
+
+> **This SP takes 5 parameters:**  
+> *name* `user_lat` *type* `float`  
+> *name* `user_long` *type* `float`  
+> *name* `max_distance` *type* `int`  
+> *name* `order_date_ref` *type* `varchar(5)`  
+> *name* `order_time` *type* `time` 
+
+Returns Restaurants within a specified distance.  
+Uses sexy mathematics to calculate the radius based on latitude and longitudinal values.  
+It also checks to make sure the Restaurant will still be serving within one hour.
 
 ## MySQL Stored Functions
 
@@ -357,6 +370,15 @@ The string of domains is separated by $ symbols.
 This function will return a list of nicknames.  
 The string of nicknames is separated by $ symbols.
 
+### Func-DayToRef
+
+> **This function takes 1 parameter:**  
+> *name* `day_num` *type* `int`
+
+This function takes a standard day number of the week from 1-7.  
+Returns a reference string for the day in question between Sunday-Saturday (respectively).  
+**Remember:** Monday is not the first day of the week in this system.
+
 <br>
 
 ---
@@ -367,7 +389,7 @@ The string of nicknames is separated by $ symbols.
 
 ### Entity Relationship Diagram (Version 5.8)
 
-*This diagram is up to date as of 03/03/21.*
+*This diagram is not currently up-to-date. Latest version is 6.0.1.*
 
 <br>
 
