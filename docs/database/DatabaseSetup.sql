@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `Visit`;
 DROP TABLE IF EXISTS `RestaurantOpinion`;
 DROP TABLE IF EXISTS `LinkMenuFood`;
 DROP TABLE IF EXISTS `FoodItemTags`;
+DROP TABLE IF EXISTS `SwipeData`;
 DROP TABLE IF EXISTS `FoodItem`;
 DROP TABLE IF EXISTS `MenuTimes`;
 DROP TABLE IF EXISTS `LinkMenuRestaurant`;
@@ -11,6 +12,7 @@ DROP TABLE IF EXISTS `OpeningHours`;
 DROP TABLE IF EXISTS `Days`;
 DROP TABLE IF EXISTS `FoodOpinion`;
 DROP TABLE IF EXISTS `FoodTags`;
+DROP TABLE IF EXISTS `RestaurantVerification`;
 DROP TABLE IF EXISTS `Restaurant`;
 DROP TABLE IF EXISTS `RAdminSession`;
 DROP TABLE IF EXISTS `RestaurantAdmin`;
@@ -115,6 +117,16 @@ CREATE TABLE `Restaurant` (
     CONSTRAINT CHK_RestaurantSite CHECK (`Site` LIKE '%.%')
 );
 
+CREATE TABLE `RestaurantVerification` (
+    RestaurantID INT UNSIGNED NOT NULL,
+    AuthToken VARCHAR(200) NOT NULL,
+
+    PRIMARY KEY (RestaurantID),
+
+    CONSTRAINT FK_RestaurantInVerification FOREIGN KEY (RestaurantID)
+        REFERENCES Restaurant(RestaurantID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 CREATE TABLE `FoodTags` (
     FoodTagID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     Tag VARCHAR(20) NOT NULL,
@@ -217,6 +229,18 @@ CREATE TABLE `FoodItem` (
     CONSTRAINT FK_FoodCheckInFoodItem FOREIGN KEY (FoodCheckID)
         REFERENCES FoodChecks(FoodCheckID) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_FoodPrice CHECK (Price > 0.00)
+);
+
+CREATE TABLE `SwipeData` (
+    FoodID INT UNSIGNED NOT NULL,
+    SwipeDate DATE NOT NULL,
+    RightSwipes BIT NOT NULL DEFAULT 0,
+    LeftSwipes BIT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (FoodID, SwipeDate),
+
+    CONSTRAINT FK_FoodInSwipeData FOREIGN KEY (FoodID)
+        REFERENCES FoodItem(FoodID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE `FoodItemTags` (
