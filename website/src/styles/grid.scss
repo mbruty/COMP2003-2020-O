@@ -63,7 +63,6 @@
   animation: cardEnterance 200ms ease-out;
   transition: linear 200ms ease;
   animation-fill-mode: backwards;
-  cursor: pointer;
   position: relative;
 }
 
@@ -90,4 +89,23 @@
 }
 .r4 {
   grid-row: span 4;
+}
+
+.side-container {
+  position: absolute;
+  z-index: 9999999;
+  left: 110vw;
+  width: 100vw;
+  padding: 10px;
+  display: flex;
+  bottom: 0;
+  overflow-x: auto;
+  transition: left 500ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  > * {
+    margin-left: 15px !important;
+  }
+}
+
+.side-container.editing {
+  left: 0;
 }

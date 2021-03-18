@@ -1,7 +1,8 @@
 import React from "react";
-import Widget from "./Widget";
-import IWidgetProps from "./IWidgetProps";
+import IWidgetProps from "../IWidgetProps";
 import { Bar } from "react-chartjs-2";
+import DraggableWidget from "../DraggableWidget";
+import Widget from "../Widget";
 
 const options = {
   maintainAspectRatio: false,
@@ -37,8 +38,15 @@ const data = {
 };
 
 const RecentSwipeStats: React.FC<IWidgetProps> = (props) => {
+  if (props.editing) {
+    return (
+      <DraggableWidget {...props} rows={1} columns={1}>
+        <Bar data={data} options={options} />
+      </DraggableWidget>
+    );
+  }
   return (
-    <Widget {...props} rows={2} columns={1}>
+    <Widget {...props} rows={1} columns={1}>
       <Bar data={data} options={options} />
     </Widget>
   );

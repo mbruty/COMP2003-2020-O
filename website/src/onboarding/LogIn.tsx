@@ -15,11 +15,13 @@ const LogIn: React.FC<Props> = (props) => {
     switch (activeStep) {
       case 0:
         return (
-          <SignInForm
-            tabIdx={tabIdx}
-            setTabIdx={setTabIdx}
-            refresh={props.refresh}
-          />
+          <div className="log-in">
+            <SignInForm
+              tabIdx={tabIdx}
+              setTabIdx={setTabIdx}
+              refresh={props.refresh}
+            />
+          </div>
         );
       default:
         return null;

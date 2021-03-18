@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./Home";
 import LogIn from "./onboarding/LogIn";
 import DragNDrop from "./file-upload/DragNDrop";
+import { Observer } from "./dashboard/WidgetObserver";
 
 const dummyData = [
   { id: 1, name: "The Bruty's Arms" },
@@ -29,6 +30,9 @@ function App() {
             main: prefersDarkMode ? "#FD4040" : "#ff776c",
             dark: prefersDarkMode ? "#c20018" : "#FD4040",
           },
+          secondary: {
+            main: "#4caf50",
+          },
           type: prefersDarkMode ? "dark" : "light",
         },
       }),
@@ -40,42 +44,48 @@ function App() {
 
   const refresh = () => setUpdateState(!updateState);
 
+  const widgetObserver = useMemo(() => new Observer(), []);
+
   const [selectedRestaurant, setSelectedRestaurant] = React.useState<{
     id: number;
     name: string;
   }>(dummyData[0]);
-  
+
   return (
-    <ThemeProvider theme={theme}>
-      <div
-        className="app"
-        style={{ backgroundColor: theme.palette.background.default }}
-      >
-        <Nav
-          colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
-          selectedRestaurant={selectedRestaurant}
-          setSelectedRestaurant={setSelectedRestaurant}
-          restaurants={dummyData}
-        />
-        <main>
-          <BrowserRouter>
-            <Switch>
-              <Route exact path="/" render={() => <Home />} />
-              <Route
-                exact
-                path="/log-in"
-                render={() => <LogIn refresh={refresh} />}
-              />
-              <Route
-                exact
-                path="/upload"
-                render={() => <DragNDrop foodID={1} />}
-              />
-            </Switch>
-          </BrowserRouter>
-        </main>
-      </div>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <div
+          className="app"
+          style={{ backgroundColor: theme.palette.background.default }}
+        >
+          <Nav
+            colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
+            selectedRestaurant={selectedRestaurant}
+            setSelectedRestaurant={setSelectedRestaurant}
+            restaurants={dummyData}
+          />
+          <main>
+            <BrowserRouter>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Home observer={widgetObserver} />}
+                />
+                <Route
+                  exact
+                  path="/log-in"
+                  render={() => <LogIn refresh={refresh} />}
+                />
+                <Route
+                  exact
+                  path="/upload"
+                  render={() => <DragNDrop foodID={1} />}
+                />
+              </Switch>
+            </BrowserRouter>
+          </main>
+        </div>
+      </ThemeProvider>
   );
 }
 
