@@ -1,4 +1,5 @@
 import { Widgets } from "../Home";
+import { decode, encode } from "./encodeDecodeWidget";
 
 export type WidgetObserver = ((widgets: Widgets[]) => void) | null;
 
@@ -6,6 +7,10 @@ export class Observer {
   private backup: Widgets[] = [];
   public widgets: Widgets[] = [];
   private observers: WidgetObserver[] = [];
+
+  constructor() {
+    this.widgets = decode("01");
+  }
 
   public subscribe(o: WidgetObserver): () => void {
     this.observers.push(o);
@@ -25,8 +30,14 @@ export class Observer {
     this.emitChange();
   }
 
+  private widgetToBase64(): string {
+    console.log(encode(this.widgets));
+    return "";
+  }
+
   public save(): void {
     this.backup = [];
+    this.widgetToBase64();
     // todo send to the backend to save
   }
 
