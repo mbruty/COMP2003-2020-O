@@ -85,10 +85,10 @@ const DragNDrop: React.FC<Props> = (props) => {
   console.log(cropData);
 
   return (
-    <>
+    <div className="content">
       {!file &&
         <Paper style={{ borderRadius: 20 }}>
-          <div className="drag-n-drop-container" {...getRootProps()}>
+          <div className="drag-n-drop-container widget" {...getRootProps()}>
             <input {...getInputProps()} />
             {isDragActive && !isDragReject && (
               <>
@@ -137,7 +137,7 @@ const DragNDrop: React.FC<Props> = (props) => {
           </div>
         </>
       }
-    </>
+    </div>
   );
 };
 

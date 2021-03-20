@@ -10,18 +10,38 @@
   height: 100vh;
 }
 
-#drawer-open > :first-child, #drawer-closed > :first-child {
- padding-top: 64px;
+#drawer-open > :first-child,
+#drawer-closed > :first-child {
+  padding-top: 64px;
+}
+
+#drawer-closed h3.nav {
+  display: none;
+}
+
+h3.nav {
+  display: inherit;
+  text-align: center;
+}
+
+body {
+  overflow: hidden;
 }
 
 main {
+  margin-top: 64px;
+  overflow: auto;
+  padding-top: 25px;
+  display: flex;
+  flex-direction: column;
+  // 100 viewport height - nav bar height - padding top
+  height: calc(100vh - 64px - 25px);
+}
+
+.content {
   display: grid;
   align-items: start;
   justify-content: center;
-  margin-top: 64px;
-  padding-top: 25px;
-  // 100 viewport height - nav bar height - padding top
-  height: calc(100vh - 64px - 25px);
 
   form.login-container {
     margin-top: 25px;
@@ -29,7 +49,6 @@ main {
     justify-content: center;
     grid-template-columns: 40% 40%;
     gap: 1rem 5%;
-
   }
 }
 
@@ -55,18 +74,22 @@ main {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-#select-restaurant > div:first-of-type{
+#select-restaurant > div:first-of-type {
   transition: background-color 0.2 ease-in;
 }
 
 .drag-n-drop-container {
   width: 50vmin !important;
   height: 50vmin !important;
-  border: 1px dashed #aaaaaa;
   display: grid;
-  place-items: center ;
+  place-items: center;
   cursor: pointer;
   border-radius: 20px;
   padding: 15px;
   overflow: hidden;
+}
+
+h3.nav {
+  display: inherit;
+  text-align: center;
 }

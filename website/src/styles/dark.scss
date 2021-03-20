@@ -16,3 +16,21 @@ main {
 #select-restaurant > div:first-of-type:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+.widget {
+  color: white;
+  border-radius: 20px;
+  background: #212121;
+  box-shadow: inset 5px 5px 12px #0d0d0d, inset -5px -5px 12px #353535;
+}
+
+.side-container {
+  background-color: #414141;
+  box-shadow: 0px -18px 33px 10px rgba(0, 0, 0, 0.4);
+
+  .widget {
+    border-radius: 20px;
+    background: #414141;
+    box-shadow: inset 5px 5px 12px #1a1a1a, inset -5px -5px 12px #686868;
+  }
+}

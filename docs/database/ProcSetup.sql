@@ -75,6 +75,8 @@ DROP PROCEDURE IF EXISTS `Run-PermaDeleteUser`;
 DROP PROCEDURE IF EXISTS `Run-GenerateUserData`;
 DROP PROCEDURE IF EXISTS `Run-VerifyRestaurant`;
 DROP PROCEDURE IF EXISTS `Run-ResetRecommendations`;
+DROP PROCEDURE IF EXISTS `Run-GetRestaurantsWithinDistance`;
+DROP PROCEDURE IF EXISTS `Run-GetFoodChecksByID`;
 
 DROP FUNCTION IF EXISTS `Func-RandomSelection`;
 DROP FUNCTION IF EXISTS `Func-CountDelimiters`;
@@ -82,6 +84,7 @@ DROP FUNCTION IF EXISTS `Func-RandomNumber`;
 DROP FUNCTION IF EXISTS `Func-GetEmailStarts`;
 DROP FUNCTION IF EXISTS `Func-GetDomains`;
 DROP FUNCTION IF EXISTS `Func-GetNicknames`;
+DROP FUNCTION IF EXISTS `Func-DayToRef`;
 
 
 
@@ -169,6 +172,33 @@ CREATE PROCEDURE `Run-ResetRecommendations` (IN input_id INT)
 BEGIN
     DELETE FROM `FoodOpinion`
     WHERE `FoodOpinion`.UserID = input_id;
+END //
+
+
+CREATE PROCEDURE `Run-GetRestaurantsWithinDistance` (IN user_lat FLOAT, IN user_long FLOAT, IN max_distance INT, IN order_date_ref VARCHAR(5), IN order_time TIME)
+BEGIN
+    DECLARE present_day_ref VARCHAR(5);
+    DECLARE present_time TIME;
+
+    SELECT IFNULL (order_time, CURRENT_TIME()) INTO present_time;
+
+    SELECT IFNULL ((SELECT DayRef FROM Days WHERE DayRef = order_date_ref), Func-DayToRef(DAYOFWEEK(CURRENT_DATE()))) INTO present_day_ref;
+
+        -- FROM https://stackoverflow.com/questions/29553895/querying-mysql-for-latitude-and-longitude-coordinates-that-are-within-a-given-mi    
+    SELECT RestaurantID, IsVegetarian, IsVegan, IsHalal, IsKosher, HasLactose, HasNuts, HasGluten, HasEgg, HasSoy, FoodID, FoodName, IsChildMenu, FoodTagID
+    FROM RestaurantMenuView
+    WHERE ( 3959 * acos( cos( radians(user_lat) ) * cos( radians( Latitude ) )
+        * cos( radians( Longitude ) - radians(user_long) ) + sin( radians(user_lat) ) * sin(radians(Latitude)) ) ) < max_distance
+    AND ADDTIME(StartServing, TimeServing) > ADDTIME(present_time, '1:00')
+    AND DayRef = present_day_ref;
+END //
+
+
+    -- Requires README documentation.
+CREATE PROCEDURE `Run-GetFoodChecksByID` (IN input_id INT)
+BEGIN
+    SELECT * FROM FoodChecks 
+    WHERE FoodCheckID = (SELECT FoodCheckID FROM User WHERE UserID = input_id);
 END //
 
 
@@ -273,6 +303,22 @@ BEGIN
     'Fiend$Axeman$GrimThing$Ryan$C$Gravy$Bottle$Timber$Kesh$FastMan$Superbad$Ginger$Jesus$Oscar$Alex$Reef$Jake$Mike$Jack$Lucky$Horse$Wagner$Jiles$Willow$Tim$X$River$Choco$Clubs$Hubby$Lola$Fingers$JK$Star$BowlingFan$Mario$Luigi$Bowser$Superman$Wondergirl$Pig$Susan$Dicky$Criminal$Legs$Chimney$Goats$Secular$Max$Jo$Joy$Kites$xXSadManXx$KillAll$Devil$Grogu$Mando$Luke$JackMach$Oliver$MoonMan$FishLad$TheJuice$Magical$Umm$Six$Katie$Bruv$Henry$Lovebird$Michael$Joan$Phil$Tommy$Mac$Sacks$Tulip$Firefly$ONION$GooGoo$lowercase$Townsy$Sim$Cam$';
 
     RETURN sending_info;
+END //
+
+
+CREATE FUNCTION `Func-DayToRef` (day_num int)
+RETURNS VARCHAR(5)
+DETERMINISTIC
+BEGIN
+    RETURN CASE
+               WHEN day_num = 1 THEN 'SUN'
+               WHEN day_num = 2 THEN 'MON'
+               WHEN day_num = 3 THEN 'TUES'
+               WHEN day_num = 4 THEN 'WED'
+               WHEN day_num = 5 THEN 'THURS'
+               WHEN day_num = 6 THEN 'FRI'
+               WHEN day_num = 7 THEN 'SAT'
+        END;
 END //
 
 DELIMITER ;
