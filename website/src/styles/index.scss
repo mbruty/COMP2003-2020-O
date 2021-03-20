@@ -15,6 +15,15 @@
   padding-top: 64px;
 }
 
+#drawer-closed h3.nav {
+  display: none;
+}
+
+h3.nav {
+  display: inherit;
+  text-align: center;
+}
+
 body {
   overflow: hidden;
 }
@@ -78,4 +87,9 @@ main {
   border-radius: 20px;
   padding: 15px;
   overflow: hidden;
+}
+
+h3.nav {
+  display: inherit;
+  text-align: center;
 }

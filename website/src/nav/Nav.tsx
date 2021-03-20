@@ -1,29 +1,44 @@
-import React from 'react';
-import clsx from 'clsx';
-import { createStyles, makeStyles, useTheme, Theme, fade } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import React from "react";
+import clsx from "clsx";
+import {
+  createStyles,
+  makeStyles,
+  useTheme,
+  Theme,
+  fade,
+} from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import SearchIcon from "@material-ui/icons/Search";
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import { Badge, Button, InputBase, Menu, MenuItem } from '@material-ui/core';
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import InboxIcon from "@material-ui/icons/MoveToInbox";
+import MailIcon from "@material-ui/icons/Mail";
+import { Badge, Button, InputBase, Menu, MenuItem } from "@material-ui/core";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import { AccountCircle } from '@material-ui/icons';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  AccountCircle,
+  Equalizer,
+  Fastfood,
+  MenuBook,
+  Store,
+} from "@material-ui/icons";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBuilding } from "@fortawesome/free-solid-svg-icons";
+import { useHistory } from "react-router";
 
 const drawerWidth = 280;
 
@@ -43,35 +58,35 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: 36,
     },
     hide: {
-      display: 'none',
+      display: "none",
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
-      whiteSpace: 'nowrap',
+      whiteSpace: "nowrap",
     },
     drawerOpen: {
       width: drawerWidth,
-      transition: theme.transitions.create('width', {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
     drawerClose: {
-      transition: theme.transitions.create('width', {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      overflowX: 'hidden',
+      overflowX: "hidden",
       width: theme.spacing(7) + 1,
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up("sm")]: {
         width: theme.spacing(8) + 1,
       },
     },
     toolbar: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-end",
       padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
@@ -134,10 +149,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("md")]: {
         display: "none",
       },
-    }
-  }),
+    },
+  })
 );
-
 
 interface Props {
   colour: string;
@@ -149,15 +163,17 @@ interface Props {
     id: number;
     name: string;
   };
-  setSelectedRestaurant: React.Dispatch<React.SetStateAction<{
-    id: number;
-    name: string;
-  }>>;
+  setSelectedRestaurant: React.Dispatch<
+    React.SetStateAction<{
+      id: number;
+      name: string;
+    }>
+  >;
 }
 
 export default function Nav(props: Props) {
+  const history = useHistory();
   const classes = useStyles();
-  const theme = useTheme();
   const [expanded, setExpanded] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState(false);
 
@@ -249,12 +265,14 @@ export default function Nav(props: Props) {
     </Menu>
   );
 
-
   return (
     <div className={classes.grow}>
-      <AppBar style={{ backgroundColor: props.colour }} className={classes.appBar} >
+      <AppBar
+        style={{ backgroundColor: props.colour }}
+        className={classes.appBar}
+      >
         <Toolbar>
-          {window.location.pathname !== "/log-in" &&
+          {window.location.pathname !== "/log-in" && (
             <>
               <IconButton
                 color="inherit"
@@ -279,7 +297,7 @@ export default function Nav(props: Props) {
                 <ChevronLeftIcon />
               </IconButton>
             </>
-          }
+          )}
           <Typography className={classes.title} variant="h6" noWrap>
             Track and Taste Dashboard
           </Typography>
@@ -324,8 +342,7 @@ export default function Nav(props: Props) {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      {window.location.pathname !== "/log-in" &&
-
+      {window.location.pathname !== "/log-in" && (
         <Drawer
           id={open ? "drawer-open" : "drawer-closed"}
           variant="permanent"
@@ -340,56 +357,108 @@ export default function Nav(props: Props) {
             }),
           }}
         >
-
           <List>
-            <ListItem button onClick={() => {
-              if (!open) {
-                setOpen(true);
-                setExpanded(true)
-              }
-            }}>
-              {!open && <ListItemIcon><ExpandMoreIcon /></ListItemIcon>}
-              {open &&
-                <Accordion onChange={() => setExpanded(!expanded)} expanded={expanded} style={{ width: "100%" }} id="select-restaurant">
+            <ListItem
+              button
+              onClick={() => {
+                if (!open) {
+                  setOpen(true);
+                  setExpanded(true);
+                }
+              }}
+            >
+              {!open && (
+                <ListItemIcon>
+                  <ExpandMoreIcon />
+                </ListItemIcon>
+              )}
+              {open && (
+                <Accordion
+                  onChange={() => setExpanded(!expanded)}
+                  expanded={expanded}
+                  style={{ width: "100%" }}
+                  id="select-restaurant"
+                >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography className={classes.heading}>{props.selectedRestaurant.name}</Typography>
+                    <Typography className={classes.heading}>
+                      {props.selectedRestaurant.name}
+                    </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <div style={{ display: "flex", flexFlow: "column nowrap", width: "100%" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexFlow: "column nowrap",
+                        width: "100%",
+                      }}
+                    >
                       {props.restaurants.map((restaurant) => (
                         <div style={{ marginBottom: "5px" }}>
-                          <Button onClick={() => { props.setSelectedRestaurant(restaurant); setExpanded(false) }} style={{ width: "100%" }}>{restaurant.name}</Button>
+                          <Button
+                            onClick={() => {
+                              props.setSelectedRestaurant(restaurant);
+                              setExpanded(false);
+                            }}
+                            style={{ width: "100%" }}
+                          >
+                            {restaurant.name}
+                          </Button>
                           <Divider />
                         </div>
-
                       ))}
                     </div>
                   </AccordionDetails>
                 </Accordion>
-              }
+              )}
             </ListItem>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            <Divider />
+            <h3 className="nav">Analytics</h3>
+            <ListItem button key="Dashboard" onClick={() => history.push("/")}>
+              <ListItemIcon>
+                <Equalizer />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+            <Divider />
+            <h3 className="nav">Creation</h3>
+            <ListItem
+              button
+              key="Create / Edit a Restaurant"
+              onClick={() => history.push("/restaurant-builder")}
+            >
+              <ListItemIcon>
+                <Store />
+              </ListItemIcon>
+              <ListItemText primary="Create / Edit a Restaurant" />
+            </ListItem>
+            <ListItem
+              button
+              key="Create / Edit a Menu"
+              onClick={() => history.push("/menu-builder")}
+            >
+              <ListItemIcon>
+                <MenuBook />
+              </ListItemIcon>
+              <ListItemText primary="Create / Edit a Menu" />
+            </ListItem>
+            <ListItem
+              button
+              key="Create / Edit a Food Item"
+              onClick={() => history.push("/item-builder")}
+            >
+              <ListItemIcon>
+                <Fastfood />
+              </ListItemIcon>
+              <ListItemText primary="Create / Edit a Food Item" />
+            </ListItem>
           </List>
           <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
         </Drawer>
-      }
+      )}
     </div>
-  )
+  );
 }
