@@ -8,11 +8,17 @@ main {
 
 .widget {
   border-radius: 20px;
-  background: #e2e7e9;
-  box-shadow: inset 5px 5px 10px #95989a, inset -5px -5px 10px #ffffff;
+  background: #efefef;
+  box-shadow: inset 5px 5px 7px #cecece, inset -5px -5px 7px #ffffff;
 }
 
 .side-container {
-  background-color: rgb(208, 210, 211);
-  box-shadow: 0px -18px 33px 10px rgba(149, 153, 155, 0.733);;
+  background-color: rgb(198, 202, 204);
+  box-shadow: 0px -18px 33px 10px rgba(149, 153, 155, 0.733);
+
+  .widget {
+    border-radius: 20px;
+    background: #c6cacc;
+    box-shadow: inset 5px 5px 7px #aaaeaf, inset -5px -5px 7px #e2e6e9;
+  }
 }

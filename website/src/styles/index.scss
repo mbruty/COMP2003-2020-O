@@ -20,16 +20,16 @@ body {
 }
 
 main {
-  display: flex;
-  flex-direction: column;
   margin-top: 64px;
   overflow: auto;
   padding-top: 25px;
+  display: flex;
+  flex-direction: column;
   // 100 viewport height - nav bar height - padding top
   height: calc(100vh - 64px - 25px);
 }
 
-main.log-in {
+.content {
   display: grid;
   align-items: start;
   justify-content: center;
@@ -72,7 +72,6 @@ main.log-in {
 .drag-n-drop-container {
   width: 50vmin !important;
   height: 50vmin !important;
-  border: 1px dashed #aaaaaa;
   display: grid;
   place-items: center;
   cursor: pointer;
