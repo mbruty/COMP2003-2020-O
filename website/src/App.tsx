@@ -8,11 +8,15 @@ import Home from "./Home";
 import LogIn from "./onboarding/LogIn";
 import DragNDrop from "./file-upload/DragNDrop";
 import { Observer } from "./dashboard/WidgetObserver";
+import RestaurantBuilder from "./restaurant-builder/RestaurantBuilder";
+import MenuBuilder from "./menu-builder/MenuBilder";
+import ItemBuilder from "./item-builder/ItemBuilder";
 
 const dummyData = [
   { id: 1, name: "The Bruty's Arms" },
   { id: 2, name: "The Royal Davies" },
   { id: 3, name: "The Lakin's Head" },
+  { id: 4, name: "Denman's Diner" },
 ];
 
 function App() {
@@ -52,11 +56,12 @@ function App() {
   }>(dummyData[0]);
 
   return (
-      <ThemeProvider theme={theme}>
-        <div
-          className="app"
-          style={{ backgroundColor: theme.palette.background.default }}
-        >
+    <ThemeProvider theme={theme}>
+      <div
+        className="app"
+        style={{ backgroundColor: theme.palette.background.default }}
+      >
+        <BrowserRouter>
           <Nav
             colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
             selectedRestaurant={selectedRestaurant}
@@ -64,28 +69,42 @@ function App() {
             restaurants={dummyData}
           />
           <main>
-            <BrowserRouter>
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  render={() => <Home observer={widgetObserver} />}
-                />
-                <Route
-                  exact
-                  path="/log-in"
-                  render={() => <LogIn refresh={refresh} />}
-                />
-                <Route
-                  exact
-                  path="/upload"
-                  render={() => <DragNDrop foodID={1} />}
-                />
-              </Switch>
-            </BrowserRouter>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => <Home observer={widgetObserver} />}
+              />
+              <Route
+                exact
+                path="/log-in"
+                render={() => <LogIn refresh={refresh} />}
+              />
+              <Route
+                exact
+                path="/upload"
+                render={() => <DragNDrop foodID={1} />}
+              />
+              <Route
+                exact
+                path="/restaurant-builder"
+                render={() => <RestaurantBuilder />}
+              />
+              <Route
+                exact
+                path="/menu-builder"
+                render={() => <MenuBuilder />}
+              />
+              <Route
+                exact
+                path="/item-builder"
+                render={() => <ItemBuilder />}
+              />
+            </Switch>
           </main>
-        </div>
-      </ThemeProvider>
+        </BrowserRouter>
+      </div>
+    </ThemeProvider>
   );
 }
 

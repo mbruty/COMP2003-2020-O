@@ -46,7 +46,7 @@ const RecentSwipeStats: React.FC<IWidgetProps> = (props) => {
     );
   }
   return (
-    <Widget {...props} rows={1} columns={1}>
+    <Widget {...props} rows={2} columns={1}>
       <Bar data={data} options={options} />
     </Widget>
   );

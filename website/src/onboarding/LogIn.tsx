@@ -32,17 +32,19 @@ const LogIn: React.FC<Props> = (props) => {
   const showStepper = !(tabIdx === 0 && activeStep === 0);
 
   return (
-    <Paper style={{ padding: 25 }}>
-      <div>
-        <h1>Welcome to the Track and Taste Dashboard</h1>
-      </div>
-      {renderPage()}
-      <LogInStepper
-        show={showStepper}
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
-      />
-    </Paper>
+    <div className="content">
+      <Paper style={{ padding: 25 }}>
+        <div>
+          <h1>Welcome to the Track and Taste Dashboard</h1>
+        </div>
+        {renderPage()}
+        <LogInStepper
+          show={showStepper}
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
+        />
+      </Paper>
+    </div>
   );
 };
 
