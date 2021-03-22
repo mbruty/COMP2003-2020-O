@@ -14,7 +14,9 @@ DROP TABLE IF EXISTS `FoodOpinion`;
 DROP TABLE IF EXISTS `FoodTags`;
 DROP TABLE IF EXISTS `RestaurantVerification`;
 DROP TABLE IF EXISTS `Restaurant`;
+DROP TABLE IF EXISTS `CommunityTagResponse`;
 DROP TABLE IF EXISTS `RAdminSession`;
+DROP TABLE IF EXISTS `TagSuggestions`;
 DROP TABLE IF EXISTS `RestaurantAdmin`;
 DROP TABLE IF EXISTS `Session`;
 DROP TABLE IF EXISTS `User`;
@@ -83,6 +85,20 @@ CREATE TABLE `RestaurantAdmin` (
     CONSTRAINT CHK_AdminEmail CHECK ((Email LIKE '%@%.%') OR (Email = '-1'))
 );
 
+CREATE TABLE `TagSuggestions` (
+    SuggestionID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    Tag VARCHAR(20) NOT NULL,
+    DateAdded DATE,
+    OwnerID INT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (FoodTagID),
+    CONSTRAINT UNQ_FoodTag UNIQUE (Tag),
+
+    CONSTRAINT CHK_Tag CHECK (Tag REGEXP '[a-z]{3,}'),
+    CONSTRAINT FK_AdminInSuggestions FOREIGN KEY (OwnerID)
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
 CREATE TABLE `RAdminSession` (
     RAdminID INT UNSIGNED NOT NULL,
     SignedIn DATETIME NOT NULL DEFAULT NOW(),
@@ -93,6 +109,20 @@ CREATE TABLE `RAdminSession` (
     CONSTRAINT FK_AdminInSession FOREIGN KEY (RAdminID)
         REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE `CommunityTagResponse` (
+    RAdminID INT UNSIGNED NOT NULL,
+    SuggestionID INT UNSIGNED NOT NULL,
+    Upvote BIT NOT NULL,
+
+    PRIMARY KEY (RAdminID, SuggestionID),
+
+    CONSTRAINT FK_AdminInTagResponse FOREIGN KEY (RAdminID)
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_TagInTagResponse FOREIGN KEY (SuggestionID)
+        REFERENCES TagSuggestions(SuggestionID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 
 CREATE TABLE `Restaurant` (
     RestaurantID INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -235,8 +265,8 @@ CREATE TABLE `FoodItem` (
 CREATE TABLE `SwipeData` (
     FoodID INT UNSIGNED NOT NULL,
     SwipeDate DATE NOT NULL,
-    RightSwipes BIT NOT NULL DEFAULT 0,
-    LeftSwipes BIT NOT NULL DEFAULT 0,
+    RightSwipes INT,
+    LeftSwipes INT,
 
     PRIMARY KEY (FoodID, SwipeDate),
 
