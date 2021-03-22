@@ -91,10 +91,10 @@ CREATE TABLE `TagSuggestions` (
     DateAdded DATE,
     OwnerID INT UNSIGNED NOT NULL,
 
-    PRIMARY KEY (FoodTagID),
+    PRIMARY KEY (SuggestionID),
     CONSTRAINT UNQ_FoodTag UNIQUE (Tag),
 
-    CONSTRAINT CHK_Tag CHECK (Tag REGEXP '[a-z]{3,}'),
+    CONSTRAINT CHK_SuggestedTag CHECK (Tag REGEXP '[a-z]{3,}'),
     CONSTRAINT FK_AdminInSuggestions FOREIGN KEY (OwnerID)
         REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE RESTRICT
 );
