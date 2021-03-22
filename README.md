@@ -389,7 +389,7 @@ Returns a reference string for the day in question between Sunday-Saturday (resp
 
 ### Entity Relationship Diagram (Version 5.8)
 
-*This diagram is not currently up-to-date. Latest version is 6.0.1.*
+*This diagram is not currently up-to-date. Latest version is 6.1.0.*
 
 <br>
 
