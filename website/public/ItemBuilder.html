@@ -39,6 +39,7 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+
 </head>
 
 <body bgcolor="555555">
@@ -51,16 +52,16 @@
         <p>HOME</p>
     </a>
     <a href="#about" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-        <i class="fa fa-user w3-xxlarge"></i>
-        <p>ABOUT</p>
+        <i class="fas fa-sign"></i>
+        <p>Restaurant Builder</p>
     </a>
     <a href="#photos" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-        <i class="fa fa-eye w3-xxlarge"></i>
-        <p>PHOTOS</p>
+        <i class="fas fa-pizza-slice"></i>
+        <p>Menu Builder</p>
     </a>
     <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-        <i class="fa fa-envelope w3-xxlarge"></i>
-        <p>CONTACT</p>
+        <i class="fas fa-drumstick-bite"></i>
+        <p>Item Builder</p>
     </a>
 </nav>
 
@@ -79,7 +80,7 @@
 <div align="center">
     <h2>Welcome to the Track and Taste Item Builder</h2>
     <h3>Let's create a new item for your menu</h3>
-    <hr>
+    <hr color="black">
 </div>
 <div class="w3-padding-large" id="main">
     <h2>Step 1: Item details</h2>
@@ -93,7 +94,7 @@
     <label for="price">Price:</label>
     <input type="text" id="price" name="price"><br><br>
 
-    <hr>
+    <hr color="black">
 
     <h2>Step 2: Food Checks</h2>
     <h3>Tell us if your new item fits into our categories</h3>
@@ -119,7 +120,7 @@
     <label for="isSoy">Contains Soy</label>
     <input type="checkbox" id="isSoy" name="isSoy"><br><br>
 
-    <hr>
+    <hr color="black">
 
     <h2>Step 3: Assign Food Tags</h2>
     <h3>Make your new item easier to find by giving it tags that help us describe it</h3>
@@ -127,11 +128,10 @@
     <input type="text" id="tagSearch" name="tagSearch">
     <input type="button" value="Find Tag"><br><br>
     <h3>Currently Selected Tags</h3>
-    <textarea id="w3review" name="w3review" rows="4" cols="50">
-        Tags go here
+    <textarea id="w3review" name="w3review" rows="4" cols="50">Tags go here
     </textarea>
 
-    <hr>
+    <hr color="black">
     <H2>Step 4: Create Your Item</H2>
     <h3>When your happy with your item click the button below to save it</h3>
     <input type="submit" value="Create Item">
