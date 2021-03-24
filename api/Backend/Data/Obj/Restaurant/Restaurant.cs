@@ -14,6 +14,8 @@ namespace api.Backend.Data.Obj
 
         public string RestaurantName, RestaurantDescription, Phone, Email, Site;
 
+        public bool IsVerified;
+
         #endregion Fields
 
         #region Methods

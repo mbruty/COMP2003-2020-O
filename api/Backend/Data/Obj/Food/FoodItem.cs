@@ -11,7 +11,7 @@ namespace api.Backend.Data.Obj
 
         public uint FoodID, FoodCheckID;
 
-        public string FoodName, FoodDescription;
+        public string FoodName, FoodNameShort, FoodDescription;
 
         public decimal Price;
 
