@@ -11,7 +11,7 @@ namespace api.Backend.Data.Obj
 
         public uint FoodID, FoodCheckID;
 
-        public string FoodName, FoodDescription;
+        public string FoodName, FoodNameShort, FoodDescription;
 
         public decimal Price;
 
@@ -22,6 +22,11 @@ namespace api.Backend.Data.Obj
         public async Task<FoodChecks> GetFoodCheck()
         {
             return (await Binding.GetTable<FoodChecks>().Select<FoodChecks>(FoodCheckID))?[0];
+        }
+
+        public async Task<SwipeData[]> GetSwipeData()
+        {
+            return (await Binding.GetTable<SwipeData>().Select<SwipeData>(FoodID));
         }
 
         public async Task<FoodTags[]> GetFoodTags()

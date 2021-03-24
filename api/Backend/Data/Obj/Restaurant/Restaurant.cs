@@ -14,6 +14,8 @@ namespace api.Backend.Data.Obj
 
         public string RestaurantName, RestaurantDescription, Phone, Email, Site;
 
+        public bool IsVerified;
+
         #endregion Fields
 
         #region Methods
@@ -32,9 +34,9 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<OpeningHours>().Select<OpeningHours>(RestaurantID);
         }
 
-        public async Task<User> GetOwner()
+        public async Task<ResturantAdmin> GetOwner()
         {
-            return (await Binding.GetTable<User>().Select<User>(OwnerID))?[0];
+            return (await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>(OwnerID))?[0];
         }
 
         public async Task<RestaurantOpinion[]> GetRestaurantOpinions()

@@ -4,22 +4,16 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
-    public class OpeningHours : Object
+    public class ResturantVerification : Object
     {
         #region Fields
 
-        public string DayRef;
-        public DateTime OpenTime, Duration;
         public uint RestaurantID;
+        public string QRCode;
 
         #endregion Fields
 
         #region Methods
-
-        public async Task<Days> GetDays()
-        {
-            return (await Binding.GetTable<Days>().Select<Days>("DayRef", DayRef))?[0];
-        }
 
         public async Task<Restaurant> GetRestaurant()
         {
