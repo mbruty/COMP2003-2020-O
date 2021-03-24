@@ -12,70 +12,63 @@ import {
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
 import { reset } from "../includeAuth";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Page } from "./GroupPageRouter";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
+  isHost: boolean;
+  roomCode: string;
+  members: Array<String>;
 }
 
-const GroupPage: React.FC<Props> = (props) => {
-  return (
-    <View>
-      <View style={styles.box}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text style={styles.title}>Enter a Group Code:</Text>
-        </View>
-        <AwesomeTextInput
-          customStyles={{
-            title: CONSTANT_STYLES.TXT_DEFAULT,
-            container: { marginTop: 25 },
-          }}
-          label="Group Code"
-        />
-        <View style={styles.btnContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              console.log("Join Group Clicked");
-              props.setPage(Page.waiting);
-            }}
-          >
-            <View style={[styles.btn]}>
-              <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
-                JOIN GROUP
-                    </Text>
+const GroupWaitingRoom: React.FC<Props> = (props) => {
+    if (props.isHost = true){
+        return (
+            <View>
+                <View style={styles.box}>
+                    <ScrollView>
+                        <Text style={styles.title}>Room Code: {props.roomCode}</Text>
+                        <View style={styles.spacer} />
+                        <Text style={styles.title}>Group Members: </Text>
+                        <Text style={styles.text}>{props.members[0]}</Text>
+                        <Text style={styles.text}>{props.members[1]}</Text>
+                        <Text style={styles.text}>{props.members[2]}</Text>
+                    </ScrollView>
+                </View>
             </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+        );
+    }
 
-      <View style={styles.spacerContainer}>
-        <View style={styles.spacer1} />
-        <Text style={styles.text}>OR</Text>
-        <View style={styles.spacer1} />
-      </View>
-
-      <View style={styles.btnContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            props.setPage(Page.map_view);
-          }}
-        >
-          <View style={[styles.btn]}>
-            <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
-              CREATE A GROUP
-                    </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    if (props.isHost = false){
+        return (
+            <View>
+                <View style={styles.box}>
+                <ScrollView>
+                        <Text style={styles.title}>Room Code: {props.roomCode}</Text>
+                        <View style={styles.spacer} />
+                        <Text style={styles.title}>Group Members: </Text>
+                        <Text style={styles.text}>{props.members[0]}</Text>
+                        <Text style={styles.text}>{props.members[1]}</Text>
+                        <Text style={styles.text}>{props.members[2]}</Text>
+                    </ScrollView>
+                </View>
+                <View style={styles.btnContainer}>
+                    <TouchableOpacity
+                        onPress={() => {
+                        props.setPage(Page.map_view);
+                        }}
+                    >
+                        <View style={[styles.btn]}>
+                            <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
+                               START SWIPING
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    }
 };
 
 const styles = StyleSheet.create({
@@ -103,7 +96,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingTop: 5,
     paddingBottom: 5,
-    textAlign: "center",
     color: CONSTANT_COLOURS.DARK_GREY,
   },
   btn: {
@@ -129,6 +121,7 @@ const styles = StyleSheet.create({
   box: {
     backgroundColor: "white",
     width: "95%",
+    height: "80%",
     display: "flex",
     flexDirection: "column",
     padding: 10,
@@ -137,7 +130,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignSelf: "center",
     marginTop: 15,
-    marginBottom: 15,
+    marginBottom: 10,
   },
   title: {
     fontWeight: "bold",
@@ -179,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GroupPage;
+export default GroupWaitingRoom;

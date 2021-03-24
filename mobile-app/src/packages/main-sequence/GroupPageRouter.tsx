@@ -1,5 +1,6 @@
 import React from "react";
 import GroupPage from "./GroupPage";
+import GroupWaitingRoom from "./GroupWaitingRoom";
 import SelectLocation from "./SelectLocation";
 
 interface Props {
@@ -10,7 +11,8 @@ interface Props {
 export enum Page {
   join_create,
   map_view,
-  swipe
+  swipe,
+  waiting
 }
 
 const GroupPageRouter: React.FC<Props> = (props) => {
@@ -26,6 +28,16 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   switch (page) {
     case Page.join_create:
       return <GroupPage setPage={setPage} />
+    case Page.waiting:
+      return <GroupWaitingRoom 
+      setPage={setPage} 
+      isHost={false} 
+      roomCode={"*ROOM CODE*"}
+      members={[
+        "me",
+        "you",
+        "vas"
+      ]}/>
     case Page.map_view:
       return <SelectLocation isGroup onSave={() => {
         setPage(Page.swipe);
