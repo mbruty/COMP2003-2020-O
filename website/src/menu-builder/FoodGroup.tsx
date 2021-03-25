@@ -5,7 +5,7 @@ import {
   FormControlLabel,
   TextField,
 } from "@material-ui/core";
-import { Add } from "@material-ui/icons";
+import { Add, Delete } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import React from "react";
 import { useDrop } from "react-dnd";
@@ -16,8 +16,6 @@ const FoodGroup: React.FC<{ group: FG; observer: Observer }> = ({
   group,
   observer,
 }) => {
-  console.log(group);
-
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: "food-item",
     drop: (e: any) => observer.moveItemIntoGroup(e.id, group.id),
@@ -48,14 +46,29 @@ const FoodGroup: React.FC<{ group: FG; observer: Observer }> = ({
               id={`accordion-name-${group.id}`}
               aria-describedby="Item group name input"
               value={group.name}
+              style={{ width: "32ch" }}
               variant="outlined"
               onChange={(e) => {
-                observer.updateName(e.target.value, group.id);
+                if (group.name !== "Ungroupped") {
+                  if (e.target.value === "Ungroupped")
+                    alert(
+                      'You cannot create a group with the reserved name "Ungroupped"'
+                    );
+                  else observer.updateName(e.target.value, group.id);
+                }
               }}
             />
           }
           label=""
         />
+        {group.name !== "Ungroupped" && (
+          <Delete
+            onClick={() => {
+              observer.removeGroup(group.id);
+            }}
+            style={{ margin: "auto 0 auto auto" }}
+          />
+        )}
       </AccordionSummary>
       <AccordionDetails>
         <div className="food-item-grid">
