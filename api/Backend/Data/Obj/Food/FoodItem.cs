@@ -24,11 +24,6 @@ namespace api.Backend.Data.Obj
             return (await Binding.GetTable<FoodChecks>().Select<FoodChecks>(FoodCheckID))?[0];
         }
 
-        public async Task<SwipeData[]> GetSwipeData()
-        {
-            return (await Binding.GetTable<SwipeData>().Select<SwipeData>(FoodID));
-        }
-
         public async Task<FoodTags[]> GetFoodTags()
         {
             return await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
@@ -36,6 +31,11 @@ namespace api.Backend.Data.Obj
                 where: "FoodItemTags.FoodID = @ParaFoodID AND FoodItemTags.TagID = FoodTags.FoodTagID",
                 Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaFoodID", FoodID) }
                 );
+        }
+
+        public async Task<SwipeData[]> GetSwipeData()
+        {
+            return (await Binding.GetTable<SwipeData>().Select<SwipeData>(FoodID));
         }
 
         #endregion Methods

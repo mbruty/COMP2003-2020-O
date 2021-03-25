@@ -17,6 +17,11 @@ namespace api.Backend.Data.Obj
 
         #region Methods
 
+        public async Task<Category[]> GetCategorys()
+        {
+            return await Binding.GetTable<Category>().Select<Category>("OwnerID", RAdminID);
+        }
+
         public async Task<Restaurant[]> GetRestaurantsOwned()
         {
             return await Binding.GetTable<Restaurant>().Select<Restaurant>("OwnerID", RAdminID);
@@ -29,17 +34,12 @@ namespace api.Backend.Data.Obj
 
         public async Task<TagSuggestions> GetSuggestions()
         {
-            return (await Binding.GetTable<TagSuggestions>().Select<TagSuggestions>("OwnerID",RAdminID))?[0];
+            return (await Binding.GetTable<TagSuggestions>().Select<TagSuggestions>("OwnerID", RAdminID))?[0];
         }
 
         public async Task<CommunityTagResponse> GetTagResponses()
         {
             return (await Binding.GetTable<CommunityTagResponse>().Select<CommunityTagResponse>("RAdminID", RAdminID))?[0];
-        }
-
-        public async Task<Category[]> GetCategorys()
-        {
-            return await Binding.GetTable<Category>().Select<Category>("OwnerID", RAdminID);
         }
 
         public override Object Purge()

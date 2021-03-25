@@ -1,15 +1,15 @@
 ﻿using System;
+
 namespace api.Backend.Data.Obj
 {
     public class FoodTags : Object
     {
         #region Fields
 
+        public DateTime DateAdded;
         public uint FoodTagID;
 
         public string Tag;
-
-        public DateTime DateAdded;
 
         #endregion Fields
 

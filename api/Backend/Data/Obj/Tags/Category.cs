@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using api.Backend.Data.SQL.AutoSQL;
 using System.Threading.Tasks;
-using api.Backend.Data.SQL.AutoSQL;
+
 namespace api.Backend.Data.Obj
 {
     public class Category : Object
@@ -26,10 +26,7 @@ namespace api.Backend.Data.Obj
 
         #endregion Constructors
 
-        public async Task<ResturantAdmin> GetOwner()
-        {
-            return (await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>(OwnerID))?[0];
-        }
+        #region Methods
 
         public async Task<FoodItem> GetFoodsWith()
         {
@@ -37,5 +34,12 @@ namespace api.Backend.Data.Obj
             //return (await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>("FoodId ");
             return null;
         }
+
+        public async Task<ResturantAdmin> GetOwner()
+        {
+            return (await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>(OwnerID))?[0];
+        }
+
+        #endregion Methods
     }
 }

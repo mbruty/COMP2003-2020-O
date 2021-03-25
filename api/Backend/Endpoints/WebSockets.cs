@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -181,6 +181,7 @@ namespace api.Backend.Endpoints
         /// </summary>
         public class SocketResponse : Response
         {
+            #region Methods
 
             /// <summary>
             /// Finish up the response and send it back to the user
@@ -198,5 +199,7 @@ namespace api.Backend.Endpoints
 
             #endregion Methods
         }
+
+        #endregion Classes
     }
 }

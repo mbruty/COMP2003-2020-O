@@ -13,14 +13,14 @@ namespace api.Backend.Data.Obj
 
         #region Methods
 
-        public async Task<FoodItem> GetFoodItem()
-        {
-            return (await Binding.GetTable<FoodItem>().Select<FoodItem>(FoodID))?[0];
-        }
-
         public async Task<Category> GetCatagory()
         {
             return (await Binding.GetTable<Category>().Select<Category>(CategoryID))?[0];
+        }
+
+        public async Task<FoodItem> GetFoodItem()
+        {
+            return (await Binding.GetTable<FoodItem>().Select<FoodItem>(FoodID))?[0];
         }
 
         #endregion Methods

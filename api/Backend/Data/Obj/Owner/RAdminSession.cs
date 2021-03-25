@@ -9,8 +9,8 @@ namespace api.Backend.Data.Obj
         #region Fields
 
         public string AuthToken;
-        public DateTime SignedIn;
         public uint RAdminID;
+        public DateTime SignedIn;
 
         #endregion Fields
 

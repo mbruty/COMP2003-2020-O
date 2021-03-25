@@ -26,6 +26,23 @@ namespace api.Backend.Security
 
         #region Methods
 
+        public static async Task AddSession(ResturantAdmin admin, string token)
+        {
+            Data.Redis.CacheTable t = Binding.GetTable<RAdminSession>();
+
+            RAdminSession[] existing = await t.Select<RAdminSession>("radminid", admin.RAdminID, 1);
+
+            if (existing.Length == 0)
+            {
+                new Thread(async () => { await new Session() { UserID = admin.RAdminID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
+            }
+            else
+            {
+                Data.Redis.Instance.InvalidateKey(t.GetKey(existing[0]).ToString());
+                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
+            }
+        }
+
         /// <summary>
         /// Create a login session for the User
         /// </summary>
@@ -83,7 +100,6 @@ namespace api.Backend.Security
                 authtoken = data[0];
                 if (cookiedata.Contains("user_id")) userid = data[1]; else adminid = data[1];
             }
-
 
             return await CheckSession(userid, adminid, authtoken, response);
         }
@@ -176,13 +192,6 @@ namespace api.Backend.Security
             return await CheckSession(Auth, response);
         }
 
-        public static string RandomString(int length = 32)
-        {
-            string s = "";
-            for (int i = length; i >= 0; i--) s += (char)rnd.Next(65, 123);
-            return s.Replace('\\', '/');
-        }
-
         public static bool IsAuthorized(SecurityGroup accountIs, SecurityGroup targetGroup)
         {
             switch (accountIs)
@@ -198,6 +207,13 @@ namespace api.Backend.Security
             }
 
             return false;
+        }
+
+        public static string RandomString(int length = 32)
+        {
+            string s = "";
+            for (int i = length; i >= 0; i--) s += (char)rnd.Next(65, 123);
+            return s.Replace('\\', '/');
         }
 
         #endregion Methods

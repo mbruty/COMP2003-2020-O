@@ -1,6 +1,7 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
+
 namespace api.Backend.Data.Obj
 {
     public class SwipeData : Object

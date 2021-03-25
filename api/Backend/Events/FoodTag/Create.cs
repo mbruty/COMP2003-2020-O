@@ -3,7 +3,6 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -56,7 +55,8 @@ namespace api.Backend.Events.FoodTag
                     //{
                     //    var result = streamReader.ReadToEnd();
                     //}
-                } catch(System.Net.WebException ex)
+                }
+                catch (System.Net.WebException ex)
                 {
                     response.StatusCode = 500;
                     var resp = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
@@ -66,7 +66,7 @@ namespace api.Backend.Events.FoodTag
             else
             {
                 response.AddToData("error", "Tag Already Exists");
-                // 208 already reported seems more appropriate than Unauthorized 
+                // 208 already reported seems more appropriate than Unauthorized
                 response.StatusCode = 208;
             }
         }
@@ -76,9 +76,9 @@ namespace api.Backend.Events.FoodTag
         {
             // Get all food tags
             FoodTags[] all = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>("1=1", 0);
-            List<string> json = new List<string>() ;
+            List<string> json = new List<string>();
             // Create a json string for each food tag
-            foreach(FoodTags ft in all)
+            foreach (FoodTags ft in all)
             {
                 json.Add("{\"id\":\"" + ft.FoodTagID + "\", \"tag\":\"" + ft.Tag + "\"}");
             }
@@ -112,11 +112,19 @@ namespace api.Backend.Events.FoodTag
             }
         }
 
+        #endregion Methods
+
+        #region Classes
+
         public class FoodTagBody
         {
+            #region Properties
+
             public string name { get; set; }
+
+            #endregion Properties
         }
 
-        #endregion Methods
+        #endregion Classes
     }
 }

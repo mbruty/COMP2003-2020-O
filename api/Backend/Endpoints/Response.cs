@@ -2,22 +2,22 @@
 using System;
 using System.Net;
 using System.Net.WebSockets;
-using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace api.Backend.Endpoints
 {
     public class Response
     {
+        #region Fields
+
         public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}");
         public int StatusCode = 500;
 
+        #endregion Fields
 
         //Time always provided
 
-
+        #region Methods
 
         /// <summary>
         /// Add a given object into the json response
@@ -72,5 +72,7 @@ namespace api.Backend.Endpoints
         {
             return;
         }
+
+        #endregion Methods
     }
 }

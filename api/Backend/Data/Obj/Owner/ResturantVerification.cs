@@ -1,5 +1,4 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
-using System;
 using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
@@ -8,8 +7,8 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
-        public uint RestaurantID;
         public string QRCode;
+        public uint RestaurantID;
 
         #endregion Fields
 
