@@ -51,20 +51,10 @@ namespace api.Backend.Events.Users
 
             User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
-            // Hello back-end friend-o's... Isn't it a bad idea to tell the user exactly what is
-            // wrong? Saying email is not in use feels kinda exploitable
-            // - Mike, Feb 2021
-            if (users.Length == 0)
+            if (users.Length == 0 || !Hashing.Match(password, users[0].Password))
             {
                 response.StatusCode = 401;
-                response.AddToData("error", "Email is not in use");
-                return;
-            }
-
-            if (!Hashing.Match(password, users[0].Password))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Password is incorrect");
+                response.AddToData("error", "Email or Password is invalid");
                 return;
             }
 
