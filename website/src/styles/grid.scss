@@ -1,6 +1,6 @@
 .grid {
   display: grid;
-  overflow-x: hidden;
+  overflow: hidden;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: calc((100vh - 64px - 25px - 4em) / 4);
   gap: 1rem;
