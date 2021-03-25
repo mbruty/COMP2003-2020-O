@@ -3,6 +3,7 @@ import { Add } from "@material-ui/icons";
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useHistory } from "react-router";
 import { Observer, FoodGrid } from "./FoodGridObserver";
 import FoodGroup from "./FoodGroup";
 
@@ -12,6 +13,7 @@ interface Props {
 
 const FoodItems: React.FC<Props> = (props) => {
   const [items, setItems] = React.useState<FoodGrid>();
+  const history = useHistory();
 
   React.useEffect(
     () =>
@@ -29,7 +31,9 @@ const FoodItems: React.FC<Props> = (props) => {
           aria-label="text primary button group"
           style={{ justifyContent: "center", width: "100%" }}
         >
-          <Button>One</Button>
+          <Button onClick={() => history.push("/item-builder")}>
+            <Add style={{ paddingRight: 5 }} /> Create a food item
+          </Button>
           <Button onClick={() => props.observer.createNewGroup()}>
             <Add style={{ paddingRight: 5 }} /> Create a group
           </Button>
