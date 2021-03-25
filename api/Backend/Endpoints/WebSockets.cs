@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Net.WebSockets;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -43,7 +44,10 @@ namespace api.Backend.Endpoints
                 {
                     try
                     {
-                        tMethod[0].Invoke(null, new object[] { instance, @event, response });
+                        if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, await Security.Sessions.GetSecurityGroup(jData, response)))
+                        {
+                            tMethod[0].Invoke(null, new object[] { instance, @event, response });
+                        }
                         await response.Send(webSocket);
                     }
                     catch (Exception e)

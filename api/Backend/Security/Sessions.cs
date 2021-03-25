@@ -183,6 +183,23 @@ namespace api.Backend.Security
             return s.Replace('\\', '/');
         }
 
+        public static bool IsAuthorized(SecurityGroup accountIs, SecurityGroup targetGroup)
+        {
+            switch (accountIs)
+            {
+                case SecurityGroup.None:
+                    return targetGroup == SecurityGroup.None;
+
+                case SecurityGroup.User:
+                    return targetGroup != SecurityGroup.Administrator;
+
+                case SecurityGroup.Administrator:
+                    return targetGroup != SecurityGroup.User;
+            }
+
+            return false;
+        }
+
         #endregion Methods
     }
 }

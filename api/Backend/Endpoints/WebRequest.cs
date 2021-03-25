@@ -28,7 +28,7 @@ namespace api.Backend.Endpoints
 
             if (tMethod.Length > 0)
             {
-                if (tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel <= await Security.Sessions.GetSecurityGroup(request.Headers, response))
+                if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, await Security.Sessions.GetSecurityGroup(request.Headers, response)))
                 {
                     try { Task T = (Task)tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); T.Wait(); }
                     catch (Exception e)
@@ -41,7 +41,7 @@ namespace api.Backend.Endpoints
                 else
                 {
                     response.StatusCode = 401;
-                    //response.AddToData("error", "Insignificant permissions");
+                    response.AddToData("error", "Insignificant permissions");
                 }
             }
             else
