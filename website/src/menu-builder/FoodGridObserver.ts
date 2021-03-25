@@ -55,12 +55,39 @@ export class Observer {
       ).id || 1;
 
     this.items.groups?.push({
-      name: "",
+      name: "Unnamed group",
       id: max + 1,
+      items: [],
     });
 
-    console.log(this.items);
+    this.emitChange();
+  }
 
+  public removeGroup(id: number) {
+    let group: any, ungroupped: any;
+    let otherGroups: FoodGroup[] = [];
+
+    this.items.groups.forEach((x) => {
+      if (x.id === id) {
+        group = x;
+      } else if (x.name === "Ungroupped") {
+        ungroupped = x;
+      } else {
+        otherGroups.push(x);
+      }
+    });
+
+    if (!group || !otherGroups) {
+      // Oopsie doopsie something's gone very wrong
+      return;
+    }
+
+    // Set the items to a coppy of other groups
+    this.items.groups = [...otherGroups];
+
+    // Create a new array that contains all of the ungrouped items, appended with the removed group items
+    ungroupped.items = [...ungroupped.items, ...group.items];
+    this.items.groups.push(ungroupped);
     this.emitChange();
   }
 
@@ -105,8 +132,19 @@ export class Observer {
       // Get rid of any duplicates
 
       this.items.groups = this.items.groups?.map((group) => {
+        // If we're looking at a different group than what the item has been dragged into
         if (group.id !== groupId) {
           group.items = group.items?.filter((item) => item.id !== itemId);
+        } else {
+          // We're in the same group
+          const res: IFoodItem[] = [];
+          group.items?.forEach((item) => {
+            const i = res.findIndex((x) => x.id === item.id);
+            console.log(i);
+
+            if (i <= -1) res.push(item);
+          });
+          group.items = res;
         }
         return group;
       });
