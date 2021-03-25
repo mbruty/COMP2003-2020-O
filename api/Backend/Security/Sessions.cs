@@ -54,9 +54,9 @@ namespace api.Backend.Security
         /// <param name="headers">  </param>
         /// <param name="response"> </param>
         /// <returns> If the session is valid </returns>
-        public static async Task<bool> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
+        public static async Task<SecurityGroup> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
         {
-            string userid = headers["userid"], authtoken = headers["authtoken"];
+            string userid = headers["userid"], authtoken = headers["authtoken"], adminid = headers["adminid"];
 
             // Get any cookie data there is Will return null if there isn't a cookie field
             string cookiedata = headers.Get("Cookie");
@@ -69,116 +69,111 @@ namespace api.Backend.Security
             {
                 // Remove the "authtoken=" bit
                 cookiedata = cookiedata.Substring(10);
-                string[] data = cookiedata.Split("&user_id=");
+                string[] data = cookiedata.Replace("admin_id", "user_id").Split("&user_id=");
 
                 // If the data is less than 2, it's a broken request
                 if (data.Length != 2)
                 {
                     response.StatusCode = 400;
-                    response.AddToData("error", "Broken Cookie in request, try clering your cookies");
-                    return false;
+                    response.AddToData("error", "Broken Cookie in request, try clearing your cookies");
+                    return SecurityGroup.None;
                 }
                 // Let's override the current userid and authtoken This is because the browser will
                 // be sending the data in a cookie
                 authtoken = data[0];
-                userid = data[1];
-            }
-            if (userid == null || authtoken == null)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Missing email or authtoken");
-                return false;
+                if (cookiedata.Contains("user_id")) userid = data[1]; else adminid = data[1];
             }
 
-            if (!int.TryParse(userid, out int uid))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "User id is invalid");
-                return false;
-            }
 
-            Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
-
-            if (sessions.Length == 0)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Session does not exist");
-                return false;
-            }
-
-            if (!Hashing.Match(authtoken, sessions[0].AuthToken))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Authtoken is incorrect");
-                return false;
-            }
-
-            response.StatusCode = 200;
-
-            return true;
+            return await CheckSession(userid, adminid, authtoken, response);
         }
 
-        public static async Task<bool> CheckSession(JToken Auth, WebSockets.SocketResponse response)
+        public static async Task<SecurityGroup> CheckSession(string userid, string adminid, string authtoken, Response response)
         {
-            string userid = Auth["userid"].ToString(), authtoken = Auth["authtoken"].ToString();
+            SecurityGroup group = SecurityGroup.None;
 
-            if (userid == null || authtoken == null)
+            if (authtoken == null)
             {
                 response.StatusCode = 401;
-                response.AddToData("error", "Missing email or authtoken");
-                return false;
+                response.AddToData("error", "Missing authtoken");
+                return SecurityGroup.None;
             }
 
-            if (!int.TryParse(userid, out int uid))
+            string _session_token = "N";
+
+            if (userid != null)
+            {
+                if (!int.TryParse(userid, out int uid))
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Id is invalid");
+                    return SecurityGroup.None;
+                }
+
+                Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
+
+                if (sessions.Length == 0)
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Session does not exist");
+                    return SecurityGroup.None;
+                }
+
+                _session_token = sessions[0].AuthToken;
+                group = SecurityGroup.User;
+            }
+            else if (adminid != null)
+            {
+                if (!int.TryParse(userid, out int uid))
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Id is invalid");
+                    return SecurityGroup.None;
+                }
+
+                RAdminSession[] sessions = await Binding.GetTable<RAdminSession>().Select<RAdminSession>("radminid", uid);
+
+                if (sessions.Length == 0)
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Session does not exist");
+                    return SecurityGroup.None;
+                }
+
+                _session_token = sessions[0].AuthToken;
+                group = SecurityGroup.Administrator;
+            }
+            else
             {
                 response.StatusCode = 401;
-                response.AddToData("error", "User id is invalid");
-                return false;
+                response.AddToData("error", "Missing userid/adminid");
+                return SecurityGroup.None;
             }
 
-            Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
-
-            if (sessions.Length == 0)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Session does not exist");
-                return false;
-            }
-
-            if (!Hashing.Match(authtoken, sessions[0].AuthToken))
+            if (!Hashing.Match(authtoken, _session_token))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Authtoken is incorrect");
-                return false;
+                return SecurityGroup.None;
             }
 
-            return true;
+            return group;
+        }
+
+        public static async Task<SecurityGroup> CheckSession(JToken Auth, WebSockets.SocketResponse response)
+        {
+            string userid = Auth["userid"].ToString(), adminid = Auth["adminid"].ToString(), authtoken = Auth["authtoken"].ToString();
+            return await CheckSession(userid, adminid, authtoken, response);
         }
 
         public static async Task<SecurityGroup> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response)
         {
-            if (await CheckSession(headers, response))
-            {
-                //Logic to determine if is admin
-                return SecurityGroup.User;
-            }
-            else
-            {
-                return SecurityGroup.None;
-            }
+            return await CheckSession(headers, response);
         }
 
         public static async Task<SecurityGroup> GetSecurityGroup(JToken Auth, WebSockets.SocketResponse response)
         {
-            if (await CheckSession(Auth, response))
-            {
-                //Logic to determine if is admin
-                return SecurityGroup.User;
-            }
-            else
-            {
-                return SecurityGroup.None;
-            }
+            return await CheckSession(Auth, response);
         }
 
         public static string RandomString(int length = 32)

@@ -92,14 +92,12 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Holds any data to be returned
         /// </summary>
-        public class HttpResponse
+        public class HttpResponse : Response
         {
             #region Fields
 
             private CookieCollection cookies = new CookieCollection();
             public string crossOriginResponse = null;
-            public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}"); //Time always provided
-            public int StatusCode = 500;
 
             #endregion Fields
 
@@ -124,45 +122,10 @@ namespace api.Backend.Endpoints
             }
 
             /// <summary>
-            /// Add a given object into the json response
-            /// </summary>
-            /// <param name="Header"> </param>
-            /// <param name="obj">    </param>
-            public void AddObjectToData(string Header, Data.Obj.Object[] obj)
-            {
-                foreach (Data.Obj.Object o in obj) { o.Purge(); }
-                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JArray.FromObject(obj)));
-                else Data.Property(Header).Value = JArray.FromObject(obj);
-            }
-
-            /// <summary>
-            /// Add a given object into the json response
-            /// </summary>
-            /// <param name="Header"> </param>
-            /// <param name="obj">    </param>
-            public void AddObjectToData(string Header, Data.Obj.Object obj)
-            {
-                obj = obj.Purge();
-                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj)));
-                else Data.Property(Header).Value = JToken.FromObject(obj);
-            }
-
-            /// <summary>
-            /// Add a already stingable object, ie supports .ToString()
-            /// </summary>
-            /// <param name="Header">     </param>
-            /// <param name="stringable"> .ToString() supporting object </param>
-            public void AddToData(string Header, object stringable)
-            {
-                if (Data.Property(Header) == null) Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
-                else Data.Property(Header).Value = stringable.ToString();
-            }
-
-            /// <summary>
             /// Finish up the response and send it back to the user
             /// </summary>
             /// <param name="response"> </param>
-            public virtual void Send(HttpListenerResponse response)
+            public override async void Send(HttpListenerResponse response)
             {
                 response.StatusCode = StatusCode;
 

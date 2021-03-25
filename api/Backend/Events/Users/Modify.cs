@@ -37,8 +37,6 @@ namespace api.Backend.Events.Users
         [WebEvent("/modify/user/foods", "PUT", false, SecurityGroup.User)]
         public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
-            if (!await Sessions.CheckSession(headers, response)) return;
-
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 
             Table table = Binding.GetTable<FoodChecks>();
@@ -68,8 +66,6 @@ namespace api.Backend.Events.Users
                 response.StatusCode = 401;
                 return;
             }
-
-            if (!await Sessions.CheckSession(headers, response)) return;
 
             Table table = Binding.GetTable<User>();
             User[] users = await table.Select<User>("userid", headers["userid"]);
