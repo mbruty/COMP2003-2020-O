@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
-    public class ResturantAdmin : Object
+    public class RestaurantAdmin : Object
     {
         #region Fields
 
@@ -44,20 +44,20 @@ namespace api.Backend.Data.Obj
 
         public override Object Purge()
         {
-            ResturantAdmin u = (ResturantAdmin)this.MemberwiseClone();
+            RestaurantAdmin u = (RestaurantAdmin)this.MemberwiseClone();
             u.Password = "REDACTED";
             return u;
         }
 
         public async Task<bool> UpdateIsVerified()
         {
-            return await SQL.Instance.Execute("UPDATE ResturantAdmin SET IsVerified=@verified where radminid=@uid",
+            return await SQL.Instance.Execute("UPDATE RestaurantAdmin SET IsVerified=@verified where radminid=@uid",
                 new List<Tuple<string, object>>() { new Tuple<string, object>("verified", IsVerified), new Tuple<string, object>("uid", RAdminID) });
         }
 
         public async Task<bool> UpdatePassword()
         {
-            return await SQL.Instance.Execute("UPDATE ResturantAdmin SET password=@pword where radminid=@uid",
+            return await SQL.Instance.Execute("UPDATE RestaurantAdmin SET password=@pword where radminid=@uid",
                  new List<Tuple<string, object>>() { new Tuple<string, object>("pword", Password), new Tuple<string, object>("uid", RAdminID) });
         }
 

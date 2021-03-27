@@ -35,9 +35,9 @@ namespace api.Backend.Data.Obj
             return null;
         }
 
-        public async Task<ResturantAdmin> GetOwner()
+        public async Task<RestaurantAdmin> GetOwner()
         {
-            return (await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>(OwnerID))?[0];
+            return (await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(OwnerID))?[0];
         }
 
         #endregion Methods

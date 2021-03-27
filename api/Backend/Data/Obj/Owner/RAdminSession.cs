@@ -16,9 +16,9 @@ namespace api.Backend.Data.Obj
 
         #region Methods
 
-        public async Task<ResturantAdmin> GetUser()
+        public async Task<RestaurantAdmin> GetUser()
         {
-            return (await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>(RAdminID))?[0];
+            return (await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(RAdminID))?[0];
         }
 
         public override Object Purge()

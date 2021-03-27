@@ -26,7 +26,7 @@ namespace api.Backend.Security
 
         #region Methods
 
-        public static async Task AddSession(ResturantAdmin admin, string token)
+        public static async Task AddSession(RestaurantAdmin admin, string token)
         {
             Data.Redis.CacheTable t = Binding.GetTable<RAdminSession>();
 

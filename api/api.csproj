@@ -24,6 +24,6 @@
     <PackageReference Include="System.Management" Version="6.0.0-preview.1.21102.12" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Backend\Events\Resturants\" />
+    <Folder Include="Backend\Events\Restaurants\" />
   </ItemGroup>
 </Project>

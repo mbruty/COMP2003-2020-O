@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
-    public class ResturantVerification : Object
+    public class RestaurantVerification : Object
     {
         #region Fields
 

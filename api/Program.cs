@@ -38,8 +38,8 @@ namespace api
 
             Binding.Add<SwipeData>();
             Binding.Add<RAdminSession>();
-            Binding.Add<ResturantAdmin>();
-            Binding.Add<ResturantVerification>();
+            Binding.Add<RestaurantAdmin>();
+            Binding.Add<RestaurantVerification>();
 
             Binding.Add<Category>();
             Binding.Add<CommunityTagResponse>();

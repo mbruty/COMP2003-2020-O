@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace api.Backend.Events.ResturantAdmins
+namespace api.Backend.Events.RestaurantAdmins
 {
     public static class Authentication
     {
@@ -50,7 +50,7 @@ namespace api.Backend.Events.ResturantAdmins
                 return;
             }
 
-            ResturantAdmin[] users = await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>("email", email, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("email", email, 1);
 
             if (users.Length == 0 || !Hashing.Match(password, users[0].Password))
             {
@@ -77,7 +77,7 @@ namespace api.Backend.Events.ResturantAdmins
         {
             AdminIdWithToken user = JsonConvert.DeserializeObject<AdminIdWithToken>(Data);
             // Get the user
-            ResturantAdmin[] users = await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>("radminid", user.AdminID, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", user.AdminID, 1);
 
             // Users will always be of length 1 if they exist, and 0 if they don't as we're
             // selecting by pk
@@ -109,7 +109,7 @@ namespace api.Backend.Events.ResturantAdmins
         public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             // Convert the string to a credential object
-            ResturantAdmin creds = JsonConvert.DeserializeObject<ResturantAdmin>(Data);
+            RestaurantAdmin creds = JsonConvert.DeserializeObject<RestaurantAdmin>(Data);
             string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
@@ -126,7 +126,7 @@ namespace api.Backend.Events.ResturantAdmins
                 return;
             }
 
-            ResturantAdmin[] users = await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>("email", email, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("email", email, 1);
 
             if (users.Length > 0)
             {
@@ -135,7 +135,7 @@ namespace api.Backend.Events.ResturantAdmins
                 return;
             }
 
-            ResturantAdmin user = new ResturantAdmin() { Email = email, Password = "PASSWORD PENDING" };
+            RestaurantAdmin user = new RestaurantAdmin() { Email = email, Password = "PASSWORD PENDING" };
 
             if (!await user.Insert(true))
             {
@@ -176,7 +176,7 @@ namespace api.Backend.Events.ResturantAdmins
             }
 
             // Get the user
-            ResturantAdmin[] users = await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>("radminid", validation.AdminID, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", validation.AdminID, 1);
 
             // Users will always be of length 1 if they exist, and 0 if they don't as we're
             // selecting by pk
@@ -209,7 +209,7 @@ namespace api.Backend.Events.ResturantAdmins
                     // Remove the key
                     Backend.Data.Redis.Instance.InvalidateKey($"admin-signup-code:{validation.AdminID}");
                     // Invalidate the user in the cache
-                    Backend.Data.Redis.Instance.InvalidateKey($"ResturantAdmin-{validation.AdminID}");
+                    Backend.Data.Redis.Instance.InvalidateKey($"RestaurantAdmin-{validation.AdminID}");
                     response.StatusCode = 200;
                 }
                 else

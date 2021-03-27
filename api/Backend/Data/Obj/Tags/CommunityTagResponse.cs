@@ -15,9 +15,9 @@ namespace api.Backend.Data.Obj
 
         #region Methods
 
-        public async Task<ResturantAdmin> GetOwner()
+        public async Task<RestaurantAdmin> GetOwner()
         {
-            return (await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>(RAdminID))?[0];
+            return (await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(RAdminID))?[0];
         }
 
         public async Task<TagSuggestions> GetSuggestion()
