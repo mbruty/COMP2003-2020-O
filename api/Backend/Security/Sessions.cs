@@ -34,7 +34,7 @@ namespace api.Backend.Security
 
             if (existing.Length == 0)
             {
-                new Thread(async () => { await new Session() { UserID = admin.RAdminID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
+                new Thread(async () => { await new RAdminSession() { RAdminID = admin.RAdminID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
             }
             else
             {
