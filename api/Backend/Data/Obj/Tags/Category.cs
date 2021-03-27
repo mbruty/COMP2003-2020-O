@@ -31,11 +31,9 @@ namespace api.Backend.Data.Obj
             return (await Binding.GetTable<ResturantAdmin>().Select<ResturantAdmin>(OwnerID))?[0];
         }
 
-        public async Task<FoodItem> GetFoodsWith()
+        public async Task<FoodItem[]> GetFoodsWith()
         {
-#warning GetFoodsWith not implimented
-            //return (await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>("FoodId ");
-            return null;
+            return await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>(what: "FoodItem.FoodID,FoodItem.FoodCheckID,FoodItem.FoodName,FoodItem.FoodNameShort,FoodItem.FoodDescription,FoodItem.Price", tables:"tat.FoodItem, tat.LinkCategoryFood", where:"LinkCategoryFood.FoodID=tat.FoodItem.FoodID AND LinkCategoryFood.CategoryID=1");
         }
     }
 }
