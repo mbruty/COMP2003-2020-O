@@ -15,7 +15,7 @@ namespace api.Backend.Events.Users
         [WebEvent("/user/visits", "GET", false, SecurityGroup.User)]
         public static async Task GetRecentVisits(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
             Visit[] visits = await users[0].GetVisits();
             response.AddObjectToData("visits", visits.OrderBy(x => x.DateOfVisit).Take(20).ToArray());
@@ -25,7 +25,7 @@ namespace api.Backend.Events.Users
         [WebEvent("/user/me", "GET", false, SecurityGroup.User)]
         public static async Task GetUserData(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
             response.AddObjectToData("user", users[0]);
             response.StatusCode = 200;

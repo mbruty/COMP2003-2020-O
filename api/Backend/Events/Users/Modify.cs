@@ -14,7 +14,7 @@ namespace api.Backend.Events.Users
         [WebEvent("/user/modify", "DELETE", false, SecurityGroup.User)]
         public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
             await users[0].Delete();
 
@@ -26,7 +26,7 @@ namespace api.Backend.Events.Users
         public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("userid", headers["userid"]);
+            User[] users = await table.Select<User>("userid", perm.user_id);
 
             users[0].UpdateContents<User>(headers);
 
@@ -37,7 +37,7 @@ namespace api.Backend.Events.Users
         [WebEvent("/user/modify/foods", "PUT", false, SecurityGroup.User)]
         public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
             Table table = Binding.GetTable<FoodChecks>();
             FoodChecks[] foods = await table.Select<FoodChecks>("userid", users[0].FoodCheckID);
@@ -68,7 +68,7 @@ namespace api.Backend.Events.Users
             }
 
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("userid", headers["userid"]);
+            User[] users = await table.Select<User>("userid", perm.user_id);
 
             users[0].Password = Hashing.Hash(headers["password"]);
             await users[0].UpdatePassword();
