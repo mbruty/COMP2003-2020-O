@@ -26,7 +26,7 @@ namespace api.Backend.Events.Restaurants
 
             Restaurant _restaurant = new Restaurant() { Email = body.Email, Phone =body.Phone, Longitude=body.Longitude, IsVerified=false, Latitude=body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site };
 
-            if (!await _restaurant.Insert())
+            if (!await _restaurant.Insert(true))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
@@ -38,8 +38,53 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
+        [WebEvent("/restaurants/modify", "PUT", false, SecurityGroup.Administrator)]
+        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        public static async Task ModifyRestaurant(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            RestaurantBody body = JsonConvert.DeserializeObject<RestaurantBody>(Data);
+
+            Table table = Binding.GetTable<Restaurant>();
+            Restaurant[] restaurants = await table.Select<Restaurant>(body.RestaurantID);
+
+            if (restaurants.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "That Restaurant Id does not exist");
+                return;
+            }
+
+            Restaurant restaurant = restaurants[0];
+
+            if (restaurant.OwnerID != perm.admin_id)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "This is not your restaurant");
+                return;
+            }
+            if (body.Email != null && ValidityChecks.IsValidEmail(body.Email)) restaurant.Email = body.Email;
+            if (body.Phone != null && ValidityChecks.IsValidPhone(body.Phone)) restaurant.Phone = body.Phone;
+            if (body.Site != null && ValidityChecks.IsValidSite(body.Site)) restaurant.Site = body.Site;
+            if (body.Latitude > -90 && body.Latitude < 90 && body.Latitude!=0) restaurant.Latitude = body.Latitude;
+            if (body.Longitude > -180 && body.Longitude < 180 && body.Longitude!=0) restaurant.Longitude = body.Longitude;
+            if (body.RestaurantName != null) restaurant.RestaurantName = body.RestaurantName;
+            if (body.RestaurantDescription != null) restaurant.RestaurantDescription = body.RestaurantDescription;
+
+            if (!await restaurant.Update())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Updated restaurant");
+            response.AddObjectToData("restaurant", restaurant);
+            response.StatusCode = 200;
+        }
+
         class RestaurantBody
         {
+            public uint RestaurantID;
             public string RestaurantName, RestaurantDescription, Phone, Email, Site;
             public float Longitude, Latitude;
 
