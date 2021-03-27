@@ -14,7 +14,7 @@ namespace api.Backend.Events.FoodTag
     {
         #region Methods
 
-        [WebEvent("/fetch/foodtags/create", "POST", false, SecurityGroup.None)]
+        [WebEvent("/foodtags/create", "POST", false, SecurityGroup.None)]
         public static async Task GetTagsLike(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             FoodTagBody body = JsonConvert.DeserializeObject<FoodTagBody>(Data);
@@ -71,7 +71,7 @@ namespace api.Backend.Events.FoodTag
             }
         }
 
-        [WebEvent("/fetch/foodtags/sync", "POST", false, SecurityGroup.None)]
+        [WebEvent("/foodtags/sync", "POST", false, SecurityGroup.None)]
         public static async Task SyncSearch(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             // Get all food tags

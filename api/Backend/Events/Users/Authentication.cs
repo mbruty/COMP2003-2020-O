@@ -21,21 +21,21 @@ namespace api.Backend.Events.Users
 
         #region Methods
 
-        [WebEvent("/authcheck", "POST", false, SecurityGroup.User)]
+        [WebEvent("/user/authcheck", "POST", false, SecurityGroup.User)]
         public static async Task CheckAuthHttp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/authcheck", "GET", false, SecurityGroup.User)]
+        [WebEvent("/user/authcheck", "GET", false, SecurityGroup.User)]
         public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/login", "POST", false)]
+        [WebEvent("/user/login", "POST", false)]
         public static async Task Login(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             // Convert the string to a credential object
@@ -71,7 +71,7 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Logged in");
         }
 
-        [WebEvent("/resendcode", "POST", false, SecurityGroup.User)]
+        [WebEvent("/user/resendcode", "POST", false, SecurityGroup.User)]
         public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             UserIdWithToken user = JsonConvert.DeserializeObject<UserIdWithToken>(Data);
@@ -104,7 +104,7 @@ namespace api.Backend.Events.Users
             Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
         }
 
-        [WebEvent("/signup", "POST", false)]
+        [WebEvent("/user/signup", "POST", false)]
         public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             // Convert the string to a credential object
@@ -172,7 +172,7 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent("/validatecode", "POST", false)]
+        [WebEvent("/user/validatecode", "POST", false)]
         public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);

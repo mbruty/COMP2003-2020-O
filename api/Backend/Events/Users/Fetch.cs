@@ -12,7 +12,7 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/fetch/user/visits", "GET", false, SecurityGroup.User)]
+        [WebEvent("/user/visits", "GET", false, SecurityGroup.User)]
         public static async Task GetRecentVisits(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
@@ -22,7 +22,7 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/fetch/user/me", "GET", false, SecurityGroup.User)]
+        [WebEvent("/user/me", "GET", false, SecurityGroup.User)]
         public static async Task GetUserData(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);

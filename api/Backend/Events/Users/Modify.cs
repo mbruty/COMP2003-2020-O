@@ -11,7 +11,7 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/modify/user", "DELETE", false, SecurityGroup.User)]
+        [WebEvent("/user/modify", "DELETE", false, SecurityGroup.User)]
         public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
@@ -22,7 +22,7 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user", "PUT", false, SecurityGroup.User)]
+        [WebEvent("/user/modify", "PUT", false, SecurityGroup.User)]
         public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             Table table = Binding.GetTable<User>();
@@ -34,7 +34,7 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user/foods", "PUT", false, SecurityGroup.User)]
+        [WebEvent("/user/modify/foods", "PUT", false, SecurityGroup.User)]
         public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
@@ -48,7 +48,7 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user/password", "POST", false, SecurityGroup.User)]
+        [WebEvent("/user/modify/password", "POST", false, SecurityGroup.User)]
         public static async Task ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             string password = headers["password"];

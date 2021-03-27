@@ -12,7 +12,7 @@ namespace api.Backend.Events.FoodTag
     {
         #region Methods
 
-        [WebEvent("/fetch/foodtags/like", "GET", false, SecurityGroup.None)]
+        [WebEvent("/foodtags/like", "GET", false, SecurityGroup.None)]
         public static async Task GetTagsLike(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
         {
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
