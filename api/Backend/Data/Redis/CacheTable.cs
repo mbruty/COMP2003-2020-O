@@ -79,7 +79,7 @@ namespace api.Backend.Data.Redis
                     value = FieldValues[i];
                     break;
                 }
-                else break;
+                //else break;
             }
 
             if (value != null)
