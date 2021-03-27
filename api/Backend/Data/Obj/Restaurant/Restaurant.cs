@@ -9,6 +9,7 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
+
         public bool IsVerified;
         public float Longitude, Latitude;
         public uint RestaurantID, OwnerID;

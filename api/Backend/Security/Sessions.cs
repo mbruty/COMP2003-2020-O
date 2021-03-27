@@ -11,7 +11,7 @@ namespace api.Backend.Security
 {
     public class SecurityPerm
     {
-        public int admin_id = -1, user_id = -1;
+        public uint admin_id = 0, user_id = 0;
         public SecurityGroup SecurityGroup = SecurityGroup.None;
     }
 
@@ -125,7 +125,7 @@ namespace api.Backend.Security
 
             if (userid != null)
             {
-                if (!int.TryParse(userid, out int uid))
+                if (!uint.TryParse(userid, out uint uid))
                 {
                     response.StatusCode = 401;
                     response.AddToData("error", "Id is invalid");
@@ -146,7 +146,7 @@ namespace api.Backend.Security
             }
             else if (adminid != null)
             {
-                if (!int.TryParse(userid, out int uid))
+                if (!uint.TryParse(adminid, out uint uid))
                 {
                     response.StatusCode = 401;
                     response.AddToData("error", "Id is invalid");
@@ -163,7 +163,7 @@ namespace api.Backend.Security
                 }
 
                 _session_token = sessions[0].AuthToken;
-                group = new SecurityPerm() { SecurityGroup = SecurityGroup.User, admin_id = uid }; ;
+                group = new SecurityPerm() { SecurityGroup = SecurityGroup.Administrator, admin_id = uid }; ;
             }
             else
             {
