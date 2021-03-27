@@ -45,7 +45,7 @@ namespace api.Backend.Endpoints
                     try
                     {
                         Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(jData, response);
-                        if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, perm.SecurityGroup))
+                        if (Security.Sessions.IsAuthorized(perm.SecurityGroup,tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel))
                         {
                             tMethod[0].Invoke(null, new object[] { instance, @event, response, perm });
                         }

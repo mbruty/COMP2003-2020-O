@@ -29,7 +29,7 @@ namespace api.Backend.Endpoints
             if (tMethod.Length > 0)
             {
                 Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(request.Headers, response);
-                if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, perm.SecurityGroup))
+                if (Security.Sessions.IsAuthorized(perm.SecurityGroup,tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel))
                 {
                     try { Task T = (Task)tMethod[0].Invoke(null, new object[] { request.Headers, Data, response, perm }); T.Wait(); }
                     catch (Exception e)
