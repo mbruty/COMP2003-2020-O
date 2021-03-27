@@ -12,7 +12,36 @@ namespace api.Backend.Events.Restaurants
 {
     public static class Modify
     {
-        [WebEvent("/restaurants/create", "POST", false, SecurityGroup.Administrator)]
+        [WebEvent("/restaurants", "GET", false, SecurityGroup.Administrator)]
+        public static async Task GetRestaurant(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            RestaurantBody body = JsonConvert.DeserializeObject<RestaurantBody>(Data);
+
+            Table table = Binding.GetTable<Restaurant>();
+            Restaurant[] restaurants = await table.Select<Restaurant>(body.RestaurantID);
+
+            if (restaurants.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "That Restaurant Id does not exist");
+                return;
+            }
+
+            Restaurant restaurant = restaurants[0];
+
+            if (restaurant.OwnerID != perm.admin_id)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "This is not your restaurant");
+                return;
+            }
+
+            response.AddToData("message", "Fetched restaurant");
+            response.AddObjectToData("restaurant", restaurant);
+            response.StatusCode = 200;
+        }
+
+            [WebEvent("/restaurants/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(NameValueCollection headers, string data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             RestaurantBody body = JsonConvert.DeserializeObject<RestaurantBody>(data);
@@ -39,7 +68,6 @@ namespace api.Backend.Events.Restaurants
         }
 
         [WebEvent("/restaurants/modify", "PUT", false, SecurityGroup.Administrator)]
-        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         public static async Task ModifyRestaurant(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             RestaurantBody body = JsonConvert.DeserializeObject<RestaurantBody>(Data);
@@ -62,6 +90,7 @@ namespace api.Backend.Events.Restaurants
                 response.AddToData("error", "This is not your restaurant");
                 return;
             }
+
             if (body.Email != null && ValidityChecks.IsValidEmail(body.Email)) restaurant.Email = body.Email;
             if (body.Phone != null && ValidityChecks.IsValidPhone(body.Phone)) restaurant.Phone = body.Phone;
             if (body.Site != null && ValidityChecks.IsValidSite(body.Site)) restaurant.Site = body.Site;
