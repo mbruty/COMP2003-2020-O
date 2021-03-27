@@ -9,12 +9,6 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Security
 {
-    public class SecurityPerm
-    {
-        public uint admin_id = 0, user_id = 0;
-        public SecurityGroup SecurityGroup = SecurityGroup.None;
-    }
-
     public enum SecurityGroup
     {
         None,
@@ -223,5 +217,15 @@ namespace api.Backend.Security
         }
 
         #endregion Methods
+    }
+
+    public class SecurityPerm
+    {
+        #region Fields
+
+        public uint admin_id = 0, user_id = 0;
+        public SecurityGroup SecurityGroup = SecurityGroup.None;
+
+        #endregion Fields
     }
 }
