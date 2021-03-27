@@ -22,21 +22,21 @@ namespace api.Backend.Events.Users
         #region Methods
 
         [WebEvent("/user/authcheck", "POST", false, SecurityGroup.User)]
-        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
         [WebEvent("/user/authcheck", "GET", false, SecurityGroup.User)]
-        public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
+        public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
         [WebEvent("/user/login", "POST", false)]
-        public static async Task Login(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        public static async Task Login(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Convert the string to a credential object
             LoginCredentials creds = JsonConvert.DeserializeObject<LoginCredentials>(Data);
@@ -72,7 +72,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/user/resendcode", "POST", false, SecurityGroup.User)]
-        public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             UserIdWithToken user = JsonConvert.DeserializeObject<UserIdWithToken>(Data);
             // Get the user
@@ -105,7 +105,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/user/signup", "POST", false)]
-        public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Convert the string to a credential object
             User creds = JsonConvert.DeserializeObject<User>(Data);
@@ -180,7 +180,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/user/validatecode", "POST", false)]
-        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);
             if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))

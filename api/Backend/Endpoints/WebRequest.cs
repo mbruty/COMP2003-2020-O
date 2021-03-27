@@ -28,9 +28,10 @@ namespace api.Backend.Endpoints
 
             if (tMethod.Length > 0)
             {
-                if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, await Security.Sessions.GetSecurityGroup(request.Headers, response)))
+                Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(request.Headers, response);
+                if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, perm.SecurityGroup))
                 {
-                    try { Task T = (Task)tMethod[0].Invoke(null, new object[] { request.Headers, Data, response }); T.Wait(); }
+                    try { Task T = (Task)tMethod[0].Invoke(null, new object[] { request.Headers, Data, response, perm }); T.Wait(); }
                     catch (Exception e)
                     {
                         response.StatusCode = 505;

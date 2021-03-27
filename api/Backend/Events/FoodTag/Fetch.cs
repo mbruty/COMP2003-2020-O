@@ -13,7 +13,7 @@ namespace api.Backend.Events.FoodTag
         #region Methods
 
         [WebEvent("/foodtags/like", "GET", false, SecurityGroup.None)]
-        public static async Task GetTagsLike(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task GetTagsLike(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
                 where: "Tag LIKE CONCAT('%', @str, '%')",

@@ -13,7 +13,7 @@ namespace api.Backend.Events.Users
         #region Methods
 
         [WebEvent("/user/visits", "GET", false, SecurityGroup.User)]
-        public static async Task GetRecentVisits(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task GetRecentVisits(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 
@@ -23,7 +23,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/user/me", "GET", false, SecurityGroup.User)]
-        public static async Task GetUserData(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task GetUserData(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 

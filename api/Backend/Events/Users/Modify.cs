@@ -12,7 +12,7 @@ namespace api.Backend.Events.Users
         #region Methods
 
         [WebEvent("/user/modify", "DELETE", false, SecurityGroup.User)]
-        public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 
@@ -23,7 +23,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/user/modify", "PUT", false, SecurityGroup.User)]
-        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<User>();
             User[] users = await table.Select<User>("userid", headers["userid"]);
@@ -35,7 +35,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/user/modify/foods", "PUT", false, SecurityGroup.User)]
-        public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
 
@@ -49,7 +49,7 @@ namespace api.Backend.Events.Users
         }
 
         [WebEvent("/user/modify/password", "POST", false, SecurityGroup.User)]
-        public static async Task ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        public static async Task ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             string password = headers["password"];
 

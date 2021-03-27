@@ -44,9 +44,10 @@ namespace api.Backend.Endpoints
                 {
                     try
                     {
-                        if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, await Security.Sessions.GetSecurityGroup(jData, response)))
+                        Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(jData, response);
+                        if (Security.Sessions.IsAuthorized(tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel, perm.SecurityGroup))
                         {
-                            tMethod[0].Invoke(null, new object[] { instance, @event, response });
+                            tMethod[0].Invoke(null, new object[] { instance, @event, response, perm });
                         }
                         await response.Send(webSocket);
                     }
