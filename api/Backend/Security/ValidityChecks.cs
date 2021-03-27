@@ -17,6 +17,12 @@ namespace api.Backend.Security
             return pword.Length > 6 && pword.Count(x => Char.IsDigit(x)) > 0 && pword.Count(x => !Char.IsLetterOrDigit(x)) > 0;
         }
 
+        public static bool IsValidEmail(string email)
+        {
+            string[] halfs = email.Split('@');
+            return halfs[1].Contains('.') && halfs[0].Length>0 && halfs[1].Length>2;
+        }
+
         #endregion Methods
     }
 }

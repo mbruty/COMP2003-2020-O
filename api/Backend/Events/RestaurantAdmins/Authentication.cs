@@ -119,6 +119,13 @@ namespace api.Backend.Events.RestaurantAdmins
                 return;
             }
 
+            if (!ValidityChecks.IsValidEmail(email))
+            {
+                response.AddToData("error", "Email is invalid");
+                response.StatusCode = 400;
+                return;
+            }
+
             if (!ValidityChecks.IsStrongPassword(password))
             {
                 response.AddToData("error", "Password is too weak");
