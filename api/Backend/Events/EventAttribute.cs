@@ -1,5 +1,6 @@
 ﻿using api.Backend.Security;
 using System;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -94,13 +95,28 @@ namespace api.Backend.Events
             return urlPath.ToLower() == this.urlPath && WebSocket == this.WebSocket;
         }
 
-        public object ConvertHeadersOrBodyToType(Type t,NameValueCollection headers, string data)
+        public object ConvertHeadersOrBodyToType(NameValueCollection headers, string data)
         {
-            if (t == typeof(string)) return data;
-            if (t == typeof(NameValueCollection)) return headers;
-            if (data != null) return JsonConvert.DeserializeObject(data, t);
-            else return null;
-#warning convert headers to obj
+            if (dataType == typeof(string)) return data;
+            if (dataType == typeof(NameValueCollection)) return headers;
+            if (data.Length>0) return JsonConvert.DeserializeObject(data, dataType);
+            else {
+                object o = Activator.CreateInstance(dataType);
+                o = UpdateContents(o,dataType, headers);
+                return o;
+            }
+        }
+
+        public Object UpdateContents(Object o,Type t, NameValueCollection headers)
+        {
+            foreach (PropertyInfo field in t.GetProperties())
+            {
+                if (headers.AllKeys.Select(x => x.ToLower()).Contains(field.Name.ToLower()))
+                {
+                    field.SetValue(o, Convert.ChangeType(headers[field.Name], field.PropertyType));
+                }
+            }
+            return o;
         }
 
         #endregion Methods

@@ -35,7 +35,7 @@ namespace api.Backend.Endpoints
                 if (Security.Sessions.IsAuthorized(perm.SecurityGroup, event_attribute.secuirtyLevel))
                 {
                     try {
-                        object o = JsonConvert.DeserializeObject(Data, event_attribute.dataType);
+                        object o = event_attribute.ConvertHeadersOrBodyToType(request.Headers,Data);
                         Task T = (Task)tMethod[0].Invoke(null, new object[] { o, response, perm }); T.Wait(); 
                     }
                     catch (Exception e)
