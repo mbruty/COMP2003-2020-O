@@ -2,6 +2,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
+using System.Collections.Specialized;
 
 namespace api.Backend.Events
 {
@@ -22,20 +24,23 @@ namespace api.Backend.Events
         public SecurityGroup secuirtyLevel = SecurityGroup.None;
         public string urlPath, method;
         public bool WebSocket = false;
+        public Type dataType;
 
         #endregion Fields
 
         #region Constructors
 
-        public WebEvent(string urlPath, bool WebSocket = true, SecurityGroup RequiredAuth = SecurityGroup.None)
+        public WebEvent(Type t, string urlPath, bool WebSocket = true, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
+            dataType = t;
             this.urlPath = urlPath.ToLower();
             this.WebSocket = WebSocket;
             this.secuirtyLevel = RequiredAuth;
         }
 
-        public WebEvent(string urlPath, string Method, bool WebSocket = false, SecurityGroup RequiredAuth = SecurityGroup.None)
+        public WebEvent(Type t, string urlPath, string Method, bool WebSocket = false, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
+            dataType = t;
             this.urlPath = urlPath.ToLower();
             this.method = Method.ToLower();
             this.WebSocket = WebSocket;
@@ -87,6 +92,15 @@ namespace api.Backend.Events
         public bool Equals(string urlPath, bool WebSocket = false) //Easily check if states match
         {
             return urlPath.ToLower() == this.urlPath && WebSocket == this.WebSocket;
+        }
+
+        public object ConvertHeadersOrBodyToType(Type t,NameValueCollection headers, string data)
+        {
+            if (t == typeof(string)) return data;
+            if (t == typeof(NameValueCollection)) return headers;
+            if (data != null) return JsonConvert.DeserializeObject(data, t);
+            else return null;
+#warning convert headers to obj
         }
 
         #endregion Methods

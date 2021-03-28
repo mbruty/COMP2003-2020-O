@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Events.Restaurants
 {
-    public static class Modify
+    public static class Restaurant
     {
         #region Classes
 
-        private class RestaurantBody
+        public class RestaurantBody
         {
             #region Fields
 
@@ -36,11 +36,9 @@ namespace api.Backend.Events.Restaurants
 
         #region Methods
 
-        [WebEvent("/restaurants/create", "POST", false, SecurityGroup.Administrator)]
-        public static async Task CreateRestaurant(NameValueCollection headers, string data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(RestaurantBody),"/restaurants/create", "POST", false, SecurityGroup.Administrator)]
+        public static async Task CreateRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            RestaurantBody body = JsonConvert.DeserializeObject<RestaurantBody>(data);
-
             if (!body.IsValid())
             {
                 response.StatusCode = 401;
@@ -48,7 +46,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            Restaurant _restaurant = new Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude, IsVerified = false, Latitude = body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site };
+            Data.Obj.Restaurant _restaurant = new Data.Obj.Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude, IsVerified = false, Latitude = body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site };
 
             if (!await _restaurant.Insert(true))
             {
@@ -62,13 +60,11 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent("/restaurants", "GET", false, SecurityGroup.Administrator)]
-        public static async Task GetRestaurant(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(RestaurantBody), "/restaurants", "GET", false, SecurityGroup.Administrator)]
+        public static async Task GetRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            RestaurantBody body = JsonConvert.DeserializeObject<RestaurantBody>(Data);
-
-            Table table = Binding.GetTable<Restaurant>();
-            Restaurant[] restaurants = await table.Select<Restaurant>(body.RestaurantID);
+            Table table = Binding.GetTable<Data.Obj.Restaurant>();
+            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID);
 
             if (restaurants.Length == 0)
             {
@@ -77,7 +73,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            Restaurant restaurant = restaurants[0];
+            Data.Obj.Restaurant restaurant = restaurants[0];
 
             if (restaurant.OwnerID != perm.admin_id)
             {
@@ -91,13 +87,11 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent("/restaurants/modify", "PUT", false, SecurityGroup.Administrator)]
-        public static async Task ModifyRestaurant(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(RestaurantBody), "/restaurants/modify", "PUT", false, SecurityGroup.Administrator)]
+        public static async Task ModifyRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            RestaurantBody body = JsonConvert.DeserializeObject<RestaurantBody>(Data);
-
-            Table table = Binding.GetTable<Restaurant>();
-            Restaurant[] restaurants = await table.Select<Restaurant>(body.RestaurantID);
+            Table table = Binding.GetTable<Data.Obj.Restaurant>();
+            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID);
 
             if (restaurants.Length == 0)
             {
@@ -106,7 +100,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            Restaurant restaurant = restaurants[0];
+            Data.Obj.Restaurant restaurant = restaurants[0];
 
             if (restaurant.OwnerID != perm.admin_id)
             {

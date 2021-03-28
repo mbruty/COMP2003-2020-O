@@ -14,10 +14,9 @@ namespace api.Backend.Events.FoodTag
     {
         #region Methods
 
-        [WebEvent("/foodtags/create", "POST", false, SecurityGroup.None)]
-        public static async Task GetTagsLike(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(FoodTagBody),"/foodtags/create", "POST", false, SecurityGroup.None)]
+        public static async Task GetTagsLike(FoodTagBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            FoodTagBody body = JsonConvert.DeserializeObject<FoodTagBody>(Data);
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
                 where: "Tag LIKE @str",
                 tables: "FoodTags",
@@ -71,8 +70,8 @@ namespace api.Backend.Events.FoodTag
             }
         }
 
-        [WebEvent("/foodtags/sync", "POST", false, SecurityGroup.None)]
-        public static async Task SyncSearch(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(FoodTagBody), "/foodtags/sync", "POST", false, SecurityGroup.None)]
+        public static async Task SyncSearch(FoodTagBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Get all food tags
             FoodTags[] all = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>("1=1", 0);

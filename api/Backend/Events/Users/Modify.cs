@@ -4,6 +4,7 @@ using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using System;
 
 namespace api.Backend.Events.Users
 {
@@ -11,8 +12,8 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/user/modify", "DELETE", false, SecurityGroup.User)]
-        public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string), "/user/modify", "DELETE", false, SecurityGroup.User)]
+        public static async Task DeleteUser(string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
@@ -22,20 +23,25 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/user/modify", "PUT", false, SecurityGroup.User)]
-        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(User), "/user/modify", "PUT", false, SecurityGroup.User)]
+        public static async Task ModifyUser(User user, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<User>();
             User[] users = await table.Select<User>("userid", perm.user_id);
 
-            users[0].UpdateContents<User>(headers);
+            User u = users[0];
+
+            if (user.Password!=null && ValidityChecks.IsStrongPassword(user.Password)) { u.Password = Hashing.Hash(user.Password); }
+            if (user.Email!=null && ValidityChecks.IsValidEmail(user.Email)) { u.Email = user.Email; }
+            if (user.DateOfBirth!=null && user.DateOfBirth!=DateTime.MinValue) { u.DateOfBirth = user.DateOfBirth; }
+            if (user.Nickname != null) { u.Nickname = user.Nickname; }
 
             response.AddToData("message", "Updated user");
             response.StatusCode = 200;
         }
 
-        [WebEvent("/user/modify/foods", "PUT", false, SecurityGroup.User)]
-        public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(NameValueCollection),"/user/modify/foods", "PUT", false, SecurityGroup.User)]
+        public static async Task ModifyUserFoodChecks(NameValueCollection headers, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
@@ -48,8 +54,8 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/user/modify/password", "POST", false, SecurityGroup.User)]
-        public static async Task ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(NameValueCollection),"/user/modify/password", "POST", false, SecurityGroup.User)]
+        public static async Task ModifyUserPassword(NameValueCollection headers, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             string password = headers["password"];
 

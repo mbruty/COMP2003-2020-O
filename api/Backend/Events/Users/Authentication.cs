@@ -21,25 +21,23 @@ namespace api.Backend.Events.Users
 
         #region Methods
 
-        [WebEvent("/user/authcheck", "POST", false, SecurityGroup.User)]
-        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string),"/user/authcheck", "POST", false, SecurityGroup.User)]
+        public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/user/authcheck", "GET", false, SecurityGroup.User)]
+        [WebEvent(typeof(string), "/user/authcheck", "GET", false, SecurityGroup.User)]
         public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/user/login", "POST", false)]
-        public static async Task Login(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(LoginCredentials), "/user/login", "POST", false)]
+        public static async Task Login(LoginCredentials creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            // Convert the string to a credential object
-            LoginCredentials creds = JsonConvert.DeserializeObject<LoginCredentials>(Data);
             string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
@@ -71,10 +69,9 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Logged in");
         }
 
-        [WebEvent("/user/resendcode", "POST", false, SecurityGroup.User)]
-        public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(UserIdWithToken),"/user/resendcode", "POST", false, SecurityGroup.User)]
+        public static async Task resendcode(UserIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            UserIdWithToken user = JsonConvert.DeserializeObject<UserIdWithToken>(Data);
             // Get the user
             User[] users = await Binding.GetTable<User>().Select<User>("UserID", user.UserID, 1);
 
@@ -104,11 +101,9 @@ namespace api.Backend.Events.Users
             Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
         }
 
-        [WebEvent("/user/signup", "POST", false)]
-        public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(User),"/user/signup", "POST", false)]
+        public static async Task SignUp(User creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            // Convert the string to a credential object
-            User creds = JsonConvert.DeserializeObject<User>(Data);
             string email = creds.Email, password = creds.Password, dateOfBirth = creds.DateOfBirth.ToString(), nickname = creds.Nickname;
 
             if (email == null || password == null)
@@ -179,10 +174,9 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent("/user/validatecode", "POST", false)]
-        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(ValidationCode),"/user/validatecode", "POST", false)]
+        public static async Task ValidateCode(ValidationCode validation, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);
             if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
             {
                 // Bad Request

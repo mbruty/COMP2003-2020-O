@@ -22,25 +22,24 @@ namespace api.Backend.Events.RestaurantAdmins
 
         #region Methods
 
-        [WebEvent("/admin/authcheck", "POST", false, SecurityGroup.Administrator)]
-        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string),"/admin/authcheck", "POST", false, SecurityGroup.Administrator)]
+        public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/admin/authcheck", "GET", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(string), "GET", false, SecurityGroup.Administrator)]
         public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent("/admin/login", "POST", false)]
-        public static async Task Login(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(LoginCredentials), "/admin/login", "POST", false)]
+        public static async Task Login(LoginCredentials creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Convert the string to a credential object
-            LoginCredentials creds = JsonConvert.DeserializeObject<LoginCredentials>(Data);
             string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
@@ -72,10 +71,9 @@ namespace api.Backend.Events.RestaurantAdmins
             response.AddToData("message", "Logged in");
         }
 
-        [WebEvent("/admin/resendcode", "POST", false, SecurityGroup.Administrator)]
-        public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(AdminIdWithToken),"/admin/resendcode", "POST", false, SecurityGroup.Administrator)]
+        public static async Task resendcode(AdminIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            AdminIdWithToken user = JsonConvert.DeserializeObject<AdminIdWithToken>(Data);
             // Get the user
             RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", user.AdminID, 1);
 
@@ -105,11 +103,9 @@ namespace api.Backend.Events.RestaurantAdmins
             Backend.Data.Redis.Instance.SetStringWithExpiration($"admin-signup-code:{user.AdminID}", code, new TimeSpan(0, 30, 0));
         }
 
-        [WebEvent("/admin/signup", "POST", false)]
-        public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(RestaurantAdmin),"/admin/signup", "POST", false)]
+        public static async Task SignUp(RestaurantAdmin creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            // Convert the string to a credential object
-            RestaurantAdmin creds = JsonConvert.DeserializeObject<RestaurantAdmin>(Data);
             string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
@@ -171,10 +167,9 @@ namespace api.Backend.Events.RestaurantAdmins
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent("/admin/validatecode", "POST", false)]
-        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(ValidationCode),"/admin/validatecode", "POST", false)]
+        public static async Task ValidateCode(ValidationCode validation, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);
             if (validation.AdminID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
             {
                 // Bad Request
