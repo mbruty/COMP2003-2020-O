@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Events.Restaurants
 {
-    public static class Menu
+    public static class Fetch
     {
         public class MenuBody
         {
@@ -18,7 +18,7 @@ namespace api.Backend.Events.Restaurants
         }
 
         [WebEvent(typeof(MenuBody), "/menu", "GET", false, SecurityGroup.None)]
-        public static async Task GetRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        public static async Task GetMenu(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<Data.Obj.Menu>();
             Data.Obj.Menu[] menus = await table.Select<Data.Obj.Menu>(body.MenuID);
@@ -37,8 +37,29 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
+        [WebEvent(typeof(MenuBody), "/menu/items", "GET", false, SecurityGroup.None)]
+        public static async Task GetMenuItems(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Table table = Binding.GetTable<Data.Obj.Menu>();
+            Data.Obj.Menu[] menus = await table.Select<Data.Obj.Menu>(body.MenuID);
+
+            if (menus.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "That Menu Id does not exist");
+                return;
+            }
+
+            Data.Obj.Menu menu = menus[0];
+
+            response.AddToData("message", "Fetched menu");
+            response.AddObjectToData("menu", menu);
+            response.AddObjectToData("fooditems",await menu.GetFoodItems());
+            response.StatusCode = 200;
+        }
+
         [WebEvent(typeof(MenuBody), "/menu/me", "GET", false, SecurityGroup.Administrator)]
-        public static async Task GetAllRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        public static async Task GetAllMenus(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<Data.Obj.Menu>();
             Data.Obj.Menu[] menus = await table.SelectCustom<Data.Obj.Menu>(
@@ -50,13 +71,6 @@ namespace api.Backend.Events.Restaurants
                     new System.Tuple<string, object>("OID",perm.admin_id)
                 }
                 ); 
-
-            //if (menu.OwnerID != perm.admin_id)
-            //{
-            //    response.StatusCode = 401;
-            //    response.AddToData("error", "This is not your restaurant");
-            //    return;
-            //}
 
             response.AddToData("message", "Fetched menu");
             response.AddObjectToData("menus", menus);
