@@ -12,8 +12,8 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/user/visits", "GET", false, SecurityGroup.User)]
-        public static async Task GetRecentVisits(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string),"/user/visits", "GET", false, SecurityGroup.User)]
+        public static async Task GetRecentVisits(string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
@@ -22,8 +22,8 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/user/me", "GET", false, SecurityGroup.User)]
-        public static async Task GetUserData(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string), "/user/me", "GET", false, SecurityGroup.User)]
+        public static async Task GetUserData(string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 

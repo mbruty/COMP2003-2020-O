@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using Newtonsoft.Json;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
@@ -45,7 +46,9 @@ namespace api.Backend.Endpoints
                     try
                     {
                         Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(jData, response);
-                        if (Security.Sessions.IsAuthorized(perm.SecurityGroup, tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel))
+                        Events.WebEvent event_attribute = tMethod[0].GetCustomAttributes<Events.WebEvent>().First();
+
+                        if (Security.Sessions.IsAuthorized(perm.SecurityGroup, event_attribute.secuirtyLevel))
                         {
                             tMethod[0].Invoke(null, new object[] { instance, @event, response, perm });
                         }

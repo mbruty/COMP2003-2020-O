@@ -10,15 +10,20 @@ namespace api.Backend.Events.FoodTag
 {
     public static class Fetch
     {
+        public class tagLike
+        {
+            public string tag;
+        }
+
         #region Methods
 
-        [WebEvent("/foodtags/like", "GET", false, SecurityGroup.None)]
-        public static async Task GetTagsLike(NameValueCollection headers, string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(tagLike),"/foodtags/like", "GET", false, SecurityGroup.None)]
+        public static async Task GetTagsLike(tagLike like, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
                 where: "Tag LIKE CONCAT('%', @str, '%')",
                 tables: "FoodTags",
-                Params: new List<System.Tuple<string, object>> { new System.Tuple<string, object>("str", headers["string"]) });
+                Params: new List<System.Tuple<string, object>> { new System.Tuple<string, object>("str", like.tag) });
 
             response.AddObjectToData("tags", tags);
             response.StatusCode = 200;

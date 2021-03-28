@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -29,9 +30,14 @@ namespace api.Backend.Endpoints
             if (tMethod.Length > 0)
             {
                 Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(request.Headers, response);
-                if (Security.Sessions.IsAuthorized(perm.SecurityGroup, tMethod[0].GetCustomAttributes<Events.WebEvent>().First().secuirtyLevel))
+                Events.WebEvent event_attribute = tMethod[0].GetCustomAttributes<Events.WebEvent>().First();
+
+                if (Security.Sessions.IsAuthorized(perm.SecurityGroup, event_attribute.secuirtyLevel))
                 {
-                    try { Task T = (Task)tMethod[0].Invoke(null, new object[] { request.Headers, Data, response, perm }); T.Wait(); }
+                    try {
+                        object o = event_attribute.ConvertHeadersOrBodyToType(request.Headers,Data);
+                        Task T = (Task)tMethod[0].Invoke(null, new object[] { o, response, perm }); T.Wait(); 
+                    }
                     catch (Exception e)
                     {
                         response.StatusCode = 505;

@@ -9,7 +9,7 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
-        public DateTime DateOfBirth;
+        public DateTime DateOfBirth = DateTime.MinValue;
         public string Email, Password, Nickname;
         public uint FoodCheckID;
         public bool IsDeleted, IsVerified;
