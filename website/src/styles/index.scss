@@ -79,8 +79,8 @@ main {
 }
 
 .drag-n-drop-container {
-  width: 50vmin !important;
-  height: 50vmin !important;
+  width: 30vmin !important;
+  height: 30vmin !important;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -92,4 +92,32 @@ main {
 h3.nav {
   display: inherit;
   text-align: center;
+}
+
+.save-toast{
+  position: absolute;
+  top: 100px;
+  right: 50px;
+  overflow: hidden;
+}
+
+.save-toast.visible::after{
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  animation: progressLeft 5s forwards;
+  background-color: white;
+}
+
+@keyframes progressLeft {
+  from {
+    width: 100%
+  }
+  to {
+    width: 0%
+
+  }
 }
