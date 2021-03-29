@@ -1,19 +1,28 @@
 import { Paper } from "@material-ui/core";
-import { DragIndicator } from "@material-ui/icons";
+import { DeleteForever, DragIndicator, Fastfood } from "@material-ui/icons";
 import React from "react";
 import { useDrag } from "react-dnd";
 import IFoodItem from "../item-builder/IFoodItem";
 
-const FoodItem: React.FC<{ item: IFoodItem }> = ({ item }) => {
+const FoodItem: React.FC<{
+  item: IFoodItem;
+  deletable?: boolean;
+  onDelete?: () => void;
+}> = ({ item, deletable, onDelete }) => {
+  const [imgError, setImgError] = React.useState<boolean>(false);
   const [{ isDragging }, drag] = useDrag({
     type: "food-item",
     item: () => {
-      return { id: item.id };
+      return { ...item };
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
   });
+
+  const onError = () => {
+    setImgError(true);
+  };
   return (
     <Paper
       ref={drag}
@@ -26,12 +35,17 @@ const FoodItem: React.FC<{ item: IFoodItem }> = ({ item }) => {
         cursor: "grab",
       }}
     >
-      <img
-        src={`https://storage.googleapis.com/tat-img/${item.id}.png`}
-        alt={`${item.shortName}`}
-        style={{ marginTop: "10px", pointerEvents: "none" }}
-        width="120px"
-      />
+      {imgError ? (
+        <Fastfood style={{ fontSize: 150 }} />
+      ) : (
+        <img
+          src={`https://storage.googleapis.com/tat-img/${item.id}.png`}
+          alt={`${item.shortName}`}
+          style={{ marginTop: "10px", pointerEvents: "none" }}
+          width="120px"
+          onError={onError}
+        />
+      )}
       <div
         style={{
           display: "flex",
@@ -44,6 +58,18 @@ const FoodItem: React.FC<{ item: IFoodItem }> = ({ item }) => {
         <p>{item.price}</p>
       </div>
       <DragIndicator style={{ position: "absolute", top: 5, right: 5 }} />
+      {deletable && (
+        <DeleteForever
+          style={{
+            position: "absolute",
+            top: 35,
+            right: 5,
+            color: "firebrick",
+            cursor: "pointer",
+          }}
+          onClick={onDelete}
+        />
+      )}
     </Paper>
   );
 };
