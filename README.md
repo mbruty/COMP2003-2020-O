@@ -387,14 +387,14 @@ Returns a reference string for the day in question between Sunday-Saturday (resp
 
 ## MySQL Database Documentation
 
-### Entity Relationship Diagram (Version 5.8)
+### Entity Relationship Diagram (Version 6.2)
 
-*This diagram is not currently up-to-date. Latest version is 6.0.1.*
+*This diagram is up-to-date. This is the latest version as of 23/03/21.*
 
 <br>
 
 <p>
-  <img alt="The entity relationship diagram associated with the project." width="720" height="598" src="https://i.imgur.com/2unOxkt.png">
+  <img alt="The entity relationship diagram associated with the project." width="926" height="625" src="https://i.imgur.com/wWIOH9J.png">
 </p>
 
 <br>
@@ -405,6 +405,8 @@ Returns a reference string for the day in question between Sunday-Saturday (resp
 
 ## How the Branches Work
 
+<br>
+
 1. You submit a pull request with your changes on a new 'feature' branch.
 2. Travis-CI will automatically run tests on the changes you've made
 3. If the test's pass, go to 4, if any fail, go to 1 and make the appropriate changes
@@ -414,6 +416,3 @@ Returns a reference string for the day in question between Sunday-Saturday (resp
 7. Once we've made sure everything in the release branch is good to go, the release branch will be merged in to the main branch.
 8. On the merge in to the main branch, the project will be built and put on the release server avalible at _We need to get a name first_
 
----
-
-## UI Styling Information

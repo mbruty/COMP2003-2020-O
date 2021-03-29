@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS `RestaurantOpinion`;
 DROP TABLE IF EXISTS `LinkMenuFood`;
 DROP TABLE IF EXISTS `FoodItemTags`;
 DROP TABLE IF EXISTS `SwipeData`;
+DROP TABLE IF EXISTS `LinkCategoryFood`;
 DROP TABLE IF EXISTS `FoodItem`;
 DROP TABLE IF EXISTS `MenuTimes`;
 DROP TABLE IF EXISTS `LinkMenuRestaurant`;
@@ -14,7 +15,10 @@ DROP TABLE IF EXISTS `FoodOpinion`;
 DROP TABLE IF EXISTS `FoodTags`;
 DROP TABLE IF EXISTS `RestaurantVerification`;
 DROP TABLE IF EXISTS `Restaurant`;
+DROP TABLE IF EXISTS `CommunityTagResponse`;
 DROP TABLE IF EXISTS `RAdminSession`;
+DROP TABLE IF EXISTS `Category`;
+DROP TABLE IF EXISTS `TagSuggestions`;
 DROP TABLE IF EXISTS `RestaurantAdmin`;
 DROP TABLE IF EXISTS `Session`;
 DROP TABLE IF EXISTS `User`;
@@ -36,7 +40,7 @@ CREATE TABLE `FoodChecks` (
     PRIMARY KEY (FoodCheckID),
 
     CONSTRAINT CHK_KosherHalalConflict CHECK (((IsHalal = 1) AND (IsKosher = 1)) != 1),
-    CONSTRAINT CK_VeganVegetarianConflict CHECK (((IsVegan = 1) AND (IsVegetarian = 1)) != 1)
+    CONSTRAINT CK_VeganVegetarianConflict CHECK (((IsVegan = 1) AND (IsVegetarian = 0)) != 1)
 );
 
 CREATE TABLE `User` (
@@ -83,6 +87,31 @@ CREATE TABLE `RestaurantAdmin` (
     CONSTRAINT CHK_AdminEmail CHECK ((Email LIKE '%@%.%') OR (Email = '-1'))
 );
 
+CREATE TABLE `TagSuggestions` (
+    SuggestionID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    Tag VARCHAR(20) NOT NULL,
+    DateAdded DATE,
+    OwnerID INT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (SuggestionID),
+    CONSTRAINT UNQ_FoodTag UNIQUE (Tag),
+
+    CONSTRAINT CHK_SuggestedTag CHECK (Tag REGEXP '[a-z]{3,}'),
+    CONSTRAINT FK_AdminInSuggestions FOREIGN KEY (OwnerID)
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE `Category` (
+    CategoryID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    CatName VARCHAR(30) NOT NULL,
+    OwnerID INT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (CategoryID),
+
+    CONSTRAINT FK_AdminInCategory FOREIGN KEY (CategoryID)
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
 CREATE TABLE `RAdminSession` (
     RAdminID INT UNSIGNED NOT NULL,
     SignedIn DATETIME NOT NULL DEFAULT NOW(),
@@ -93,6 +122,20 @@ CREATE TABLE `RAdminSession` (
     CONSTRAINT FK_AdminInSession FOREIGN KEY (RAdminID)
         REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE `CommunityTagResponse` (
+    RAdminID INT UNSIGNED NOT NULL,
+    SuggestionID INT UNSIGNED NOT NULL,
+    Upvote BIT NOT NULL,
+
+    PRIMARY KEY (RAdminID, SuggestionID),
+
+    CONSTRAINT FK_AdminInTagResponse FOREIGN KEY (RAdminID)
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_TagInTagResponse FOREIGN KEY (SuggestionID)
+        REFERENCES TagSuggestions(SuggestionID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 
 CREATE TABLE `Restaurant` (
     RestaurantID INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -191,6 +234,7 @@ CREATE TABLE `LinkMenuRestaurant` (
     MenuID INT UNSIGNED NOT NULL,
     RestaurantID INT UNSIGNED NOT NULL,
     AlwaysServe BIT NOT NULL DEFAULT 1,
+    IsActive BIT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (MenuRestID),
     CONSTRAINT UNQ_LinkMenuRestaurant UNIQUE (MenuID, RestaurantID),
@@ -231,11 +275,23 @@ CREATE TABLE `FoodItem` (
     CONSTRAINT CHK_FoodPrice CHECK (Price > 0.00)
 );
 
+CREATE TABLE `LinkCategoryFood` (
+    CategoryID INT UNSIGNED NOT NULL,
+    FoodID INT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (CategoryID, FoodID),
+
+    CONSTRAINT FK_CategoryInCategoryFoodLink FOREIGN KEY (CategoryID)
+        REFERENCES Category(CategoryID) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_FoodInCategoryFoodLink FOREIGN KEY (FoodID)
+        REFERENCES FoodItem(FoodID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 CREATE TABLE `SwipeData` (
     FoodID INT UNSIGNED NOT NULL,
     SwipeDate DATE NOT NULL,
-    RightSwipes BIT NOT NULL DEFAULT 0,
-    LeftSwipes BIT NOT NULL DEFAULT 0,
+    RightSwipes INT,
+    LeftSwipes INT,
 
     PRIMARY KEY (FoodID, SwipeDate),
 
@@ -308,3 +364,69 @@ CREATE TABLE `Review` (
         REFERENCES Visit(VisitRef) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT CHK_Rating CHECK (Rating BETWEEN 0 AND 10)
 );
+
+
+
+
+
+
+
+
+/*
+SQL Trigger Setup:
+    The following script should create the necessary triggers associated with our project.
+    It will delete triggers if they currently exist in the database.
+    The triggers are explained within this comment bracket of the script.
+
+    TGR_DeleteUser removes the FoodCheck associated with the user to be removed.
+        - Please read documentation for details on removing users.
+    
+    TGR_DeleteFoodItem removes the FoodCheck associated with the menu item to be removed.
+
+    TRG_InsertUser automatically assigns a default FoodCheck to a newly created user.
+    
+    TGR_InsertFoodItem responds similarly to its InsertUser counterpart by creating a default FoodCheck.
+*/
+
+DROP TRIGGER IF EXISTS TGR_DeleteUser;
+DROP TRIGGER IF EXISTS TGR_DeleteFoodItem;
+DROP TRIGGER IF EXISTS TGR_InsertUser;
+DROP TRIGGER IF EXISTS TGR_InsertFoodItem;
+
+
+CREATE TRIGGER TGR_DeleteUser
+AFTER DELETE ON `User` 
+FOR EACH ROW
+DELETE FROM `FoodChecks` WHERE FoodChecks.FoodCheckID = OLD.FoodCheckID;
+
+
+CREATE TRIGGER TGR_DeleteFoodItem
+AFTER DELETE ON `FoodItem` 
+FOR EACH ROW
+DELETE FROM `FoodChecks` WHERE FoodChecks.FoodCheckID = OLD.FoodCheckID;
+
+
+DELIMITER //
+CREATE TRIGGER TGR_InsertUser
+BEFORE INSERT ON `User` 
+FOR EACH ROW
+BEGIN
+	INSERT INTO FoodChecks (FoodCheckID)
+    VALUES (DEFAULT);
+    
+    SET NEW.FoodCheckID = LAST_INSERT_ID();
+END //
+
+
+CREATE TRIGGER TGR_InsertFoodItem
+BEFORE INSERT ON `FoodItem` 
+FOR EACH ROW
+BEGIN
+	INSERT INTO FoodChecks (FoodCheckID)
+    VALUES (DEFAULT);
+    
+    SET NEW.FoodCheckID = LAST_INSERT_ID();
+END //
+
+DELIMITER ;
+

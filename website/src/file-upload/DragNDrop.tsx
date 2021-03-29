@@ -104,7 +104,7 @@ const DragNDrop: React.FC<Props> = (props) => {
     getRootProps,
     getInputProps,
     isDragActive,
-    isDragReject,
+    isDragReject,p
   } = useDropzone({ onDrop, accept: "image/*" });
 
   const onCropChange = (crop: { x: number; y: number }) => {
@@ -117,40 +117,38 @@ const DragNDrop: React.FC<Props> = (props) => {
   console.log(cropData);
 
   return (
-    <div className="content">
+    <div className="content" >
       {!file && (
-        <Paper style={{ borderRadius: 20 }}>
-          <div className="drag-n-drop-container widget" {...getRootProps()}>
-            <input {...getInputProps()} />
-            {isDragActive && !isDragReject && (
-              <>
-                <FontAwesomeIcon
-                  icon={faFolderPlus}
-                  style={{ fontSize: "3em" }}
-                />
-                <p>Drop the files here ...</p>
-              </>
-            )}
-            {!isDragActive && (
-              <>
-                <FontAwesomeIcon
-                  icon={faFolderOpen}
-                  style={{ fontSize: "3em" }}
-                />
-                <p>Upload your file here</p>
-              </>
-            )}
-            {isDragReject && (
-              <>
-                <FontAwesomeIcon
-                  icon={faFolderMinus}
-                  style={{ fontSize: "3em" }}
-                />
-                <p>File type not accepted</p>
-              </>
-            )}
-          </div>
-        </Paper>
+        <div className="drag-n-drop-container widget" {...getRootProps()}>
+          <input {...getInputProps()} />
+          {isDragActive && !isDragReject && (
+            <>
+              <FontAwesomeIcon
+                icon={faFolderPlus}
+                style={{ fontSize: "3em" }}
+              />
+              <p>Drop the files here ...</p>
+            </>
+          )}
+          {!isDragActive && (
+            <>
+              <FontAwesomeIcon
+                icon={faFolderOpen}
+                style={{ fontSize: "3em" }}
+              />
+              <p>Upload your file here</p>
+            </>
+          )}
+          {isDragReject && (
+            <>
+              <FontAwesomeIcon
+                icon={faFolderMinus}
+                style={{ fontSize: "3em" }}
+              />
+              <p>File type not accepted</p>
+            </>
+          )}
+        </div>
       )}
       {file && (
         <>
