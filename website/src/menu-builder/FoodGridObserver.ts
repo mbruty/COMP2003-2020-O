@@ -19,7 +19,7 @@ export class Observer {
     this.items = {
       groups: [
         {
-          name: "asdf",
+          name: "Amazing dinner",
           items: [
             {
               id: 1,
@@ -27,6 +27,7 @@ export class Observer {
               shortName: "Quokka",
               price: 2.99,
             },
+            { id: 3, shortName: "Borger", name: "Borger", price: 69.69 },
           ],
           id: 1,
         },
@@ -39,6 +40,12 @@ export class Observer {
               name: "Wine 'n beer",
               shortName: "Wine 'n beer",
               price: 6.99,
+            },
+            {
+              id: Number.MAX_SAFE_INTEGER,
+              name: "Error test",
+              shortName: "Error test",
+              price: 0.01,
             },
           ],
         },
