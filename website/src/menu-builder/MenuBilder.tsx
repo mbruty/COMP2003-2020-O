@@ -1,26 +1,30 @@
 import { Paper } from "@material-ui/core";
 import React from "react";
 import { Observer } from "./FoodGridObserver";
+import { MenuObserver } from "./MenuObserver";
 import FoodItems from "./FoodItems";
+import MenuContainer from "./MenuContainer";
 
 interface Props {}
 
 const MenuBuilder: React.FC<Props> = (props) => {
   const foodObserver = React.useMemo(() => new Observer(), []);
-
+  const menuObserver = React.useMemo(() => new MenuObserver(), []);
   return (
-    <div
-      className="grid" // Use the default grid container
-      style={{
-        gridTemplateColumns: "repeat(3, 1fr)", // We're using 3 columns here
-        gridAutoRows: "calc(100vh - 64px - 25px - 1em)", // Onlyt using one row that will extend the entire page
-      }}
-    >
-      <Paper style={{ gridColumn: "span 2", overflowY: "auto" }}></Paper>
-      <Paper style={{ overflowY: "auto" }}>
-        <FoodItems observer={foodObserver} />
-      </Paper>
-    </div>
+      <div
+        className="grid" // Use the default grid container
+        style={{
+          gridTemplateColumns: "repeat(3, 1fr)", // We're using 3 columns here
+          gridAutoRows: "calc(100vh - 64px - 25px - 1em)", // Onlyt using one row that will extend the entire page
+        }}
+      >
+        <Paper style={{ gridColumn: "span 2", overflowY: "auto" }}>
+          <MenuContainer observer={menuObserver} />
+        </Paper>
+        <Paper style={{ overflowY: "auto" }}>
+          <FoodItems observer={foodObserver} />
+        </Paper>
+      </div>
   );
 };
 
