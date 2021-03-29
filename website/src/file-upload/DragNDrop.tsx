@@ -104,7 +104,7 @@ const DragNDrop: React.FC<Props> = (props) => {
     getRootProps,
     getInputProps,
     isDragActive,
-    isDragReject,p
+    isDragReject,
   } = useDropzone({ onDrop, accept: "image/*" });
 
   const onCropChange = (crop: { x: number; y: number }) => {
