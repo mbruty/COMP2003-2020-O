@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+        .w3-row-padding img {margin-bottom: 12px}
+        /* Set the width of the sidebar to 120px */
+        .w3-sidebar {width: 120px;background: #222;}
+        /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+        #main {margin-left: 120px}
+        /* Remove margins from "page content" on small screens */
+        @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 16px Arial;
+        }
+
+        /*the container must be positioned relative:*/
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+
+        input {
+            border: 1px solid transparent;
+            background-color: #f1f1f1;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        input[type=text] {
+            background-color: #f1f1f1;
+            width: 100%;
+        }
+
+        input[type=submit] {
+            background-color: DodgerBlue;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        /*when hovering an item:*/
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+        /*when navigating through the items using the arrow keys:*/
+        .autocomplete-active {
+            background-color: DodgerBlue !important;
+            color: #ffffff;
+        }
+    </style>
+    <meta
+            name="description"
+            content="Web site created using create-react-app"
+    />
+
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+
+</head>
+
+<body bgcolor="white">
+
+<!-- Icon Bar (Sidebar - hidden on small screens) -->
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-red">
+    <!-- Avatar image in top left corner -->
+    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-red">
+        <i class="fa fa-home w3-xxlarge"></i>
+        <p>HOME</p>
+    </a>
+    <a href="#about" class="w3-bar-item w3-button w3-padding-large w3-red">
+        <i class="fas fa-sign"></i>
+        <p>Restaurant Builder</p>
+    </a>
+    <a href="#photos" class="w3-bar-item w3-button w3-padding-large w3-red">
+        <i class="fas fa-pizza-slice"></i>
+        <p>Menu Builder</p>
+    </a>
+    <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-red">
+        <i class="fas fa-drumstick-bite"></i>
+        <p>Item Builder</p>
+    </a>
+</nav>
+
+<!-- Navbar on small screens (Hidden on medium and large screens) -->
+<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+    <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+        <a href="#" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
+        <a href="#about" class="w3-bar-item w3-button" style="width:25% !important">ABOUT</a>
+        <a href="#photos" class="w3-bar-item w3-button" style="width:25% !important">PHOTOS</a>
+        <a href="#contact" class="w3-bar-item w3-button" style="width:25% !important">CONTACT</a>
+    </div>
+</div>
+
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
+<div align="center" class="w3-red">
+    <h2>Welcome to the Track and Taste Item Builder</h2>
+    <h3>Let's create a new item for your menu</h3>
+    <hr color="black">
+</div>
+<div class="w3-padding-large" id="main">
+    <h2>Step 1: Item details</h2>
+    <h3>Tell us about your new item</h3>
+    <fieldset>
+        <label for="iName">Item Name:</label>
+        <input type="text" id="iName" name="iName"><br><br>
+        <label for="shName">Short Name:</label>
+        <input type="text" id="shName" name="shName"><br><br>
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description"><br><br>
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price"><br><br>
+    </fieldset>
+
+
+    <hr color="black">
+
+    <h2>Step 2: Food Checks</h2>
+    <h3>Tell us if your new item fits into our categories</h3>
+    <fieldset>
+        <label for="isVegetarian">Vegetarian</label>
+        <input type="checkbox" id="isVegetarian" name="isVegetarian"><br><br>
+        <label for="isVegan">Vegan</label>
+        <input type="checkbox" id="isVegan" name="isVegan"><br><br>
+        <label for="isHalal">Halal</label>
+        <input type="checkbox" id="isHalal" name="isHalal"><br><br>
+
+        <label for="isKosher">Kosher</label>
+        <input type="checkbox" id="isKosher" name="isKosher"><br><br>
+        <label for="isLactose">Contains Lactose</label>
+        <input type="checkbox" id="isLactose" name="isLactose"><br><br>
+        <label for="hasNuts">Contains Nuts</label>
+        <input type="checkbox" id="hasNuts" name="hasNuts"><br><br>
+
+        <label for="isGluten">Contains Gluten</label>
+        <input type="checkbox" id="isGluten" name="isGluten"><br><br>
+        <label for="isEgg">Contains Eggs</label>
+        <input type="checkbox" id="isEgg" name="isEgg"><br><br>
+        <label for="isSoy">Contains Soy</label>
+        <input type="checkbox" id="isSoy" name="isSoy"><br><br>
+
+        <label for="isNone">None</label>
+        <input type="checkbox" id="isNone" name="isNone"><br><br>
+    </fieldset>
+
+
+    <hr color="black">
+
+    <h2>Step 3: Assign Food Tags</h2>
+    <h3>Make your new item easier to find by giving it tags that help us describe it</h3>
+    <fieldset>
+        <form autocomplete="off" action="/ItemBuilder.html">
+        <div class="autocomplete" style="width:300px;">
+            <input id="myInput" type="text" name="myTags" placeholder="Food Tag">
+            <input type="button" value="Add Tag"><br><br>
+        </div>
+        </form>
+        <script>
+            var FoodTags = ["Pizza","Pasta","Cheese","Bread","Wine"];
+            function autocomplete(inp, arr) {
+                /*the autocomplete function takes two arguments,
+                the text field element and an array of possible autocompleted values:*/
+                var currentFocus;
+                /*execute a function when someone writes in the text field:*/
+                inp.addEventListener("input", function(e) {
+                    var a, b, i, val = this.value;
+                    /*close any already open lists of autocompleted values*/
+                    closeAllLists();
+                    if (!val) { return false;}
+                    currentFocus = -1;
+                    /*create a DIV element that will contain the items (values):*/
+                    a = document.createElement("DIV");
+                    a.setAttribute("id", this.id + "autocomplete-list");
+                    a.setAttribute("class", "autocomplete-items");
+                    /*append the DIV element as a child of the autocomplete container:*/
+                    this.parentNode.appendChild(a);
+                    /*for each item in the array...*/
+                    for (i = 0; i < arr.length; i++) {
+                        /*check if the item starts with the same letters as the text field value:*/
+                        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                            /*create a DIV element for each matching element:*/
+                            b = document.createElement("DIV");
+                            /*make the matching letters bold:*/
+                            b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                            b.innerHTML += arr[i].substr(val.length);
+                            /*insert a input field that will hold the current array item's value:*/
+                            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                            /*execute a function when someone clicks on the item value (DIV element):*/
+                            b.addEventListener("click", function(e) {
+                                /*insert the value for the autocomplete text field:*/
+                                inp.value = this.getElementsByTagName("input")[0].value;
+                                /*close the list of autocompleted values,
+                                (or any other open lists of autocompleted values:*/
+                                closeAllLists();
+                            });
+                            a.appendChild(b);
+                        }
+                    }
+                });
+                /*execute a function presses a key on the keyboard:*/
+                inp.addEventListener("keydown", function(e) {
+                    var x = document.getElementById(this.id + "autocomplete-list");
+                    if (x) x = x.getElementsByTagName("div");
+                    if (e.keyCode == 40) {
+                        /*If the arrow DOWN key is pressed,
+                        increase the currentFocus variable:*/
+                        currentFocus++;
+                        /*and and make the current item more visible:*/
+                        addActive(x);
+                    } else if (e.keyCode == 38) { //up
+                        /*If the arrow UP key is pressed,
+                        decrease the currentFocus variable:*/
+                        currentFocus--;
+                        /*and and make the current item more visible:*/
+                        addActive(x);
+                    } else if (e.keyCode == 13) {
+                        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+                        e.preventDefault();
+                        if (currentFocus > -1) {
+                            /*and simulate a click on the "active" item:*/
+                            if (x) x[currentFocus].click();
+                        }
+                    }
+                });
+                function addActive(x) {
+                    /*a function to classify an item as "active":*/
+                    if (!x) return false;
+                    /*start by removing the "active" class on all items:*/
+                    removeActive(x);
+                    if (currentFocus >= x.length) currentFocus = 0;
+                    if (currentFocus < 0) currentFocus = (x.length - 1);
+                    /*add class "autocomplete-active":*/
+                    x[currentFocus].classList.add("autocomplete-active");
+                }
+                function removeActive(x) {
+                    /*a function to remove the "active" class from all autocomplete items:*/
+                    for (var i = 0; i < x.length; i++) {
+                        x[i].classList.remove("autocomplete-active");
+                    }
+                }
+                function closeAllLists(elmnt) {
+                    /*close all autocomplete lists in the document,
+                    except the one passed as an argument:*/
+                    var x = document.getElementsByClassName("autocomplete-items");
+                    for (var i = 0; i < x.length; i++) {
+                        if (elmnt != x[i] && elmnt != inp) {
+                            x[i].parentNode.removeChild(x[i]);
+                        }
+                    }
+                }
+                /*execute a function when someone clicks in the document:*/
+                document.addEventListener("click", function (e) {
+                    closeAllLists(e.target);
+                });
+            }
+            autocomplete(document.getElementById("myInput"), FoodTags);
+        </script>
+        <h3>Currently Selected Tags</h3>
+        <textarea id="w3review" name="w3review" rows="4" cols="50">Tags go here
+    </textarea>
+    </fieldset>
+
+
+    <hr color="black">
+    <h2>Step 4: Upload An Image</h2>
+    <h3>Make your new item more appealing to customers by adding an image</h3>
+    <fieldset>
+        <textarea id="placeholder" name="placeholder" rows="4" cols="50">Image uploader will go here</textarea>
+        <input type="button" value="Add Image">
+    </fieldset>
+
+
+    <hr color="black">
+    <H2>Step 5: Create Your Item</H2>
+    <h3>When your happy with your item click the button below to save it</h3>
+    <input type="submit" value="Create Item">
+</div>
+</body>
+
+</html>
