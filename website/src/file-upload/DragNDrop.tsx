@@ -59,8 +59,11 @@ const DragNDrop: React.FC<Props> = (props) => {
   };
 
   const onDrop = useCallback(([file]) => {
-    setFile(file);
-    setPreviuewUrl(URL.createObjectURL(file));
+    if (file) {
+      // Don't do anything if file is undefined
+      setFile(file);
+      setPreviuewUrl(URL.createObjectURL(file));
+    }
   }, []);
 
   const onSave = () => {
@@ -101,8 +104,8 @@ const DragNDrop: React.FC<Props> = (props) => {
     getRootProps,
     getInputProps,
     isDragActive,
-    isDragReject,
-  } = useDropzone({ onDrop, accept: "image/png" });
+    isDragReject,p
+  } = useDropzone({ onDrop, accept: "image/*" });
 
   const onCropChange = (crop: { x: number; y: number }) => {
     setCropState({ ...cropState, crop });
@@ -185,6 +188,7 @@ const DragNDrop: React.FC<Props> = (props) => {
             <Button
               onClick={() => {
                 setFile(undefined);
+                setUploading({ uploadClicked: false, uploading: false });
                 destroyUrl();
                 setCropState(defaultCrop);
               }}

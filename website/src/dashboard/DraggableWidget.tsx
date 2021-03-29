@@ -3,6 +3,7 @@ import { XYCoord } from "dnd-core";
 import { useDrag, useDrop, DropTargetMonitor } from "react-dnd";
 import { WidgetType } from "./WidgetType";
 import { Widgets } from "../Home";
+import { DragIndicator } from "@material-ui/icons";
 
 interface DragItem {
   index: number;
@@ -97,9 +98,12 @@ const DraggableWidget: React.FC<Props> = (props) => {
         padding: "1em",
         margin: 0,
         opacity,
+        cursor: "grab",
       }}
       data-handler-id={handlerId}
     >
+      <DragIndicator style={{ position: "absolute", top: 20, right: 20 }} />
+
       {props.children}
     </div>
   );
