@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS `RestaurantOpinion`;
 DROP TABLE IF EXISTS `LinkMenuFood`;
 DROP TABLE IF EXISTS `FoodItemTags`;
 DROP TABLE IF EXISTS `SwipeData`;
+DROP TABLE IF EXISTS `LinkCategoryFood`;
 DROP TABLE IF EXISTS `FoodItem`;
 DROP TABLE IF EXISTS `MenuTimes`;
 DROP TABLE IF EXISTS `LinkMenuRestaurant`;
@@ -16,6 +17,7 @@ DROP TABLE IF EXISTS `RestaurantVerification`;
 DROP TABLE IF EXISTS `Restaurant`;
 DROP TABLE IF EXISTS `CommunityTagResponse`;
 DROP TABLE IF EXISTS `RAdminSession`;
+DROP TABLE IF EXISTS `Category`;
 DROP TABLE IF EXISTS `TagSuggestions`;
 DROP TABLE IF EXISTS `RestaurantAdmin`;
 DROP TABLE IF EXISTS `Session`;
@@ -96,6 +98,17 @@ CREATE TABLE `TagSuggestions` (
 
     CONSTRAINT CHK_SuggestedTag CHECK (Tag REGEXP '[a-z]{3,}'),
     CONSTRAINT FK_AdminInSuggestions FOREIGN KEY (OwnerID)
+        REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE `Category` (
+    CategoryID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    CatName VARCHAR(30) NOT NULL,
+    OwnerID INT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (CategoryID),
+
+    CONSTRAINT FK_AdminInCategory FOREIGN KEY (CategoryID)
         REFERENCES RestaurantAdmin(RAdminID) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
@@ -260,6 +273,18 @@ CREATE TABLE `FoodItem` (
     CONSTRAINT FK_FoodCheckInFoodItem FOREIGN KEY (FoodCheckID)
         REFERENCES FoodChecks(FoodCheckID) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_FoodPrice CHECK (Price > 0.00)
+);
+
+CREATE TABLE `LinkCategoryFood` (
+    CategoryID INT UNSIGNED NOT NULL,
+    FoodID INT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (CategoryID, FoodID),
+
+    CONSTRAINT FK_CategoryInCategoryFoodLink FOREIGN KEY (CategoryID)
+        REFERENCES Category(CategoryID) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_FoodInCategoryFoodLink FOREIGN KEY (FoodID)
+        REFERENCES FoodItem(FoodID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE `SwipeData` (
