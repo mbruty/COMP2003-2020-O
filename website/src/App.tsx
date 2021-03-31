@@ -68,7 +68,7 @@ function App() {
   React.useEffect(() => {
     console.log(history);
 
-    fetch(API_URL + "/authcheck", {
+    fetch(API_URL + "/admin/authcheck", {
       method: "POST",
       mode: "cors",
       credentials: "include",
