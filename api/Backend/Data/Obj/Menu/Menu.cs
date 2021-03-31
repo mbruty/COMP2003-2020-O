@@ -11,7 +11,7 @@ namespace api.Backend.Data.Obj
 
         public bool IsChildMenu;
         public uint MenuID;
-
+        public FoodItem[] FoodItems;
         public string MenuName;
 
         #endregion Fields
@@ -21,6 +21,15 @@ namespace api.Backend.Data.Obj
         public async Task<FoodItem[]> GetFoodItems()
         {
             return await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>(
+                tables: "LinkMenuFood,FoodItem",
+                where: "LinkMenuFood.MenuID = @ParaMenuID AND LinkMenuFood.FoodID = FoodItem.FoodID",
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaMenuID", MenuID) }
+                );
+        }
+
+        public async Task GetFoodItemsAndStore()
+        {
+            FoodItems = await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>(
                 tables: "LinkMenuFood,FoodItem",
                 where: "LinkMenuFood.MenuID = @ParaMenuID AND LinkMenuFood.FoodID = FoodItem.FoodID",
                 Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaMenuID", MenuID) }

@@ -8,14 +8,14 @@ namespace api.Backend.Events
     {
         #region Methods
 
-        [WebEvent("/echo", "POST", false)]
-        public static void TestWebRequest(NameValueCollection headers, string Data, ref WebRequest.HttpResponse response)
+        [WebEvent(typeof(string),"/echo", "POST", false)]
+        public static void TestWebRequest(string Data, ref WebRequest.HttpResponse response)
         {
             response.AddToData("Text", Data);
             response.StatusCode = 200;
         }
 
-        [WebEvent("/echo", "Echo", true)]
+        [WebEvent(typeof(string),"/echo", "Echo", true)]
         public static void TestWebSocket(WebSocket webSocket, WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
         {
             instance.Something = instance.Something == null ? @event.Data : instance.Something.ToString() + @event.Data;

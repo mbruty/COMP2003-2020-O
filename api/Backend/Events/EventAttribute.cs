@@ -1,7 +1,10 @@
 ﻿using api.Backend.Security;
 using System;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
+using System.Collections.Specialized;
 
 namespace api.Backend.Events
 {
@@ -22,20 +25,23 @@ namespace api.Backend.Events
         public SecurityGroup secuirtyLevel = SecurityGroup.None;
         public string urlPath, method;
         public bool WebSocket = false;
+        public Type dataType;
 
         #endregion Fields
 
         #region Constructors
 
-        public WebEvent(string urlPath, bool WebSocket = true, SecurityGroup RequiredAuth = SecurityGroup.None)
+        public WebEvent(Type t, string urlPath, bool WebSocket = true, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
+            dataType = t;
             this.urlPath = urlPath.ToLower();
             this.WebSocket = WebSocket;
             this.secuirtyLevel = RequiredAuth;
         }
 
-        public WebEvent(string urlPath, string Method, bool WebSocket = false, SecurityGroup RequiredAuth = SecurityGroup.None)
+        public WebEvent(Type t, string urlPath, string Method, bool WebSocket = false, SecurityGroup RequiredAuth = SecurityGroup.None)
         {
+            dataType = t;
             this.urlPath = urlPath.ToLower();
             this.method = Method.ToLower();
             this.WebSocket = WebSocket;
@@ -87,6 +93,30 @@ namespace api.Backend.Events
         public bool Equals(string urlPath, bool WebSocket = false) //Easily check if states match
         {
             return urlPath.ToLower() == this.urlPath && WebSocket == this.WebSocket;
+        }
+
+        public object ConvertHeadersOrBodyToType(NameValueCollection headers, string data)
+        {
+            if (dataType == typeof(string)) return data;
+            if (dataType == typeof(NameValueCollection)) return headers;
+            if (data.Length>0) return JsonConvert.DeserializeObject(data, dataType);
+            else {
+                object o = Activator.CreateInstance(dataType);
+                o = UpdateContents(o,dataType, headers);
+                return o;
+            }
+        }
+
+        public Object UpdateContents(Object o,Type t, NameValueCollection headers)
+        {
+            foreach (PropertyInfo field in t.GetProperties())
+            {
+                if (headers.AllKeys.Select(x => x.ToLower()).Contains(field.Name.ToLower()))
+                {
+                    field.SetValue(o, Convert.ChangeType(headers[field.Name], field.PropertyType));
+                }
+            }
+            return o;
         }
 
         #endregion Methods

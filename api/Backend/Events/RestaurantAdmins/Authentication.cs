@@ -1,6 +1,7 @@
 ﻿using api.Backend.Data.Obj;
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
+using api.Backend.Events.Users;
 using api.Backend.Security;
 using Newtonsoft.Json;
 using System;
@@ -9,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace api.Backend.Events.Users
+namespace api.Backend.Events.RestaurantAdmins
 {
     public static class Authentication
     {
@@ -21,23 +22,24 @@ namespace api.Backend.Events.Users
 
         #region Methods
 
-        [WebEvent(typeof(string),"/user/authcheck", "POST", false, SecurityGroup.User)]
+        [WebEvent(typeof(string),"/admin/authcheck", "POST", false, SecurityGroup.Administrator)]
         public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent(typeof(string), "/user/authcheck", "GET", false, SecurityGroup.User)]
+        [WebEvent(typeof(string), "GET", false, SecurityGroup.Administrator)]
         public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
         }
 
-        [WebEvent(typeof(LoginCredentials), "/user/login", "POST", false)]
+        [WebEvent(typeof(LoginCredentials), "/admin/login", "POST", false)]
         public static async Task Login(LoginCredentials creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
+            // Convert the string to a credential object
             string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
@@ -47,7 +49,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("email", email, 1);
 
             if (users.Length == 0 || !Hashing.Match(password, users[0].Password))
             {
@@ -60,20 +62,20 @@ namespace api.Backend.Events.Users
             await Sessions.AddSession(users[0], Token);
 
             // Add a cookie for the website
-            response.AddCookie("authtoken", Token + "&user_id=" + users[0].UserID, true, "/");
+            response.AddCookie("authtoken", Token + "&admin_id=" + users[0].RAdminID, true, "/");
             // We're using the auth token from the body in the mobile app
             response.AddToData("authtoken", Token);
-            response.AddToData("userid", users[0].UserID);
+            response.AddToData("admin_id", users[0].RAdminID);
 
             response.StatusCode = 200;
             response.AddToData("message", "Logged in");
         }
 
-        [WebEvent(typeof(UserIdWithToken),"/user/resendcode", "POST", false, SecurityGroup.User)]
-        public static async Task resendcode(UserIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(AdminIdWithToken),"/admin/resendcode", "POST", false, SecurityGroup.Administrator)]
+        public static async Task resendcode(AdminIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Get the user
-            User[] users = await Binding.GetTable<User>().Select<User>("UserID", user.UserID, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", user.AdminID, 1);
 
             // Users will always be of length 1 if they exist, and 0 if they don't as we're
             // selecting by pk
@@ -95,16 +97,16 @@ namespace api.Backend.Events.Users
             // Send confirmation email
             Random r = new Random();
             string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
-            Email.SendConfirmation(users[0].Nickname, code, users[0].Email);
+            Email.SendConfirmation(users[0].Email, code, users[0].Email);
 
             // Update the database with the code
-            Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
+            Backend.Data.Redis.Instance.SetStringWithExpiration($"admin-signup-code:{user.AdminID}", code, new TimeSpan(0, 30, 0));
         }
 
-        [WebEvent(typeof(User),"/user/signup", "POST", false)]
-        public static async Task SignUp(User creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(RestaurantAdmin),"/admin/signup", "POST", false)]
+        public static async Task SignUp(RestaurantAdmin creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            string email = creds.Email, password = creds.Password, dateOfBirth = creds.DateOfBirth.ToString(), nickname = creds.Nickname;
+            string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
             {
@@ -127,7 +129,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("email", email, 1);
 
             if (users.Length > 0)
             {
@@ -136,16 +138,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            User user = new User() { Email = email, Password = "PASSWORD PENDING" };
-
-            if (!DateTime.TryParse(dateOfBirth, out user.DateOfBirth))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Date of Birth is invalid");
-                return;
-            }
-
-            if (nickname != null) user.Nickname = nickname;
+            RestaurantAdmin user = new RestaurantAdmin() { Email = email, Password = "PASSWORD PENDING" };
 
             if (!await user.Insert(true))
             {
@@ -161,23 +154,23 @@ namespace api.Backend.Events.Users
             // Send confirmation email
             Random r = new Random();
             string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
-            Email.SendConfirmation(nickname, code, email);
+            Email.SendConfirmation(email, code, email);
 
             // Update the database with the code
-            Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
+            Backend.Data.Redis.Instance.SetStringWithExpiration($"admin-signup-code:{user.RAdminID}", code, new TimeSpan(0, 30, 0));
 
             response.AddToData("authtoken", token);
-            response.AddToData("userid", user.UserID);
-            response.AddCookie("authtoken", token + "&user_id=" + user.UserID, true, "/");
+            response.AddToData("adminid", user.RAdminID);
+            response.AddCookie("authtoken", token + "&admin_id=" + user.RAdminID, true, "/");
 
             response.StatusCode = 200;
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent(typeof(ValidationCode),"/user/validatecode", "POST", false)]
+        [WebEvent(typeof(ValidationCode),"/admin/validatecode", "POST", false)]
         public static async Task ValidateCode(ValidationCode validation, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
+            if (validation.AdminID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
             {
                 // Bad Request
                 response.StatusCode = 400;
@@ -185,7 +178,7 @@ namespace api.Backend.Events.Users
             }
 
             // Get the user
-            User[] users = await Binding.GetTable<User>().Select<User>("UserID", validation.UserID, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", validation.AdminID, 1);
 
             // Users will always be of length 1 if they exist, and 0 if they don't as we're
             // selecting by pk
@@ -204,7 +197,7 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            string code = await Backend.Data.Redis.Instance.GetString($"signup-code:{validation.UserID}");
+            string code = await Backend.Data.Redis.Instance.GetString($"admin-signup-code:{validation.AdminID}");
 
             // Correct code!
             if (code == validation.Code)
@@ -216,9 +209,9 @@ namespace api.Backend.Events.Users
                 if (updated)
                 {
                     // Remove the key
-                    Backend.Data.Redis.Instance.InvalidateKey($"signup-code:{validation.UserID}");
+                    Backend.Data.Redis.Instance.InvalidateKey($"admin-signup-code:{validation.AdminID}");
                     // Invalidate the user in the cache
-                    Backend.Data.Redis.Instance.InvalidateKey($"User-{validation.UserID}");
+                    Backend.Data.Redis.Instance.InvalidateKey($"RestaurantAdmin-{validation.AdminID}");
                     response.StatusCode = 200;
                 }
                 else
@@ -234,35 +227,29 @@ namespace api.Backend.Events.Users
         }
 
         #endregion Methods
-    }
 
-    public class LoginCredentials
-    {
-        #region Properties
+        #region Classes
 
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public class AdminIdWithToken
+        {
+            #region Properties
 
-        #endregion Properties
-    }
+            public string AdminID { get; set; }
+            public string AuthToken { get; set; }
 
-    public class UserIdWithToken
-    {
-        #region Properties
+            #endregion Properties
+        }
 
-        public string AuthToken { get; set; }
-        public string UserID { get; set; }
+        public class ValidationCode
+        {
+            #region Properties
 
-        #endregion Properties
-    }
+            public string AdminID { get; set; }
+            public string Code { get; set; }
 
-    public class ValidationCode
-    {
-        #region Properties
+            #endregion Properties
+        }
 
-        public string Code { get; set; }
-        public string UserID { get; set; }
-
-        #endregion Properties
+        #endregion Classes
     }
 }
