@@ -3,7 +3,13 @@ import Nav from "./nav/Nav";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import "./styles/index.scss";
-import { Route, Switch, useHistory, withRouter } from "react-router-dom";
+import {
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  withRouter,
+} from "react-router-dom";
 import Home from "./Home";
 import LogIn from "./onboarding/LogIn";
 import DragNDrop from "./file-upload/DragNDrop";
@@ -12,6 +18,7 @@ import RestaurantBuilder from "./restaurant-builder/RestaurantBuilder";
 import MenuBuilder from "./menu-builder/MenuBilder";
 import ItemBuilder from "./item-builder/ItemBuilder";
 import { API_URL } from "./constants";
+import SelectItem from "./item-builder/SelectItem";
 
 const dummyData = [
   { id: 1, name: "The Bruty's Arms" },
@@ -103,16 +110,13 @@ function App() {
             />
             <Route
               exact
-              path="/upload"
-              render={() => <DragNDrop foodID={1} />}
-            />
-            <Route
-              exact
               path="/restaurant-builder"
               render={() => <RestaurantBuilder />}
             />
             <Route exact path="/menu-builder" render={() => <MenuBuilder />} />
-            <Route exact path="/item-builder" render={() => <ItemBuilder />} />
+            <Route exact path="/item-builder/:id" component={ItemBuilder} />
+            <Route exact path="/item-builder" component={SelectItem} />
+            <Redirect to="/" />
           </Switch>
         </main>
       </div>

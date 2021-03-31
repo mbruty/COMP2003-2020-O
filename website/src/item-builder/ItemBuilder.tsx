@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -15,10 +15,9 @@ import { IFoodItem } from "../interfaces/IFoodItem";
 import { MeiliSearch } from "meilisearch";
 import IFoodTag from "../interfaces/IFoodTag";
 import DragNDrop from "../file-upload/DragNDrop";
-import { Close, Save } from "@material-ui/icons";
+import { Close, Edit, Save } from "@material-ui/icons";
 import { Alert } from "@material-ui/lab";
-
-interface Props {}
+import { RouteComponentProps } from "react-router";
 
 const allOffState = {
   isVegetarian: false,
@@ -44,8 +43,8 @@ const getOptions = async (searchText: string) => {
   return data.hits as IFoodTag[];
 };
 
-const ItemBuilder: React.FC<Props> = () => {
-  const [tagId, setTagId] = React.useState<number | undefined>(3);
+const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
+  const [tagId, setTagId] = React.useState<number>(0);
   const [value, setValue] = React.useState<IFoodTag[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [options, setOptions] = React.useState<IFoodTag[]>([]);
@@ -55,6 +54,15 @@ const ItemBuilder: React.FC<Props> = () => {
     description: "",
     price: "",
   });
+  const [editImg, setEditImg] = React.useState<boolean>(false);
+  const [imgError, setImgError] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (props.match.params.id !== "create") {
+      //ToDo fetch the food item data from api
+      setTagId(parseInt(props.match.params.id));
+    }
+  }, [props.match.params.id]);
 
   const [saveVisible, setSaveVisible] = React.useState<boolean>(false);
 
@@ -68,6 +76,8 @@ const ItemBuilder: React.FC<Props> = () => {
   const [checkBoxData, setCheckBoxData] = React.useState({
     ...allOffState,
   });
+
+  const showUpload = tagId > 0 && (imgError || editImg);
 
   return (
     <div className="content">
@@ -410,13 +420,40 @@ const ItemBuilder: React.FC<Props> = () => {
             You must create your item before uploading the image
           </h3>
         )}
-        {tagId && (
+        {!showUpload && (
+          <div
+            style={{ width: "100%", display: "flex", flexDirection: "column" }}
+          >
+            <h2>Step 4: Image</h2>
+            <img
+              src={`https://storage.googleapis.com/tat-img/${tagId}.png`}
+              alt="current-food"
+              style={{
+                marginTop: "10px",
+                pointerEvents: "none",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+              width="240px"
+              onError={() => setImgError(true)}
+            />
+            <Button onClick={() => setEditImg(true)} style={{ marginTop: 10 }}>
+              <Edit /> Edit Image
+            </Button>
+          </div>
+        )}
+        {showUpload && (
           <div>
             <h2>Step 4: Upload an Image</h2>
             <DragNDrop foodID={tagId} />
           </div>
         )}
         <div style={{ width: "100%", display: "flex" }}>
+          {editImg && (
+            <Button onClick={() => setEditImg(false)} style={{ marginTop: 10 }}>
+              <Close /> Cancel editing
+            </Button>
+          )}
           <Button
             color="secondary"
             style={{ margin: "auto 0px auto auto" }}
