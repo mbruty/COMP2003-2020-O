@@ -43,3 +43,5 @@ export const CONSTANT_COLOURS = {
 };
 
 export const API_URL = "http://devapi.trackandtaste.com";
+
+export const IMG_URL = "https://storage.googleapis.com/tat-img/";

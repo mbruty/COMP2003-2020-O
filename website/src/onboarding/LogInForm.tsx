@@ -9,7 +9,7 @@ interface SignIn {
   password: string;
 }
 
-const LogInForm: React.FC = () => {
+const LogInForm: React.FC<{ refresh: () => void }> = (Props) => {
   const [details, setDetails] = React.useState<SignIn>({
     email: "",
     password: "",
@@ -39,12 +39,18 @@ const LogInForm: React.FC = () => {
           }),
         });
 
+        const body = await result.json();
+
         if (result.status === 401) {
           setErrorText("Invalid email or password");
         } else if (result.status === 200) {
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({ userid: body.userid, authtoken: body.authtoken })
+          );
           // We're logged in!
           // Redirect to home
-          history.push("/");
+          setTimeout(() => history.push("/"), 200);
         } else {
           setErrorText("An unexpected error occurred");
         }

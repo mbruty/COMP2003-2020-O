@@ -33,9 +33,8 @@ export default function App() {
         cardIndex={index}
         renderCard={(card) => (
           <SwipeCard
-            items={card.tags}
+            foodID={card.foodid}
             title={card.name}
-            imageURI={card.image}
           />
         )}
         backgroundColor={"transparent"}
