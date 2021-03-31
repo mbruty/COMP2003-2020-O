@@ -1,7 +1,13 @@
 import { Paper } from "@material-ui/core";
-import { DeleteForever, DragIndicator, Fastfood } from "@material-ui/icons";
+import {
+  DeleteForever,
+  DragIndicator,
+  Edit,
+  Fastfood,
+} from "@material-ui/icons";
 import React from "react";
 import { useDrag } from "react-dnd";
+import { useHistory } from "react-router";
 import IFoodItem from "../item-builder/IFoodItem";
 
 const FoodItem: React.FC<{
@@ -9,6 +15,7 @@ const FoodItem: React.FC<{
   deletable?: boolean;
   onDelete?: () => void;
 }> = ({ item, deletable, onDelete }) => {
+  const history = useHistory();
   const [imgError, setImgError] = React.useState<boolean>(false);
   const [{ isDragging }, drag] = useDrag({
     type: "food-item",
@@ -58,11 +65,15 @@ const FoodItem: React.FC<{
         <p>{item.price}</p>
       </div>
       <DragIndicator style={{ position: "absolute", top: 5, right: 5 }} />
+      <Edit
+        onClick={() => history.push(`/item-builder/${item.id}`)}
+        style={{ position: "absolute", top: 35, right: 5, cursor: "pointer" }}
+      />
       {deletable && (
         <DeleteForever
           style={{
             position: "absolute",
-            top: 35,
+            top: 65,
             right: 5,
             color: "firebrick",
             cursor: "pointer",
