@@ -46,8 +46,8 @@ const FoodItem: React.FC<{
         <Fastfood style={{ fontSize: 150 }} />
       ) : (
         <img
-          src={`https://storage.googleapis.com/tat-img/${item.id}.png`}
-          alt={`${item.shortName}`}
+          src={`https://storage.googleapis.com/tat-img/${item.FoodID}.png`}
+          alt={`${item.FoodNameShort}`}
           style={{ marginTop: "10px", pointerEvents: "none" }}
           width="120px"
           onError={onError}
@@ -61,12 +61,12 @@ const FoodItem: React.FC<{
           width: "100%",
         }}
       >
-        <p>{item.shortName}</p>
-        <p>{item.price}</p>
+        <p>{item.FoodNameShort}</p>
+        <p>{item.Price}</p>
       </div>
       <DragIndicator style={{ position: "absolute", top: 5, right: 5 }} />
       <Edit
-        onClick={() => history.push(`/item-builder/${item.id}`)}
+        onClick={() => history.push(`/item-builder/${item.FoodID}`)}
         style={{ position: "absolute", top: 35, right: 5, cursor: "pointer" }}
       />
       {deletable && (
