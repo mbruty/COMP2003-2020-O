@@ -19,6 +19,8 @@ import MenuBuilder from "./menu-builder/MenuBilder";
 import ItemBuilder from "./item-builder/ItemBuilder";
 import { API_URL } from "./constants";
 import SelectItem from "./item-builder/SelectItem";
+import QrReader from "./restaurant-builder/QrReader";
+import VerifyRestaurant from "./restaurant-builder/VerifyRestaurant";
 
 const dummyData = [
   { id: 1, name: "The Bruty's Arms" },
@@ -68,7 +70,7 @@ function App() {
   React.useEffect(() => {
     console.log(history);
 
-    fetch(API_URL + "/authcheck", {
+    fetch(API_URL + "/admin/authcheck", {
       method: "POST",
       mode: "cors",
       credentials: "include",
@@ -116,6 +118,8 @@ function App() {
             <Route exact path="/menu-builder" render={() => <MenuBuilder />} />
             <Route exact path="/item-builder/:id" component={ItemBuilder} />
             <Route exact path="/item-builder" component={SelectItem} />
+            <Route exact path="/verify" component={QrReader} />
+            <Route exact path="/verify/:code" component={VerifyRestaurant} />
             <Redirect to="/" />
           </Switch>
         </main>

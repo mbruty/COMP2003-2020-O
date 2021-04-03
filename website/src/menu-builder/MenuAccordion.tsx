@@ -41,6 +41,7 @@ const MenuAccordion: React.FC<{ menu: Menu; observer: MenuObserver }> = ({
   menu,
   observer,
 }) => {
+
   const classes = useStyles();
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [startTime, setStartTime] = React.useState<any>(new Date());
@@ -71,7 +72,7 @@ const MenuAccordion: React.FC<{ menu: Menu; observer: MenuObserver }> = ({
   ]);
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: "food-item",
-    drop: (e: IFoodItem) => observer.moveItemIntoGroup(e, menu.id),
+    drop: (e: IFoodItem) => observer.moveItemIntoGroup(e, menu.MenuID),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
@@ -169,9 +170,9 @@ const MenuAccordion: React.FC<{ menu: Menu; observer: MenuObserver }> = ({
             onFocus={(event) => event.stopPropagation()}
             control={
               <InputBase
-                id={`accordion-name-${menu.id}`}
+                id={`accordion-name-${menu.MenuID}`}
                 aria-describedby="Item group name input"
-                value={menu.name}
+                value={menu.MenuName}
                 style={{ paddingLeft: 10, width: "20ch" }}
                 onChange={(e) => {
                   // observer.updateName(e.target.value, group.id);
@@ -180,7 +181,7 @@ const MenuAccordion: React.FC<{ menu: Menu; observer: MenuObserver }> = ({
             }
             label=""
           />
-          <Typography className={classes.secondaryHeading}>
+          {/* <Typography className={classes.secondaryHeading}>
             Serving: {menu.servingDays.reduce((p, c) => p + ", " + c)}
             {menu.servingTime && (
               <>
@@ -194,7 +195,7 @@ const MenuAccordion: React.FC<{ menu: Menu; observer: MenuObserver }> = ({
                 {menu.items?.length}
               </>
             )}
-          </Typography>
+          </Typography> */}
           <FormControlLabel
             style={{ margin: "auto 20px auto auto" }}
             aria-label="Acknowledge"
@@ -234,12 +235,12 @@ const MenuAccordion: React.FC<{ menu: Menu; observer: MenuObserver }> = ({
         </AccordionSummary>
         <AccordionDetails>
           <div className="food-item-grid">
-            {menu.items?.map((item) => (
+            {menu.FoodItems?.map((item) => (
               <FoodItem
                 deletable
                 item={item}
                 onDelete={() => {
-                  observer.removeFromMenu(item.id, menu.id);
+                  observer.removeFromMenu(item.FoodID, menu.MenuID);
                 }}
               />
             ))}

@@ -1,6 +1,6 @@
 export default interface IFoodItem {
-  id: number;
-  shortName: string;
-  name: string;
-  price: number;
+  FoodID: number;
+  FoodNameShort: string;
+  FoodName: string;
+  Price: number;
 }
