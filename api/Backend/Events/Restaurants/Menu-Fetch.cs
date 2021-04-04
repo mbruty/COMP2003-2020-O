@@ -60,7 +60,7 @@ namespace api.Backend.Events.Restaurants
         }
 
         [WebEvent(typeof(MenuBody), "/menu/me", "GET", false, SecurityGroup.Administrator)]
-        public static async Task GetAllMenus(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        public static async Task GetAllMyMenus(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<Data.Obj.Menu>();
             Data.Obj.Menu[] menus = await table.SelectCustom<Data.Obj.Menu>(
