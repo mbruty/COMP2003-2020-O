@@ -29,7 +29,7 @@ const AutoComplete: React.FC<{}> = (props) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.search}>
-        <AntDesign name="search1" size={24} color="black" />
+        <AntDesign name="search1" size={24} color={CONSTANT_COLOURS.DARK_GREY} style={{marginRight: 5}} />
         <TextInput
           value={text}
           onChangeText={handleTextChange}
