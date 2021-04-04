@@ -8,8 +8,10 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "../../constants";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { API_URL, CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
 import { FormProgress } from "../controls";
+import { includeAuth } from "../includeAuth";
 import Banner from "./Banner";
 interface Props {
   next: () => void;
@@ -118,6 +120,33 @@ const EmailConfirm: React.FC<Props> = (props) => {
           {errorText}
         </Text>
       )}
+
+      <TouchableOpacity
+        style={{
+          padding: 10,
+          marginLeft: 25,
+          borderRadius: 10,
+          display: "flex",
+          flexDirection: "row",
+        }}
+        onPress={async() => {
+          const auth = await includeAuth();
+          await fetch(API_URL + "/user/resendcode", {
+            method: "POST",
+            body: JSON.stringify(auth) 
+          });          
+        }}
+      >
+        <Text
+          style={{
+            color: CONSTANT_COLOURS.DARK_GREY,
+            marginRight: 5
+          }}
+        >
+          Haven't recieved a code?
+        </Text>
+        <Text style={{ color: CONSTANT_COLOURS.RED }}>Resend Code</Text>
+      </TouchableOpacity>
       <View style={{ marginTop: 70 }}>
         <FormProgress onSubmit={submit} allowBack={false} selectedIdx={1} />
       </View>
