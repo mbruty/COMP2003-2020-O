@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Events.Restaurants
 {
-    public static class Fetch
+    public class MenuBody
     {
-        public class MenuBody
-        {
-            public uint MenuID, RestaurantID;
-            public bool IsChildMenu;
-            public string MenuName;
-        }
+        public uint MenuID, RestaurantID;
+        public bool IsChildMenu;
+        public string MenuName;
+    }
 
+    public static class Menu_Fetch
+    {
         [WebEvent(typeof(MenuBody), "/menu", "GET", false, SecurityGroup.None)]
         public static async Task GetMenu(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
