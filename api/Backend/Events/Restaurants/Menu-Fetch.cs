@@ -35,6 +35,7 @@ namespace api.Backend.Events.Restaurants
 
             response.AddToData("message", "Fetched menu");
             response.AddObjectToData("menu", menu);
+            response.AddObjectToData("menu-times", await menu.GetMenuTimes());
             response.StatusCode = 200;
         }
 
