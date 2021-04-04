@@ -2,7 +2,7 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using Newtonsoft.Json;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
@@ -93,6 +93,17 @@ namespace api.Backend.Events.Restaurants
                 }
                 );
 
+
+            Data.Obj.MenuTimes[] menutimes = await Binding.GetTable<Data.Obj.MenuTimes>().SelectCustom<Data.Obj.MenuTimes>(
+                what: "tat.MenuTimes.MenuRestID,tat.MenuTimes.DayRef,tat.MenuTimes.StartServing,tat.MenuTimes.TimeServing",
+                tables: "tat.MenuTimes, tat.LinkMenuRestaurant, tat.Restaurant",
+                where: "(tat.MenuTimes.MenuRestID=tat.LinkMenuRestaurant.MenuRestID AND tat.LinkMenuRestaurant.RestaurantID = tat.Restaurant.RestaurantID AND tat.Restaurant.OwnerID=@OID)",
+                new System.Collections.Generic.List<System.Tuple<string, object>>()
+                {
+                    new System.Tuple<string, object>("OID",perm.admin_id)
+                }
+                );
+
             var tasks = new List<Task>();
             foreach (Menu menu in menus)
             {
@@ -105,6 +116,7 @@ namespace api.Backend.Events.Restaurants
                 t.Wait();
                 response.AddToData("message", "Fetched menu");
                 response.AddObjectToData("menus", menus);
+                response.AddObjectToData("menu-times", menutimes);
                 response.StatusCode = 200;
             }
             catch
