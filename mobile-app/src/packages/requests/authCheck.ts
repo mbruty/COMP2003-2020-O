@@ -3,16 +3,14 @@ import { includeAuth } from "../includeAuth";
 
 export default async () => {
   const auth = await includeAuth();
-  return false;
   if (!auth) return false;
   const res = await fetch(API_URL + "/user/authcheck", {
     method: "POST",
-    headers: {
+    body: JSON.stringify({
       authtoken: auth.authtoken,
       userid: auth.userid,
-    },
+    }),
   });
-  
   if (res.status === 200) {
     return true;
   } else {
