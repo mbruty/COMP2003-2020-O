@@ -1,5 +1,7 @@
 import React from "react";
 import CSS from 'csstype';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
 
 const contentBoxStyle: CSS.Properties = {
   width: '60%',
@@ -14,6 +16,8 @@ interface Props {}
 const RestaurantBuilder: React.FC<Props> = () => {
   return (
     <div className="content" style={contentBoxStyle}>
+
+      <LinearProgress variant="determinate" value={75} /><p>50%</p>
 
       <h1>Restaurant Builder</h1>
       <p>
