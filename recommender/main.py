@@ -13,8 +13,6 @@ like_post_args.add_argument("userid", type=str, help="Your UserID")
 like_post_args.add_argument("authtoken", type=str, help="Authorisation token")
 like_post_args.add_argument("islike", type=bool, help="If the like was like / dislike")
 
-r = requests.post('http://devapi.trackandtaste.com/user/authcheck', json={"userid": "2", "authtoken": "jAH[N`wOQ`PLDp]xssW_mDXyKeteLxKea"})
-print(r.text)
 app = Flask(__name__)
 api = Api(app)
 
@@ -48,6 +46,8 @@ class SwipeController(Resource):
 	def post(self):
 		args = like_post_args.parse_args()
 		payload = {	"authtoken": args.authtoken,	"userid": args.userid }
+		r = requests.post('http://devapi.trackandtaste.com/user/authcheck', json=payload)
+		print(r.status_code)
 		if r.status_code != 200:
 			return '', r.status_code
 		else:
