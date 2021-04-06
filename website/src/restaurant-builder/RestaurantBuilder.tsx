@@ -1,11 +1,27 @@
 import React from "react";
+import CSS from 'csstype';
+
+const contentBoxStyle: CSS.Properties = {
+  width: '60%',
+  textAlign: 'center',
+  marginLeft: 'auto',
+  marginRight: 'auto'
+};
 
 interface Props {}
 
+
 const RestaurantBuilder: React.FC<Props> = () => {
   return (
-    <div className="content">
-      <h1>Welcome to Reefs's Code zone</h1>
+    <div className="content" style={contentBoxStyle}>
+
+      <h1>Restaurant Builder</h1>
+      <p>
+        Welcome to the Track and Taste Restaurant Builder.<br></br><br></br>
+        When prompted, please enter your Restaurant information on screen. After creation, you will be able to change your information.
+        Please input this information with care; it will be important for when the Track and Taste team look to verify your business.
+      </p>
+
     </div>
   );
 };
