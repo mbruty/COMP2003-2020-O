@@ -27,6 +27,9 @@ namespace api.Backend.Events.RestaurantAdmins
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            RestaurantAdmin[] u = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(perm.admin_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
         [WebEvent(typeof(string), "GET", false, SecurityGroup.Administrator)]
@@ -34,6 +37,9 @@ namespace api.Backend.Events.RestaurantAdmins
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            RestaurantAdmin[] u = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(perm.admin_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
         [WebEvent(typeof(LoginCredentials), "/admin/login", "POST", false)]

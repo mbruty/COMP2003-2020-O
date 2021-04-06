@@ -26,6 +26,9 @@ namespace api.Backend.Events.Users
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            User[] u = await Binding.GetTable<User>().Select<User>(perm.user_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
         [WebEvent(typeof(string), "/user/authcheck", "GET", false, SecurityGroup.User)]
@@ -33,6 +36,9 @@ namespace api.Backend.Events.Users
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            User[] u = await Binding.GetTable<User>().Select<User>(perm.user_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
         [WebEvent(typeof(LoginCredentials), "/user/login", "POST", false)]
