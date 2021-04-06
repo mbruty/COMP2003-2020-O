@@ -18,6 +18,19 @@ namespace api.Backend.Data.Obj
 
         #region Methods
 
+        public async Task<MenuTimes[]> GetMenuTimes()
+        {
+            return await Binding.GetTable<Data.Obj.MenuTimes>().SelectCustom<Data.Obj.MenuTimes>(
+                what: "tat.MenuTimes.MenuRestID,tat.MenuTimes.DayRef,tat.MenuTimes.StartServing,tat.MenuTimes.TimeServing",
+                tables: "tat.MenuTimes, tat.LinkMenuRestaurant, tat.Restaurant",
+                where: "(tat.MenuTimes.MenuRestID=tat.LinkMenuRestaurant.MenuRestID AND tat.LinkMenuRestaurant.MenuID = @MID)",
+                new System.Collections.Generic.List<System.Tuple<string, object>>()
+                {
+                    new System.Tuple<string, object>("MID",MenuID)
+                }
+                );
+        }
+
         public async Task<FoodItem[]> GetFoodItems()
         {
             return await Binding.GetTable<FoodItem>().SelectCustom<FoodItem>(
