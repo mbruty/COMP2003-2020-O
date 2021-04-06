@@ -12,6 +12,7 @@ like_post_args.add_argument("foodid", type=int, help="The ID of the food item sw
 like_post_args.add_argument("userid", type=str, help="Your UserID")
 like_post_args.add_argument("authtoken", type=str, help="Authorisation token")
 like_post_args.add_argument("islike", type=bool, help="If the like was like / dislike")
+like_post_args.add_argument("isfavourite", type=bool, help="If it was a super like")
 
 app = Flask(__name__)
 api = Api(app)
@@ -51,7 +52,7 @@ class SwipeController(Resource):
 		if r.status_code != 200:
 			return '', r.status_code
 		else:
-			process_swipe(args.userid, args.foodid, args.islike)
+			process_swipe(args.userid, args.foodid, args.islike, args.isfavourite)
 			return '', 201
 		
 
