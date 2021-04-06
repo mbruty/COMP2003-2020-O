@@ -8,7 +8,7 @@ import MenuAccordion from "./MenuAccordion";
 
 const MenuContainer: React.FC<{ observer: MenuObserver }> = (props) => {
   const [menus, setMenus] = React.useState<Menu[]>();
-  React.useEffect(() => props.observer.subscribe(setMenus), []);
+  React.useEffect(() => props.observer.subscribe(setMenus), [props.observer]);
 
   return (
     <DndProvider backend={HTML5Backend}>

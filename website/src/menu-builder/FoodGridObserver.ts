@@ -15,19 +15,24 @@ export class Observer {
   public items: FoodGrid;
   private observers: FoodGridObserver[] = [];
 
-  constructor() {
+  constructor(data: any) {
     this.items = {
       groups: [
         {
           name: "Amazing dinner",
           items: [
             {
-              id: 1,
-              name: "Quokka",
-              shortName: "Quokka",
-              price: 2.99,
+              FoodID: 1,
+              FoodName: "Quokka",
+              FoodNameShort: "Quokka",
+              Price: 2.99,
             },
-            { id: 3, shortName: "Borger", name: "Borger", price: 69.69 },
+            {
+              FoodID: 3,
+              FoodNameShort: "Borger",
+              FoodName: "Borger",
+              Price: 69.69,
+            },
           ],
           id: 1,
         },
@@ -36,16 +41,16 @@ export class Observer {
           id: 2,
           items: [
             {
-              id: 2,
-              name: "Wine 'n beer",
-              shortName: "Wine 'n beer",
-              price: 6.99,
+              FoodID: 2,
+              FoodName: "Wine 'n beer",
+              FoodNameShort: "Wine 'n beer",
+              Price: 6.99,
             },
             {
-              id: Number.MAX_SAFE_INTEGER,
-              name: "Error test",
-              shortName: "Error test",
-              price: 0.01,
+              FoodID: Number.MAX_SAFE_INTEGER,
+              FoodName: "Error test",
+              FoodNameShort: "Error test",
+              Price: 0.01,
             },
           ],
         },
@@ -120,11 +125,11 @@ export class Observer {
 
   public moveItemIntoGroup(itemId: number, groupId: number) {
     const group = this.items.groups?.filter(
-      (group) => group.items?.filter((item) => item.id === itemId).length !== 0
+      (group) => group.items?.filter((item) => item.FoodID === itemId).length !== 0
     );
 
     if (group) {
-      let itemToAdd = group[0]?.items?.filter((item) => item.id === itemId)[0];
+      let itemToAdd = group[0]?.items?.filter((item) => item.FoodID === itemId)[0];
       // We couldn't find the item so do nothign
       if (itemToAdd) {
         // Move the item into the group
@@ -141,12 +146,12 @@ export class Observer {
       this.items.groups = this.items.groups?.map((group) => {
         // If we're looking at a different group than what the item has been dragged into
         if (group.id !== groupId) {
-          group.items = group.items?.filter((item) => item.id !== itemId);
+          group.items = group.items?.filter((item) => item.FoodID !== itemId);
         } else {
           // We're in the same group
           const res: IFoodItem[] = [];
           group.items?.forEach((item) => {
-            const i = res.findIndex((x) => x.id === item.id);
+            const i = res.findIndex((x) => x.FoodID === item.FoodID);
             console.log(i);
 
             if (i <= -1) res.push(item);
