@@ -4,6 +4,7 @@ using api.Backend.Endpoints;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Specialized;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -182,8 +183,17 @@ namespace api.Backend.Security
             return await CheckSession(userid, adminid, authtoken, response);
         }
 
-        public static async Task<SecurityPerm> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response)
+        public static async Task<SecurityPerm> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response, string Data)
         {
+            if(Data.Contains("authtoken"))
+            {
+                // We're not using cookies or headers
+                AuthObj auth = JsonSerializer.Deserialize<AuthObj>(Data);
+                if(auth.authtoken != "" && auth.userid != "")
+                {
+                    return await CheckSession(auth.userid, "", auth.authtoken, response);
+                }
+            }
             return await CheckSession(headers, response);
         }
 
@@ -227,5 +237,11 @@ namespace api.Backend.Security
         public SecurityGroup SecurityGroup = SecurityGroup.None;
 
         #endregion Fields
+    }
+
+    public class AuthObj
+    {
+        public string authtoken { get; set; }
+        public string userid { get; set; }
     }
 }
