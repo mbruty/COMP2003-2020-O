@@ -72,12 +72,12 @@ namespace api.Backend.Security
         /// <param name="headers">  </param>
         /// <param name="response"> </param>
         /// <returns> If the session is valid </returns>
-        public static async Task<SecurityPerm> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
+        public static async Task<SecurityPerm> CheckSession(AuthObj body, WebRequest.HttpResponse response)
         {
-            string userid = headers["userid"], authtoken = headers["authtoken"], adminid = headers["adminid"];
+            string userid = body.userid, authtoken = body.authtoken, adminid = body.adminid;
 
             // Get any cookie data there is Will return null if there isn't a cookie field
-            string cookiedata = headers.Get("Cookie");
+            string cookiedata = body.Cookie;
 
             // If the cookie sent is the auth token, let's parse it! If there is a userid or an auth
             // token, we don't want to parse it As including cookies is automatically done by the
@@ -113,7 +113,7 @@ namespace api.Backend.Security
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing authtoken");
-                return group;
+                return new SecurityPerm();
             }
 
             string _session_token = "N";
@@ -124,7 +124,7 @@ namespace api.Backend.Security
                 {
                     response.StatusCode = 401;
                     response.AddToData("error", "Id is invalid");
-                    return group;
+                    return new SecurityPerm();
                 }
 
                 Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
@@ -133,7 +133,7 @@ namespace api.Backend.Security
                 {
                     response.StatusCode = 401;
                     response.AddToData("error", "Session does not exist");
-                    return group;
+                    return new SecurityPerm();
                 }
 
                 _session_token = sessions[0].AuthToken;
@@ -145,7 +145,7 @@ namespace api.Backend.Security
                 {
                     response.StatusCode = 401;
                     response.AddToData("error", "Id is invalid");
-                    return group;
+                    return new SecurityPerm();
                 }
 
                 RAdminSession[] sessions = await Binding.GetTable<RAdminSession>().Select<RAdminSession>("radminid", uid);
@@ -154,7 +154,7 @@ namespace api.Backend.Security
                 {
                     response.StatusCode = 401;
                     response.AddToData("error", "Session does not exist");
-                    return group;
+                    return new SecurityPerm();
                 }
 
                 _session_token = sessions[0].AuthToken;
@@ -164,14 +164,14 @@ namespace api.Backend.Security
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing userid/adminid");
-                return group;
+                return new SecurityPerm();
             }
 
             if (!Hashing.Match(authtoken, _session_token))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Authtoken is incorrect");
-                return group;
+                return new SecurityPerm();
             }
 
             return group;
@@ -189,12 +189,13 @@ namespace api.Backend.Security
             {
                 // We're not using cookies or headers
                 AuthObj auth = JsonSerializer.Deserialize<AuthObj>(Data);
-                if(auth.authtoken != "" && auth.userid != "")
+                if(auth.authtoken != "" && (auth.userid != "" || auth.adminid!=""))
                 {
-                    return await CheckSession(auth.userid, "", auth.authtoken, response);
+                    return await CheckSession(auth.userid, auth.adminid, auth.authtoken, response);
                 }
             }
-            return await CheckSession(headers, response);
+            Security.AuthObj auth_obj = (Security.AuthObj)Misc.ConvertHeadersOrBodyToType(typeof(Security.AuthObj), headers, Data);
+            return await CheckSession(auth_obj, response);
         }
 
         public static async Task<SecurityPerm> GetSecurityGroup(JToken Auth, WebSockets.SocketResponse response)
@@ -243,5 +244,7 @@ namespace api.Backend.Security
     {
         public string authtoken { get; set; }
         public string userid { get; set; }
+        public string adminid { get; set; }
+        public string Cookie { get; set; }
     }
 }
