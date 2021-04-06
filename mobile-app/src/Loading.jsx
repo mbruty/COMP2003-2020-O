@@ -11,6 +11,7 @@ export const Loading = () => {
     startAnimation();
     const interval = setInterval(startAnimation, 2800);
     return () => {
+      // Clear the interval on unmount
       clearInterval(interval);
     };
   }, []);
@@ -58,7 +59,7 @@ export const Loading = () => {
     borderWidth: 8,
     opacity: interpolatedOpacity,
     borderColor: CONSTANT_COLOURS.RED,
-    borderRadius: "1000%",
+    borderRadius: 500,
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: "auto",
@@ -71,7 +72,7 @@ export const Loading = () => {
     borderWidth: 8,
     opacity: delayedInterpolatedOpacity,
     borderColor: CONSTANT_COLOURS.RED,
-    borderRadius: "1000%",
+    borderRadius: 500,
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: "auto",
