@@ -5,6 +5,9 @@ def process_swipe(user_id, food_id, is_like, is_favourite):
   cursor.execute(f"SELECT FoodTagID FROM FoodTags JOIN FoodItemTags FIT on FoodTags.FoodTagID = FIT.TagID JOIN FoodItem FI on FI.FoodID = FIT.FoodID WHERE FI.FoodID ={food_id};")
   results = cursor.fetchall()
 
+  if len(results) == 0:
+    raise Exception("Food ID not found") 
+
   # Favourite the items instead
   if is_favourite:
     # Create the values

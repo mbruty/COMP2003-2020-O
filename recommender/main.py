@@ -3,7 +3,6 @@ from flask_restful import Api, Resource, reqparse
 import sys
 from get_details import get_details
 from process_swipe import process_swipe
-import jsonpickle
 import requests
 
 
@@ -48,11 +47,14 @@ class SwipeController(Resource):
 		args = like_post_args.parse_args()
 		payload = {	"authtoken": args.authtoken,	"userid": args.userid }
 		r = requests.post('http://devapi.trackandtaste.com/user/authcheck', json=payload)
-		print(r.status_code)
 		if r.status_code != 200:
 			return '', r.status_code
 		else:
-			process_swipe(args.userid, args.foodid, args.islike, args.isfavourite)
+			try:
+				process_swipe(args.userid, args.foodid, args.islike, args.isfavourite)
+			except Exception:
+				# Food item not found
+				return '', 404
 			return '', 201
 		
 
