@@ -7,6 +7,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 
 import { Name } from './steps/Name';
+import { Desc } from './steps/Desc';
 
 const mainStyle: CSS.Properties = {
   textAlign: 'center'
@@ -29,7 +30,7 @@ const RestaurantBuilder: React.FC<Props> = () => {
 
       <LinearProgress variant="determinate" value={75} />
 
-      <Name />
+      <Desc />
 
       <Button style={buttonStyleNext} variant="contained" color="primary">
         <ArrowForwardIosIcon />
