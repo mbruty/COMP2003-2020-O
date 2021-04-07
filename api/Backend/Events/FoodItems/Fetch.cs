@@ -66,7 +66,7 @@ namespace api.Backend.Events.FoodItems
                 );
 
 
-            response.AddObjectToData("fooditem", items);
+            response.AddObjectToData("fooditem", items[0]);
             response.AddObjectToData("checks", checks[0]);
             response.AddObjectToData("tags", tags);
             response.StatusCode = 200;
