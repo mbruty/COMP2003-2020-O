@@ -18,7 +18,7 @@ const RestaurantBuilder: React.FC<Props> = () => {
   return (
     <div className="content" style={mainStyle}>
 
-      <LinearProgress variant="determinate" value={75} /><p>50%</p>
+      <LinearProgress variant="determinate" value={75} />
 
       <Name />
 
