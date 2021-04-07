@@ -9,7 +9,7 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
-        public DateTime DateOfBirth;
+        public DateTime DateOfBirth = DateTime.MinValue;
         public string Email, Password, Nickname;
         public uint FoodCheckID;
         public bool IsDeleted, IsVerified;
@@ -18,6 +18,12 @@ namespace api.Backend.Data.Obj
         #endregion Fields
 
         #region Methods
+
+        public async override Task<bool> Delete()
+        {
+            return await SQL.Instance.Execute("CALL `Run-RemoveUser`(@id)",
+                new List<Tuple<string, object>>() { new Tuple<string, object>("id", UserID) });
+        }
 
         public async Task<FoodChecks> GetFoodCheck()
         {
@@ -49,6 +55,12 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Visit>().Select<Visit>("UserID", UserID);
         }
 
+        public async Task<bool> PermDelete()
+        {
+            return await SQL.Instance.Execute("CALL `Run-PermaDeleteUser`(@id)",
+                new List<Tuple<string, object>>() { new Tuple<string, object>("id", UserID) });
+        }
+
         public override Object Purge()
         {
             User u = (User)this.MemberwiseClone();
@@ -56,22 +68,16 @@ namespace api.Backend.Data.Obj
             return u;
         }
 
+        public async Task<bool> UpdateIsVerified()
+        {
+            return await SQL.Instance.Execute("UPDATE User SET IsVerified=@verified where userid=@uid",
+                new List<Tuple<string, object>>() { new Tuple<string, object>("verified", IsVerified), new Tuple<string, object>("uid", UserID) });
+        }
+
         public async Task<bool> UpdatePassword()
         {
             return await SQL.Instance.Execute("UPDATE User SET password=@pword where userid=@uid",
                  new List<Tuple<string, object>>() { new Tuple<string, object>("pword", Password), new Tuple<string, object>("uid", UserID) });
-        }
-
-        public async override Task<bool> Delete()
-        {
-            return await SQL.Instance.Execute("CALL `Run-RemoveUser`(@id)",
-                new List<Tuple<string, object>>() { new Tuple<string, object>("id",UserID) });
-        }
-
-        public async Task<bool> PermDelete()
-        {
-            return await SQL.Instance.Execute("CALL `Run-PermaDeleteUser`(@id)",
-                new List<Tuple<string, object>>() { new Tuple<string, object>("id", UserID) });
         }
 
         #endregion Methods

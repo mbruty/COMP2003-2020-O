@@ -1535,10 +1535,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@react-native-async-storage/async-storage@^1.13.4":
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.13.4.tgz#05d29b7884be16fc3c40dcaa44e02fa291a020a2"
-  integrity sha512-P7cbA77XNhUFEBKAIaex17mKI/Db1RQHZVwplagskqzEnpqB+Yi+/l8QeOMr5OJdfmPkBA+V7DOmuWeB8Po6cQ==
+"@react-native-async-storage/async-storage@^1.14.1":
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.1.tgz#9b26c32af6640d2d1f84862657825f75672bfa6b"
+  integrity sha512-rRQ3Zsz1DIzxVlRVsE4nRNLWyv4hXmt/Ecwan+ypKwp16+SUTsfdX7F/W0xu4FpUwQDFCjl7MAS9pKV2VEPwDg==
   dependencies:
     deep-assign "^3.0.0"
 
@@ -2961,6 +2961,13 @@ cross-fetch@^3.0.4:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.6.tgz#3a4040bc8941e653e0e9cf17f29ebcd177d3365c"
   integrity sha512-KBPUbqgFjzWlVcURG+Svp9TlhA5uliYtiNx/0r8nv0pdypeQCRJ9IaSIc3q/x3q8t3F75cHuwxVql1HFGHCNJQ==
+  dependencies:
+    node-fetch "2.6.1"
+
+cross-fetch@^3.0.5:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.4.tgz#9723f3a3a247bf8b89039f3a380a9244e8fa2f39"
+  integrity sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==
   dependencies:
     node-fetch "2.6.1"
 
@@ -5960,6 +5967,13 @@ mdn-data@2.0.14:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
   integrity sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==
 
+meilisearch@^0.18.1:
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/meilisearch/-/meilisearch-0.18.1.tgz#6b12da60628ec5d6438ba677a8295971e1035938"
+  integrity sha512-eGdcx5/0ktj5I2vC/bNbHg3ORuq9nh++fA39t03nG31J1SoFJmnx3Z0r83Q/yrfA+hAP/qhCI/6B8dHMEcCQJg==
+  dependencies:
+    cross-fetch "^3.0.5"
+
 mem@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/mem/-/mem-4.3.0.tgz#461af497bc4ae09608cdb2e60eefb69bff744178"
@@ -7180,6 +7194,11 @@ react-native-gesture-handler@~1.7.0:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-maps@^0.27.1:
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.27.1.tgz#2f10cd417bb2fd938c9e015b1c9b6d9b1a44b97f"
+  integrity sha512-HygBkZBecTnIVRYrSiLRAvu4OmXOYso/A7c6Cy73HkOh9CgGV8Ap5eBea24tvmFGptjj5Hg8AJ94/YbmWK1Okw==
 
 react-native-reanimated@^1.13.1:
   version "1.13.2"

@@ -8,8 +8,10 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { CONSTANT_STYLES } from "../../constants";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { API_URL, CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
 import { FormProgress } from "../controls";
+import { includeAuth } from "../includeAuth";
 import Banner from "./Banner";
 interface Props {
   next: () => void;
@@ -22,18 +24,30 @@ const EmailConfirm: React.FC<Props> = (props) => {
 
   const secondRef = React.createRef<TextInput>();
   const thirdRef = React.createRef<TextInput>();
+  const [statusText, setStatusText] = React.useState<string>("");
 
   const [errorText, setErrorText] = useState<string | undefined>();
   const [text, setText] = useState<Array<string>>(["", "", ""]);
 
-  const submit = () => {
-    // ToDo: Check the server to see if the code is correct
-    // Fake result
-    let result = true;
+  const submit = async() => {
     if (text[0].length !== 3 || text[1].length !== 3 || text[2].length !== 3) {
       setErrorText("Please enter a valid code");
-    } else if (!result) {
+      return
+    }
+    const auth = await includeAuth();
+    const result = await fetch(API_URL + "/user/validatecode", {
+      method: "POST",
+      body: JSON.stringify({
+        UserID: auth.userid,
+        code: text.reduce((p, c) => p + c, "")
+      })
+    })
+    console.log(result.status);
+    
+    if (result.status !== 200) {
       setErrorText("Incorrect Code");
+      setText(["", "", ""]);
+      setTimeout(() => setErrorText(undefined), 5000);
     } else {
       props.next();
     }
@@ -75,7 +89,7 @@ const EmailConfirm: React.FC<Props> = (props) => {
           { marginTop: 60, marginLeft: 40, marginBottom: 15 },
         ]}
       >
-        Code:{" "}
+        Code:
       </Text>
       <View style={styles.container}>
         <TextInput
@@ -118,6 +132,36 @@ const EmailConfirm: React.FC<Props> = (props) => {
           {errorText}
         </Text>
       )}
+
+      <TouchableOpacity
+        style={{
+          padding: 10,
+          marginLeft: 25,
+          borderRadius: 10,
+          display: "flex",
+          flexDirection: "row",
+        }}
+        onPress={async() => {
+          const auth = await includeAuth();
+          console.log((await fetch(API_URL + "/user/resendcode", {
+            method: "POST",
+            body: JSON.stringify(auth) 
+          })).status);
+          setStatusText("We've sent you a new code!")
+          setTimeout(() => setStatusText(""), 5000)          
+        }}
+      >
+        <Text
+          style={{
+            color: CONSTANT_COLOURS.DARK_GREY,
+            marginRight: 5
+          }}
+        >
+          Haven't recieved a code?
+        </Text>
+        <Text style={{ color: CONSTANT_COLOURS.RED }}>Resend Code</Text>
+      </TouchableOpacity>
+        {!!statusText && <Text style={{color: CONSTANT_COLOURS.DARK_GREY, marginLeft: 25}}>{statusText}</Text>}
       <View style={{ marginTop: 70 }}>
         <FormProgress onSubmit={submit} allowBack={false} selectedIdx={1} />
       </View>

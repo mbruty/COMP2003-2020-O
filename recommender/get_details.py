@@ -11,7 +11,7 @@ def get_details(id):
 	cursor = get_cursor()
 	# Has to be in a tuple to work with sql proc
 	user_id = (id,)
-	cursor.callproc("get_foodchecks_by_id", user_id)
+	cursor.callproc("Run-GetFoodChecksByID", user_id)
 	checks = []
 	# stored_results is iterable, have to do this way
 	for result in cursor.stored_results():

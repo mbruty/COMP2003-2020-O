@@ -11,7 +11,7 @@ namespace api.Backend.Data.Obj
 
         public uint FoodID, FoodCheckID;
 
-        public string FoodName, FoodDescription;
+        public string FoodName, FoodNameShort, FoodDescription;
 
         public decimal Price;
 
@@ -31,6 +31,11 @@ namespace api.Backend.Data.Obj
                 where: "FoodItemTags.FoodID = @ParaFoodID AND FoodItemTags.TagID = FoodTags.FoodTagID",
                 Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ParaFoodID", FoodID) }
                 );
+        }
+
+        public async Task<SwipeData[]> GetSwipeData()
+        {
+            return (await Binding.GetTable<SwipeData>().Select<SwipeData>(FoodID));
         }
 
         #endregion Methods

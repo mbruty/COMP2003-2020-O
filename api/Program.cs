@@ -35,6 +35,16 @@ namespace api
 
             Binding.Add<Days>();
             Binding.Add<FoodChecks>();
+
+            Binding.Add<SwipeData>();
+            Binding.Add<RAdminSession>();
+            Binding.Add<RestaurantAdmin>();
+            Binding.Add<RestaurantVerification>();
+
+            Binding.Add<Category>();
+            Binding.Add<CommunityTagResponse>();
+            Binding.Add<LinkCategoryFood>();
+            Binding.Add<TagSuggestions>();
         }
 
         private static void Main(string[] args)

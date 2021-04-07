@@ -39,6 +39,8 @@ const FormProgress: React.FC<Props> = (props) => {
             width: imageWidth - 25,
             justifyContent: "space-between",
             alignSelf: "center",
+            marginBottom: 0,
+            marginTop: "auto"
           },
         ]}
       >

@@ -27,23 +27,10 @@ const allWidgets = [
 ];
 
 const Home: React.FC<{ observer: Observer }> = (props) => {
-  const history = useHistory();
   const [editing, setEditing] = React.useState<boolean>(false);
   const [widgets, setWidgets] = React.useState<Widgets[]>([]);
 
   useEffect(() => props.observer.subscribe(setWidgets), [props.observer]);
-
-  useEffect(() => {
-    fetch(API_URL + "/authcheck", {
-      method: "POST",
-      mode: "cors",
-      credentials: "include",
-    }).then((response) => {
-      if (response.status === 401) {
-        // history.push("/log-in");
-      }
-    });
-  }, [history]);
 
   const moveWidget = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {

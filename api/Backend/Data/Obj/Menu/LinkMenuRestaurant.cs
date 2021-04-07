@@ -7,7 +7,7 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
-        public bool AlwaysServe;
+        public bool AlwaysServe, IsActive;
         public uint MenuRestID, MenuID, RestaurantID;
 
         #endregion Fields
