@@ -18,19 +18,24 @@ export const Loading = () => {
 
   const startAnimation = () => {
     animatedValue.setValue(0);
-    Animated.timing(animatedValue, {
-      toValue: 1,
-      duration: 1400,
-      easing: Easing.linear,
-    }).start();
-
+    // Run this once the event loop is clear
     setTimeout(() => {
-      delayedValue.setValue(0);
-      Animated.timing(delayedValue, {
+      Animated.timing(animatedValue, {
         toValue: 1,
         duration: 1400,
         easing: Easing.linear,
       }).start();
+    }, 10);
+
+    setTimeout(() => {
+      delayedValue.setValue(0);
+      setTimeout(() => {
+        Animated.timing(delayedValue, {
+          toValue: 1,
+          duration: 1400,
+          easing: Easing.linear,
+        }).start();
+      }, 10);
     }, 700);
   };
 
