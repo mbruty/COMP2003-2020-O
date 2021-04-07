@@ -7,6 +7,8 @@ import { Feather as Icon } from "@expo/vector-icons";
 import SwipeCard from "./SwipeCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Loading } from "../../Loading";
+import { includeAuth } from "../includeAuth";
+
 const { height, width } = Dimensions.get("screen");
 const stackSize = 4;
 const colors = {
@@ -23,12 +25,26 @@ const swiperRef = React.createRef();
 export default function App() {
   const [index, setIndex] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const onSwiped = () => {
-    setIndex((index + 1) % data.length);
-  };
 
-  const onSwipedTop = () => {
-    setIndex((index + 1) % data.length);
+  const onSwiped = async (side, id, isFavourite) => {
+    const auth = await includeAuth();
+    // Send to python api
+    const res = await fetch("http://127.0.0.1:5000/swipe", {
+      method: "POST",
+      body: JSON.stringify({
+        foodid: id,
+        userid: auth.userid,
+        authtoken: auth.authtoken,
+        islike: side === "LIKE",
+        isfavourite: isFavourite,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(res.status);
+    setIndex((prevIdx) => (prevIdx + 1) % data.length);
   };
 
   const onDone = () => {
@@ -52,8 +68,9 @@ export default function App() {
             <SwipeCard foodID={card.foodid} title={card.name} />
           )}
           backgroundColor={"transparent"}
-          onSwiped={onSwiped}
-          onSwipedTop={onSwipedTop}
+          onSwipedLeft={(id) => onSwiped("NOPE", id, false)}
+          onSwipedRight={(id) => onSwiped("LIKE", id, false)}
+          onSwipedTop={(id) => onSwiped("", id, true)}
           onTapCard={() => null}
           stackSize={stackSize}
           stackScale={10}
