@@ -1,8 +1,17 @@
 from flask import Flask
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, reqparse
 import sys
 from get_details import get_details
-import jsonpickle
+from process_swipe import process_swipe
+import requests
+
+
+like_post_args = reqparse.RequestParser()
+like_post_args.add_argument("foodid", type=int, help="The ID of the food item swiped on")
+like_post_args.add_argument("userid", type=str, help="Your UserID")
+like_post_args.add_argument("authtoken", type=str, help="Authorisation token")
+like_post_args.add_argument("islike", type=bool, help="If the like was like / dislike")
+like_post_args.add_argument("isfavourite", type=bool, help="If it was a super like")
 
 app = Flask(__name__)
 api = Api(app)
@@ -32,8 +41,26 @@ class ReccomenderController(Resource):
 		return serialize_user(data)
 
 
-api.add_resource(ReccomenderController, "/<int:id>")
+class SwipeController(Resource):
+	# post [/swipe]
+	def post(self):
+		args = like_post_args.parse_args()
+		payload = {	"authtoken": args.authtoken,	"userid": args.userid }
+		r = requests.post('http://devapi.trackandtaste.com/user/authcheck', json=payload)
+		if r.status_code != 200:
+			return '', r.status_code
+		else:
+			try:
+				process_swipe(args.userid, args.foodid, args.islike, args.isfavourite)
+			except Exception:
+				# Food item not found
+				return '', 404
+			return '', 201
+		
 
+
+api.add_resource(ReccomenderController, "/<int:id>")
+api.add_resource(SwipeController, "/swipe")
 if __name__ == "__main__":
 
 	if("-d" in sys.argv):
