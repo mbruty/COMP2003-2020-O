@@ -29,8 +29,9 @@ namespace api.Backend.Endpoints
 
             if (tMethod.Length > 0)
             {
-                Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(request.Headers, response);
+                Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(request.Headers, response, Data);
                 Events.WebEvent event_attribute = tMethod[0].GetCustomAttributes<Events.WebEvent>().First();
+
 
                 if (Security.Sessions.IsAuthorized(perm.SecurityGroup, event_attribute.secuirtyLevel))
                 {
