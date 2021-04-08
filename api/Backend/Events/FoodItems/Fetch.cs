@@ -49,6 +49,13 @@ namespace api.Backend.Events.FoodItems
                 }
                 );
 
+            if(items.Length == 0)
+            {
+                // Either it doesn't exist or they aren't the owner
+                response.StatusCode = 404;
+                return;
+            }
+
             // We should only be getting 1 item so can just assume it's at [0]
             // Get the food checks
             Data.Obj.FoodChecks[] checks = await Binding.GetTable<Data.Obj.FoodChecks>().Select<Data.Obj.FoodChecks>("FoodCheckID", items[0].FoodCheckID);
