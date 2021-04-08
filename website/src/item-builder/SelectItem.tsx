@@ -10,21 +10,25 @@ import {
 import { Add } from "@material-ui/icons";
 import React from "react";
 import { useHistory } from "react-router";
+import { API_URL } from "../constants";
 
 const SelectItem: React.FC = (props) => {
   const history = useHistory();
-  const [items, setItems] = React.useState<Array<{ name: string; id: number }>>(
-    [
-      {
-        name: "Borger",
-        id: 3,
-      },
-      {
-        name: "Quokka",
-        id: 1,
-      },
-    ]
-  );
+  const [items, setItems] = React.useState<
+    Array<{ FoodName: string; FoodID: number }>
+  >([]);
+
+  React.useEffect(() => {
+    (async () => {
+      const raw = await fetch(API_URL + "/fooditem/me", {
+        mode: "cors",
+        credentials: "include",
+      });
+      const data = await raw.json();
+
+      setItems(data.items);
+    })();
+  }, []);
   return (
     <div className="content">
       <Paper style={{ padding: "1em" }}>
@@ -37,12 +41,15 @@ const SelectItem: React.FC = (props) => {
             onChange={(e) => history.push(`item-builder/${e.target.value}`)}
           >
             {items.map((item) => (
-              <MenuItem value={item.id}>{item.name}</MenuItem>
+              <MenuItem value={item.FoodID}>{item.FoodName}</MenuItem>
             ))}
           </Select>
         </FormControl>
         <Divider style={{ margin: "10px" }} />
-        <Button onClick={() => history.push("item-builder/create") } style={{ width: "100%" }}>
+        <Button
+          onClick={() => history.push("item-builder/create")}
+          style={{ width: "100%" }}
+        >
           <Add style={{ paddingRight: "10px" }} />
           Create New
         </Button>

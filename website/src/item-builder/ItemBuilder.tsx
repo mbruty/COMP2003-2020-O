@@ -18,17 +18,31 @@ import DragNDrop from "../file-upload/DragNDrop";
 import { Close, Edit, Save } from "@material-ui/icons";
 import { Alert } from "@material-ui/lab";
 import { RouteComponentProps } from "react-router";
+import { API_URL } from "../constants";
+
+type checks = {
+  IsVegetarian: boolean;
+  IsVegan: boolean;
+  IsHalal: boolean;
+  IsKosher: boolean;
+  HasLactose: boolean;
+  HasNuts: boolean;
+  HasGluten: boolean;
+  HasEgg: boolean;
+  HasSoy: boolean;
+  none: boolean;
+};
 
 const allOffState = {
-  isVegetarian: false,
-  isVegan: false,
-  isHalal: false,
-  isKosher: false,
-  hasLactose: false,
-  hasNuts: false,
-  hasGluten: false,
-  hasEggs: false,
-  hasSoy: false,
+  IsVegetarian: false,
+  IsVegan: false,
+  IsHalal: false,
+  IsKosher: false,
+  HasLactose: false,
+  HasNuts: false,
+  HasGluten: false,
+  HasEgg: false,
+  HasSoy: false,
   none: false,
 };
 
@@ -54,7 +68,12 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
     description: "",
     price: "",
   });
+
+  
   const [editImg, setEditImg] = React.useState<boolean>(false);
+  const [checkBoxData, setCheckBoxData] = React.useState<checks>({
+    ...allOffState,
+  });
   const [imgError, setImgError] = React.useState<boolean>(false);
 
   useEffect(() => {
@@ -62,6 +81,31 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
       //ToDo fetch the food item data from api
       setTagId(parseInt(props.match.params.id));
     }
+  }, [props.match.params.id]);
+
+  useEffect(() => {
+    (async () => {
+      const raw = await fetch(
+        API_URL + "/fooditem/verbose/" + props.match.params.id,
+        {
+          mode: "cors",
+          credentials: "include",
+        }
+      );
+      const data = await raw.json();
+      setItemDetails({
+        name: data.fooditem.FoodName,
+        shortName: data.fooditem.FoodNameShort,
+        description: data.fooditem.FoodDescription,
+        price: data.fooditem.Price,
+      });
+
+      const checks: checks = data.checks as checks;
+      setCheckBoxData(checks);
+
+      setValue(data.tags as IFoodTag[])
+      console.log(data);
+    })();
   }, [props.match.params.id]);
 
   const [saveVisible, setSaveVisible] = React.useState<boolean>(false);
@@ -72,10 +116,6 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
     (async () => setOptions(await getOptions(search)))();
     setLoading(false);
   }, [search]);
-
-  const [checkBoxData, setCheckBoxData] = React.useState({
-    ...allOffState,
-  });
 
   const showUpload = tagId > 0 && (imgError || editImg);
 
@@ -148,22 +188,22 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedVegetarian"
-                  checked={checkBoxData.isVegetarian}
+                  checked={checkBoxData.IsVegetarian}
                   onChange={() => {
-                    if (checkBoxData.isVegetarian) {
+                    if (checkBoxData.IsVegetarian) {
                       // Enforce that non-veggie food is also non-vegan
                       setCheckBoxData({
                         ...checkBoxData,
-                        isVegetarian: false,
-                        isVegan: false,
-                        isHalal: false,
-                        isKosher: false,
+                        IsVegetarian: false,
+                        IsVegan: false,
+                        IsHalal: false,
+                        IsKosher: false,
                         none: false,
                       });
                     } else {
                       setCheckBoxData({
                         ...checkBoxData,
-                        isVegetarian: true,
+                        IsVegetarian: true,
                         none: false,
                       });
                     }
@@ -176,12 +216,12 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedVegan"
-                  checked={checkBoxData.isVegan}
+                  checked={checkBoxData.IsVegan}
                   onChange={() => {
-                    if (checkBoxData.isVegan) {
+                    if (checkBoxData.IsVegan) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        isVegan: false,
+                        IsVegan: false,
                         none: false,
                       });
                     } else {
@@ -189,10 +229,10 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
                       // Enforcing all vegan food doesn't contain lactose
                       setCheckBoxData({
                         ...checkBoxData,
-                        isVegetarian: true,
-                        isVegan: true,
-                        hasLactose: false,
-                        hasEggs: false,
+                        IsVegetarian: true,
+                        IsVegan: true,
+                        HasLactose: false,
+                        HasEgg: false,
                         none: false,
                       });
                     }
@@ -205,20 +245,20 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedHalal"
-                  checked={checkBoxData.isHalal}
+                  checked={checkBoxData.IsHalal}
                   onChange={() => {
-                    if (checkBoxData.isHalal) {
+                    if (checkBoxData.IsHalal) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        isHalal: false,
+                        IsHalal: false,
                         none: false,
                       });
                       return;
                     }
-                    if (checkBoxData.isVegetarian) {
+                    if (checkBoxData.IsVegetarian) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        isHalal: true,
+                        IsHalal: true,
                         none: false,
                       });
                       // If it's veggie, then it can be labelled as both halal and kosher
@@ -227,8 +267,8 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
                     // Enforcing the halal / kosher conflict
                     setCheckBoxData({
                       ...checkBoxData,
-                      isHalal: true,
-                      isKosher: false,
+                      IsHalal: true,
+                      IsKosher: false,
                       none: false,
                     });
                   }}
@@ -240,20 +280,20 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedKosher"
-                  checked={checkBoxData.isKosher}
+                  checked={checkBoxData.IsKosher}
                   onChange={() => {
-                    if (checkBoxData.isKosher) {
+                    if (checkBoxData.IsKosher) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        isKosher: false,
+                        IsKosher: false,
                         none: false,
                       });
                       return;
                     }
-                    if (checkBoxData.isVegetarian) {
+                    if (checkBoxData.IsVegetarian) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        isKosher: true,
+                        IsKosher: true,
                         none: false,
                       });
                       // If it's veggie, then it can be labelled as both halal and kosher
@@ -262,8 +302,8 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
                     // Enforcing the halal / kosher conflict
                     setCheckBoxData({
                       ...checkBoxData,
-                      isHalal: false,
-                      isKosher: true,
+                      IsHalal: false,
+                      IsKosher: true,
                       none: false,
                     });
                   }}
@@ -275,20 +315,20 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedLactose"
-                  checked={checkBoxData.hasLactose}
+                  checked={checkBoxData.HasLactose}
                   onChange={() => {
-                    if (checkBoxData.hasLactose) {
+                    if (checkBoxData.HasLactose) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        hasLactose: false,
+                        HasLactose: false,
                         none: false,
                       });
                     } else {
                       // Enforcing vegan food cannot contain lactose
                       setCheckBoxData({
                         ...checkBoxData,
-                        isVegan: false,
-                        hasLactose: true,
+                        IsVegan: false,
+                        HasLactose: true,
                         none: false,
                       });
                     }
@@ -301,11 +341,11 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedNuts"
-                  checked={checkBoxData.hasNuts}
+                  checked={checkBoxData.HasNuts}
                   onChange={() =>
                     setCheckBoxData({
                       ...checkBoxData,
-                      hasNuts: !checkBoxData.hasNuts,
+                      HasNuts: !checkBoxData.HasNuts,
                       none: false,
                     })
                   }
@@ -317,11 +357,11 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedGluten"
-                  checked={checkBoxData.hasGluten}
+                  checked={checkBoxData.HasGluten}
                   onChange={() =>
                     setCheckBoxData({
                       ...checkBoxData,
-                      hasGluten: !checkBoxData.hasGluten,
+                      HasGluten: !checkBoxData.HasGluten,
                       none: false,
                     })
                   }
@@ -333,20 +373,20 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedEggs"
-                  checked={checkBoxData.hasEggs}
+                  checked={checkBoxData.HasEgg}
                   onChange={() => {
-                    if (checkBoxData.hasEggs) {
+                    if (checkBoxData.HasEgg) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        hasEggs: false,
+                      HasEgg: false,
                         none: false,
                       });
                     } else {
                       // Enforcing vegan food cannot contain eggs
                       setCheckBoxData({
                         ...checkBoxData,
-                        isVegan: false,
-                        hasEggs: true,
+                        IsVegan: false,
+                        HasEgg: true,
                         none: false,
                       });
                     }
@@ -359,11 +399,11 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedSoy"
-                  checked={checkBoxData.hasSoy}
+                  checked={checkBoxData.HasSoy}
                   onChange={() =>
                     setCheckBoxData({
                       ...checkBoxData,
-                      hasSoy: !checkBoxData.hasSoy,
+                      HasSoy: !checkBoxData.HasSoy,
                       none: false,
                     })
                   }
@@ -405,7 +445,7 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
             onInputChange={(e, value) => setSearch(value)}
             options={options}
             onChange={(e, value) => setValue(value)}
-            getOptionLabel={(option) => option.tag}
+            getOptionLabel={(option) => option.Tag}
             style={{ width: "100%", margin: "auto" }}
             renderInput={(params) => (
               <TextField {...params} label="Food Tag" variant="outlined" />
