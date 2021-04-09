@@ -38,7 +38,7 @@ class RecommendationEngine:
 
     def RedisPush (self, UserID, RecommendedItems):
         r.lpush(f"Recommendations-{UserID}", *RecommendedItems)
-        r.expire(f"Recommendations-{UserID}", 20)
+        r.expire(f"Recommendations-{UserID}", 7200)
 
     def GetRedis (self, UserID):
         return [i.decode("UTF-8") for i in r.lrange(f"Recommendations-{UserID}", 0, -1)]
