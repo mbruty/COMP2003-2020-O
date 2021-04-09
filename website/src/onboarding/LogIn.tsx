@@ -1,9 +1,11 @@
-import { Button, Paper } from "@material-ui/core";
-import React, { useState } from "react";
+import { Paper } from "@material-ui/core";
+import React from "react";
 import LogInStepper from "./LogInSteeper";
 import SignInForm from "./SignInOrUpForm";
 
-interface Props {}
+interface Props {
+  refresh: () => void;
+}
 
 const LogIn: React.FC<Props> = (props) => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -12,7 +14,15 @@ const LogIn: React.FC<Props> = (props) => {
   const renderPage = () => {
     switch (activeStep) {
       case 0:
-        return <SignInForm tabIdx={tabIdx} setTabIdx={setTabIdx} />;
+        return (
+          <div className="log-in">
+            <SignInForm
+              tabIdx={tabIdx}
+              setTabIdx={setTabIdx}
+              refresh={props.refresh}
+            />
+          </div>
+        );
       default:
         return null;
     }
@@ -22,17 +32,19 @@ const LogIn: React.FC<Props> = (props) => {
   const showStepper = !(tabIdx === 0 && activeStep === 0);
 
   return (
-    <Paper style={{ padding: 25 }}>
-      <div>
-        <h1>Welcome to the Track and Taste Dashboard</h1>
-      </div>
-      {renderPage()}
-      <LogInStepper
-        show={showStepper}
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
-      />
-    </Paper>
+    <div className="content">
+      <Paper style={{ padding: 25 }}>
+        <div>
+          <h1>Welcome to the Track and Taste Dashboard</h1>
+        </div>
+        {renderPage()}
+        <LogInStepper
+          show={showStepper}
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
+        />
+      </Paper>
+    </div>
   );
 };
 

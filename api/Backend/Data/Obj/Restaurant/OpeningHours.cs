@@ -9,7 +9,7 @@ namespace api.Backend.Data.Obj
         #region Fields
 
         public string DayRef;
-        public DateTime OpenTime, TimeServing;
+        public DateTime OpenTime, Duration;
         public uint RestaurantID;
 
         #endregion Fields

@@ -1,4 +1,5 @@
 import { API_URL } from "../../constants";
+import { saveAuth } from "../includeAuth";
 import { email, isToday, Values } from "./utils";
 const pwRegex = RegExp(
   /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!"#\$%&'\(\)\*\+,-\.\/:;<=>\?@[\]\^_`\{\|}~])[a-zA-Z0-9!"#\$%&'\(\)\*\+,-\.\/:;<=>\?@[\]\^_`\{\|}~]{8,}$/
@@ -73,26 +74,28 @@ const validate = async ({ values, date, next, setErrors, submit }: Params) => {
   }
   // No errors occurred... Time to send it to the api
   if (!hasErrors && submit) {
-    
     // Try and post the sign-up info
-    fetch(API_URL + "/signup", {
+    fetch(API_URL + "/user/signup", {
       method: "POST",
-      headers: {
+      body: JSON.stringify({
         email: values.email,
         password: values.password,
-        dateOfBirth: date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay(),
+        dateOfBirth:
+          date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay(),
         nickname: values.username,
-      },
+      }),
     })
       // Convert the response to json
       .then((response) => response.json())
-      .then((response) => {
+      .then((response) => {        
         if (response.error === "Email is in use") {
           // The email is already in use
           currentErrors.email = "Email is in use";
         } else if (response.message === "Signed Up") {
-          // Go to the next bit
-          next(values.username, response.userid, response.authtoken);
+          saveAuth(response).then(() => {
+            // Go to the next bit
+            next(values.username, response.userid, response.authtoken);
+          });
         } else {
           alert(JSON.stringify(response));
         }

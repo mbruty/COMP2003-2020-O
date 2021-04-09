@@ -10,7 +10,7 @@ namespace api.Backend.Data.Obj
 
         public string DayRef;
         public uint MenuRestID;
-        public DateTime StartServing, TimeServing;
+        public TimeSpan StartServing, TimeServing;
 
         #endregion Fields
 

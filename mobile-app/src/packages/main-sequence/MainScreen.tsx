@@ -1,14 +1,19 @@
-import React, { useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Dimensions, SectionList, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import RecentVisits from "./RecentVisits";
 import Settings from "./Settings";
+import GroupPage from "./GroupPage";
 import Nav from "./Nav";
 import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
 import SmartPage from "react-native-smart-page";
 import { CONSTANT_COLOURS } from "../../constants";
+import getUserInfo from "../requests/getUserInfo";
+import GroupPageRouter from "./GroupPageRouter";
 
-interface Props {}
+interface Props {
+  logOut: () => void;
+}
 
 const { height, width } = Dimensions.get("window");
 
@@ -27,7 +32,17 @@ const styles = StyleSheet.create({
 let scrollRef = React.createRef<ScrollView | undefined>();
 
 const MainScreen: React.FC<Props> = (props) => {
+  const [user, setUser] = useState();
+  const [scrollEnabled, setScrollEnabled] = React.useState<boolean>(true);
   const [pageIdx, setPageIdx] = useState<number>(0);
+
+  const disableScroll = () => {
+    // Doing it like this to prevent re-render's if the scroll is already disabled
+    if(scrollEnabled) {
+      setScrollEnabled(false);
+    }
+  }
+  
   const setPage = (index: number) => {
     console.log(scrollRef);
     pageRef.current.flingToPage(index, 0.99);
@@ -36,7 +51,17 @@ const MainScreen: React.FC<Props> = (props) => {
     setTimeout(() => setPageIdx(index), 0);
   };
 
+  useEffect(() => {
+    getUserInfo();
+  }, [])
   const pageRef = React.createRef();
+
+  useEffect(() => {
+    if(!scrollEnabled) {
+      console.log("Enabling scroll");
+      setScrollEnabled(true);
+    }
+  }, [pageIdx]);
 
   return (
     <>
@@ -48,11 +73,14 @@ const MainScreen: React.FC<Props> = (props) => {
           setPageIdx(index);
         }}
         sensitiveScroll={false}
+        scrollEnabled={scrollEnabled}
       >
         <View style={styles.screen}>
           <AnimatedSwipe />
         </View>
-        <View style={styles.screen}></View>
+        <View style={styles.screen}>
+          <GroupPageRouter setScrollEnabled={setScrollEnabled} scrollEnabled={scrollEnabled}/>
+        </View>
         <View style={styles.screen}>
           <RecentVisits
             restaurants={[
@@ -66,7 +94,7 @@ const MainScreen: React.FC<Props> = (props) => {
           />
         </View>
         <View style={styles.screen}>
-          <Settings />
+          <Settings scrollEnabled={scrollEnabled} setScrollEnabled={setScrollEnabled} logOut={props.logOut} />
         </View>
       </SmartPage>
     </>

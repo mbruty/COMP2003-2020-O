@@ -1,8 +1,10 @@
 import * as yup from "yup";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../../constants";
 import { email, SignIn } from "./utils";
+import { saveAuth } from "../includeAuth";
 
-const validate = async (values: SignIn, submit: (token: string) => void) => {
+const validate = async (values: SignIn, submit: () => void) => {
   // Validate the fields before sending the request!
   let hasErrors = false;
   let errors: SignIn = {
@@ -29,18 +31,21 @@ const validate = async (values: SignIn, submit: (token: string) => void) => {
     return errors;
   }
   // Valid fields, let's try and log in
-  fetch(API_URL + "/login", {
+  fetch(API_URL + "/user/login", {
     method: "POST",
-    headers: {
+    body: JSON.stringify({
       email: values.email,
       password: values.password,
-    },
+    }),
   })
     .then((response) => response.json())
     .then((response) => {
       if (response.message === "Logged in") {
-        // It was a valid log in! Send the event to the props!
-        submit(response.authtoken);
+        // Save the token to local storage
+        saveAuth(response).then(() => {
+          // It was a valid log in! Send the event to the props!
+          submit();
+        });
       } else {
         // Failed log in, display an error
 
