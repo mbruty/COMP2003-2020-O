@@ -209,6 +209,9 @@ const SelectLocation: React.FC<Props> = (props) => {
                 console.log("Settings2:", settings2);
               }
               props.onSave();
+              // I think this is in the right place:
+              props.setPage(Page.host_waiting);
+              //
             }}>
               <View style={styles.btn}>
                 <Text style={[styles.text, { color: "white" }]}>Save Location</Text>

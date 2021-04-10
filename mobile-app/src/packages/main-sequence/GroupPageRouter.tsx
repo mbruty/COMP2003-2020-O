@@ -12,7 +12,8 @@ export enum Page {
   join_create,
   map_view,
   swipe,
-  waiting
+  guest_waiting,
+  host_waiting
 }
 
 const GroupPageRouter: React.FC<Props> = (props) => {
@@ -28,7 +29,7 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   switch (page) {
     case Page.join_create:
       return <GroupPage setPage={setPage} />
-    case Page.waiting:
+    case Page.guest_waiting:
       return <GroupWaitingRoom 
       setPage={setPage} 
       isHost={false} 
@@ -36,7 +37,17 @@ const GroupPageRouter: React.FC<Props> = (props) => {
       members={[
         "me",
         "you",
-        "vas"
+        "somebody else"
+      ]}/>
+    case Page.host_waiting:
+      return <GroupWaitingRoom 
+      setPage={setPage} 
+      isHost={true} 
+      roomCode={"*ROOM CODE*"}
+      members={[
+        "me",
+        "you",
+        "somebody else"
       ]}/>
     case Page.map_view:
       return <SelectLocation isGroup onSave={() => {

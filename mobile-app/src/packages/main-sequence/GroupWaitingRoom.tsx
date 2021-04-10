@@ -7,11 +7,8 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
 } from "react-native";
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
-import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { reset } from "../includeAuth";
 import { ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Page } from "./GroupPageRouter";
 
@@ -23,7 +20,7 @@ interface Props {
 }
 
 const GroupWaitingRoom: React.FC<Props> = (props) => {
-    if (props.isHost = true){
+    if (props.isHost = false){
         return (
             <View>
                 <View style={styles.box}>
@@ -40,7 +37,7 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
         );
     }
 
-    if (props.isHost = false){
+    if (props.isHost = true){
         return (
             <View>
                 <View style={styles.box}>
