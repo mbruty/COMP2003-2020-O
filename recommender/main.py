@@ -1,12 +1,19 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
 import sys
-from get_details import get_details
+from get_details import get_name
 from process_swipe import process_swipe
 import requests
 from flask_socketio import SocketIO
 from flask_socketio import join_room, leave_room, send, emit
+import random
+from eventlet import wsgi
+import eventlet
+from redis_instance import get_instance
+r = get_instance()
 
+# 1 day
+EXPIRATION_TIME = 86400
 
 like_post_args = reqparse.RequestParser()
 like_post_args.add_argument(
@@ -23,39 +30,11 @@ api = Api(app)
 socketio = SocketIO(app)
 
 
-def serialize_user(user_arr):
-    data = []
-    for user in user_arr:
-        data.append({
-            "user_id": int(user.user_id),
-            "top_five_likes": serialize_tuple_array(user.top_five_likes),
-            "top_five_dislikes": serialize_tuple_array(user.top_five_dislikes)
-        })
-    return data
-
-
-def serialize_tuple_array(array):
-    data = []
-    for item in array:
-        data.append({
-            "food_check_id": int(item[0]),
-            "swipe_right_pct": float(item[1])
-        })
-    return data
-
-
-class ReccomenderController(Resource):
-    # get [/id]
-    def get(self, id):
-        data = get_details(id)
-        return serialize_user(data)
-
-
 class SwipeController(Resource):
     # post [/swipe]
     def post(self):
         args = like_post_args.parse_args()
-        payload = {	"authtoken": args.authtoken,	"userid": args.userid}
+        payload = {"authtoken": args.authtoken, "userid": args.userid}
         r = requests.post(
             'http://devapi.trackandtaste.com/user/authcheck', json=payload)
         if r.status_code != 200:
@@ -75,6 +54,26 @@ def handle_message(message):
     print(message)
 
 
+@socketio.on('create')
+def handle_create(data):
+    uid = data["id"]
+    latlon = data["latlon"]
+    distance = data["distance"]
+    name = get_name(uid)[0]
+    code = random.randint(100000, 999999)
+    # Check for the odd ocassion that the code exists
+    while r.exists(f"room-{code}-users"):
+        code = random.randint(100000, 999999)
+    # Send back the code
+    send(code)
+    # Join the room
+    join_room(code)
+    # Create the list of users
+    r.sadd(f"room-{code}-users", f"{uid}:{name}:false")
+    r.set(f"room-{code}-location", latlon)
+    r.set(f"room-{code}-distance", distance)
+
+
 @socketio.on('kick')
 def on_kick(data):
     print(data)
@@ -85,11 +84,19 @@ def on_kick(data):
 
 @socketio.on('join')
 def on_join(data):
-    print(data)
-    username = data['username']
+    uid = data["id"]
+    username = get_name(uid)[0]
     room = data['room']
     join_room(room)
-    emit("user_join", username + ' has entered the room.', room=room)
+    r.sadd(f"room-{room}-users", f"{uid}:{username}:false")
+    r.expire(f"room-{room}-users", EXPIRATION_TIME)
+    redis_data = r.smembers(f"room-{room}-users")
+    users = []
+    for i in redis_data:
+        raw = i.decode("UTF-8")
+        split = raw.split(":")
+        users.append({"uid": split[0], "name": split[1], "ready": split[2]})
+    emit("user_join", users, room=room)
 
 
 @socketio.on('leave')
@@ -100,11 +107,13 @@ def on_leave(data):
     emit("leave", username + ' has left the room.', room=room)
 
 
-api.add_resource(ReccomenderController, "/<int:id>")
+@socketio.on('disconnect')
+def on_disconnect():
+    print("OOF")
+
+
 api.add_resource(SwipeController, "/swipe")
+
 if __name__ == "__main__":
     socketio.run(app)
-    if("-d" in sys.argv):
-        app.run(debug=True)
-    else:
-        app.run()
+    wsgi.server(eventlet.listen(('', 8000)), app)
