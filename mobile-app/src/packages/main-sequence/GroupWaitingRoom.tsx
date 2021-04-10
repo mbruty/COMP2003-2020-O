@@ -1,74 +1,114 @@
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  Button,
-  Modal,
-  Alert,
-  StyleSheet,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-} from "react-native";
-import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
-import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { reset } from "../includeAuth";
-import { ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { CONSTANT_COLOURS } from "../../constants";
+import { ScrollView } from "react-native-gesture-handler";
 import { Page } from "./GroupPageRouter";
+import { SocketUser } from "./GroupObserver";
+import { includeAuth } from "../includeAuth";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
   isHost: boolean;
   roomCode: string;
-  members: Array<String>;
+  members: SocketUser[] | undefined;
 }
 
 const GroupWaitingRoom: React.FC<Props> = (props) => {
-    if (props.isHost = true){
-        return (
-            <View>
-                <View style={styles.box}>
-                    <ScrollView>
-                        <Text style={styles.title}>Room Code: {props.roomCode}</Text>
-                        <View style={styles.spacer} />
-                        <Text style={styles.title}>Group Members: </Text>
-                        <Text style={styles.text}>{props.members[0]}</Text>
-                        <Text style={styles.text}>{props.members[1]}</Text>
-                        <Text style={styles.text}>{props.members[2]}</Text>
-                    </ScrollView>
-                </View>
-            </View>
-        );
-    }
+  const [me, setMe] = React.useState<string>();
+  React.useEffect(() => {
+    (async () => {
+      const { userid } = await includeAuth();
+      setMe(userid);
+    })();
+  }, []);
 
-    if (props.isHost = false){
-        return (
-            <View>
-                <View style={styles.box}>
-                <ScrollView>
-                        <Text style={styles.title}>Room Code: {props.roomCode}</Text>
-                        <View style={styles.spacer} />
-                        <Text style={styles.title}>Group Members: </Text>
-                        <Text style={styles.text}>{props.members[0]}</Text>
-                        <Text style={styles.text}>{props.members[1]}</Text>
-                        <Text style={styles.text}>{props.members[2]}</Text>
-                    </ScrollView>
-                </View>
-                <View style={styles.btnContainer}>
-                    <TouchableOpacity
-                        onPress={() => {
-                        props.setPage(Page.map_view);
-                        }}
-                    >
-                        <View style={[styles.btn]}>
-                            <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
-                               START SWIPING
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        );
-    }
+  return (
+    <View style={{ display: "flex", height: "100%" }}>
+      <Text style={styles.title}>Room Code: {props.roomCode}</Text>
+      <View style={styles.box}>
+        <ScrollView>
+          <Text style={[styles.text, { fontSize: 15 }]}>Members</Text>
+          {props.members &&
+            props.members.map((member) => (
+              <View
+                key={member.uid}
+                style={[
+                  styles.box,
+                  { flexDirection: "row", alignItems: "center" },
+                ]}
+              >
+                <Text
+                  style={{
+                    color: CONSTANT_COLOURS.DARK_GREY,
+                    textAlignVertical: "center",
+                  }}
+                >
+                  {member.name}
+                </Text>
+                {member.ready ? (
+                  <Text
+                    style={{
+                      textAlignVertical: "center",
+
+                      color: "#43c42f",
+                      fontWeight: "bold",
+                      marginRight: 0,
+                      marginLeft: "auto",
+                    }}
+                  >
+                    Ready
+                  </Text>
+                ) : (
+                  <Text
+                    style={{
+                      textAlignVertical: "center",
+                      color: "#c4312f",
+                      fontWeight: "bold",
+                      marginRight: 0,
+                      marginLeft: "auto",
+                    }}
+                  >
+                    Not Ready
+                  </Text>
+                )}
+                {props.isHost && member.uid !== me && (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: CONSTANT_COLOURS.RED,
+                      paddingVertical: 4,
+                      paddingHorizontal: 10,
+                      borderRadius: 5,
+                      marginLeft: 15,
+                    }}
+                  >
+                    <Text style={{ color: "white" }}>Kick</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
+          {!props.members && <Text>Loading...</Text>}
+        </ScrollView>
+      </View>
+      <View style={{ marginTop: "auto", marginBottom: 10 }}>
+        <Text style={{ marginLeft: 10, color: CONSTANT_COLOURS.DARK_GREY }}>
+          Note: This group will expire after 24 hours of inactivity
+        </Text>
+      </View>
+      <TouchableOpacity
+        style={{
+          backgroundColor: CONSTANT_COLOURS.RED,
+          marginHorizontal: "10%",
+          padding: "3%",
+          borderRadius: 20,
+          marginBottom: 150,
+        }}
+      >
+        <Text style={{ textAlign: "center", color: "white" }}>
+          {props.isHost ? "Start Swiping" : "Ready Up"}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -121,7 +161,6 @@ const styles = StyleSheet.create({
   box: {
     backgroundColor: "white",
     width: "95%",
-    height: "80%",
     display: "flex",
     flexDirection: "column",
     padding: 10,
@@ -137,6 +176,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: CONSTANT_COLOURS.DARK_GREY,
     fontSize: 18,
+    marginLeft: 15,
   },
   danger: {
     fontSize: 16,
