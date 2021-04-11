@@ -206,19 +206,20 @@ CREATE TABLE `Days` (
 );
 
 CREATE TABLE `OpeningHours` (
+    RestaurantTimeID INT UNSIGNED NOT NULL,
     RestaurantID INT UNSIGNED NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     OpenTime TIME NOT NULL DEFAULT '08:00:00',
-    TimeServing TIME NOT NULL DEFAULT '14:00:00',
+    Duration TIME NOT NULL DEFAULT '14:00:00',
 
-    PRIMARY KEY (RestaurantID, DayRef),
+    PRIMARY KEY (RestaurantTimeID),
 
     CONSTRAINT FK_RestaurantInOpeningHours FOREIGN KEY (RestaurantID)
         REFERENCES Restaurant(RestaurantID) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK_DayInOpeningHours FOREIGN KEY (DayRef)
         REFERENCES `Days`(DayRef) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT CHK_OpenTime CHECK (OpenTime BETWEEN '00:00:00' AND '24:00:00'),
-    CONSTRAINT CHK_CloseTime CHECK (TimeServing > '00:00:00')
+    CONSTRAINT CHK_Duration CHECK (Duration > '00:00:00')
 );
 
 CREATE TABLE `Menu` (
@@ -246,18 +247,19 @@ CREATE TABLE `LinkMenuRestaurant` (
 );
 
 CREATE TABLE `MenuTimes` (
+    MenuTimeID INT UNSIGNED NOT NULL,
     MenuRestID INT UNSIGNED NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     StartServing TIME NOT NULL,
-    TimeServing TIME NOT NULL,
+    ServingFor TIME NOT NULL,
 
-    PRIMARY KEY (MenuRestID, DayRef),
+    PRIMARY KEY (MenuTimeID),
 
     CONSTRAINT FK_MenuRestLinkInTimes FOREIGN KEY (MenuRestID)
         REFERENCES LinkMenuRestaurant(MenuRestID) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK_DaysInMenuTimes FOREIGN KEY (DayRef)
         REFERENCES `Days`(DayRef) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT CHK_TimeServing CHECK (TimeServing > '00:00:00')
+    CONSTRAINT CHK_ServingFor CHECK (ServingFor > '00:00:00')
 );
 
 CREATE TABLE `FoodItem` (
