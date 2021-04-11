@@ -6,3 +6,5 @@ recommender/mysql_connection.py
 image-handler/track-and-taste-f63b50cd16a1.json
 image-handler/comp2003-4313e0d1b519.json
 recommender/redis_connection.py
+
+website/.idea/

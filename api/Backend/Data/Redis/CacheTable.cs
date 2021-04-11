@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace api.Backend.Data.Redis
 {
@@ -17,11 +17,21 @@ namespace api.Backend.Data.Redis
             Redis.Instance.SetStringWithExpiration(GetKey<T>(UncachedObject).ToString(), JToken.FromObject(CacheableObject).ToString());
         }
 
+        #endregion Methods
+
         //private string GetKey<T>(T Object) where T : SQL.Object, new()
         //{
         //    Type t = Object.GetType();
         //    return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(Object).ToString()}";
         //}
+
+        #region Constructors
+
+        public CacheTable(string Name) : base(Name)
+        {
+        }
+
+        #endregion Constructors
 
         public object GetKey<T>(T sqlObj) where T : SQL.Object, new()
         {
@@ -38,16 +48,6 @@ namespace api.Backend.Data.Redis
         {
             return $"{Name}-{PrimaryKeyValue}";
         }
-
-        #endregion Methods
-
-        #region Constructors
-
-        public CacheTable(string Name) : base(Name)
-        {
-        }
-
-        #endregion Constructors
 
         public override async Task<T[]> Select<T>(object[] PrimaryKeyValues, int Limit = 0)
         {
@@ -79,7 +79,7 @@ namespace api.Backend.Data.Redis
                     value = FieldValues[i];
                     break;
                 }
-                else break;
+                //else break;
             }
 
             if (value != null)
@@ -87,7 +87,8 @@ namespace api.Backend.Data.Redis
                 //Logic To Find And Return A Cached Object
                 string FieldSearch = GetKey(value);
                 var data = await Redis.Instance.GetString(FieldSearch);
-                if (data != null) {
+                if (data != null)
+                {
                     return new T[] { JToken.Parse(data).ToObject<T>() };
                 }
                 T[] Data = await base.Select<T>(FieldNames, FieldValues, Limit);

@@ -30,7 +30,7 @@ const LogInForm: React.FC<{ refresh: () => void }> = (Props) => {
         // If it's good, the server will send back a cookie
         // The cookie will automatically get saved
 
-        const result = await fetch(API_URL + "/login", {
+        const result = await fetch(API_URL + "/admin/login", {
           method: "POST",
           credentials: "include",
           body: JSON.stringify({

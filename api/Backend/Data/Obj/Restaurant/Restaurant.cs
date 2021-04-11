@@ -9,6 +9,7 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
+        public bool IsVerified;
         public float Longitude, Latitude;
         public uint RestaurantID, OwnerID;
 
@@ -32,9 +33,9 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<OpeningHours>().Select<OpeningHours>(RestaurantID);
         }
 
-        public async Task<User> GetOwner()
+        public async Task<RestaurantAdmin> GetOwner()
         {
-            return (await Binding.GetTable<User>().Select<User>(OwnerID))?[0];
+            return (await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(OwnerID))?[0];
         }
 
         public async Task<RestaurantOpinion[]> GetRestaurantOpinions()

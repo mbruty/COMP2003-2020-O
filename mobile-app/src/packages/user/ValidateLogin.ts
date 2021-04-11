@@ -31,7 +31,7 @@ const validate = async (values: SignIn, submit: () => void) => {
     return errors;
   }
   // Valid fields, let's try and log in
-  fetch(API_URL + "/login", {
+  fetch(API_URL + "/user/login", {
     method: "POST",
     body: JSON.stringify({
       email: values.email,

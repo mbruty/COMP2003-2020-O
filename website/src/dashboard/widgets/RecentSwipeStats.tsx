@@ -1,7 +1,6 @@
 import React from "react";
 import IWidgetProps from "../IWidgetProps";
 import { Bar } from "react-chartjs-2";
-import DraggableWidget from "../DraggableWidget";
 import Widget from "../Widget";
 
 const options = {
@@ -37,19 +36,10 @@ const data = {
   ],
 };
 
-const RecentSwipeStats: React.FC<IWidgetProps> = (props) => {
-  if (props.editing) {
-    return (
-      <DraggableWidget {...props} rows={1} columns={1}>
-        <Bar data={data} options={options} />
-      </DraggableWidget>
-    );
-  }
-  return (
-    <Widget {...props} rows={2} columns={1}>
-      <Bar data={data} options={options} />
-    </Widget>
-  );
-};
+const RecentSwipeStats: React.FC<IWidgetProps> = (props) => (
+  <Widget {...props} rows={2} columns={1}>
+    <Bar data={data} options={options} />
+  </Widget>
+);
 
 export default RecentSwipeStats;

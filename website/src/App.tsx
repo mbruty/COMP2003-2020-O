@@ -3,7 +3,13 @@ import Nav from "./nav/Nav";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import "./styles/index.scss";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import {
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  withRouter,
+} from "react-router-dom";
 import Home from "./Home";
 import LogIn from "./onboarding/LogIn";
 import DragNDrop from "./file-upload/DragNDrop";
@@ -11,6 +17,10 @@ import { Observer } from "./dashboard/WidgetObserver";
 import RestaurantBuilder from "./restaurant-builder/RestaurantBuilder";
 import MenuBuilder from "./menu-builder/MenuBilder";
 import ItemBuilder from "./item-builder/ItemBuilder";
+import { API_URL } from "./constants";
+import SelectItem from "./item-builder/SelectItem";
+import QrReader from "./restaurant-builder/QrReader";
+import VerifyRestaurant from "./restaurant-builder/VerifyRestaurant";
 
 const dummyData = [
   { id: 1, name: "The Bruty's Arms" },
@@ -55,57 +65,68 @@ function App() {
     name: string;
   }>(dummyData[0]);
 
+  const history = useHistory();
+
+  React.useEffect(() => {
+    console.log(history);
+
+    fetch(API_URL + "/admin/authcheck", {
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    }).then((response) => {
+      console.log(history.location.pathname);
+
+      if (response.status === 401) {
+        history.push("/log-in");
+      } else if (history.location.pathname === "/log-in") {
+        // Send them to the dash screen if they are already logged in and are trying to view /log-in
+        history.push("/");
+      }
+    });
+  }, [history]);
+
   return (
     <ThemeProvider theme={theme}>
       <div
         className="app"
         style={{ backgroundColor: theme.palette.background.default }}
       >
-        <BrowserRouter>
-          <Nav
-            colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
-            selectedRestaurant={selectedRestaurant}
-            setSelectedRestaurant={setSelectedRestaurant}
-            restaurants={dummyData}
-          />
-          <main>
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <Home observer={widgetObserver} />}
-              />
-              <Route
-                exact
-                path="/log-in"
-                render={() => <LogIn refresh={refresh} />}
-              />
-              <Route
-                exact
-                path="/upload"
-                render={() => <DragNDrop foodID={1} />}
-              />
-              <Route
-                exact
-                path="/restaurant-builder"
-                render={() => <RestaurantBuilder />}
-              />
-              <Route
-                exact
-                path="/menu-builder"
-                render={() => <MenuBuilder />}
-              />
-              <Route
-                exact
-                path="/item-builder"
-                render={() => <ItemBuilder />}
-              />
-            </Switch>
-          </main>
-        </BrowserRouter>
+        <Nav
+          colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
+          selectedRestaurant={selectedRestaurant}
+          setSelectedRestaurant={setSelectedRestaurant}
+          restaurants={dummyData}
+        />
+        <main>
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => <Home observer={widgetObserver} />}
+            />
+            <Route
+              exact
+              path="/log-in"
+              render={() => <LogIn refresh={refresh} />}
+            />
+            <Route
+              exact
+              path="/restaurant-builder"
+              render={() => <RestaurantBuilder />}
+            />
+            <Route exact path="/menu-builder" render={() => <MenuBuilder />} />
+            <Route exact path="/item-builder/:id" component={ItemBuilder} />
+            <Route exact path="/item-builder" component={SelectItem} />
+            <Route exact path="/verify" component={QrReader} />
+            <Route exact path="/verify/:code" component={VerifyRestaurant} />
+            <Redirect to="/" />
+          </Switch>
+        </main>
       </div>
     </ThemeProvider>
   );
 }
 
-export default App;
+// WithRouter causes the auth check to happen every page change
+export default withRouter(App);

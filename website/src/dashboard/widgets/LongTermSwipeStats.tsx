@@ -1,7 +1,6 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
 import IWidgetProps from "../IWidgetProps";
-import DraggableWidget from "../DraggableWidget";
 import Widget from "../Widget";
 
 const data = {
@@ -41,19 +40,10 @@ const options = {
   },
 };
 
-const LongTermSwipeStats: React.FC<IWidgetProps> = (props) => {
-  if (props.editing) {
-    return (
-      <DraggableWidget {...props} rows={2} columns={3}>
-        <Line data={data} options={options} />
-      </DraggableWidget>
-    );
-  }
-  return (
-    <Widget {...props} rows={2} columns={3}>
-      <Line data={data} options={options} />
-    </Widget>
-  );
-};
+const LongTermSwipeStats: React.FC<IWidgetProps> = (props) => (
+  <Widget {...props} rows={2} columns={3}>
+    <Line data={data} options={options} />
+  </Widget>
+);
 
 export default LongTermSwipeStats;
