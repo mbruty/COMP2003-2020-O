@@ -58,9 +58,26 @@ const RestaurantBuilder: React.FC<Props> = () => {
         <TextField style={formStyling} required id="form-name" label="Required" variant="outlined" helperText="Give your restaurant a neat description. Maximum 120 characters." />
       </div>
 
+      <div>
+        <h2 style={headingStyle}>Telephone</h2>
+        <TextField style={formStyling} id="form-name" label="Optional" variant="outlined" helperText="Make it easier for customers to reach you. Offer your phone number, without spaces." />
+      </div>
+
+      <div>
+        <h2 style={headingStyle}>Email</h2>
+        <TextField style={formStyling} id="form-name" label="Optional" variant="outlined" helperText="Does your business have an email address? Enter it here." />
+      </div>
+
+      <div>
+        <h2 style={headingStyle}>Website</h2>
+        <TextField style={formStyling} id="form-name" label="Optional" variant="outlined" helperText="Enter your restaurant's web page here." />
+      </div>
+
       <Button style={buttonStyleNext} variant="contained" color="primary">
         <ArrowForwardIosIcon />
       </Button>
+
+      <br></br>
       
 
     </div>
