@@ -11,7 +11,7 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 interface Props {
   setPage?: React.Dispatch<React.SetStateAction<Page>>;
-  onSave: () => void;
+  onSave: (latlon: LatLng, distance: number) => void;
   onBack?: () => void;
   isGroup: boolean;
 }
@@ -208,7 +208,7 @@ const SelectLocation: React.FC<Props> = (props) => {
                 const settings2 = JSON.parse(await AsyncStorage.getItem("location"));
                 console.log("Settings2:", settings2);
               }
-              props.onSave();
+              props.onSave(markerLocation, distance);
             }}>
               <View style={styles.btn}>
                 <Text style={[styles.text, { color: "white" }]}>Save Location</Text>
