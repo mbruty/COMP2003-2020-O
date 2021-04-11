@@ -11,13 +11,14 @@ import TextField from '@material-ui/core/TextField';
 // import { Desc } from './steps/Desc';
 
 const mainStyle: CSS.Properties = {
-  textAlign: 'center'
+  textAlign: 'center',
+  paddingBottom: '8%'
 };
 
 
 const buttonStyleNext: CSS.Properties = {
-  top: '60px',
-  width: '10vmax'
+  marginTop: '10%',
+  width: '40%'
 };
 
 
@@ -83,12 +84,9 @@ const RestaurantBuilder: React.FC<Props> = () => {
         <TextField style={formStyling} required id="form-name" label="Required" variant="outlined" helperText="Placeholder for development version only." />
       </div>
 
-      <Button style={buttonStyleNext} variant="contained" color="primary">
-        <CheckIcon />
+      <Button style={buttonStyleNext} variant="contained" startIcon={<CheckIcon />} color="primary">
+        Submit
       </Button>
-
-      <br></br>
-      
 
     </div>
   );
