@@ -59,20 +59,43 @@ def handle_create(data):
     uid = data["id"]
     latlon = data["latlon"]
     distance = data["distance"]
+    print(latlon)
+    print(distance)
     name = get_name(uid)[0]
     code = random.randint(100000, 999999)
     # Check for the odd ocassion that the code exists
     while r.exists(f"room-{code}-users"):
         code = random.randint(100000, 999999)
     # Send back the code
-    send(code)
+    emit("room_code", code)
     # Join the room
     join_room(code)
     # Create the list of users
     r.sadd(f"room-{code}-users", f"{uid}:{name}:false")
     r.set(f"room-{code}-location", latlon)
     r.set(f"room-{code}-distance", distance)
+    
+    # Create a key value for the owwner so we can re-route them to the room on connectg
+    r.set(f"room-owner-{uid}", code)
 
+    r.expire(f"room-{code}-users", EXPIRATION_TIME)
+    r.expire(f"room-{code}-location", EXPIRATION_TIME)
+    r.expire(f"room-{code}-distance", EXPIRATION_TIME)
+
+    users = get_all_users_in_room(code)
+    emit("user_join", users, room=code)
+
+
+@socketio.on('join_check')
+def handle_join_check(data):
+    uid = data["id"]
+    room_code = r.get(f"room-owner-{uid}")
+    # If they already have a room code
+    if room_code != None:
+        code = room_code.decode("UTF-8")
+        print(code)
+        emit("room_code", code)
+        on_join({"id": uid, "room": code})
 
 @socketio.on('kick')
 def on_kick(data):
@@ -90,12 +113,7 @@ def on_join(data):
     join_room(room)
     r.sadd(f"room-{room}-users", f"{uid}:{username}:false")
     r.expire(f"room-{room}-users", EXPIRATION_TIME)
-    redis_data = r.smembers(f"room-{room}-users")
-    users = []
-    for i in redis_data:
-        raw = i.decode("UTF-8")
-        split = raw.split(":")
-        users.append({"uid": split[0], "name": split[1], "ready": split[2]})
+    users = get_all_users_in_room(room)
     emit("user_join", users, room=room)
 
 
@@ -110,6 +128,21 @@ def on_leave(data):
 @socketio.on('disconnect')
 def on_disconnect():
     print("OOF")
+
+
+@socketio.on('connect')
+def on_connect():
+    emit("join_check")
+    print("connect")
+
+def get_all_users_in_room(id):
+    redis_data = r.smembers(f"room-{id}-users")
+    users = []
+    for i in redis_data:
+        raw = i.decode("UTF-8")
+        split = raw.split(":")
+        users.append({"uid": split[0], "name": split[1], "ready": split[2]})
+    return users
 
 
 api.add_resource(SwipeController, "/swipe")
