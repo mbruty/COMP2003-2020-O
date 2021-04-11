@@ -17,9 +17,9 @@ interface Props {}
 export const Desc: React.FC<Props> = () => {
   return (
     <div style={contentBoxStyle}>
-      <h1>Give It A Description</h1>
+      <h1>Add a Description</h1>
       <br></br>
-      <TextField style={formStyling} required id="form-name" label="Description" variant="filled" />
+      <TextField style={formStyling} required id="form-name" label="Restaurant Description" variant="filled" />
     </div>
   );
 };

@@ -21,16 +21,25 @@ const buttonStyleNext: CSS.Properties = {
 
 
 
-interface Props {}
+interface Props {
+
+  current: number
+
+};
 
 
-const RestaurantBuilder: React.FC<Props> = () => {
+// function displayStep(): React.CElement {
+//   return <Name />
+// } 
+
+
+const RestaurantBuilder: React.FC<Props> = ({current}) => {
   return (
     <div className="content" style={mainStyle}>
 
       <LinearProgress variant="determinate" value={75} />
 
-      <Desc />
+      {current == 0 ? <Name /> : <Desc />}
 
       <Button style={buttonStyleNext} variant="contained" color="primary">
         <ArrowForwardIosIcon />
