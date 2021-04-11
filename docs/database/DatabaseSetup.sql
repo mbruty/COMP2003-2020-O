@@ -52,6 +52,7 @@ CREATE TABLE `User` (
     DateOfBirth DATE NOT NULL,
     IsDeleted BIT NOT NULL DEFAULT 0,
     IsVerified BIT NOT NULL DEFAULT 0,
+    pushToken CHAR(22),
 
     PRIMARY KEY (UserID),
     CONSTRAINT UNQ_UserEmail UNIQUE (Email),
