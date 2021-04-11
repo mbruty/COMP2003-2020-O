@@ -3,7 +3,7 @@ import CSS from 'csstype';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import CheckIcon from '@material-ui/icons/Check';
 import TextField from '@material-ui/core/TextField';
 
 
@@ -73,8 +73,18 @@ const RestaurantBuilder: React.FC<Props> = () => {
         <TextField style={formStyling} id="form-name" label="Optional" variant="outlined" helperText="Enter your restaurant's web page here." />
       </div>
 
+      <div>
+        <h2 style={headingStyle}>Latitude</h2>
+        <TextField style={formStyling} required id="form-name" label="Required" variant="outlined" helperText="Placeholder for development version only." />
+      </div>
+
+      <div>
+        <h2 style={headingStyle}>Longitude</h2>
+        <TextField style={formStyling} required id="form-name" label="Required" variant="outlined" helperText="Placeholder for development version only." />
+      </div>
+
       <Button style={buttonStyleNext} variant="contained" color="primary">
-        <ArrowForwardIosIcon />
+        <CheckIcon />
       </Button>
 
       <br></br>
