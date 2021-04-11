@@ -17,9 +17,11 @@ import { Page } from "./GroupPageRouter";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
+  onJoin: (code: string) => void;
 }
 
 const GroupPage: React.FC<Props> = (props) => {
+  const [code, setCode] = React.useState("");
   return (
     <View>
       <View style={styles.box}>
@@ -33,6 +35,9 @@ const GroupPage: React.FC<Props> = (props) => {
           <Text style={styles.title}>Enter a Group Code:</Text>
         </View>
         <AwesomeTextInput
+          value={code}
+          onChangeText={(text) => setCode(text)}
+          keyboardType="number-pad"
           customStyles={{
             title: CONSTANT_STYLES.TXT_DEFAULT,
             container: { marginTop: 25 },
@@ -42,8 +47,7 @@ const GroupPage: React.FC<Props> = (props) => {
         <View style={styles.btnContainer}>
           <TouchableOpacity
             onPress={() => {
-              console.log("Join Group Clicked");
-              props.setPage(Page.waiting);
+              props.onJoin(code)
             }}
           >
             <View style={[styles.btn]}>
