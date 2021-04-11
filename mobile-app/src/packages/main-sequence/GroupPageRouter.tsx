@@ -26,22 +26,20 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   const [code, setCode] = React.useState<number>(0);
   const [page, setPage] = React.useState<Page>(Page.join_create);
   const [isHost, setIsHost] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string>("");
   // Subscribe on mount
   React.useEffect(() => {
     observer.subscribe( async (newMembers, newCode) => {
       try {
-
         const me = await includeAuth();
         // Select the user in the array that is the owner
-        const owner = newMembers.filter((user) => user.owner)[0];
+        const owner = newMembers?.filter((user) => user.owner)[0];
         // If the owner's userid and this user's id match, they are the owner!
-        const isOwner = me.userid === owner.uid;
+        const isOwner = owner && me.userid === owner.uid;
         if(isHost !== isOwner) {
           setIsHost(isOwner);
         }
-        if(page !== Page.swipe) {
-          setPage(Page.waiting)
-        }
+
         setMembers(newMembers)
         if(newCode !== code) {
           // Code has changed!
@@ -52,6 +50,12 @@ const GroupPageRouter: React.FC<Props> = (props) => {
         console.log(e);
       }
     });
+
+    observer.onError = () => {
+      setError("That group doesn't exist, please check the code and try again");
+      setPage(Page.join_create);
+      setTimeout(() => setError(""), 5000);
+    }
 
   }, []);
 
@@ -65,7 +69,7 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   }, [props.scrollEnabled]);
   switch (page) {
     case Page.join_create:
-      return <GroupPage onJoin={(code) => observer.join(code)} setPage={setPage} />;
+      return <GroupPage error={error} onJoin={(code) => observer.join(code)} setPage={setPage} />;
     case Page.waiting:
       return (
         <GroupWaitingRoom

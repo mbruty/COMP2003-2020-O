@@ -16,15 +16,23 @@ export class GroupObserver {
   private observers: SocketObserver[] = [];
   private members: SocketUser[];
   private code: number = 0;
+  public onError : () => void | undefined;
   constructor() {
     console.log("New observer");
 
-    this.socket = io("http://785e3988ed41.ngrok.io/", {
+    this.socket = io("http://d9c5222fe2c8.ngrok.io", {
       transports: ["websocket"],
       jsonp: false,
     });
 
-    this.socket.on("message", console.log)
+    this.socket.on("message", (message) => {
+      console.log(message);
+      if(message === "Room does not exist") {
+        this.code = 0;
+        this.onError();
+        this.onChange();
+      }
+    })
     // Initalize listeners
     this.socket.on("connect", () => {
       

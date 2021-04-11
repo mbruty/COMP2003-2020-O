@@ -1,23 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Text,
   View,
-  Button,
-  Modal,
-  Alert,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
 } from "react-native";
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { reset } from "../includeAuth";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Page } from "./GroupPageRouter";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
   onJoin: (code: string) => void;
+  error: string;
 }
 
 const GroupPage: React.FC<Props> = (props) => {
@@ -44,6 +39,7 @@ const GroupPage: React.FC<Props> = (props) => {
           }}
           label="Group Code"
         />
+        {props.error !== "" && <Text style={{paddingTop: 5, marginLeft: 5, paddingRight: 10, color: "#8c1c1c"}}>{props.error}</Text>}
         <View style={styles.btnContainer}>
           <TouchableOpacity
             onPress={() => {
