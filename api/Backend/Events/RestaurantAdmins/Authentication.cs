@@ -22,7 +22,18 @@ namespace api.Backend.Events.RestaurantAdmins
 
         #region Methods
 
-        [WebEvent(typeof(string),"/admin/authcheck", "POST", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(string), "/admin/logout", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task LogoutAdmin(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            RAdminSession[] admins = await Binding.GetTable<RAdminSession>().Select<RAdminSession>(perm.admin_id);
+
+            await admins[0].Delete();
+
+            response.StatusCode = 200;
+            response.AddToData("message", "You are now logged out");
+        }
+
+            [WebEvent(typeof(string),"/admin/authcheck", "POST", false, SecurityGroup.Administrator)]
         public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
