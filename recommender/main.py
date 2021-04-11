@@ -111,7 +111,11 @@ def on_join(data):
     username = get_name(uid)[0]
     room = data['room']
     join_room(room)
-    r.sadd(f"room-{room}-users", f"{uid}:{username}:false")
+    owns_room = False
+    owned_room = r.get(f"room-owner-{uid}").decode("UTF-8")
+    if owned_room != None and owned_room == room:
+        owns_room = True
+    r.sadd(f"room-{room}-users", f"{uid}:{username}:false:{owns_room}")
     r.expire(f"room-{room}-users", EXPIRATION_TIME)
     users = get_all_users_in_room(room)
     emit("user_join", users, room=room)
