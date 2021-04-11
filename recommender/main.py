@@ -71,7 +71,7 @@ def handle_create(data):
     # Join the room
     join_room(code)
     # Create the list of users
-    r.sadd(f"room-{code}-users", f"{uid}:{name}:false")
+    r.sadd(f"room-{code}-users", f"{uid}:{name}:false:true")
     r.set(f"room-{code}-location", latlon)
     r.set(f"room-{code}-distance", distance)
     
@@ -110,11 +110,18 @@ def on_join(data):
     uid = data["id"]
     username = get_name(uid)[0]
     room = data['room']
+    if not r.exists(f"room-{room}-users"):
+        # The room they're trying to join isn't valid
+        send("Room does not exist")
+        return
     join_room(room)
-    owns_room = False
-    owned_room = r.get(f"room-owner-{uid}").decode("UTF-8")
-    if owned_room != None and owned_room == room:
-        owns_room = True
+    owns_room = "false"
+    owned_room = r.get(f"room-owner-{uid}")
+    if owned_room != None:
+        print(owned_room.decode("UTF-8") + " : " + room)
+    if owned_room != None and owned_room.decode("UTF-8") == room:
+        print("owns room")
+        owns_room = "true"
     r.sadd(f"room-{room}-users", f"{uid}:{username}:false:{owns_room}")
     r.expire(f"room-{room}-users", EXPIRATION_TIME)
     users = get_all_users_in_room(room)
@@ -145,7 +152,7 @@ def get_all_users_in_room(id):
     for i in redis_data:
         raw = i.decode("UTF-8")
         split = raw.split(":")
-        users.append({"uid": split[0], "name": split[1], "ready": split[2]})
+        users.append({"uid": split[0], "name": split[1], "ready": split[2], "owner": split[3]})
     return users
 
 

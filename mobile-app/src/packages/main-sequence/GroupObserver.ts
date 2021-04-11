@@ -8,6 +8,7 @@ export interface SocketUser {
   name: string;
   uid: string;
   ready: boolean;
+  owner: boolean;
 }
 
 export class GroupObserver {
@@ -34,11 +35,10 @@ export class GroupObserver {
     });
 
     this.socket.on("user_join", (data) => {
-      console.log(data);
-      
       // Convert each element's ready string to a boolean
       this.members = data.map((element) => {
         element.ready = element.ready === "true";
+        element.owner = element.owner === "true";
         return element;
       });
       this.onChange();

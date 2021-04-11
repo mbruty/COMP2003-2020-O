@@ -1,5 +1,6 @@
 import React from "react";
 import { LatLng } from "react-native-maps";
+import { includeAuth } from "../includeAuth";
 import { GroupObserver, SocketUser } from "./GroupObserver";
 import GroupPage from "./GroupPage";
 import GroupWaitingRoom from "./GroupWaitingRoom";
@@ -25,19 +26,30 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   const [code, setCode] = React.useState<number>(0);
   const [page, setPage] = React.useState<Page>(Page.join_create);
   const [isHost, setIsHost] = React.useState<boolean>(false);
-
   // Subscribe on mount
   React.useEffect(() => {
-    observer.subscribe((newMembers, newCode) => {
-      
-      if(page !== Page.swipe) {
-        setPage(Page.waiting)
-      }
-      setMembers(newMembers)
-      if(newCode !== code) {
-        // Code has changed!
-        setCode(newCode);
-        setPage(Page.waiting)
+    observer.subscribe( async (newMembers, newCode) => {
+      try {
+
+        const me = await includeAuth();
+        // Select the user in the array that is the owner
+        const owner = newMembers.filter((user) => user.owner)[0];
+        // If the owner's userid and this user's id match, they are the owner!
+        const isOwner = me.userid === owner.uid;
+        if(isHost !== isOwner) {
+          setIsHost(isOwner);
+        }
+        if(page !== Page.swipe) {
+          setPage(Page.waiting)
+        }
+        setMembers(newMembers)
+        if(newCode !== code) {
+          // Code has changed!
+          setCode(newCode);
+          setPage(Page.waiting)
+        }
+      } catch (e) {
+        console.log(e);
       }
     });
 
