@@ -88,7 +88,7 @@ function App() {
               <Route
                 exact
                 path="/restaurant-builder"
-                render={() => <RestaurantBuilder current={1} />}
+                render={() => <RestaurantBuilder />}
               />
               <Route
                 exact
