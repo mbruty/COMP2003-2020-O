@@ -148,6 +148,11 @@ CREATE TABLE `Restaurant` (
     Email VARCHAR(60),
     `Site` VARCHAR(60),
     IsVerified BIT NOT NULL DEFAULT 0,
+    Street1 VARCHAR(45),
+    Street2 VARCHAR(45),
+    Town VARCHAR(30),
+    County VARCHAR(30),
+    Postcode VARCHAR(8),
 
     PRIMARY KEY (RestaurantID),
 
