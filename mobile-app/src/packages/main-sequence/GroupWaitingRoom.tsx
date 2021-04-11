@@ -9,7 +9,7 @@ import { includeAuth } from "../includeAuth";
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
   isHost: boolean;
-  roomCode: string;
+  roomCode: number;
   members: SocketUser[] | undefined;
 }
 
@@ -21,6 +21,8 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
       setMe(userid);
     })();
   }, []);
+
+  
 
   return (
     <View style={{ display: "flex", height: "100%" }}>
