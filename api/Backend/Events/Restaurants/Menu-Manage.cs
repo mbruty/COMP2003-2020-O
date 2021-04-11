@@ -63,7 +63,7 @@ namespace api.Backend.Events.Restaurants
         {
             Data.Obj.MenuTimes _time = new Data.Obj.MenuTimes() { DayRef = body.DayRef, MenuRestID = body.MenuRestID, StartServing = body.StartServing, TimeServing = body.TimeServing };
 
-#warning needs updating
+#warning needs updating once reef makes db changes
             if (!await _time.Insert(false)) 
             {
                 response.StatusCode = 401;
@@ -71,7 +71,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            response.AddToData("message", "Created time");
+            response.AddToData("message", "Created menu time");
             response.AddObjectToData("time", _time);
             response.StatusCode = 200;
         }
