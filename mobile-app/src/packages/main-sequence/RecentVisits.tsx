@@ -1,5 +1,6 @@
 import React from "react";
 import AnimatedScroll, { CardProps } from "../AnimatedCard/AnimatedScroll";
+import RecentVisitDetails from "./RecentVisitDetails";
 
 export interface Details {
   index: number;
@@ -23,8 +24,10 @@ const handleSwipe = (index: number) => {
 
 const RecentVisits: React.FC<Props> = ({restaurants}) => {
   // Select the 10 most recent cards
+  const [showingVisit, setShowingVisit] = React.useState<boolean>(true);
   // Possibly move this over to the api??
   const cards = restaurants.slice(0, restaurants.length > 10 ? 10 : restaurants.length);
+  if (showingVisit){return <RecentVisitDetails restaurantID={0}/>}
   return <AnimatedScroll handleSwipe={handleSwipe} cards={cards} />;
 };
 
