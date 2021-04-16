@@ -33,7 +33,22 @@ const TagBuilder: React.FC<Props> = () => {
               />
               <button>Submit Your Tag</button>
               <span><hr/></span>
+
+              <h2>Manage your Tags</h2>
+              <textarea>
+              V User tags will be shown here V
+            </textarea>
+              <button>Edit Tag</button>
+              <button>Delete Tag</button>
+
+              <h4>Arrange Tags</h4>
+              <button>Most Popular</button>
+              <button>Least Popular</button>
+              <button>Name</button>
+              <button>Date Added</button>
             </div>
+
+
           <div>
             <h2>Tags of the Week</h2>
             <h3>See the most popular tags promoted by the community</h3>
