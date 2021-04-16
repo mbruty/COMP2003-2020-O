@@ -2,7 +2,6 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 interface Props {}
 
@@ -52,15 +51,22 @@ const TagBuilder: React.FC<Props> = () => {
           <div>
             <h2>Tags of the Week</h2>
             <h3>See the most popular tags promoted by the community</h3>
-            <textarea>
-              V Tags of the week will go here V
-            </textarea>
             <FormGroup>
               <h4>Filter by:</h4>
               <button>Most Popular</button>
               <button>Most Recent</button>
               <button>Name</button>
             </FormGroup>
+            <textarea>
+              V Tags of the week will go here V
+            </textarea>
+
+            <h2>Congratulations to our newest verified tags</h2>
+            <h3>You voted for them, and we added them</h3>
+            <textarea>
+              V Most Recent Verified Tags will go here V
+            </textarea>
+
             <span><hr/></span>
           </div>
 
