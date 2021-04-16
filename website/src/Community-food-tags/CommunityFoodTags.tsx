@@ -38,8 +38,8 @@ const TagBuilder: React.FC<Props> = () => {
               <textarea>
               V User tags will be shown here V
             </textarea>
-              <button>Edit Tag</button>
-              <button>Delete Tag</button>
+              <button>Edit a Tag</button>
+              <button>Delete a Tag</button>
 
               <h4>Arrange Tags</h4>
               <button>Most Popular</button>
@@ -62,6 +62,20 @@ const TagBuilder: React.FC<Props> = () => {
               <button>Name</button>
             </FormGroup>
             <span><hr/></span>
+          </div>
+
+          <div>
+            <h2>Newly added Tags</h2>
+            <h3>See the most recent tags submitted by the community</h3>
+            <textarea>
+              V All tags recently created will go here that aren't featured on the TotW V
+            </textarea>
+            <FormGroup>
+              <h4>Filter by:</h4>
+              <button>Most Popular</button>
+              <button>Least Popular</button>
+              <button>Most Recent</button>
+            </FormGroup>
           </div>
             </div>
 
