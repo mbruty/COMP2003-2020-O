@@ -40,6 +40,13 @@ const TagBuilder: React.FC<Props> = () => {
             <textarea>
               V Tags of the week will go here V
             </textarea>
+            <FormGroup>
+              <h4>Filter by:</h4>
+              <button>Most Popular</button>
+              <button>Most Recent</button>
+              <button>Name</button>
+            </FormGroup>
+            <span><hr/></span>
           </div>
             </div>
 
