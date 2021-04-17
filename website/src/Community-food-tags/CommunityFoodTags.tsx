@@ -18,7 +18,7 @@ const TagBuilder: React.FC<Props> = () => {
             <span><hr/></span>
 
 
-            <div>
+            <div style={{ position: "absolute" , top:20, right:90}}>
               <h2>Submit your own Tag</h2>
               <h3>Create a tag that your fellow restaurant owners can vote on</h3>
               <FormGroup>
