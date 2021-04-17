@@ -58,7 +58,7 @@ const TagBuilder: React.FC<Props> = () => {
             </div>
 
 
-          <div>
+          <div style={{ position: "absolute" , top:20}}>
             <h2>Tags of the Week</h2>
             <h3>See the most popular tags promoted by the community</h3>
             <FormGroup>
