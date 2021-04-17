@@ -27,12 +27,12 @@ const TagBuilder: React.FC<Props> = () => {
                     label="Tag Name"
                     margin="normal"
                 />
-                <label>I accept that this tag will be visible and available to be voted on</label>
+                <h3>I accept that this tag will be visible and available to be voted on</h3>
                 <Checkbox
                     checked={false}
                     onChange={handleChange}
                     inputProps={{ 'aria-label': 'primary checkbox' }}
-                />
+                /><br/><br/>
                 <button>Submit Your Tag</button>
               </FormGroup>
 
@@ -43,16 +43,17 @@ const TagBuilder: React.FC<Props> = () => {
               <FormGroup>
                 <textarea>
                 V User tags will be shown here V
-                </textarea>
+                </textarea><br/><br/>
                 <button>Edit a Tag</button><br/><br/>
                 <button>Delete a Tag</button>
 
                 <h4>Arrange Tags</h4>
-                <button>Most Popular</button><br/><br/>
-                <button>Least Popular</button><br/><br/>
-                <button>Name</button><br/><br/>
+                <button>Most Popular</button>
+                <button>Least Popular</button>
+                <button>Name</button>
                 <button>Date Added</button>
               </FormGroup>
+              <span><hr/></span>
 
             </div>
 
@@ -63,10 +64,11 @@ const TagBuilder: React.FC<Props> = () => {
             <FormGroup>
               <FormGroup>
                 <h4>Filter by:</h4>
-                <button>Most Popular</button><br/><br/>
-                <button>Most Recent</button><br/><br/>
-                <button>Name</button><br/><br/>
+                <button>Most Popular</button>
+                <button>Most Recent</button>
+                <button>Name</button>
               </FormGroup>
+              <br/><br/>
               <textarea>
               V Tags of the week will go here V
               </textarea>
@@ -90,8 +92,8 @@ const TagBuilder: React.FC<Props> = () => {
             </textarea>
             <FormGroup>
               <h4>Filter by:</h4>
-              <button>Most Popular</button><br/><br/>
-              <button>Least Popular</button><br/><br/>
+              <button>Most Popular</button>
+              <button>Least Popular</button>
               <button>Most Recent</button>
             </FormGroup>
           </div>
