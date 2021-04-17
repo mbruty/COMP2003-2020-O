@@ -16,35 +16,44 @@ const TagBuilder: React.FC<Props> = () => {
             <h1>Welcome to the Track and Taste Community Food Tags Page</h1>
             <h3>Can't find the right tag for you? Why not recommend it to us</h3>
             <span><hr/></span>
+
+
             <div>
               <h2>Submit your own Tag</h2>
               <h3>Create a tag that your fellow restaurant owners can vote on</h3>
-              <TextField
-                  id="tag-name"
-                  label="Tag Name"
-                  margin="normal"
-              />
-              <label>I accept that this tag will be visible and available to be voted on</label>
-              <Checkbox
-                  checked={false}
-                  onChange={handleChange}
-                  inputProps={{ 'aria-label': 'primary checkbox' }}
-              />
-              <button>Submit Your Tag</button>
+              <FormGroup>
+                <TextField
+                    id="tag-name"
+                    label="Tag Name"
+                    margin="normal"
+                />
+                <label>I accept that this tag will be visible and available to be voted on</label>
+                <Checkbox
+                    checked={false}
+                    onChange={handleChange}
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+                <button>Submit Your Tag</button>
+              </FormGroup>
+
+
               <span><hr/></span>
 
               <h2>Manage your Tags</h2>
-              <textarea>
-              V User tags will be shown here V
-            </textarea>
-              <button>Edit a Tag</button>
-              <button>Delete a Tag</button>
+              <FormGroup>
+                <textarea>
+                V User tags will be shown here V
+                </textarea>
+                <button>Edit a Tag</button><br/><br/>
+                <button>Delete a Tag</button>
 
-              <h4>Arrange Tags</h4>
-              <button>Most Popular</button>
-              <button>Least Popular</button>
-              <button>Name</button>
-              <button>Date Added</button>
+                <h4>Arrange Tags</h4>
+                <button>Most Popular</button><br/><br/>
+                <button>Least Popular</button><br/><br/>
+                <button>Name</button><br/><br/>
+                <button>Date Added</button>
+              </FormGroup>
+
             </div>
 
 
@@ -52,20 +61,23 @@ const TagBuilder: React.FC<Props> = () => {
             <h2>Tags of the Week</h2>
             <h3>See the most popular tags promoted by the community</h3>
             <FormGroup>
-              <h4>Filter by:</h4>
-              <button>Most Popular</button>
-              <button>Most Recent</button>
-              <button>Name</button>
-            </FormGroup>
-            <textarea>
+              <FormGroup>
+                <h4>Filter by:</h4>
+                <button>Most Popular</button><br/><br/>
+                <button>Most Recent</button><br/><br/>
+                <button>Name</button><br/><br/>
+              </FormGroup>
+              <textarea>
               V Tags of the week will go here V
-            </textarea>
+              </textarea>
 
-            <h2>Congratulations to our newest verified tags</h2>
-            <h3>You voted for them, and we added them</h3>
-            <textarea>
+              <h2>Congratulations to our newest verified tags</h2>
+              <h3>You voted for them, and we added them</h3>
+              <textarea>
               V Most Recent Verified Tags will go here V
-            </textarea>
+              </textarea>
+            </FormGroup>
+
 
             <span><hr/></span>
           </div>
@@ -78,8 +90,8 @@ const TagBuilder: React.FC<Props> = () => {
             </textarea>
             <FormGroup>
               <h4>Filter by:</h4>
-              <button>Most Popular</button>
-              <button>Least Popular</button>
+              <button>Most Popular</button><br/><br/>
+              <button>Least Popular</button><br/><br/>
               <button>Most Recent</button>
             </FormGroup>
           </div>
