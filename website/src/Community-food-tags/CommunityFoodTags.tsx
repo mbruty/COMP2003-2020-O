@@ -18,7 +18,7 @@ const TagBuilder: React.FC<Props> = () => {
             <span><hr/></span>
 
 
-            <div style={{ position: "absolute" , top:20, right:90}}>
+            <div style={{ position: "absolute" , top:20, right:50}}>
               <h2>Submit your own Tag</h2>
               <h3>Create a tag that your fellow restaurant owners can vote on</h3>
               <FormGroup>
@@ -58,7 +58,7 @@ const TagBuilder: React.FC<Props> = () => {
             </div>
 
 
-          <div style={{ position: "absolute" , top:20}}>
+          <div style={{ position: "absolute" , top:20, left:50}}>
             <h2>Tags of the Week</h2>
             <h3>See the most popular tags promoted by the community</h3>
             <FormGroup>
@@ -84,7 +84,7 @@ const TagBuilder: React.FC<Props> = () => {
             <span><hr/></span>
           </div>
 
-          <div>
+          <div style={{ position: "absolute", bottom:20, left:50}}>
             <h2>Newly added Tags</h2>
             <h3>See the most recent tags submitted by the community</h3>
             <textarea>
