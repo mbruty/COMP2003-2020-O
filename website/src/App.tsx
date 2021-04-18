@@ -21,6 +21,7 @@ import { API_URL } from "./constants";
 import SelectItem from "./item-builder/SelectItem";
 import QrReader from "./restaurant-builder/QrReader";
 import VerifyRestaurant from "./restaurant-builder/VerifyRestaurant";
+import TagBuilder from "./Community-food-tags/CommunityFoodTags";
 
 const dummyData = [
   { id: 1, name: "The Bruty's Arms" },
@@ -120,6 +121,7 @@ function App() {
             <Route exact path="/item-builder" component={SelectItem} />
             <Route exact path="/verify" component={QrReader} />
             <Route exact path="/verify/:code" component={VerifyRestaurant} />
+            <Route exact path="/tags" component={TagBuilder} />
             <Redirect to="/" />
           </Switch>
         </main>
