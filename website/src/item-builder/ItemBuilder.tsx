@@ -12,6 +12,7 @@ import {
   Paper,
 } from "@material-ui/core";
 import { IFoodItem } from "../interfaces/IFoodItem";
+// @ts-ignore
 import { MeiliSearch } from "meilisearch";
 import IFoodTag from "../interfaces/IFoodTag";
 import DragNDrop from "../file-upload/DragNDrop";

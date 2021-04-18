@@ -6,7 +6,9 @@ import * as serviceWorker from "./serviceWorker";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./apollo";
 import { BrowserRouter } from "react-router-dom";
+// @ts-ignore
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+// @ts-ignore
 import MomentUtils from "@date-io/moment";
 
 ReactDOM.render(
