@@ -5,6 +5,7 @@ using api.Backend.Security;
 using System.Linq;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace api.Backend.Events.Restaurants
 {
@@ -38,7 +39,7 @@ namespace api.Backend.Events.Restaurants
 
         #region Methods
 
-        [WebEvent(typeof(RestaurantBody), "/restaurants", "GET", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(RestaurantBody), "/restaurant", "GET", false, SecurityGroup.Administrator)]
         public static async Task GetRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<Data.Obj.Restaurant>();
@@ -65,7 +66,44 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody), "/restaurants/me", "GET", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(RestaurantBody), "/restaurant/menus", "GET", false, SecurityGroup.Administrator)]
+        public static async Task GetRestaurantMenus(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Table table = Binding.GetTable<Data.Obj.Restaurant>();
+            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID);
+
+            if (restaurants.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "That Restaurant Id does not exist");
+                return;
+            }
+
+            Data.Obj.Restaurant restaurant = restaurants[0];
+
+            if (restaurant.OwnerID != perm.admin_id)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "This is not your restaurant");
+                return;
+            }
+
+            Menu[] _menus = await restaurant.GetMenus();
+
+            var tasks = new List<Task>();
+            foreach (Menu menu in _menus)
+            {
+                tasks.Add(menu.GetMenuTimesAndStore());
+            }
+
+            Task t = Task.WhenAll(tasks);
+
+            response.AddToData("message", "Fetched restaurant");
+            response.AddObjectToData("menus", _menus);
+            response.StatusCode = 200;
+        }
+
+        [WebEvent(typeof(RestaurantBody), "/restaurant/me", "GET", false, SecurityGroup.Administrator)]
         public static async Task GetAllMyRestaurants(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<Data.Obj.Restaurant>();

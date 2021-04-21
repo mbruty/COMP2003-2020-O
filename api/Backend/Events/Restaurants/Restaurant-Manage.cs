@@ -42,7 +42,7 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody),"/restaurants/create", "POST", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(RestaurantBody),"/restaurant/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             if (!body.IsValid())
@@ -66,7 +66,7 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody), "/restaurants/modify", "PUT", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(RestaurantBody), "/restaurant/modify", "PUT", false, SecurityGroup.Administrator)]
         public static async Task ModifyRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<Data.Obj.Restaurant>();

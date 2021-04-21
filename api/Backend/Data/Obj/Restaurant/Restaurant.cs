@@ -24,7 +24,7 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Menu>().SelectCustom<Menu>(
                 tables: "LinkMenuRestaurant,Menu",
                 where: "LinkMenuRestaurant.MenuID = Menu.MenuID AND LinkMenuRestaurant.RestaurantID = @RestPar",
-                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ResetPar", RestaurantID) }
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("RestPar", RestaurantID) }
                 );
         }
 
@@ -48,7 +48,7 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Review>().SelectCustom<Review>(
                 tables: "Review,Visit",
                 where: "Review.VisitRef = Visit.VisitRef AND Visit.RestaurantID = @RestPar",
-                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ResetPar", RestaurantID) }
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("RestPar", RestaurantID) }
                 );
         }
 
