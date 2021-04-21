@@ -27,7 +27,12 @@ namespace api.Backend.Data.Obj
             return (await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>(MenuRestID))?[0];
         }
 
-        public async Task<bool> IsServing(DateTime when)
+        public bool IsServing(DateTime when)
+        {
+            return when.DayOfWeek.ToString().StartsWith(DayRef,StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        public async Task<bool> IsServingAsync(DateTime when)
         {
             Days[] _days = await Binding.GetTable<Days>().Select<Days>("DayRef", DayRef);
             return _days.Any(x => x.DayName == when.DayOfWeek.ToString());

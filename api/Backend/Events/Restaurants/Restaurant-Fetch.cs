@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
 
 namespace api.Backend.Events.Restaurants
 {
@@ -27,6 +28,12 @@ namespace api.Backend.Events.Restaurants
         }
 
         #endregion Methods
+    }
+
+    public class RestaurantReqWithTimes
+    {
+        public uint RestaurantID;
+        public DateTime? When;
     }
 
     public static class Restaurant_Fetch
@@ -66,8 +73,8 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody), "/restaurant/menus", "GET", false, SecurityGroup.Administrator)]
-        public static async Task GetRestaurantMenus(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(RestaurantReqWithTimes), "/restaurant/menus", "GET", false, SecurityGroup.Administrator)]
+        public static async Task GetRestaurantMenus(RestaurantReqWithTimes body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<Data.Obj.Restaurant>();
             Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID);
@@ -97,6 +104,27 @@ namespace api.Backend.Events.Restaurants
             }
 
             Task t = Task.WhenAll(tasks);
+
+            if (body.When.HasValue)
+            {
+                List<Menu> _menuList = new List<Menu>();
+                foreach (Menu menu in _menus)
+                {
+                    if (menu.MenuTimes!=null && menu.MenuTimes.Length>0)
+                    {
+                        foreach (MenuTimes times in menu.MenuTimes)
+                        {
+                            if (times.IsServing(body.When.Value))
+                            {
+                                _menuList.Add(menu);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                _menus = _menuList.ToArray();
+            }
 
             response.AddToData("message", "Fetched restaurant");
             response.AddObjectToData("menus", _menus);
