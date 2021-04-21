@@ -19,7 +19,7 @@ const FoodGroup: React.FC<{ group: FG; observer: Observer }> = ({
 }) => {
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: "food-item",
-    drop: (e: any) => observer.moveItemIntoGroup(e.id, group.id),
+    drop: (e: any) => observer.moveItemIntoGroup(e.FoodID, group.id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
