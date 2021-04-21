@@ -28,7 +28,9 @@ export class MenuObserver {
       if (menu.MenuID !== menuId) return menu;
       // Will always be true, just satisfying the ts compiler
       if (menu.FoodItems) {
-        menu.FoodItems = menu.FoodItems.filter((item) => item.FoodID !== itemId);
+        menu.FoodItems = menu.FoodItems.filter(
+          (item) => item.FoodID !== itemId
+        );
       }
       return menu;
     });
@@ -39,7 +41,9 @@ export class MenuObserver {
   public moveItemIntoGroup(item: IFoodItem, menuId: number) {
     this.menus = this.menus.map((menu) => {
       if (menu.MenuID !== menuId) return menu;
+
       if (menu.FoodItems) {
+
         menu.FoodItems = [...menu.FoodItems, item];
       } else {
         menu.FoodItems = [item];
@@ -52,12 +56,12 @@ export class MenuObserver {
         // If this the array that has been FoodItems into
         // Filter the items so they're only unique
         const res: IFoodItem[] = [];
-        menu.FoodItems?.forEach((FoodItems) => {
+        menu.FoodItems?.forEach((item) => {
           const i = res.findIndex((x) => x.FoodID === item.FoodID);
-          console.log(i);
-
-          if (i <= -1) res.push(item);
+          if (i === -1) res.push(item);
         });
+        console.log(res);
+        
         menu.FoodItems = res;
       }
       return menu;

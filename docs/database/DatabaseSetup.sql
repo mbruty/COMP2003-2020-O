@@ -253,7 +253,7 @@ CREATE TABLE `LinkMenuRestaurant` (
 );
 
 CREATE TABLE `MenuTimes` (
-    MenuTimeID INT UNSIGNED NOT NULL,
+    MenuTimeID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     MenuRestID INT UNSIGNED NOT NULL,
     DayRef VARCHAR(5) NOT NULL,
     StartServing TIME NOT NULL,
