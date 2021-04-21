@@ -16,7 +16,7 @@ const SelectItem: React.FC = (props) => {
   const [items, setItems] = React.useState<Array<{ name: string; id: number }>>(
     [
       {
-        name: "Borger",
+        name: "BLT Burger",
         id: 3,
       },
       {

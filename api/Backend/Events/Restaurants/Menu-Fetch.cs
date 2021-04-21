@@ -134,7 +134,8 @@ namespace api.Backend.Events.Restaurants
             foreach (Menu menu in menus)
             {
                 tasks.Add(menu.GetFoodItemsAndStore());
-                tasks.Add(menu.GetMenuTimesAndStore());
+                // We're getting an error here and I can't fix
+                //tasks.Add(menu.GetMenuTimesAndStore());
             }
 
             Task t = Task.WhenAll(tasks);
@@ -145,7 +146,7 @@ namespace api.Backend.Events.Restaurants
                 response.AddObjectToData("menus", menus);
                 response.StatusCode = 200;
             }
-            catch
+            catch (System.Exception e)
             {
                 response.StatusCode = 500;
             }

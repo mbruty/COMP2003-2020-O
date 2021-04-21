@@ -40,12 +40,12 @@ function App() {
             paper: prefersDarkMode ? "#303030" : "#FFF",
             default: prefersDarkMode ? "#212121" : "#FFF",
           },
-          primary: {
+          secondary: {
             light: "#ff776c",
             main: prefersDarkMode ? "#FD4040" : "#ff776c",
             dark: prefersDarkMode ? "#c20018" : "#FD4040",
           },
-          secondary: {
+          primary: {
             main: "#4caf50",
           },
           type: prefersDarkMode ? "dark" : "light",
