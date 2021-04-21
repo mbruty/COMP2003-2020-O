@@ -7,7 +7,7 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { CONSTANT_COLOURS, CONSTANT_STYLES } from "../../constants";
+import { CONSTANT_COLOURS, CONSTANT_STYLES, IMG_URL } from "../../constants";
 import { AwsomeCardItem } from "./AwsomeCardItem";
 
 export interface Item {
@@ -16,8 +16,7 @@ export interface Item {
 }
 
 interface Props {
-  items: Array<Item>;
-  imageURI: string;
+  foodID: number;
   title: string;
 }
 
@@ -26,19 +25,16 @@ const { width, height } = Dimensions.get("screen");
 export const CARD_WIDTH = Math.floor(width * 0.95);
 export const CARD_HEIGHT = 480;
 
-const SwipeCard: React.FC<Props> = (props) => {
-  console.log(props.title);
+console.log(CARD_WIDTH);
 
+
+const SwipeCard: React.FC<Props> = (props) => {
+  console.log("Props", props);
   return (
     <View style={[styles.container]}>
       <View style={[styles.card]}>
-        <Image style={[styles.image]} source={{ uri: props.imageURI }} />
-        <Text style={styles.title}>{props.title}</Text>
-        <View style={{ marginTop: 10 }}>
-          {props.items.map((item) => (
-            <AwsomeCardItem text={item.text} enabled={item.enabled} />
-          ))}
-        </View>
+        <Image style={[styles.image]} source={{ uri: IMG_URL + props.foodID + ".png" }} />
+        <Text style={styles.title}>{props.title}</Text> 
       </View>
     </View>
   );
@@ -67,7 +63,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 300,
+    height: 480,
     resizeMode: "cover",
     borderBottomRightRadius: 70,
     borderBottomLeftRadius: 0,

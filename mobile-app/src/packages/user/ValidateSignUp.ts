@@ -75,7 +75,7 @@ const validate = async ({ values, date, next, setErrors, submit }: Params) => {
   // No errors occurred... Time to send it to the api
   if (!hasErrors && submit) {
     // Try and post the sign-up info
-    fetch(API_URL + "/signup", {
+    fetch(API_URL + "/user/signup", {
       method: "POST",
       body: JSON.stringify({
         email: values.email,
@@ -87,7 +87,7 @@ const validate = async ({ values, date, next, setErrors, submit }: Params) => {
     })
       // Convert the response to json
       .then((response) => response.json())
-      .then((response) => {
+      .then((response) => {        
         if (response.error === "Email is in use") {
           // The email is already in use
           currentErrors.email = "Email is in use";

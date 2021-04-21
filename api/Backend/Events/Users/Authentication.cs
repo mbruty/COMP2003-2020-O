@@ -2,10 +2,7 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Specialized;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,28 +11,37 @@ namespace api.Backend.Events.Users
 {
     public static class Authentication
     {
+        #region Fields
+
         private static Regex codePattern = new Regex(@"\d{3}-\d{3}-\d{3}");
+
+        #endregion Fields
+
         #region Methods
 
-        [WebEvent("/authcheck", "POST", false, SecurityGroup.User)]
-        public static async Task CheckAuthHttp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        [WebEvent(typeof(string), "/user/authcheck", "POST", false, SecurityGroup.User)]
+        public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            User[] u = await Binding.GetTable<User>().Select<User>(perm.user_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
-        [WebEvent("/authcheck", "GET", false, SecurityGroup.User)]
-        public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response)
+        [WebEvent(typeof(string), "/user/authcheck", "GET", false, SecurityGroup.User)]
+        public static async Task CheckAuthWebSocket(WebSockets.SocketInstance instance, WebSockets.SocketRequest @event, WebSockets.SocketResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            User[] u = await Binding.GetTable<User>().Select<User>(perm.user_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
-        [WebEvent("/login", "POST", false)]
-        public static async Task Login(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        [WebEvent(typeof(LoginCredentials), "/user/login", "POST", false)]
+        public static async Task Login(LoginCredentials creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            // Convert the string to a credential object
-            LoginCredentials creds = JsonConvert.DeserializeObject<LoginCredentials>(Data);
             string email = creds.Email, password = creds.Password;
 
             if (email == null || password == null)
@@ -47,20 +53,10 @@ namespace api.Backend.Events.Users
 
             User[] users = await Binding.GetTable<User>().Select<User>("email", email, 1);
 
-            // Hello back-end friend-o's... Isn't it a bad idea to tell the user exactly what is wrong?
-            // Saying email is not in use feels kinda exploitable
-            // - Mike, Feb 2021
-            if (users.Length == 0)
+            if (users.Length == 0 || !Hashing.Match(password, users[0].Password))
             {
                 response.StatusCode = 401;
-                response.AddToData("error", "Email is not in use");
-                return;
-            }
-
-            if (!Hashing.Match(password, users[0].Password))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Password is incorrect");
+                response.AddToData("error", "Email or Password is invalid");
                 return;
             }
 
@@ -77,17 +73,65 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Logged in");
         }
 
-        [WebEvent("/signup", "POST", false)]
-        public static async Task SignUp(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        [WebEvent(typeof(string), "/user/logout", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task LogoutAdmin(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            // Convert the string to a credential object
-            User creds = JsonConvert.DeserializeObject<User>(Data);
+            Session[] users = await Binding.GetTable<Session>().Select<Session>(perm.user_id);
+
+            await users[0].Delete();
+
+            response.StatusCode = 200;
+            response.AddToData("message", "You are now logged out");
+        }
+
+        [WebEvent(typeof(UserIdWithToken), "/user/resendcode", "POST", false, SecurityGroup.User)]
+        public static async Task resendcode(UserIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            // Get the user
+            User[] users = await Binding.GetTable<User>().Select<User>("UserID", user.UserID, 1);
+
+            // Users will always be of length 1 if they exist, and 0 if they don't as we're
+            // selecting by pk
+            if (users.Length == 0)
+            {
+                response.StatusCode = 404;
+                response.AddToData("error", "User not found");
+                return;
+            }
+
+            // If the user is already verified
+            if (users[0].IsVerified)
+            {
+                // 208: Already Reported
+                response.StatusCode = 208;
+                return;
+            }
+
+            // Send confirmation email
+            Random r = new Random();
+            string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
+            Email.SendConfirmation(users[0].Nickname, code, users[0].Email);
+
+            // Update the database with the code
+            Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
+        }
+
+        [WebEvent(typeof(User), "/user/signup", "POST", false)]
+        public static async Task SignUp(User creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
             string email = creds.Email, password = creds.Password, dateOfBirth = creds.DateOfBirth.ToString(), nickname = creds.Nickname;
 
             if (email == null || password == null)
             {
                 response.StatusCode = 400;
                 response.AddToData("error", "Missing email or password");
+                return;
+            }
+
+            if (!ValidityChecks.IsValidEmail(email))
+            {
+                response.AddToData("error", "Email is invalid");
+                response.StatusCode = 400;
                 return;
             }
 
@@ -145,14 +189,21 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent("/resendcode", "POST", false, SecurityGroup.User)]
-        public static async Task resendcode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
+        [WebEvent(typeof(ValidationCode), "/user/validatecode", "POST", false)]
+        public static async Task ValidateCode(ValidationCode validation, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            UserIdWithToken user = JsonConvert.DeserializeObject<UserIdWithToken>(Data);
-            // Get the user
-            User[] users = await Binding.GetTable<User>().Select<User>("UserID", user.UserID, 1);
+            if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
+            {
+                // Bad Request
+                response.StatusCode = 400;
+                return;
+            }
 
-            // Users will always be of length 1 if they exist, and 0 if they don't as we're selecting by pk
+            // Get the user
+            User[] users = await Binding.GetTable<User>().Select<User>("UserID", validation.UserID, 1);
+
+            // Users will always be of length 1 if they exist, and 0 if they don't as we're
+            // selecting by pk
             if (users.Length == 0)
             {
                 response.StatusCode = 404;
@@ -168,49 +219,10 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            // Send confirmation email
-            Random r = new Random();
-            string code = $"{r.Next(100, 999)}-{r.Next(100, 999)}-{r.Next(100, 999)}";
-            Email.SendConfirmation(users[0].Nickname, code, users[0].Email);
-
-            // Update the database with the code
-            Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
-        }
-
-        [WebEvent("/validatecode", "POST", false)]
-        public static async Task ValidateCode(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
-        {
-            ValidationCode validation = JsonConvert.DeserializeObject<ValidationCode>(Data);
-            if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
-            {
-                // Bad Request
-                response.StatusCode = 400;
-                return;
-            }
-
-            // Get the user
-            User[] users = await Binding.GetTable<User>().Select<User>("UserID", validation.UserID, 1);
-
-            // Users will always be of length 1 if they exist, and 0 if they don't as we're selecting by pk
-            if (users.Length == 0)
-            {
-                response.StatusCode = 404;
-                response.AddToData("error", "User not found");
-                return;
-            }
-
-            // If the user is already verified
-            if(users[0].IsVerified)
-            {
-                // 208: Already Reported
-                response.StatusCode = 208;
-                return;
-            }
-
             string code = await Backend.Data.Redis.Instance.GetString($"signup-code:{validation.UserID}");
 
             // Correct code!
-            if(code == validation.Code)
+            if (code == validation.Code)
             {
                 response.StatusCode = 200;
 
@@ -241,19 +253,31 @@ namespace api.Backend.Events.Users
 
     public class LoginCredentials
     {
+        #region Properties
+
         public string Email { get; set; }
         public string Password { get; set; }
-    }
 
-    public class ValidationCode
-    {
-        public string UserID { get; set; }
-        public string Code { get; set; }
+        #endregion Properties
     }
 
     public class UserIdWithToken
     {
-        public string UserID { get; set; }
+        #region Properties
+
         public string AuthToken { get; set; }
+        public string UserID { get; set; }
+
+        #endregion Properties
+    }
+
+    public class ValidationCode
+    {
+        #region Properties
+
+        public string Code { get; set; }
+        public string UserID { get; set; }
+
+        #endregion Properties
     }
 }

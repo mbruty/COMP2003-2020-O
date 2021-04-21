@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -43,7 +44,13 @@ namespace api.Backend.Endpoints
                 {
                     try
                     {
-                        tMethod[0].Invoke(null, new object[] { instance, @event, response });
+                        Security.SecurityPerm perm = await Security.Sessions.GetSecurityGroup(jData, response);
+                        Events.WebEvent event_attribute = tMethod[0].GetCustomAttributes<Events.WebEvent>().First();
+
+                        if (Security.Sessions.IsAuthorized(perm.SecurityGroup, event_attribute.secuirtyLevel))
+                        {
+                            tMethod[0].Invoke(null, new object[] { instance, @event, response, perm });
+                        }
                         await response.Send(webSocket);
                     }
                     catch (Exception e)
@@ -175,45 +182,16 @@ namespace api.Backend.Endpoints
         /// <summary>
         /// Holds any data to be returned
         /// </summary>
-        public class SocketResponse
+        public class SocketResponse : Response
         {
-            #region Fields
-
-            public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}");
-            public int StatusCode = 500;
-
-            #endregion Fields
-
-            //Time always provided
-
             #region Methods
-
-            /// <summary>
-            /// Add a given object into the json response
-            /// </summary>
-            /// <param name="Header"> </param>
-            /// <param name="obj">    </param>
-            public void AddObjectToData(string Header, object obj)
-            {
-                Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
-            }
-
-            /// <summary>
-            /// Add a already stingable object, ie supports .ToString()
-            /// </summary>
-            /// <param name="Header">     </param>
-            /// <param name="stringable"> .ToString() supporting object </param>
-            public void AddToData(string Header, object stringable)
-            {
-                Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
-            }
 
             /// <summary>
             /// Finish up the response and send it back to the user
             /// </summary>
             /// <param name="webSocket"> </param>
             /// <returns> </returns>
-            public async Task Send(WebSocket webSocket)
+            public override async Task Send(WebSocket webSocket)
             {
                 AddToData("StatusCode", StatusCode);
 

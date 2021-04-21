@@ -4,6 +4,7 @@ using api.Backend.Endpoints;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Specialized;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +26,23 @@ namespace api.Backend.Security
         #endregion Fields
 
         #region Methods
+
+        public static async Task AddSession(RestaurantAdmin admin, string token)
+        {
+            Data.Redis.CacheTable t = Binding.GetTable<RAdminSession>();
+
+            RAdminSession[] existing = await t.Select<RAdminSession>("radminid", admin.RAdminID, 1);
+
+            if (existing.Length == 0)
+            {
+                new Thread(async () => { await new RAdminSession() { RAdminID = admin.RAdminID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
+            }
+            else
+            {
+                Data.Redis.Instance.InvalidateKey(t.GetKey(existing[0]).ToString());
+                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
+            }
+        }
 
         /// <summary>
         /// Create a login session for the User
@@ -54,132 +72,157 @@ namespace api.Backend.Security
         /// <param name="headers">  </param>
         /// <param name="response"> </param>
         /// <returns> If the session is valid </returns>
-        public static async Task<bool> CheckSession(NameValueCollection headers, WebRequest.HttpResponse response)
+        public static async Task<SecurityPerm> CheckSession(AuthObj body, WebRequest.HttpResponse response)
         {
-            string userid = headers["userid"], authtoken = headers["authtoken"];
+            string userid = body.userid, authtoken = body.authtoken, adminid = body.adminid;
 
-            // Get any cookie data there is
-            // Will return null if there isn't a cookie field
-            string cookiedata = headers.Get("Cookie");
+            // Get any cookie data there is Will return null if there isn't a cookie field
+            string cookiedata = body.Cookie;
 
-            // If the cookie sent is the auth token, let's parse it!
-            // If there is a userid or an auth token, we don't want to parse it
-            // As including cookies is automatically done by the browser, they will always be there
-            // And there is no way of getting rid of them when the user trys to re-log-in
+            // If the cookie sent is the auth token, let's parse it! If there is a userid or an auth
+            // token, we don't want to parse it As including cookies is automatically done by the
+            // browser, they will always be there And there is no way of getting rid of them when
+            // the user trys to re-log-in
             if (cookiedata != null && cookiedata.StartsWith("authtoken=") && userid == null && authtoken == null)
             {
                 // Remove the "authtoken=" bit
                 cookiedata = cookiedata.Substring(10);
-                string[] data = cookiedata.Split("&user_id=");
+                string[] data = cookiedata.Replace("admin_id", "user_id").Split("&user_id=");
 
                 // If the data is less than 2, it's a broken request
-                if(data.Length != 2)
+                if (data.Length != 2)
                 {
                     response.StatusCode = 400;
-                    response.AddToData("error", "Broken Cookie in request, try clering your cookies");
-                    return false;
+                    response.AddToData("error", "Broken Cookie in request, try clearing your cookies");
+                    return new SecurityPerm();
                 }
-                // Let's override the current userid and authtoken
-                // This is because the browser will be sending the data in a cookie
+                // Let's override the current userid and authtoken This is because the browser will
+                // be sending the data in a cookie
                 authtoken = data[0];
-                userid = data[1];
-            }
-            if (userid == null || authtoken == null)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Missing email or authtoken");
-                return false;
+                if (cookiedata.Contains("user_id")) userid = data[1]; else adminid = data[1];
             }
 
-            if (!int.TryParse(userid, out int uid))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "User id is invalid");
-                return false;
-            }
-
-            Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
-
-            if (sessions.Length == 0)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Session does not exist");
-                return false;
-            }
-
-            if (!Hashing.Match(authtoken, sessions[0].AuthToken))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Authtoken is incorrect");
-                return false;
-            }
-
-            response.StatusCode = 200;
-
-            return true;
+            return await CheckSession(userid, adminid, authtoken, response);
         }
 
-        public static async Task<bool> CheckSession(JToken Auth, WebSockets.SocketResponse response)
+        public static async Task<SecurityPerm> CheckSession(string userid, string adminid, string authtoken, Response response)
         {
-            string userid = Auth["userid"].ToString(), authtoken = Auth["authtoken"].ToString();
+            SecurityPerm group = new SecurityPerm();
 
-            if (userid == null || authtoken == null)
+            if (authtoken == null)
             {
                 response.StatusCode = 401;
-                response.AddToData("error", "Missing email or authtoken");
-                return false;
+                response.AddToData("error", "Missing authtoken");
+                return new SecurityPerm();
             }
 
-            if (!int.TryParse(userid, out int uid))
+            string _session_token = "N";
+
+            if (userid != null)
             {
-                response.StatusCode = 401;
-                response.AddToData("error", "User id is invalid");
-                return false;
+                if (!uint.TryParse(userid, out uint uid))
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Id is invalid");
+                    return new SecurityPerm();
+                }
+
+                Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
+
+                if (sessions.Length == 0)
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Session does not exist");
+                    return new SecurityPerm();
+                }
+
+                _session_token = sessions[0].AuthToken;
+                group = new SecurityPerm() { SecurityGroup = SecurityGroup.User, user_id = uid };
             }
-
-            Session[] sessions = await Binding.GetTable<Session>().Select<Session>("userid", uid);
-
-            if (sessions.Length == 0)
+            else if (adminid != null)
             {
-                response.StatusCode = 401;
-                response.AddToData("error", "Session does not exist");
-                return false;
-            }
+                if (!uint.TryParse(adminid, out uint uid))
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Id is invalid");
+                    return new SecurityPerm();
+                }
 
-            if (!Hashing.Match(authtoken, sessions[0].AuthToken))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Authtoken is incorrect");
-                return false;
-            }
+                RAdminSession[] sessions = await Binding.GetTable<RAdminSession>().Select<RAdminSession>("radminid", uid);
 
-            return true;
-        }
+                if (sessions.Length == 0)
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("error", "Session does not exist");
+                    return new SecurityPerm();
+                }
 
-        public static async Task<SecurityGroup> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response)
-        {
-            if (await CheckSession(headers, response))
-            {
-                //Logic to determine if is admin
-                return SecurityGroup.User;
+                _session_token = sessions[0].AuthToken;
+                group = new SecurityPerm() { SecurityGroup = SecurityGroup.Administrator, admin_id = uid }; ;
             }
             else
             {
-                return SecurityGroup.None;
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing userid/adminid");
+                return new SecurityPerm();
             }
+
+            if (!Hashing.Match(authtoken, _session_token))
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Authtoken is incorrect");
+                return new SecurityPerm();
+            }
+
+            return group;
         }
 
-        public static async Task<SecurityGroup> GetSecurityGroup(JToken Auth, WebSockets.SocketResponse response)
+        public static async Task<SecurityPerm> CheckSession(JToken Auth, WebSockets.SocketResponse response)
         {
-            if (await CheckSession(Auth, response))
+            string userid = Auth["userid"].ToString(), adminid = Auth["adminid"].ToString(), authtoken = Auth["authtoken"].ToString();
+            return await CheckSession(userid, adminid, authtoken, response);
+        }
+
+        public static async Task<SecurityPerm> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response, string Data)
+        {
+            if (Data.Contains("authtoken"))
             {
-                //Logic to determine if is admin
-                return SecurityGroup.User;
+                // We're not using cookies or headers
+                AuthObj auth = JsonSerializer.Deserialize<AuthObj>(Data);
+                if (auth.authtoken != "" && (auth.userid != "" || auth.adminid != ""))
+                {
+                    return await CheckSession(auth.userid, auth.adminid, auth.authtoken, response);
+                }
             }
-            else
+            string cookie = headers.Get("Cookie");
+            if (cookie != null)
             {
-                return SecurityGroup.None;
+                return await CheckSession(new AuthObj { Cookie = cookie }, response);
             }
+            Security.AuthObj auth_obj = (Security.AuthObj)Misc.ConvertHeadersOrBodyToType(typeof(Security.AuthObj), headers, Data);
+            return await CheckSession(auth_obj, response);
+        }
+
+        public static async Task<SecurityPerm> GetSecurityGroup(JToken Auth, WebSockets.SocketResponse response)
+        {
+            return await CheckSession(Auth, response);
+        }
+
+        public static bool IsAuthorized(SecurityGroup accountIs, SecurityGroup targetGroup)
+        {
+            switch (accountIs)
+            {
+                case SecurityGroup.None:
+                    return targetGroup == SecurityGroup.None;
+
+                case SecurityGroup.User:
+                    return targetGroup != SecurityGroup.Administrator;
+
+                case SecurityGroup.Administrator:
+                    return targetGroup != SecurityGroup.User;
+            }
+
+            return false;
         }
 
         public static string RandomString(int length = 32)
@@ -190,5 +233,27 @@ namespace api.Backend.Security
         }
 
         #endregion Methods
+    }
+
+    public class AuthObj
+    {
+        #region Properties
+
+        public string adminid { get; set; }
+        public string authtoken { get; set; }
+        public string Cookie { get; set; }
+        public string userid { get; set; }
+
+        #endregion Properties
+    }
+
+    public class SecurityPerm
+    {
+        #region Fields
+
+        public uint admin_id = 0, user_id = 0;
+        public SecurityGroup SecurityGroup = SecurityGroup.None;
+
+        #endregion Fields
     }
 }

@@ -2,6 +2,7 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
+using System;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 
@@ -11,10 +12,10 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent("/modify/user", "DELETE", false, SecurityGroup.User)]
-        public static async Task DeleteUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent(typeof(string), "/user/modify", "DELETE", false, SecurityGroup.User)]
+        public static async Task DeleteUser(string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
             await users[0].Delete();
 
@@ -22,24 +23,27 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user", "PUT", false, SecurityGroup.User)]
-        public static async Task ModifyUser(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent(typeof(User), "/user/modify", "PUT", false, SecurityGroup.User)]
+        public static async Task ModifyUser(User user, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("userid", headers["userid"]);
+            User[] users = await table.Select<User>("userid", perm.user_id);
 
-            users[0].UpdateContents<User>(headers);
+            User u = users[0];
+
+            if (user.Password != null && ValidityChecks.IsStrongPassword(user.Password)) { u.Password = Hashing.Hash(user.Password); }
+            if (user.Email != null && ValidityChecks.IsValidEmail(user.Email)) { u.Email = user.Email; }
+            if (user.DateOfBirth != null && user.DateOfBirth != DateTime.MinValue) { u.DateOfBirth = user.DateOfBirth; }
+            if (user.Nickname != null) { u.Nickname = user.Nickname; }
 
             response.AddToData("message", "Updated user");
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user/foods", "PUT", false, SecurityGroup.User)]
-        public static async Task ModifyUserFoodChecks(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent(typeof(NameValueCollection), "/user/modify/foods", "PUT", false, SecurityGroup.User)]
+        public static async Task ModifyUserFoodChecks(NameValueCollection headers, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (!await Sessions.CheckSession(headers, response)) return;
-
-            User[] users = await Binding.GetTable<User>().Select<User>("userid", headers["userid"]);
+            User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
             Table table = Binding.GetTable<FoodChecks>();
             FoodChecks[] foods = await table.Select<FoodChecks>("userid", users[0].FoodCheckID);
@@ -50,8 +54,8 @@ namespace api.Backend.Events.Users
             response.StatusCode = 200;
         }
 
-        [WebEvent("/modify/user/password", "POST", false, SecurityGroup.User)]
-        public static async Task ModifyUserPassword(NameValueCollection headers, string Data, WebRequest.HttpResponse response)
+        [WebEvent(typeof(NameValueCollection), "/user/modify/password", "POST", false, SecurityGroup.User)]
+        public static async Task ModifyUserPassword(NameValueCollection headers, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             string password = headers["password"];
 
@@ -69,10 +73,8 @@ namespace api.Backend.Events.Users
                 return;
             }
 
-            if (!await Sessions.CheckSession(headers, response)) return;
-
             Table table = Binding.GetTable<User>();
-            User[] users = await table.Select<User>("userid", headers["userid"]);
+            User[] users = await table.Select<User>("userid", perm.user_id);
 
             users[0].Password = Hashing.Hash(headers["password"]);
             await users[0].UpdatePassword();

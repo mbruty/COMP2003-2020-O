@@ -41,6 +41,11 @@ namespace api.Backend.Data.Redis
             return await database.KeyExistsAsync(key);
         }
 
+        public static async void InvalidateKey(string key)
+        {
+            await database.KeyDeleteAsync(key);
+        }
+
         /// <summary>
         /// Store a value in the database with a key. This value will expire in a set amount of time
         /// </summary>
@@ -54,11 +59,6 @@ namespace api.Backend.Data.Redis
         public static async void SetStringWithExpiration(string key, string value, TimeSpan expiration)
         {
             await database.StringSetAsync(key, value, expiration);
-        }
-
-        public static async void InvalidateKey(string key)
-        {
-            await database.KeyDeleteAsync(key);
         }
 
         #endregion Methods

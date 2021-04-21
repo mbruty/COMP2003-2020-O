@@ -9,10 +9,11 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
+        public bool IsVerified;
         public float Longitude, Latitude;
         public uint RestaurantID, OwnerID;
 
-        public string RestaurantName, RestaurantDescription, Phone, Email, Site, WebhookURI;
+        public string RestaurantName, RestaurantDescription, Phone, Email, Site, Street1, Street2, Town, County, Postcode, WebhookURI;
 
         #endregion Fields
 
@@ -23,7 +24,7 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Menu>().SelectCustom<Menu>(
                 tables: "LinkMenuRestaurant,Menu",
                 where: "LinkMenuRestaurant.MenuID = Menu.MenuID AND LinkMenuRestaurant.RestaurantID = @RestPar",
-                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ResetPar", RestaurantID) }
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("RestPar", RestaurantID) }
                 );
         }
 
@@ -32,9 +33,9 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<OpeningHours>().Select<OpeningHours>(RestaurantID);
         }
 
-        public async Task<User> GetOwner()
+        public async Task<RestaurantAdmin> GetOwner()
         {
-            return (await Binding.GetTable<User>().Select<User>(OwnerID))?[0];
+            return (await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(OwnerID))?[0];
         }
 
         public async Task<RestaurantOpinion[]> GetRestaurantOpinions()
@@ -47,7 +48,7 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Review>().SelectCustom<Review>(
                 tables: "Review,Visit",
                 where: "Review.VisitRef = Visit.VisitRef AND Visit.RestaurantID = @RestPar",
-                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ResetPar", RestaurantID) }
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("RestPar", RestaurantID) }
                 );
         }
 

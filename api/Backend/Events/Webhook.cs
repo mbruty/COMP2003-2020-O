@@ -14,7 +14,7 @@ namespace api.Backend.Events.Restaurants
 {
     static class Webhook
     {
-        [WebEvent("/book", "POST", false)]
+        [WebEvent(typeof(NameValueCollection),"/book", "POST", false)]
         public static async Task BookWebHook(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             int restaurantID;
@@ -78,7 +78,7 @@ namespace api.Backend.Events.Restaurants
             }
         }
 
-        [WebEvent("/webhook", "PUT", false, SecurityGroup.User)]
+        [WebEvent(typeof(NameValueCollection), "/webhook", "PUT", false, SecurityGroup.User)]
         public static async Task UpdateWebhook(NameValueCollection headers, string Data, Endpoints.WebRequest.HttpResponse response)
         {
             UpdateData data = JsonConvert.DeserializeObject<UpdateData>(Data);

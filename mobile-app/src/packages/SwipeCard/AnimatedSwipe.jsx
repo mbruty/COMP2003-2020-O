@@ -6,6 +6,9 @@ import Swiper from "react-native-deck-swiper";
 import { Feather as Icon } from "@expo/vector-icons";
 import SwipeCard from "./SwipeCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Loading } from "../../Loading";
+import { includeAuth } from "../includeAuth";
+
 const { height, width } = Dimensions.get("screen");
 const stackSize = 4;
 const colors = {
@@ -21,81 +24,133 @@ const swiperRef = React.createRef();
 
 export default function App() {
   const [index, setIndex] = React.useState(0);
-  const onSwiped = () => {
-    setIndex((index + 1) % data.length);
+  const [loading, setLoading] = React.useState(false);
+
+  const onSwiped = async (side, id, isFavourite) => {
+    const auth = await includeAuth();
+    // Send to python api
+    const res = await fetch("http://127.0.0.1:5000/swipe", {
+      method: "POST",
+      body: JSON.stringify({
+        foodid: id,
+        userid: auth.userid,
+        authtoken: auth.authtoken,
+        islike: side === "LIKE",
+        isfavourite: isFavourite,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(res.status);
+    setIndex((prevIdx) => (prevIdx + 1) % data.length);
+  };
+
+  const onDone = () => {
+    //ToDo:
+    //Fetch some more data from the recommender
+    setLoading(true);
   };
 
   return (
     <View style={styles.container}>
-      <Swiper
-        ref={swiperRef}
-        cards={data}
-        cardIndex={index}
-        renderCard={(card) => (
-          <SwipeCard
-            items={card.tags}
-            title={card.name}
-            imageURI={card.image}
-          />
-        )}
-        backgroundColor={"transparent"}
-        onSwiped={onSwiped}
-        onTapCard={() => null}
-        cardVerticalMargin={50}
-        stackSize={stackSize}
-        stackScale={10}
-        stackSeparation={14}
-        animateOverlayLabelsOpacity
-        animateCardOpacity
-        disableTopSwipe
-        disableBottomSwipe
-        overlayLabels={{
-          left: {
-            title: "NOPE",
-            style: {
-              label: {
-                backgroundColor: colors.red,
-                borderColor: colors.red,
-                color: colors.white,
-                borderWidth: 1,
-                fontSize: 24,
-              },
-              wrapper: {
-                flexDirection: "column",
-                alignItems: "flex-end",
-                justifyContent: "flex-start",
-                marginTop: 20,
-                marginLeft: -20,
-              },
-            },
-          },
-          right: {
-            title: "LIKE",
-            style: {
-              label: {
-                backgroundColor: colors.blue,
-                borderColor: colors.blue,
-                color: colors.white,
-                borderWidth: 1,
-                fontSize: 24,
-              },
-              wrapper: {
-                flexDirection: "column",
-                alignItems: "flex-start",
-                justifyContent: "flex-start",
-                marginTop: 20,
-                marginLeft: 20,
+      {loading ? (
+        <View style={{ marginTop: "-20%" }}>
+          <Loading />
+        </View>
+      ) : (
+        <Swiper
+          ref={swiperRef}
+          cards={data}
+          cardIndex={index}
+          renderCard={(card) => (
+            <SwipeCard foodID={card.foodid} title={card.name} />
+          )}
+          backgroundColor={"transparent"}
+          onSwipedLeft={(id) => onSwiped("NOPE", id, false)}
+          onSwipedRight={(id) => onSwiped("LIKE", id, false)}
+          onSwipedTop={(id) => onSwiped("", id, true)}
+          onTapCard={() => null}
+          stackSize={stackSize}
+          stackScale={10}
+          stackSeparation={14}
+          animateOverlayLabelsOpacity
+          animateCardOpacity
+          disableBottomSwipe
+          onSwipedAll={onDone}
+          overlayLabels={{
+            left: {
+              title: "NOPE",
+              style: {
+                label: {
+                  backgroundColor: colors.red,
+                  borderColor: colors.red,
+                  color: colors.white,
+                  borderWidth: 1,
+                  fontSize: 24,
+                },
+                wrapper: {
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  justifyContent: "flex-start",
+                  marginTop: 20,
+                  marginLeft: -20,
+                },
               },
             },
-          },
-        }}
-      />
+            right: {
+              title: "LIKE",
+              style: {
+                label: {
+                  backgroundColor: colors.green,
+                  borderColor: colors.green,
+                  color: colors.white,
+                  borderWidth: 1,
+                  fontSize: 24,
+                },
+                wrapper: {
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
+                  marginLeft: 20,
+                  marginTop: 20,
+                },
+              },
+            },
+            top: {
+              title: "FAVOURITE",
+              style: {
+                label: {
+                  backgroundColor: "#1bd6f7",
+                  borderColor: "#1bd6f7",
+                  color: colors.white,
+                  borderWidth: 1,
+                  fontSize: 24,
+                },
+                wrapper: {
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: 20,
+                },
+              },
+            },
+          }}
+        />
+      )}
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.circle}
           onPress={() => swiperRef.current.swipeLeft()}
         >
           <Icon name="x" size={32} color="#ec5288" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.circle}
+          onPress={() => swiperRef.current.swipeTop()}
+        >
+          <Icon name="star" size={32} color="#1bd6f7" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.circle}
@@ -112,6 +167,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     height: height - 100,
+    position: "relative",
   },
   text: {
     textAlign: "center",

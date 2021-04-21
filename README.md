@@ -285,6 +285,38 @@ In its current iteration, you may get an error from the procedure randomly gener
 There are 22,580,726,450 combinations of potential emails that can be generated.  
 This feature is experimental and continues to be developed.
 
+### Run-VerifyRestaurant
+
+> **This SP takes 1 parameter:**  
+> *name* `input_id` *type* `int` 
+
+This SP is used to quickly verify Restaurants.   
+Sets the IsVerified field to true (1).  
+Currently doesn't do it the other way around, but it hopefully will in the future.
+
+### Run-ResetRecommendations
+
+> **This SP takes 1 parameter:**  
+> *name* `input_id` *type* `int` 
+
+Used to remove the food opinion history of a user.  
+This would be their own choice, activated by clicking the respective button in their Settings.  
+Useful if they drastically change their preferences.  
+Takes the user's ID as an argument.
+
+### Run-GetRestaurantsWithinDistance
+
+> **This SP takes 5 parameters:**  
+> *name* `user_lat` *type* `float`  
+> *name* `user_long` *type* `float`  
+> *name* `max_distance` *type* `int`  
+> *name* `order_date_ref` *type* `varchar(5)`  
+> *name* `order_time` *type* `time` 
+
+Returns Restaurants within a specified distance.  
+Uses sexy mathematics to calculate the radius based on latitude and longitudinal values.  
+It also checks to make sure the Restaurant will still be serving within one hour.
+
 ## MySQL Stored Functions
 
 ### Func-RandomSelection
@@ -338,6 +370,15 @@ The string of domains is separated by $ symbols.
 This function will return a list of nicknames.  
 The string of nicknames is separated by $ symbols.
 
+### Func-DayToRef
+
+> **This function takes 1 parameter:**  
+> *name* `day_num` *type* `int`
+
+This function takes a standard day number of the week from 1-7.  
+Returns a reference string for the day in question between Sunday-Saturday (respectively).  
+**Remember:** Monday is not the first day of the week in this system.
+
 <br>
 
 ---
@@ -346,14 +387,14 @@ The string of nicknames is separated by $ symbols.
 
 ## MySQL Database Documentation
 
-### Entity Relationship Diagram (Version 5.7)
+### Entity Relationship Diagram (Version 6.2)
 
-*This diagram is up to date as of 06/12/20.*
+*This diagram is not up to date. Currently working off v6.3.0 as of *11/04/21. See docs folder for latest version.*
 
 <br>
 
 <p>
-  <img alt="The entity relationship diagram associated with the project." width="720" height="598" src="https://i.imgur.com/tdf1aY6.png">
+  <img alt="The entity relationship diagram associated with the project." width="926" height="625" src="https://i.imgur.com/wWIOH9J.png">
 </p>
 
 <br>
@@ -364,6 +405,8 @@ The string of nicknames is separated by $ symbols.
 
 ## How the Branches Work
 
+<br>
+
 1. You submit a pull request with your changes on a new 'feature' branch.
 2. Travis-CI will automatically run tests on the changes you've made
 3. If the test's pass, go to 4, if any fail, go to 1 and make the appropriate changes
@@ -373,6 +416,3 @@ The string of nicknames is separated by $ symbols.
 7. Once we've made sure everything in the release branch is good to go, the release branch will be merged in to the main branch.
 8. On the merge in to the main branch, the project will be built and put on the release server avalible at _We need to get a name first_
 
----
-
-## UI Styling Information
