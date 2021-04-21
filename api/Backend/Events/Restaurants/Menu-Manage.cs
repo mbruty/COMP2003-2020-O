@@ -65,6 +65,24 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
+        [WebEvent(typeof(MenuBody), "/menu/delete", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task DeleteRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID);
+
+            if (_menus.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            await _menus[0].Delete();
+
+            response.AddToData("message", "Deleted menu");
+            response.StatusCode = 200;
+        }
+
         [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/linkrestaurant", "POST", false, SecurityGroup.Administrator)]
         public static async Task LinkMenuToRestaurant(LinkMenuRestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
