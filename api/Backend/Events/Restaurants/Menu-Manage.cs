@@ -11,6 +11,7 @@ namespace api.Backend.Events.Restaurants
 {
     public class MenuTimeBody
     {
+        public uint MenuTimeID;
         public uint MenuRestID;
         public string DayRef;
         public TimeSpan StartServing, TimeServing;
@@ -100,7 +101,7 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/linkrestaurant", "DELETE", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/unlinkrestaurant", "DELETE", false, SecurityGroup.Administrator)]
         public static async Task RemoveLinkMenuToRestaurant(LinkMenuRestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Data.Obj.LinkMenuRestaurant[] _links = await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>(new string[] { "MenuID", "RestaurantID" }, new object[] { body.MenuID, body.RestaurantID });
@@ -137,6 +138,29 @@ namespace api.Backend.Events.Restaurants
 
             response.AddToData("message", "Created menu time");
             response.AddObjectToData("time", _time);
+            response.StatusCode = 200;
+        }
+
+        [WebEvent(typeof(MenuTimeBody), "/menu/removetime", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task RemoveTimeToRestaurant(MenuTimeBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.MenuTimes[] _times = await Binding.GetTable<MenuTimes>().Select<MenuTimes>(body.MenuTimeID);
+
+            if (_times.Length==0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "No such Menu Time");
+                return;
+            }
+
+            if (!await _times[0].Delete())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Deleted menu time");
             response.StatusCode = 200;
         }
     }
