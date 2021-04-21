@@ -70,8 +70,8 @@ namespace api.Backend.Events.FoodTag
             }
         }
 
-        [WebEvent(typeof(FoodTagBody), "/foodtags/sync", "POST", false, SecurityGroup.None)]
-        public static async Task SyncSearch(FoodTagBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string), "/foodtags/sync", "POST", false, SecurityGroup.None)]
+        public static async Task SyncSearch(string body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Get all food tags
             FoodTags[] all = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>("1=1", 0);
@@ -101,7 +101,8 @@ namespace api.Backend.Events.FoodTag
                 //{
                 //    var result = streamReader.ReadToEnd();
                 //}
-                //response.StatusCode = 202;
+
+                response.StatusCode = 202;
             }
             catch (System.Net.WebException ex)
             {

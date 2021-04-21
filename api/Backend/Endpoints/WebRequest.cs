@@ -24,6 +24,20 @@ namespace api.Backend.Endpoints
 
             string url = request.RawUrl.ToLower(), method = request.HttpMethod.ToLower();
 
+            string[] path = url.Split('/');
+            bool usingUrlParams = false;
+
+            // If the url ends in a number, we're using url params
+            if (int.TryParse(path[path.Length - 1], out int id))
+            {
+                // Replace the final bit of the url with :id: (this will be the place holder for the id in the handler
+                path[path.Length - 1] = ":id:";
+                url = string.Join("/", path);
+                // Work around as directly setting the Data = id was messing up auth
+                usingUrlParams = true;
+            }
+
+
             //Find and then run the appriproate web event
             MethodInfo[] tMethod = Events.WebEvent.FindMethodInfos(url, method, false);
 
@@ -36,6 +50,8 @@ namespace api.Backend.Endpoints
                 if (Security.Sessions.IsAuthorized(perm.SecurityGroup, event_attribute.secuirtyLevel))
                 {
                     try {
+                        // If we are using url params, add the id to the data
+                        if (usingUrlParams) Data = id.ToString();
                         object o = event_attribute.ConvertHeadersOrBodyToType(request.Headers,Data);
                         Task T = (Task)tMethod[0].Invoke(null, new object[] { o, response, perm }); T.Wait(); 
                     }

@@ -5,9 +5,17 @@ using api.Backend.Security;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using System;
 
 namespace api.Backend.Events.Restaurants
 {
+    public class OpeningHoursBody
+    {
+        public uint RestaurantID;
+        public string DayRef;
+        public TimeSpan OpenTime, TimeServing;
+    }
+
     public static class Restaurant_Manage
     {
         #region Classes
@@ -15,6 +23,24 @@ namespace api.Backend.Events.Restaurants
         #endregion Classes
 
         #region Methods
+
+        [WebEvent(typeof(OpeningHoursBody), "/restaurant/addtime", "POST", false, SecurityGroup.Administrator)]
+        public static async Task AddTimeToRestaurant(OpeningHoursBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.OpeningHours _time = new Data.Obj.OpeningHours() { DayRef = body.DayRef, RestaurantID = body.RestaurantID, TimeServing = body.TimeServing, OpenTime=body.OpenTime };
+
+#warning needs updating once reef makes db changes
+            if (!await _time.Insert(false))
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Created opening time");
+            response.AddObjectToData("time", _time);
+            response.StatusCode = 200;
+        }
 
         [WebEvent(typeof(RestaurantBody),"/restaurants/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)

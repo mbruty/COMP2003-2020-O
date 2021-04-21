@@ -194,6 +194,11 @@ namespace api.Backend.Security
                     return await CheckSession(auth.userid, auth.adminid, auth.authtoken, response);
                 }
             }
+            string cookie = headers.Get("Cookie");
+            if(cookie != null)
+            {
+                return await CheckSession(new AuthObj { Cookie = cookie }, response);
+            }
             Security.AuthObj auth_obj = (Security.AuthObj)Misc.ConvertHeadersOrBodyToType(typeof(Security.AuthObj), headers, Data);
             return await CheckSession(auth_obj, response);
         }
