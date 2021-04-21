@@ -41,7 +41,7 @@ namespace api.Backend.Events.FoodItems
             Data.Obj.FoodItem[] items = await table.SelectCustom<Data.Obj.FoodItem>(
                 what: "DISTINCT FoodItem.*",
                 tables: "tat.FoodItem, tat.LinkMenuFood, tat.Menu, tat.LinkMenuRestaurant, tat.Restaurant, tat.RestaurantAdmin",
-                where: "(tat.FoodItem.FoodID=tat.LinkMenuFood.FoodID AND tat.LinkMenuFood.FoodID = tat.Menu.MenuID AND tat.Menu.MenuID = tat.LinkMenuRestaurant.MenuID AND tat.LinkMenuRestaurant.RestaurantID = tat.Restaurant.RestaurantID AND tat.Restaurant.OwnerID=@OID AND tat.FoodItem.FoodID=@FID)",
+                where: "(tat.FoodItem.FoodID=tat.LinkMenuFood.FoodID AND tat.LinkMenuFood.MenuID = tat.Menu.MenuID AND tat.Menu.MenuID = tat.LinkMenuRestaurant.MenuID AND tat.LinkMenuRestaurant.RestaurantID = tat.Restaurant.RestaurantID AND tat.Restaurant.OwnerID=@OID AND tat.FoodItem.FoodID=@FID)",
                 new System.Collections.Generic.List<System.Tuple<string, object>>()
                 {
                     new System.Tuple<string, object>("OID",perm.admin_id),
