@@ -20,12 +20,25 @@ namespace api.Backend.Events.Users
         #endregion Fields
 
         #region Methods
+        [WebEvent(typeof(string), "/user/logout", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task LogoutAdmin(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Session[] users = await Binding.GetTable<Session>().Select<Session>(perm.user_id);
+
+            await users[0].Delete();
+
+            response.StatusCode = 200;
+            response.AddToData("message", "You are now logged out");
+        }
 
         [WebEvent(typeof(string),"/user/authcheck", "POST", false, SecurityGroup.User)]
         public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            User[] u = await Binding.GetTable<User>().Select<User>(perm.user_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
         [WebEvent(typeof(string), "/user/authcheck", "GET", false, SecurityGroup.User)]
@@ -33,6 +46,9 @@ namespace api.Backend.Events.Users
         {
             response.StatusCode = 200;
             response.AddToData("message", "You are logged in");
+
+            User[] u = await Binding.GetTable<User>().Select<User>(perm.user_id);
+            response.AddToData("verified", u[0].IsVerified);
         }
 
         [WebEvent(typeof(LoginCredentials), "/user/login", "POST", false)]
