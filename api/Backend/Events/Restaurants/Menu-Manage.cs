@@ -27,7 +27,7 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuBody), "/menu/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.Menu _menu = new Data.Obj.Menu() { MenuID = body.MenuID, IsChildMenu = body.IsChildMenu, MenuName = body.MenuName };
+            Data.Obj.Menu _menu = new Data.Obj.Menu() { MenuID = body.MenuID, IsChildMenu = body.IsChildMenu.HasValue && body.IsChildMenu.Value, MenuName = body.MenuName };
 
             if (!await _menu.Insert(true))
             {
@@ -37,6 +37,30 @@ namespace api.Backend.Events.Restaurants
             }
 
             response.AddToData("message", "Created menu");
+            response.AddObjectToData("menu", _menu);
+            response.StatusCode = 200;
+        }
+
+        [WebEvent(typeof(MenuBody), "/menu/update", "POST", false, SecurityGroup.Administrator)]
+        public static async Task UpdateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID);
+
+            if (_menus.Length==0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            Menu _menu = _menus[0];
+
+            if (body.MenuName.Length > 0) _menu.MenuName = body.MenuName;
+            if (body.IsChildMenu.HasValue) _menu.IsChildMenu = body.IsChildMenu.Value;
+
+            await _menu.Update();
+
+            response.AddToData("message", "Updated menu");
             response.AddObjectToData("menu", _menu);
             response.StatusCode = 200;
         }

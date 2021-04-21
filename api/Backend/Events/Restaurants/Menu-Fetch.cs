@@ -12,7 +12,7 @@ namespace api.Backend.Events.Restaurants
     public class MenuBody
     {
         public uint MenuID, RestaurantID;
-        public bool IsChildMenu;
+        public bool? IsChildMenu;
         public string MenuName;
     }
 
