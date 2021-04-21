@@ -82,6 +82,29 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
+        [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/linkrestaurant", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task RemoveLinkMenuToRestaurant(LinkMenuRestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.LinkMenuRestaurant[] _links = await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>(new string[] { "MenuID", "RestaurantID" }, new object[] { body.MenuID, body.RestaurantID });
+
+            if (_links.Length==0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "This link does not exist!");
+                return;
+            }
+
+            if (!await _links[0].Delete())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Deleted link");
+            response.StatusCode = 200;
+        }
+
         [WebEvent(typeof(MenuTimeBody), "/menu/addtime", "POST", false, SecurityGroup.Administrator)]
         public static async Task AddTimeToRestaurant(MenuTimeBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
