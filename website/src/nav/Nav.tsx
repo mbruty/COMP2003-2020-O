@@ -29,6 +29,7 @@ import {
   AccountCircle,
   Equalizer,
   Fastfood,
+  Label,
   MenuBook,
   Store,
 } from "@material-ui/icons";
@@ -454,6 +455,16 @@ export default function Nav(props: Props) {
                 <Fastfood />
               </ListItemIcon>
               <ListItemText primary="Create / Edit a Food Item" />
+            </ListItem>
+            <ListItem
+              button
+              key="Create a food tag"
+              onClick={() => history.push("/tags")}
+            >
+              <ListItemIcon>
+                <Label />
+              </ListItemIcon>
+              <ListItemText primary="Create a food tag" />
             </ListItem>
           </List>
           <Divider />

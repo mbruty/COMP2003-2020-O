@@ -1,6 +1,10 @@
 export default [
   {
     foodid: 1,
-    name: "BURGER",
+    name: "QUOKKA",
+  }, 
+  {
+    foodid: 3,
+    name: "Borger"
   }
 ];

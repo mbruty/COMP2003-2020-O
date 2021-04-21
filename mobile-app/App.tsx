@@ -5,6 +5,8 @@ import MainScreen from "./src/packages/main-sequence";
 import { LogIn, SignUpProcess } from "./src/packages/user";
 import authCheck from "./src/packages/requests/authCheck";
 import { IUser } from "./src/packages/user/IUser";
+import { Loading } from "./src/Loading";
+
 
 export default function App() {
   const [user, setUser] = useState<IUser>();
@@ -12,7 +14,7 @@ export default function App() {
   /* For development set this to the page you're making..
   Set this to "main" when publishing */
 
-  const [page, setPage] = useState<string>("main");
+  const [page, setPage] = useState<string>("loading");
 
   const logIn = () => {
     setIsLoggedIn(true);
@@ -26,14 +28,12 @@ export default function App() {
   }
 
   useEffect(() => {
-    authCheck().then((res) => {
-      setIsLoggedIn(res);
-      console.log(isLoggedIn);
-      if (!isLoggedIn && page !== "log-in") {
+    authCheck().then((loggedIn) => {
+      setIsLoggedIn(loggedIn);
+      if (!loggedIn && page !== "log-in") {
         setPage("log-in");
       } else {
         setPage("main");
-
       }
     });
   }, [isLoggedIn]);
@@ -44,20 +44,22 @@ export default function App() {
   switch (page) {
     case "sign-up":
       return <SignUpProcess setUser={setUser} setPage={setPage} user={user} />;
-      break;
     case "log-in":
       return (
         <View style={styles.container}>
           <LogIn setPage={setPage} submit={logIn} />
         </View>
       );
-      break;
     case "main":
       return (
         <View style={styles.container}>
           <MainScreen logOut={logOut} />
         </View>
       );
+    case "loading":
+      return(
+        <Loading />
+      )
     default:
       return (
         <View style={styles.container}>
