@@ -1,16 +1,16 @@
-﻿using api.Backend.Security;
+﻿using Newtonsoft.Json;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
 
 namespace api.Backend
 {
     public static class Misc
     {
-        public static object ConvertHeadersOrBodyToType(Type dataType,NameValueCollection headers, string data)
+        #region Methods
+
+        public static object ConvertHeadersOrBodyToType(Type dataType, NameValueCollection headers, string data)
         {
             if (dataType == typeof(string)) return data;
             if (dataType == typeof(NameValueCollection)) return headers;
@@ -34,5 +34,7 @@ namespace api.Backend
             }
             return o;
         }
+
+        #endregion Methods
     }
 }

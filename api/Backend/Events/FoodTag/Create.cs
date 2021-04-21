@@ -2,9 +2,7 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -14,7 +12,7 @@ namespace api.Backend.Events.FoodTag
     {
         #region Methods
 
-        [WebEvent(typeof(FoodTagBody),"/foodtags/create", "POST", false, SecurityGroup.None)]
+        [WebEvent(typeof(FoodTagBody), "/foodtags/create", "POST", false, SecurityGroup.None)]
         public static async Task GetTagsLike(FoodTagBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(

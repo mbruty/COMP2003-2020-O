@@ -1,33 +1,19 @@
-﻿using api.Backend.Data.Obj;
-using api.Backend.Data.SQL.AutoSQL;
+﻿using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 
 namespace api.Backend.Events.Restaurants
 {
-    public class OpeningHoursBody
-    {
-        public uint RestaurantID;
-        public string DayRef;
-        public TimeSpan OpenTime, TimeServing;
-    }
-
     public static class Restaurant_Manage
     {
-        #region Classes
-
-        #endregion Classes
-
         #region Methods
 
         [WebEvent(typeof(OpeningHoursBody), "/restaurant/addtime", "POST", false, SecurityGroup.Administrator)]
         public static async Task AddTimeToRestaurant(OpeningHoursBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.OpeningHours _time = new Data.Obj.OpeningHours() { DayRef = body.DayRef, RestaurantID = body.RestaurantID, TimeServing = body.TimeServing, OpenTime=body.OpenTime };
+            Data.Obj.OpeningHours _time = new Data.Obj.OpeningHours() { DayRef = body.DayRef, RestaurantID = body.RestaurantID, TimeServing = body.TimeServing, OpenTime = body.OpenTime };
 
 #warning needs updating once reef makes db changes
             if (!await _time.Insert(false))
@@ -42,7 +28,7 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody),"/restaurant/create", "POST", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(RestaurantBody), "/restaurant/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             if (!body.IsValid())
@@ -52,7 +38,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            Data.Obj.Restaurant _restaurant = new Data.Obj.Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude, IsVerified = false, Latitude = body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site, Street1 = body.Street1, Street2 = body.Street2, Town = body.Town, County=body.County, Postcode=body.Postcode };
+            Data.Obj.Restaurant _restaurant = new Data.Obj.Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude, IsVerified = false, Latitude = body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site, Street1 = body.Street1, Street2 = body.Street2, Town = body.Town, County = body.County, Postcode = body.Postcode };
 
             if (!await _restaurant.Insert(true))
             {
@@ -114,5 +100,16 @@ namespace api.Backend.Events.Restaurants
         }
 
         #endregion Methods
+    }
+
+    public class OpeningHoursBody
+    {
+        #region Fields
+
+        public string DayRef;
+        public TimeSpan OpenTime, TimeServing;
+        public uint RestaurantID;
+
+        #endregion Fields
     }
 }

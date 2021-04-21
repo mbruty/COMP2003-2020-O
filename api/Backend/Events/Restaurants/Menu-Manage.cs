@@ -2,29 +2,15 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 
 namespace api.Backend.Events.Restaurants
 {
-    public class MenuTimeBody
-    {
-        public uint MenuTimeID;
-        public uint MenuRestID;
-        public string DayRef;
-        public TimeSpan StartServing, TimeServing;
-    }
-
-    public class LinkMenuRestaurantBody
-    {
-        public uint MenuRestID, MenuID, RestaurantID;
-        public bool AlwaysServe, IsActive;
-    }
-
     public static class Menu_Manage
     {
+        #region Methods
+
         [WebEvent(typeof(MenuBody), "/menu/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
@@ -38,30 +24,6 @@ namespace api.Backend.Events.Restaurants
             }
 
             response.AddToData("message", "Created menu");
-            response.AddObjectToData("menu", _menu);
-            response.StatusCode = 200;
-        }
-
-        [WebEvent(typeof(MenuBody), "/menu/update", "POST", false, SecurityGroup.Administrator)]
-        public static async Task UpdateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
-        {
-            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID);
-
-            if (_menus.Length==0)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Something went wrong!");
-                return;
-            }
-
-            Menu _menu = _menus[0];
-
-            if (body.MenuName.Length > 0) _menu.MenuName = body.MenuName;
-            if (body.IsChildMenu.HasValue) _menu.IsChildMenu = body.IsChildMenu.Value;
-
-            await _menu.Update();
-
-            response.AddToData("message", "Updated menu");
             response.AddObjectToData("menu", _menu);
             response.StatusCode = 200;
         }
@@ -84,84 +46,52 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/linkrestaurant", "POST", false, SecurityGroup.Administrator)]
-        public static async Task LinkMenuToRestaurant(LinkMenuRestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(MenuBody), "/menu/update", "POST", false, SecurityGroup.Administrator)]
+        public static async Task UpdateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.LinkMenuRestaurant _link = new Data.Obj.LinkMenuRestaurant() { MenuID = body.MenuID, RestaurantID = body.RestaurantID, IsActive = body.IsActive, AlwaysServe = body.AlwaysServe };
+            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID);
 
-            if (!await _link.Insert(true))
+            if (_menus.Length == 0)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
                 return;
             }
 
-            response.AddToData("message", "Created link");
-            response.AddObjectToData("link", _link);
+            Menu _menu = _menus[0];
+
+            if (body.MenuName.Length > 0) _menu.MenuName = body.MenuName;
+            if (body.IsChildMenu.HasValue) _menu.IsChildMenu = body.IsChildMenu.Value;
+
+            await _menu.Update();
+
+            response.AddToData("message", "Updated menu");
+            response.AddObjectToData("menu", _menu);
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/unlinkrestaurant", "DELETE", false, SecurityGroup.Administrator)]
-        public static async Task RemoveLinkMenuToRestaurant(LinkMenuRestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
-        {
-            Data.Obj.LinkMenuRestaurant[] _links = await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>(new string[] { "MenuID", "RestaurantID" }, new object[] { body.MenuID, body.RestaurantID });
+        #endregion Methods
+    }
 
-            if (_links.Length==0)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "This link does not exist!");
-                return;
-            }
+    public class LinkMenuRestaurantBody
+    {
+        #region Fields
 
-            if (!await _links[0].Delete())
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Something went wrong!");
-                return;
-            }
+        public bool AlwaysServe, IsActive;
+        public uint MenuRestID, MenuID, RestaurantID;
 
-            response.AddToData("message", "Deleted link");
-            response.StatusCode = 200;
-        }
+        #endregion Fields
+    }
 
-        [WebEvent(typeof(MenuTimeBody), "/menu/addtime", "POST", false, SecurityGroup.Administrator)]
-        public static async Task AddTimeToRestaurant(MenuTimeBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
-        {
-            Data.Obj.MenuTimes _time = new Data.Obj.MenuTimes() { DayRef = body.DayRef, MenuRestID = body.MenuRestID, StartServing = body.StartServing, ServingFor = body.TimeServing };
+    public class MenuTimeBody
+    {
+        #region Fields
 
-            if (!await _time.Insert(true)) 
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Something went wrong!");
-                return;
-            }
+        public string DayRef;
+        public uint MenuRestID;
+        public uint MenuTimeID;
+        public TimeSpan StartServing, TimeServing;
 
-            response.AddToData("message", "Created menu time");
-            response.AddObjectToData("time", _time);
-            response.StatusCode = 200;
-        }
-
-        [WebEvent(typeof(MenuTimeBody), "/menu/removetime", "DELETE", false, SecurityGroup.Administrator)]
-        public static async Task RemoveTimeToRestaurant(MenuTimeBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
-        {
-            Data.Obj.MenuTimes[] _times = await Binding.GetTable<MenuTimes>().Select<MenuTimes>(body.MenuTimeID);
-
-            if (_times.Length==0)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "No such Menu Time");
-                return;
-            }
-
-            if (!await _times[0].Delete())
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Something went wrong!");
-                return;
-            }
-
-            response.AddToData("message", "Deleted menu time");
-            response.StatusCode = 200;
-        }
+        #endregion Fields
     }
 }

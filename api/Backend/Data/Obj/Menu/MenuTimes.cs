@@ -1,7 +1,7 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace api.Backend.Data.Obj
 {
@@ -29,7 +29,7 @@ namespace api.Backend.Data.Obj
 
         public bool IsServing(DateTime when)
         {
-            return when.DayOfWeek.ToString().StartsWith(DayRef,StringComparison.CurrentCultureIgnoreCase);
+            return when.DayOfWeek.ToString().StartsWith(DayRef, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public async Task<bool> IsServingAsync(DateTime when)

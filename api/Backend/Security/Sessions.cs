@@ -185,17 +185,17 @@ namespace api.Backend.Security
 
         public static async Task<SecurityPerm> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response, string Data)
         {
-            if(Data.Contains("authtoken"))
+            if (Data.Contains("authtoken"))
             {
                 // We're not using cookies or headers
                 AuthObj auth = JsonSerializer.Deserialize<AuthObj>(Data);
-                if(auth.authtoken != "" && (auth.userid != "" || auth.adminid!=""))
+                if (auth.authtoken != "" && (auth.userid != "" || auth.adminid != ""))
                 {
                     return await CheckSession(auth.userid, auth.adminid, auth.authtoken, response);
                 }
             }
             string cookie = headers.Get("Cookie");
-            if(cookie != null)
+            if (cookie != null)
             {
                 return await CheckSession(new AuthObj { Cookie = cookie }, response);
             }
@@ -235,6 +235,18 @@ namespace api.Backend.Security
         #endregion Methods
     }
 
+    public class AuthObj
+    {
+        #region Properties
+
+        public string adminid { get; set; }
+        public string authtoken { get; set; }
+        public string Cookie { get; set; }
+        public string userid { get; set; }
+
+        #endregion Properties
+    }
+
     public class SecurityPerm
     {
         #region Fields
@@ -243,13 +255,5 @@ namespace api.Backend.Security
         public SecurityGroup SecurityGroup = SecurityGroup.None;
 
         #endregion Fields
-    }
-
-    public class AuthObj
-    {
-        public string authtoken { get; set; }
-        public string userid { get; set; }
-        public string adminid { get; set; }
-        public string Cookie { get; set; }
     }
 }

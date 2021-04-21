@@ -3,9 +3,7 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Events.Users;
 using api.Backend.Security;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,18 +20,7 @@ namespace api.Backend.Events.RestaurantAdmins
 
         #region Methods
 
-        [WebEvent(typeof(string), "/admin/logout", "DELETE", false, SecurityGroup.Administrator)]
-        public static async Task LogoutAdmin(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
-        {
-            RAdminSession[] admins = await Binding.GetTable<RAdminSession>().Select<RAdminSession>(perm.admin_id);
-
-            await admins[0].Delete();
-
-            response.StatusCode = 200;
-            response.AddToData("message", "You are now logged out");
-        }
-
-            [WebEvent(typeof(string),"/admin/authcheck", "POST", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(string), "/admin/authcheck", "POST", false, SecurityGroup.Administrator)]
         public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
@@ -88,7 +75,18 @@ namespace api.Backend.Events.RestaurantAdmins
             response.AddToData("message", "Logged in");
         }
 
-        [WebEvent(typeof(AdminIdWithToken),"/admin/resendcode", "POST", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(string), "/admin/logout", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task LogoutAdmin(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            RAdminSession[] admins = await Binding.GetTable<RAdminSession>().Select<RAdminSession>(perm.admin_id);
+
+            await admins[0].Delete();
+
+            response.StatusCode = 200;
+            response.AddToData("message", "You are now logged out");
+        }
+
+        [WebEvent(typeof(AdminIdWithToken), "/admin/resendcode", "POST", false, SecurityGroup.Administrator)]
         public static async Task resendcode(AdminIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Get the user
@@ -120,7 +118,7 @@ namespace api.Backend.Events.RestaurantAdmins
             Backend.Data.Redis.Instance.SetStringWithExpiration($"admin-signup-code:{user.AdminID}", code, new TimeSpan(0, 30, 0));
         }
 
-        [WebEvent(typeof(RestaurantAdmin),"/admin/signup", "POST", false)]
+        [WebEvent(typeof(RestaurantAdmin), "/admin/signup", "POST", false)]
         public static async Task SignUp(RestaurantAdmin creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             string email = creds.Email, password = creds.Password;
@@ -184,7 +182,7 @@ namespace api.Backend.Events.RestaurantAdmins
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent(typeof(ValidationCode),"/admin/validatecode", "POST", false)]
+        [WebEvent(typeof(ValidationCode), "/admin/validatecode", "POST", false)]
         public static async Task ValidateCode(ValidationCode validation, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             if (validation.AdminID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
