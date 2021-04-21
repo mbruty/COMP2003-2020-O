@@ -14,7 +14,7 @@ namespace api.Backend.Events.Restaurants
 
         public float Longitude, Latitude;
         public uint RestaurantID;
-        public string RestaurantName, RestaurantDescription, Phone, Email, Site;
+        public string RestaurantName, RestaurantDescription, Phone, Email, Site, Street1, Street2, Town, County, Postcode;
 
         #endregion Fields
 

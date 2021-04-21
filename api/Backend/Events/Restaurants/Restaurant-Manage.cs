@@ -52,7 +52,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            Data.Obj.Restaurant _restaurant = new Data.Obj.Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude, IsVerified = false, Latitude = body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site };
+            Data.Obj.Restaurant _restaurant = new Data.Obj.Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude, IsVerified = false, Latitude = body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site, Street1 = body.Street1, Street2 = body.Street2, Town = body.Town, County=body.County, Postcode=body.Postcode };
 
             if (!await _restaurant.Insert(true))
             {
@@ -95,6 +95,11 @@ namespace api.Backend.Events.Restaurants
             if (body.Longitude > -180 && body.Longitude < 180 && body.Longitude != 0) restaurant.Longitude = body.Longitude;
             if (body.RestaurantName != null) restaurant.RestaurantName = body.RestaurantName;
             if (body.RestaurantDescription != null) restaurant.RestaurantDescription = body.RestaurantDescription;
+            if (body.Street1 != null) restaurant.Street1 = body.Street1;
+            if (body.Street2 != null) restaurant.Street2 = body.Street2;
+            if (body.Town != null) restaurant.Town = body.Town;
+            if (body.County != null) restaurant.County = body.County;
+            if (body.Postcode != null) restaurant.Postcode = body.Postcode;
 
             if (!await restaurant.Update())
             {
