@@ -1,6 +1,7 @@
 ﻿using api.Backend.Data.SQL.AutoSQL;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace api.Backend.Data.Obj
 {
@@ -9,7 +10,7 @@ namespace api.Backend.Data.Obj
         #region Fields
 
         public string DayRef;
-        public uint MenuRestID;
+        public uint MenuRestID, MenuTimeID;
         public TimeSpan StartServing, ServingFor;
 
         #endregion Fields
@@ -24,6 +25,12 @@ namespace api.Backend.Data.Obj
         public async Task<LinkMenuRestaurant> GetLinkMenuRestaurant()
         {
             return (await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>(MenuRestID))?[0];
+        }
+
+        public async Task<bool> IsServing(DateTime when)
+        {
+            Days[] _days = await Binding.GetTable<Days>().Select<Days>("DayRef", DayRef);
+            return _days.Any(x => x.DayName == when.DayOfWeek.ToString());
         }
 
         #endregion Methods

@@ -110,8 +110,7 @@ namespace api.Backend.Events.Restaurants
         {
             Data.Obj.MenuTimes _time = new Data.Obj.MenuTimes() { DayRef = body.DayRef, MenuRestID = body.MenuRestID, StartServing = body.StartServing, ServingFor = body.TimeServing };
 
-#warning needs updating once reef makes db changes
-            if (!await _time.Insert(false)) 
+            if (!await _time.Insert(true)) 
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
