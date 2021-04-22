@@ -33,6 +33,15 @@ namespace api.Backend.Data.Obj
                 );
         }
 
+        public async Task<RestaurantAdmin> GetOwner()
+        {
+            return (await Binding.GetTable<RestaurantAdmin>().SelectCustom<RestaurantAdmin>(
+                tables: "FoodItem, LinkMenuFood, Menu, LinkMenuRestaurant, Restaurant, RestaurantAdmin",
+                where: "FoodItem.FoodID = @FID AND FoodItem.FoodID = LinkMenuFood.FoodID AND LinkMenuFood.MenuID = Menu.MenuID AND Menu.MenuID = LinkMenuRestaurant.MenuID AND LinkMenuRestaurant.RestaurantID = Restaurant.RestaurantID AND Restaurant.OwnerID = RestaurantAdmin.RAdminID",
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("FID", FoodID) }
+                ))?[0];
+        }
+
         public async Task<SwipeData[]> GetSwipeData()
         {
             return (await Binding.GetTable<SwipeData>().Select<SwipeData>(FoodID));
