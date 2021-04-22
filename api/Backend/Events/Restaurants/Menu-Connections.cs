@@ -13,7 +13,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuTimeBody), "/menu/addtime", "POST", false, SecurityGroup.Administrator)]
         public static async Task AddTimeToRestaurant(MenuTimeBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.MenuTimes _time = new Data.Obj.MenuTimes() { DayRef = body.DayRef, MenuRestID = body.MenuRestID, StartServing = body.StartServing, ServingFor = body.TimeServing };
+            if (body.DayRef==null||!body.MenuRestID.HasValue||!body.StartServing.HasValue||!body.TimeServing.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            Data.Obj.MenuTimes _time = new Data.Obj.MenuTimes() { DayRef = body.DayRef, MenuRestID = body.MenuRestID.Value, StartServing = body.StartServing.Value, ServingFor = body.TimeServing.Value };
 
             if (!await _time.Insert<MenuTimes>(true))
             {
@@ -30,7 +37,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/linkrestaurant", "POST", false, SecurityGroup.Administrator)]
         public static async Task LinkMenuToRestaurant(LinkMenuRestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.LinkMenuRestaurant _link = new Data.Obj.LinkMenuRestaurant() { MenuID = body.MenuID, RestaurantID = body.RestaurantID, IsActive = body.IsActive, AlwaysServe = body.AlwaysServe };
+            if (!body.MenuID.HasValue || !body.RestaurantID.HasValue || !body.IsActive.HasValue || !body.AlwaysServe.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            Data.Obj.LinkMenuRestaurant _link = new Data.Obj.LinkMenuRestaurant() { MenuID = body.MenuID.Value, RestaurantID = body.RestaurantID.Value, IsActive = body.IsActive.Value, AlwaysServe = body.AlwaysServe.Value };
 
             if (!await _link.Insert<LinkMenuRestaurant>(true))
             {
@@ -47,7 +61,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(LinkMenuRestaurantBody), "/menu/unlinkrestaurant", "DELETE", false, SecurityGroup.Administrator)]
         public static async Task RemoveLinkMenuToRestaurant(LinkMenuRestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.LinkMenuRestaurant[] _links = await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>(new string[] { "MenuID", "RestaurantID" }, new object[] { body.MenuID, body.RestaurantID });
+            if (!body.MenuID.HasValue || !body.RestaurantID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            Data.Obj.LinkMenuRestaurant[] _links = await Binding.GetTable<LinkMenuRestaurant>().Select<LinkMenuRestaurant>(new string[] { "MenuID", "RestaurantID" }, new object[] { body.MenuID.Value, body.RestaurantID.Value });
 
             if (_links.Length == 0)
             {
@@ -70,7 +91,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuTimeBody), "/menu/removetime", "DELETE", false, SecurityGroup.Administrator)]
         public static async Task RemoveTimeToRestaurant(MenuTimeBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.MenuTimes[] _times = await Binding.GetTable<MenuTimes>().Select<MenuTimes>(body.MenuTimeID);
+            if (!body.MenuTimeID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            Data.Obj.MenuTimes[] _times = await Binding.GetTable<MenuTimes>().Select<MenuTimes>(body.MenuTimeID.Value);
 
             if (_times.Length == 0)
             {
@@ -78,6 +106,8 @@ namespace api.Backend.Events.Restaurants
                 response.AddToData("error", "No such Menu Time");
                 return;
             }
+
+#warning does not confirm menu time ownership
 
             if (!await _times[0].Delete<MenuTimes>())
             {

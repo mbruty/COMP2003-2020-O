@@ -255,8 +255,8 @@ namespace api.Backend.Events.Users
     {
         #region Properties
 
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email;
+        public string Password;
 
         #endregion Properties
     }
@@ -265,8 +265,8 @@ namespace api.Backend.Events.Users
     {
         #region Properties
 
-        public string AuthToken { get; set; }
-        public string UserID { get; set; }
+        public string AuthToken;
+        public string UserID;
 
         #endregion Properties
     }
@@ -275,8 +275,8 @@ namespace api.Backend.Events.Users
     {
         #region Properties
 
-        public string Code { get; set; }
-        public string UserID { get; set; }
+        public string Code;
+        public string UserID;
 
         #endregion Properties
     }

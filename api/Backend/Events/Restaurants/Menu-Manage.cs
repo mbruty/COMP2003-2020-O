@@ -14,7 +14,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuBody), "/menu/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.Menu _menu = new Data.Obj.Menu() { MenuID = body.MenuID, IsChildMenu = body.IsChildMenu.HasValue && body.IsChildMenu.Value, MenuName = body.MenuName };
+            if (!body.MenuID.HasValue || body.MenuName==null)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            Data.Obj.Menu _menu = new Data.Obj.Menu() { MenuID = body.MenuID.Value, IsChildMenu = body.IsChildMenu.HasValue && body.IsChildMenu.Value, MenuName = body.MenuName };
 
             if (!await _menu.Insert<Menu>(true))
             {
@@ -31,7 +38,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuBody), "/menu/delete", "DELETE", false, SecurityGroup.Administrator)]
         public static async Task DeleteRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID);
+            if (!body.MenuID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID.Value);
 
             if (_menus.Length == 0)
             {
@@ -49,7 +63,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuBody), "/menu/update", "POST", false, SecurityGroup.Administrator)]
         public static async Task UpdateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID);
+            if (!body.MenuID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            Data.Obj.Menu[] _menus = await Binding.GetTable<Menu>().Select<Menu>(body.MenuID.Value);
 
             if (_menus.Length == 0)
             {
@@ -77,8 +98,8 @@ namespace api.Backend.Events.Restaurants
     {
         #region Fields
 
-        public bool AlwaysServe, IsActive;
-        public uint MenuRestID, MenuID, RestaurantID;
+        public bool? AlwaysServe, IsActive;
+        public uint? MenuRestID, MenuID, RestaurantID;
 
         #endregion Fields
     }
@@ -88,9 +109,8 @@ namespace api.Backend.Events.Restaurants
         #region Fields
 
         public string DayRef;
-        public uint MenuRestID;
-        public uint MenuTimeID;
-        public TimeSpan StartServing, TimeServing;
+        public uint? MenuRestID, MenuTimeID;
+        public TimeSpan? StartServing, TimeServing;
 
         #endregion Fields
     }
