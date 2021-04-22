@@ -80,7 +80,7 @@ namespace api.Backend.Events.RestaurantAdmins
         {
             RAdminSession[] admins = await Binding.GetTable<RAdminSession>().Select<RAdminSession>(perm.admin_id);
 
-            await admins[0].Delete();
+            await admins[0].Delete<RAdminSession>();
 
             response.StatusCode = 200;
             response.AddToData("message", "You are now logged out");
@@ -155,7 +155,7 @@ namespace api.Backend.Events.RestaurantAdmins
 
             RestaurantAdmin user = new RestaurantAdmin() { Email = email, Password = "PASSWORD PENDING" };
 
-            if (!await user.Insert(true))
+            if (!await user.Insert<RestaurantAdmin>(true))
             {
                 response.StatusCode = 500;
                 response.AddToData("error", "Database Insertion Failure");

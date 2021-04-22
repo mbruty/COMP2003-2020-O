@@ -15,7 +15,7 @@ namespace api.Backend.Data.Obj
             return this;
         }
 
-        public async void UpdateContents<T>(NameValueCollection headers) where T : SQL.Object, new()
+        public async void UpdateContents<T>(NameValueCollection headers) where T : Obj.Object, new()
         {
             Type t = typeof(T);
             Table table = Binding.GetTable<T>();
@@ -29,7 +29,7 @@ namespace api.Backend.Data.Obj
                     else field.SetValue(this, Convert.ChangeType(headers[field.Name], field.FieldType));
                 }
             }
-            await this.Update();
+            await this.Update<T>();
         }
 
         #endregion Methods

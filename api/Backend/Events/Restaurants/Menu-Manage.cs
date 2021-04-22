@@ -16,7 +16,7 @@ namespace api.Backend.Events.Restaurants
         {
             Data.Obj.Menu _menu = new Data.Obj.Menu() { MenuID = body.MenuID, IsChildMenu = body.IsChildMenu.HasValue && body.IsChildMenu.Value, MenuName = body.MenuName };
 
-            if (!await _menu.Insert(true))
+            if (!await _menu.Insert<Menu>(true))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
@@ -40,7 +40,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            await _menus[0].Delete();
+            await _menus[0].Delete<Menu>();
 
             response.AddToData("message", "Deleted menu");
             response.StatusCode = 200;
@@ -63,7 +63,7 @@ namespace api.Backend.Events.Restaurants
             if (body.MenuName.Length > 0) _menu.MenuName = body.MenuName;
             if (body.IsChildMenu.HasValue) _menu.IsChildMenu = body.IsChildMenu.Value;
 
-            await _menu.Update();
+            await _menu.Update<Menu>();
 
             response.AddToData("message", "Updated menu");
             response.AddObjectToData("menu", _menu);

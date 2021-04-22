@@ -15,8 +15,7 @@ namespace api.Backend.Events.Restaurants
         {
             Data.Obj.OpeningHours _time = new Data.Obj.OpeningHours() { DayRef = body.DayRef, RestaurantID = body.RestaurantID, TimeServing = body.TimeServing, OpenTime = body.OpenTime };
 
-#warning needs updating once reef makes db changes
-            if (!await _time.Insert(false))
+            if (!await _time.Insert<Data.Obj.OpeningHours>(true))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
@@ -40,7 +39,7 @@ namespace api.Backend.Events.Restaurants
 
             Data.Obj.Restaurant _restaurant = new Data.Obj.Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude, IsVerified = false, Latitude = body.Latitude, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site, Street1 = body.Street1, Street2 = body.Street2, Town = body.Town, County = body.County, Postcode = body.Postcode };
 
-            if (!await _restaurant.Insert(true))
+            if (!await _restaurant.Insert<Data.Obj.Restaurant>(true))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
@@ -87,7 +86,7 @@ namespace api.Backend.Events.Restaurants
             if (body.County != null) restaurant.County = body.County;
             if (body.Postcode != null) restaurant.Postcode = body.Postcode;
 
-            if (!await restaurant.Update())
+            if (!await restaurant.Update<Data.Obj.Restaurant>())
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");

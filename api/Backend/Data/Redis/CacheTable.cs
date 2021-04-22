@@ -11,7 +11,7 @@ namespace api.Backend.Data.Redis
     {
         #region Methods
 
-        private void CacheObject<T>(T UncachedObject) where T : SQL.Object, new()
+        private void CacheObject<T>(T UncachedObject) where T : Obj.Object, new()
         {
             string CacheableObject = JsonConvert.SerializeObject(UncachedObject);
             Redis.Instance.SetStringWithExpiration(GetKey<T>(UncachedObject).ToString(), JToken.FromObject(CacheableObject).ToString());
@@ -33,15 +33,20 @@ namespace api.Backend.Data.Redis
 
         #endregion Constructors
 
-        public object GetKey<T>(T sqlObj) where T : SQL.Object, new()
+        public object GetKey<T>(T sqlObj) where T : Obj.Object, new()
         {
             Type t = new T().GetType();
-            return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(sqlObj)}";
+            if (PrimaryKeys.Length == 1)
+                return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(sqlObj)}";
+            else if (PrimaryKeys.Length>1)
+                return $"{Name}-{String.Join(",",PrimaryKeys.Select(x=> t.GetField(x.Field).GetValue(sqlObj))) }";
+            else
+                throw new Exception("Must Have Primary Key");
         }
 
         public string GetKey(object[] PrimaryKeyValues)
         {
-            return $"{Name}-{PrimaryKeyValues[0]}";
+            return $"{Name}-{String.Join(",", PrimaryKeyValues)}";
         }
 
         public string GetKey(object PrimaryKeyValue)

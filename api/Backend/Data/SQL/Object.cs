@@ -34,10 +34,10 @@ namespace api.Backend.Data.SQL
         /// Delete this object from the database
         /// </summary>
         /// <returns> If the delete was successful </returns>
-        public virtual async Task<bool> Delete()
+        public virtual async Task<bool> Delete<T>() where T : Obj.Object, new()
         {
             Type t = this.GetType();
-            Table table = Binding.GetTable(t);
+            Redis.CacheTable table = Binding.GetTable(t);
 
             Column[] PrimaryKeys = table.PrimaryKeys;
 
@@ -51,6 +51,8 @@ namespace api.Backend.Data.SQL
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
 
+            Redis.Instance.InvalidateKey(table.GetKey<T>((T)this).ToString());
+
             return await Instance.Execute($"DELETE FROM {table.Name} WHERE {Where}", Params);
         }
 
@@ -59,10 +61,10 @@ namespace api.Backend.Data.SQL
         /// </summary>
         /// <param name="FetchInsertedIds"> If we should fill auto incremeneted fields </param>
         /// <returns> If the insert was successful </returns>
-        public virtual async Task<bool> Insert(bool FetchInsertedIds = false)
+        public virtual async Task<bool> Insert<T>(bool FetchInsertedIds = false) where T : Obj.Object, new()
         {
             Type t = this.GetType();
-            Table table = Binding.GetTable(t);
+            Redis.CacheTable table = Binding.GetTable(t);
 
             Column[] Fields = table.Columns;
 
@@ -99,10 +101,10 @@ namespace api.Backend.Data.SQL
         /// Attempt to update this object in the db
         /// </summary>
         /// <returns> If the update was successful </returns>
-        public virtual async Task<bool> Update()
+        public virtual async Task<bool> Update<T>() where T : Obj.Object, new ()
         {
             Type t = this.GetType();
-            Table table = Binding.GetTable(t);
+            Redis.CacheTable table = Binding.GetTable(t);
 
             Column[] PrimaryKeys = table.PrimaryKeys, Fields = table.Fields;
 
@@ -123,6 +125,8 @@ namespace api.Backend.Data.SQL
                 Params.Add(new Tuple<string, object>(PrimaryKeys[i].Field, t.GetField(PrimaryKeys[i].Field).GetValue(this)));
             }
             Where = Where.Trim().Remove(Where.Length - 5, 4);
+
+            Redis.Instance.InvalidateKey(table.GetKey<T>((T)this).ToString());
 
             return await Instance.Execute($"UPDATE {table.Name} SET {What} WHERE {Where}", Params);
         }

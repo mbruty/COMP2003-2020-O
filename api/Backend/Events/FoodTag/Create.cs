@@ -22,7 +22,7 @@ namespace api.Backend.Events.FoodTag
 
             if (tags.Length == 0)
             {
-                await new FoodTags(body.name).Insert();
+                await new FoodTags(body.name).Insert<FoodTags>();
                 response.StatusCode = 201;
 
                 // Get the inserted food tag

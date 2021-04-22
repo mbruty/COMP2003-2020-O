@@ -15,7 +15,7 @@ namespace api.Backend.Events.Restaurants
         {
             Data.Obj.MenuTimes _time = new Data.Obj.MenuTimes() { DayRef = body.DayRef, MenuRestID = body.MenuRestID, StartServing = body.StartServing, ServingFor = body.TimeServing };
 
-            if (!await _time.Insert(true))
+            if (!await _time.Insert<MenuTimes>(true))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
@@ -32,7 +32,7 @@ namespace api.Backend.Events.Restaurants
         {
             Data.Obj.LinkMenuRestaurant _link = new Data.Obj.LinkMenuRestaurant() { MenuID = body.MenuID, RestaurantID = body.RestaurantID, IsActive = body.IsActive, AlwaysServe = body.AlwaysServe };
 
-            if (!await _link.Insert(true))
+            if (!await _link.Insert<LinkMenuRestaurant>(true))
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
@@ -56,7 +56,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            if (!await _links[0].Delete())
+            if (!await _links[0].Delete<LinkMenuRestaurant>())
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
@@ -79,7 +79,7 @@ namespace api.Backend.Events.Restaurants
                 return;
             }
 
-            if (!await _times[0].Delete())
+            if (!await _times[0].Delete<MenuTimes>())
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
