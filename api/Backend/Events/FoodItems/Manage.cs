@@ -2,42 +2,19 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace api.Backend.Events.FoodItems
 {
-    public class FoodItemBody
-    {
-        public uint? FoodID, MenuID;
-
-        public string FoodName, FoodNameShort, FoodDescription;
-
-        public decimal? Price;
-    }
-
-    public class FoodCheckBody
-    {
-        public uint? FoodID;
-
-        public bool? IsVegetarian,
-            IsVegan,
-            IsHalal,
-            IsKosher,
-            HasLactose,
-            HasNuts,
-            HasGluten,
-            HasEgg,
-            HasSoy;
-    }
-
     public static class Manage
     {
+        #region Methods
+
         [WebEvent(typeof(FoodItemBody), "/fooditem/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreatFoodItem(FoodItemBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (body.FoodName==null || body.FoodNameShort==null || body.FoodDescription==null || !body.Price.HasValue || !body.MenuID.HasValue)
+            if (body.FoodName == null || body.FoodNameShort == null || body.FoodDescription == null || !body.Price.HasValue || !body.MenuID.HasValue)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");
@@ -126,5 +103,39 @@ namespace api.Backend.Events.FoodItems
             response.AddObjectToData("foodcheck", _check);
             response.StatusCode = 200;
         }
+
+        #endregion Methods
+    }
+
+    public class FoodCheckBody
+    {
+        #region Fields
+
+        public uint? FoodID;
+
+        public bool? IsVegetarian,
+            IsVegan,
+            IsHalal,
+            IsKosher,
+            HasLactose,
+            HasNuts,
+            HasGluten,
+            HasEgg,
+            HasSoy;
+
+        #endregion Fields
+    }
+
+    public class FoodItemBody
+    {
+        #region Fields
+
+        public uint? FoodID, MenuID;
+
+        public string FoodName, FoodNameShort, FoodDescription;
+
+        public decimal? Price;
+
+        #endregion Fields
     }
 }

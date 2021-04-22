@@ -7,15 +7,6 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Events.FoodTag
 {
-    public class tagLikeBody
-    {
-        #region Fields
-
-        public string tag;
-
-        #endregion Fields
-    }
-
     public static class Fetch
     {
         #region Methods
@@ -33,11 +24,14 @@ namespace api.Backend.Events.FoodTag
         }
 
         #endregion Methods
+    }
 
-        #region Classes
+    public class tagLikeBody
+    {
+        #region Fields
 
-        
+        public string tag;
 
-        #endregion Classes
+        #endregion Fields
     }
 }

@@ -8,15 +8,6 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Events.FoodTag
 {
-    public class FoodTagBody
-    {
-        #region Properties
-
-        public string name { get; set; }
-
-        #endregion Properties
-    }
-
     public static class Create
     {
         #region Methods
@@ -120,11 +111,14 @@ namespace api.Backend.Events.FoodTag
         }
 
         #endregion Methods
+    }
 
-        #region Classes
+    public class FoodTagBody
+    {
+        #region Properties
 
-        
+        public string name { get; set; }
 
-        #endregion Classes
+        #endregion Properties
     }
 }

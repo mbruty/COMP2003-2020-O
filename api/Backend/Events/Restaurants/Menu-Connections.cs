@@ -13,7 +13,7 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuTimeBody), "/menu/addtime", "POST", false, SecurityGroup.Administrator)]
         public static async Task AddTimeToRestaurant(MenuTimeBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (body.DayRef==null||!body.MenuRestID.HasValue||!body.StartServing.HasValue||!body.TimeServing.HasValue)
+            if (body.DayRef == null || !body.MenuRestID.HasValue || !body.StartServing.HasValue || !body.TimeServing.HasValue)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");

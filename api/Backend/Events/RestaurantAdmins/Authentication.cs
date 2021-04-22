@@ -10,26 +10,6 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Events.RestaurantAdmins
 {
-    public class AdminIdWithToken
-    {
-        #region Properties
-
-        public string AdminID { get; set; }
-        public string AuthToken { get; set; }
-
-        #endregion Properties
-    }
-
-    public class ValidationCode
-    {
-        #region Properties
-
-        public string AdminID { get; set; }
-        public string Code { get; set; }
-
-        #endregion Properties
-    }
-
     public static class Authentication
     {
         #region Fields
@@ -262,11 +242,25 @@ namespace api.Backend.Events.RestaurantAdmins
         }
 
         #endregion Methods
+    }
 
-        #region Classes
+    public class AdminIdWithToken
+    {
+        #region Properties
 
-        
+        public string AdminID { get; set; }
+        public string AuthToken { get; set; }
 
-        #endregion Classes
+        #endregion Properties
+    }
+
+    public class ValidationCode
+    {
+        #region Properties
+
+        public string AdminID { get; set; }
+        public string Code { get; set; }
+
+        #endregion Properties
     }
 }

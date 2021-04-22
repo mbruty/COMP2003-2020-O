@@ -101,7 +101,7 @@ namespace api.Backend.Data.SQL
         /// Attempt to update this object in the db
         /// </summary>
         /// <returns> If the update was successful </returns>
-        public virtual async Task<bool> Update<T>() where T : Obj.Object, new ()
+        public virtual async Task<bool> Update<T>() where T : Obj.Object, new()
         {
             Type t = this.GetType();
             Redis.CacheTable table = Binding.GetTable(t);

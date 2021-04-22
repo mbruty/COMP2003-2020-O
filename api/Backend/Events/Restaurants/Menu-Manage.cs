@@ -14,7 +14,7 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuBody), "/menu/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (!body.MenuID.HasValue || body.MenuName==null)
+            if (!body.MenuID.HasValue || body.MenuName == null)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");

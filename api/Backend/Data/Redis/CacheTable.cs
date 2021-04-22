@@ -38,8 +38,8 @@ namespace api.Backend.Data.Redis
             Type t = new T().GetType();
             if (PrimaryKeys.Length == 1)
                 return $"{Name}-{t.GetField(PrimaryKeys[0].Field).GetValue(sqlObj)}";
-            else if (PrimaryKeys.Length>1)
-                return $"{Name}-{String.Join(",",PrimaryKeys.Select(x=> t.GetField(x.Field).GetValue(sqlObj))) }";
+            else if (PrimaryKeys.Length > 1)
+                return $"{Name}-{String.Join(",", PrimaryKeys.Select(x => t.GetField(x.Field).GetValue(sqlObj))) }";
             else
                 throw new Exception("Must Have Primary Key");
         }

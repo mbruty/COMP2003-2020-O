@@ -253,31 +253,31 @@ namespace api.Backend.Events.Users
 
     public class LoginCredentials
     {
-        #region Properties
+        #region Fields
 
         public string Email;
         public string Password;
 
-        #endregion Properties
+        #endregion Fields
     }
 
     public class UserIdWithToken
     {
-        #region Properties
+        #region Fields
 
         public string AuthToken;
         public string UserID;
 
-        #endregion Properties
+        #endregion Fields
     }
 
     public class ValidationCode
     {
-        #region Properties
+        #region Fields
 
         public string Code;
         public string UserID;
 
-        #endregion Properties
+        #endregion Fields
     }
 }
