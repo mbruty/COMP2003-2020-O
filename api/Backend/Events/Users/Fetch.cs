@@ -2,7 +2,6 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,7 +11,7 @@ namespace api.Backend.Events.Users
     {
         #region Methods
 
-        [WebEvent(typeof(string),"/user/visits", "GET", false, SecurityGroup.User)]
+        [WebEvent(typeof(string), "/user/visits", "GET", false, SecurityGroup.User)]
         public static async Task GetRecentVisits(string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);

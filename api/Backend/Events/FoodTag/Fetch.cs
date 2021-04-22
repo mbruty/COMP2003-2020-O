@@ -3,21 +3,15 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
 
 namespace api.Backend.Events.FoodTag
 {
     public static class Fetch
     {
-        public class tagLike
-        {
-            public string tag;
-        }
-
         #region Methods
 
-        [WebEvent(typeof(tagLike),"/foodtags/like", "GET", false, SecurityGroup.None)]
+        [WebEvent(typeof(tagLike), "/foodtags/like", "GET", false, SecurityGroup.None)]
         public static async Task GetTagsLike(tagLike like, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
@@ -30,5 +24,18 @@ namespace api.Backend.Events.FoodTag
         }
 
         #endregion Methods
+
+        #region Classes
+
+        public class tagLike
+        {
+            #region Fields
+
+            public string tag;
+
+            #endregion Fields
+        }
+
+        #endregion Classes
     }
 }
