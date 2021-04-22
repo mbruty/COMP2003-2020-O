@@ -10,17 +10,16 @@ namespace api.Backend.Events.FoodItems
 {
     public class FoodItemBody
     {
-        public uint FoodID, MenuID;
+        public uint? FoodID, MenuID;
 
         public string FoodName, FoodNameShort, FoodDescription;
 
-        public decimal Price;
-
+        public decimal? Price;
     }
 
     public class FoodCheckBody
     {
-        public uint FoodID;
+        public uint? FoodID;
 
         public bool? IsVegetarian,
             IsVegan,
@@ -38,7 +37,21 @@ namespace api.Backend.Events.FoodItems
         [WebEvent(typeof(FoodItemBody), "/fooditem/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreatFoodItem(FoodItemBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            Data.Obj.FoodItem _item = new Data.Obj.FoodItem() { FoodDescription = body.FoodDescription, FoodName = body.FoodName, FoodNameShort = body.FoodNameShort, Price = body.Price };
+            if (body.FoodName==null || body.FoodNameShort==null || body.FoodDescription==null || !body.Price.HasValue || !body.MenuID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            if (body.Price.Value < 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Negative Price");
+                return;
+            }
+
+            Data.Obj.FoodItem _item = new Data.Obj.FoodItem() { FoodDescription = body.FoodDescription, FoodName = body.FoodName, FoodNameShort = body.FoodNameShort, Price = body.Price.Value };
 
             if (!await _item.Insert<FoodItem>(true))
             {
@@ -47,7 +60,7 @@ namespace api.Backend.Events.FoodItems
                 return;
             }
 
-            LinkMenuFood _link = new LinkMenuFood() { FoodID = _item.FoodID, MenuID = body.MenuID };
+            LinkMenuFood _link = new LinkMenuFood() { FoodID = _item.FoodID, MenuID = body.MenuID.Value };
 
             if (!await _link.Insert<LinkMenuFood>(false))
             {
@@ -65,7 +78,14 @@ namespace api.Backend.Events.FoodItems
         [WebEvent(typeof(FoodCheckBody), "/fooditem/foodchecks", "POST", false, SecurityGroup.Administrator)]
         public static async Task FoodItemFoodChecks(FoodCheckBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            FoodItem[] _items = await Binding.GetTable<FoodItem>().Select<FoodItem>(body.FoodID);
+            if (!body.FoodID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
+            FoodItem[] _items = await Binding.GetTable<FoodItem>().Select<FoodItem>(body.FoodID.Value);
 
             if (!_items.Any())
             {
