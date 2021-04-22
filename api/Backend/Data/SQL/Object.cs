@@ -88,7 +88,9 @@ namespace api.Backend.Data.SQL
             {
                 uint[] Ids = FetchAutoIncrement();
 
-                t.GetField(Fields.First(x => x.IsAutoIncrement)?.Field)?.SetValue(this, Ids[0]);
+                Column[] AutoIncrement = Fields.Where(x => x.IsAutoIncrement).ToArray();
+
+                if (AutoIncrement.Any()) t.GetField(AutoIncrement[0].Field)?.SetValue(this, Ids[0]);
             }
             return success;
         }
