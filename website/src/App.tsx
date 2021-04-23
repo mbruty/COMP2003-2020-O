@@ -22,13 +22,7 @@ import SelectItem from "./item-builder/SelectItem";
 import QrReader from "./restaurant-builder/QrReader";
 import VerifyRestaurant from "./restaurant-builder/VerifyRestaurant";
 import TagBuilder from "./Community-food-tags/CommunityFoodTags";
-
-const dummyData = [
-  { id: 1, name: "The Bruty's Arms" },
-  { id: 2, name: "The Royal Davies" },
-  { id: 3, name: "The Lakin's Head" },
-  { id: 4, name: "Denman's Diner" },
-];
+import { RestaurantContext } from "./RestaurantContext";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -64,13 +58,27 @@ function App() {
   const [selectedRestaurant, setSelectedRestaurant] = React.useState<{
     id: number;
     name: string;
-  }>(dummyData[0]);
+  }>({
+    id: 0,
+    name: "Loading...",
+  });
+
+  const [restaurants, setRestaurants] = React.useState<
+    {
+      id: number;
+      name: string;
+    }[]
+  >([
+    {
+      id: 0,
+      name: "Loading...",
+    },
+  ]);
 
   const history = useHistory();
 
   React.useEffect(() => {
-    console.log(history);
-
+    // Check that the cookie we have stored is valid
     fetch(API_URL + "/admin/authcheck", {
       method: "POST",
       mode: "cors",
@@ -87,6 +95,60 @@ function App() {
     });
   }, [history]);
 
+  React.useEffect(() => {
+    (async () => {
+      const res = await fetch(API_URL + "/restaurant/me", {
+        mode: "cors",
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (res.status === 200) {
+        const data = await res.json();
+        console.log(
+          data.restaurants.map((restaurant: any) => {
+            return {
+              id: restaurant.RestaurantID,
+              name: restaurant.Name,
+            };
+          })
+        );
+
+        setRestaurants(
+          data.restaurants.map((restaurant: any) => {
+            return {
+              id: restaurant.RestaurantID,
+              name: restaurant.RestaurantName,
+            };
+          })
+        );
+        const previouslySelected = window.localStorage.getItem(
+          "selectedRestaurant"
+        );
+        if (previouslySelected) {
+          const previouslySelectedRestaurantIdx = data.restaurants.findIndex(
+            (element: any) => element.RestaurantID === previouslySelected
+          );
+
+          if (previouslySelectedRestaurantIdx !== -1) {
+            setSelectedRestaurant(
+              data.restaurants[previouslySelectedRestaurantIdx]
+            );
+            return;
+          }
+        }
+        console.log(data.restaurants[0]);
+
+        setSelectedRestaurant({
+          id: data.restaurants[0].RestaurantID,
+          name: data.restaurants[0].RestaurantName,
+        });
+      } else {
+        history.push("/log-in");
+      }
+    })();
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -97,33 +159,39 @@ function App() {
           colour={prefersDarkMode ? "#333333" : theme.palette.primary.light}
           selectedRestaurant={selectedRestaurant}
           setSelectedRestaurant={setSelectedRestaurant}
-          restaurants={dummyData}
+          restaurants={restaurants}
         />
         <main>
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => <Home observer={widgetObserver} />}
-            />
-            <Route
-              exact
-              path="/log-in"
-              render={() => <LogIn refresh={refresh} />}
-            />
-            <Route
-              exact
-              path="/restaurant-builder"
-              render={() => <RestaurantBuilder />}
-            />
-            <Route exact path="/menu-builder" render={() => <MenuBuilder />} />
-            <Route exact path="/item-builder/:id" component={ItemBuilder} />
-            <Route exact path="/item-builder" component={SelectItem} />
-            <Route exact path="/verify" component={QrReader} />
-            <Route exact path="/verify/:code" component={VerifyRestaurant} />
-            <Route exact path="/tags" component={TagBuilder} />
-            <Redirect to="/" />
-          </Switch>
+          <RestaurantContext.Provider value={selectedRestaurant}>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => <Home observer={widgetObserver} />}
+              />
+              <Route
+                exact
+                path="/log-in"
+                render={() => <LogIn refresh={refresh} />}
+              />
+              <Route
+                exact
+                path="/restaurant-builder"
+                render={() => <RestaurantBuilder />}
+              />
+              <Route
+                exact
+                path="/menu-builder"
+                render={() => <MenuBuilder />}
+              />
+              <Route exact path="/item-builder/:id" component={ItemBuilder} />
+              <Route exact path="/item-builder" component={SelectItem} />
+              <Route exact path="/verify" component={QrReader} />
+              <Route exact path="/verify/:code" component={VerifyRestaurant} />
+              <Route exact path="/tags" component={TagBuilder} />
+              <Redirect to="/" />
+            </Switch>
+          </RestaurantContext.Provider>
         </main>
       </div>
     </ThemeProvider>
