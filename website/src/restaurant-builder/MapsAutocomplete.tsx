@@ -47,7 +47,7 @@ interface PlaceType {
 interface Props {
   onComplete: (data: {
     address: address;
-    geo: { lat: number; lon: number };
+    geo: { lat: number; lng: number };
   }) => void;
 }
 

@@ -38,7 +38,7 @@ interface Data {
   address: address;
   geo: {
     lat: number;
-    lon: number;
+    lng: number;
   };
 }
 
@@ -57,7 +57,7 @@ const initialState = {
   },
   geo: {
     lat: 0,
-    lon: 0,
+    lng: 0,
   },
 };
 
@@ -168,7 +168,7 @@ const RestaurantBuilder: React.FC<Props> = () => {
             const result = await fetch(API_URL + "/restaurant/create", {
               method: "POST",
               body: JSON.stringify({
-                Longitude: data.geo.lon,
+                Longitude: data.geo.lng,
                 Latitude: data.geo.lat,
                 RestaurantName: data.restaurantname,
                 RestaurantDescription: data.restaurantdescription,
