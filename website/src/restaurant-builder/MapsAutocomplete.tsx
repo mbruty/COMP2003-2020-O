@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
-import GetGeoLocation, { API_KEY } from "./GetGeoLocation";
+import GetGeoLocation, { address, API_KEY } from "./GetGeoLocation";
 
 function loadScript(src: string, position: HTMLElement | null, id: string) {
   if (!position) {
@@ -46,7 +46,7 @@ interface PlaceType {
 
 interface Props {
   onComplete: (data: {
-    address: string;
+    address: address;
     geo: { lat: number; lon: number };
   }) => void;
 }
@@ -61,7 +61,7 @@ const MapsAutocomplete: React.FC<Props> = (props) => {
   React.useEffect(() => {
     if (value) {
       console.log(value);
-      
+
       // Get the geo data
       (async () => {
         props.onComplete(await GetGeoLocation(value.description));

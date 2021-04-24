@@ -83,6 +83,15 @@ namespace api.Backend.Events.Restaurants
         #endregion Fields
     }
 
+    public class LinkMenuFoodBody
+    {
+        #region Fields
+
+        public uint MenuID, FoodID;
+
+        #endregion Fields
+    }
+
     public class MenuTimeBody
     {
         #region Fields

@@ -46,7 +46,7 @@ const LogInForm: React.FC<{ refresh: () => void }> = (Props) => {
         } else if (result.status === 200) {
           localStorage.setItem(
             "auth",
-            JSON.stringify({ userid: body.userid, authtoken: body.authtoken })
+            JSON.stringify({ userid: body.admin_id, authtoken: body.authtoken })
           );
           // We're logged in!
           // Redirect to home

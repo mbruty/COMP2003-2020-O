@@ -10,21 +10,26 @@ require("dotenv").config();
 
 const typeDefs = gql`
   input CropInput {
-    x: Int,
-    y: Int,
-    width: Int,
+    x: Int
+    y: Int
+    width: Int
     height: Int
   }
 
   input AuthInput {
-    userid: String,
+    userid: String
     authtoken: String
   }
   type Query {
     files: [String]
   }
   type Mutation {
-    uploadFile(file: Upload!, crop: CropInput!, auth: AuthInput!, foodID: Int!): Boolean
+    uploadFile(
+      file: Upload!
+      crop: CropInput!
+      auth: AuthInput!
+      foodID: Int!
+    ): Boolean
   }
 `;
 
@@ -42,24 +47,27 @@ const resolvers = {
   Mutation: {
     uploadFile: async (_, { file, crop, auth, foodID }) => {
       const { createReadStream } = await file;
-      const authcheck = await fetch("http://devapi.trackandtaste.com/authcheck", {
+      const authcheck = await fetch("http://localhost:5000/admin/authcheck", {
         method: "POST",
-        headers: { 'userid': auth.userid, 'authtoken': auth.authtoken }
+        body: JSON.stringify({
+          adminid: auth.userid,
+          authtoken: auth.authtoken,
+        }),
       });
-      if(authcheck.status !== 200)
-        return false;
+      console.log(authcheck.status);
+      if (authcheck.status !== 200) return false;
       const transformer = sharp().resize({
         width: 400,
         height: 480,
         fit: sharp.fit.contain,
-        position: sharp.strategy.centre
-      })
+        position: sharp.strategy.centre,
+      });
       const extract = sharp().extract({
         width: crop.width,
         height: crop.height,
         top: crop.y,
-        left: crop.x
-      })
+        left: crop.x,
+      });
       await new Promise((res) => {
         createReadStream()
           .pipe(extract)
@@ -69,17 +77,15 @@ const resolvers = {
               resumable: false,
               gzip: true,
             })
-          ).on("finish", res)
-
+          )
+          .on("finish", res);
       });
-
 
       console.log("here");
       return true;
     },
   },
 };
-
 
 const server = new ApolloServer({
   typeDefs,
