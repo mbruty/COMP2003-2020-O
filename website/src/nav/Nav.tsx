@@ -398,6 +398,9 @@ export default function Nav(props: Props) {
                         <div style={{ marginBottom: "5px" }}>
                           <Button
                             onClick={() => {
+                              if(restaurant.name === "Create a restaurant"){
+                                history.push("/restaurant-builder")
+                              }
                               props.setSelectedRestaurant(restaurant);
                               setExpanded(false);
                             }}
