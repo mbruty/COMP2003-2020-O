@@ -21,7 +21,7 @@ namespace api.Backend.Events.Restaurants
 
             if (restaurants.Length == 0)
             {
-                response.StatusCode = 401;
+                response.StatusCode = 404;
                 response.AddToData("error", "That Restaurant Id does not exist");
                 return;
             }
