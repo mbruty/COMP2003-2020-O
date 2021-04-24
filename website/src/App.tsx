@@ -143,7 +143,12 @@ function App() {
           id: data.restaurants[0].RestaurantID,
           name: data.restaurants[0].RestaurantName,
         });
-      } else {
+      }
+      else if(res.status === 404) {
+        setRestaurants([{id: 0, name: "Create a restaurant"}]);
+        setSelectedRestaurant({id: 0, name: "You don't own any restaurants"})
+      }
+      else {
         history.push("/log-in");
       }
     })();
