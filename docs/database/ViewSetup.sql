@@ -1,5 +1,6 @@
 DROP VIEW IF EXISTS FoodOpinionRightSwipePercent;
 DROP VIEW IF EXISTS RestaurantMenuView;
+DROP VIEW IF EXISTS UserFoodCheckView;
 
 DELIMITER //
 
@@ -20,6 +21,12 @@ JOIN FoodChecks FC on FI.FoodCheckID = FC.FoodCheckID
 JOIN MenuTimes MT on LMR.MenuRestID = MT.MenuRestID
 JOIN FoodItemTags FIT on FI.FoodID = FIT.FoodID
 JOIN FoodTags FT on FT.FoodTagID = FIT.TagID //
+
+
+CREATE VIEW UserFoodCheckView AS 
+SELECT User.UserID, FoodChecks.* 
+FROM `User`
+JOIN `FoodChecks` ON User.FoodCheckID = FoodChecks.FoodCheckID //
 
 
 DELIMITER ;
