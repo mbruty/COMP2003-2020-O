@@ -27,7 +27,9 @@ const headingStyle: CSS.Properties = {
   paddingLeft: "4%",
 };
 
-interface Props {}
+interface Props {
+  restaurantId: number;
+}
 
 interface Data {
   restaurantname: string;
