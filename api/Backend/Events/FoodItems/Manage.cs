@@ -78,6 +78,36 @@ namespace api.Backend.Events.FoodItems
             response.StatusCode = 200;
         }
 
+        [WebEvent(typeof(FoodItemBody), "/fooditem/delete", "delete", false, SecurityGroup.Administrator)]
+        public static async Task DeleteFoodItem(FoodItemBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.FoodItem[] _items = await Binding.GetTable<FoodItem>().Select<FoodItem>(body.FoodID.Value);
+
+            if (!_items.Any())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Incorrect FoodID");
+                return;
+            }
+
+            if (_items[0].Creator != perm.admin_id)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Insignificant Permissions!");
+                return;
+            }
+
+            if (!await _items[0].Delete<LinkMenuFood>())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Deleted food item");
+            response.StatusCode = 200;
+        }
+
         [WebEvent(typeof(FoodCheckBody), "/fooditem/foodchecks", "POST", false, SecurityGroup.Administrator)]
         public static async Task FoodItemFoodChecks(FoodCheckBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
@@ -97,9 +127,7 @@ namespace api.Backend.Events.FoodItems
                 return;
             }
 
-            RestaurantAdmin _owner = await _items[0].GetOwner();
-
-            if (_owner.RAdminID != perm.admin_id)
+            if (_items[0].Creator != perm.admin_id)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "This is not your food items");
