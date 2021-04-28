@@ -121,6 +121,7 @@ namespace api.Backend.Endpoints
 
             private CookieCollection cookies = new CookieCollection();
             public string crossOriginResponse = null;
+            public Boolean isOptions = false;
 
             #endregion Fields
 
@@ -156,6 +157,10 @@ namespace api.Backend.Endpoints
 
                 response.Headers.Add("Access-Control-Allow-Credentials", "true");
 
+                if(isOptions)
+                {
+                    response.Headers.Add("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST, DELETE");
+                }
                 if (crossOriginResponse != null)
                 {
                     response.Headers.Add("Access-Control-Allow-Origin", crossOriginResponse);

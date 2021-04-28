@@ -120,6 +120,52 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
+        [WebEvent(typeof(LinkMenuFoodBody), "/menu/linkfooditem", "POST", false, SecurityGroup.Administrator)]
+        public static async Task LinkItemToMenu(LinkMenuFoodBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.LinkMenuFood _link = new Data.Obj.LinkMenuFood() { MenuID = body.MenuID, FoodID = body.FoodID };
+
+            if (!await _link.Insert<LinkMenuFood>(true))
+            {
+                response.StatusCode = 500;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Created link");
+            response.StatusCode = 200;
+        }
+
+        [WebEvent(typeof(LinkMenuFoodBody), "/menu/unlinkfooditem", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task RemoveFoodItemLink(LinkMenuFoodBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.LinkMenuFood[] _links = await Binding.GetTable<LinkMenuFood>().Select<LinkMenuFood>(new string[] { "MenuID", "FoodID" }, new object[] { body.MenuID, body.FoodID });
+
+            if (_links.Length == 0)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "This link does not exist!");
+                return;
+            }
+
+            if (!await _links[0].Delete<LinkMenuFood>())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Deleted link");
+            response.StatusCode = 200;
+        }
+
+        [WebEvent(typeof(string), "/menu/unlinkfooditem", "OPTIONS", false, SecurityGroup.None)]
+        public static async Task HandleOptionsRemoveFoodItemLink(string body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            response.isOptions = true;
+            response.StatusCode = 200;
+        }
+
         #endregion Methods
     }
 }

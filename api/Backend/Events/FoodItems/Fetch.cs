@@ -15,8 +15,8 @@ namespace api.Backend.Events.FoodItems
             Table table = Binding.GetTable<Data.Obj.FoodItem>();
             Data.Obj.FoodItem[] items = await table.SelectCustom<Data.Obj.FoodItem>(
                 what: "DISTINCT FoodItem.*",
-                tables: "tat.FoodItem, tat.LinkMenuFood, tat.Menu, tat.LinkMenuRestaurant, tat.Restaurant, tat.RestaurantAdmin",
-                where: "(tat.FoodItem.FoodID=tat.LinkMenuFood.FoodID AND tat.LinkMenuFood.MenuID = tat.Menu.MenuID AND tat.Menu.MenuID = tat.LinkMenuRestaurant.MenuID AND tat.LinkMenuRestaurant.RestaurantID = tat.Restaurant.RestaurantID AND tat.Restaurant.OwnerID=@OID)",
+                tables: "tat.FoodItem, tat.RestaurantAdmin",
+                where: "(tat.FoodItem.Creator = tat.RestaurantAdmin.RAdminID AND tat.RestaurantAdmin.RAdminID=@OID)",
                 new System.Collections.Generic.List<System.Tuple<string, object>>()
                 {
                     new System.Tuple<string, object>("OID",perm.admin_id)
@@ -35,8 +35,8 @@ namespace api.Backend.Events.FoodItems
             Table table = Binding.GetTable<Data.Obj.FoodItem>();
             Data.Obj.FoodItem[] items = await table.SelectCustom<Data.Obj.FoodItem>(
                 what: "DISTINCT FoodItem.*",
-                tables: "tat.FoodItem, tat.LinkMenuFood, tat.Menu, tat.LinkMenuRestaurant, tat.Restaurant, tat.RestaurantAdmin",
-                where: "(tat.FoodItem.FoodID=tat.LinkMenuFood.FoodID AND tat.LinkMenuFood.MenuID = tat.Menu.MenuID AND tat.Menu.MenuID = tat.LinkMenuRestaurant.MenuID AND tat.LinkMenuRestaurant.RestaurantID = tat.Restaurant.RestaurantID AND tat.Restaurant.OwnerID=@OID AND tat.FoodItem.FoodID=@FID)",
+                tables: "tat.FoodItem, tat.RestaurantAdmin",
+                where: "(tat.FoodItem.Creator = tat.RestaurantAdmin.RAdminID AND tat.RestaurantAdmin.RAdminID=@OID AND tat.FoodItem.FoodID=@FID)",
                 new System.Collections.Generic.List<System.Tuple<string, object>>()
                 {
                     new System.Tuple<string, object>("OID",perm.admin_id),

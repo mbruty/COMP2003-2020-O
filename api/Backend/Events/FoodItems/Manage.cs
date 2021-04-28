@@ -3,10 +3,18 @@ using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
 using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace api.Backend.Events.FoodItems
 {
+
+    public class FoodTagsBody
+    {
+        public uint FoodTagID;
+    }
+
     public static class Manage
     {
         #region Methods
@@ -14,6 +22,7 @@ namespace api.Backend.Events.FoodItems
         [WebEvent(typeof(FoodItemBody), "/fooditem/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreatFoodItem(FoodItemBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
+            Data.Obj.FoodChecks _checks = body.Checks;
             if (body.FoodName == null || body.FoodNameShort == null || body.FoodDescription == null || !body.Price.HasValue || !body.MenuID.HasValue)
             {
                 response.StatusCode = 401;
@@ -28,7 +37,14 @@ namespace api.Backend.Events.FoodItems
                 return;
             }
 
-            Data.Obj.FoodItem _item = new Data.Obj.FoodItem() { FoodDescription = body.FoodDescription, FoodName = body.FoodName, FoodNameShort = body.FoodNameShort, Price = body.Price.Value };
+            if (!await _checks.Insert<FoodChecks>(true))
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            Data.Obj.FoodItem _item = new Data.Obj.FoodItem() { FoodDescription = body.FoodDescription, FoodName = body.FoodName, FoodNameShort = body.FoodNameShort, Price = body.Price.Value, Creator = perm.admin_id, FoodCheckID = _checks.FoodCheckID };
 
             if (!await _item.Insert<FoodItem>(true))
             {
@@ -44,8 +60,18 @@ namespace api.Backend.Events.FoodItems
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
                 await _item.Delete<FoodItem>();
-                return;
             }
+
+            List<Task> tasks = new List<Task>();
+
+            foreach(FoodTagsBody ft in body.Tags)
+            {
+                tasks.Add(
+                    new FoodItemTags() { FoodID = _item.FoodID, TagID = ft.FoodTagID }.Insert<FoodItemTags>()
+                );
+            }
+
+            await Task.WhenAll(tasks);
 
             response.AddToData("message", "Created food item");
             response.AddObjectToData("item", _item);
@@ -130,12 +156,17 @@ namespace api.Backend.Events.FoodItems
     {
         #region Fields
 
-        public uint? FoodID, MenuID;
+        public uint? FoodID, MenuID, Creator;
 
         public string FoodName, FoodNameShort, FoodDescription;
 
         public decimal? Price;
 
-        #endregion Fields
+        public FoodTagsBody[] Tags;
+
+        public FoodChecks Checks;
+
+
+    #endregion Fields
     }
 }

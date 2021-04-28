@@ -9,7 +9,7 @@ namespace api.Backend.Data.Obj
     {
         #region Fields
 
-        public uint FoodID, FoodCheckID;
+        public uint FoodID, FoodCheckID, Creator;
 
         public string FoodName, FoodNameShort, FoodDescription;
 
