@@ -10,7 +10,7 @@ namespace api.Backend.Events.RestaurantAdmins
     public static class Fetch
     {
         [WebEvent(typeof(string), "/admin/me", "GET", false, SecurityGroup.Administrator)]
-        public static async Task GetUserData(string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        public static async Task GetAdminData(string Data, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             RestaurantAdmin[] admins = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>(perm.admin_id);
 
