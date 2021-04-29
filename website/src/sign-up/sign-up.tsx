@@ -17,7 +17,31 @@ interface Props {}
 const signUp: React.FC<Props> = () => {
   return(
       <div className="content">
-          
+        <h1>Welcome to Track and Taste</h1>
+        <h2>Not already a user? Sign up here</h2>
+
+        <Paper style={{ padding: "3em", marginBottom: "3em", maxWidth: "800px" }}>
+          <h2>Sign up</h2>
+          <h3>Email</h3>
+          <TextField
+              variant="outlined"
+              id="userEmail"
+              label="Your email"
+          />
+          <h3>Password</h3>
+          <TextField
+              variant="outlined"
+              id="userPassword"
+              label="Your password"
+          />
+          <h3>Confirm password</h3>
+          <TextField
+              variant="outlined"
+              id="confirmPassword"
+              label="Conform your email"
+          />
+        </Paper>
+
       </div>
   )
 }
