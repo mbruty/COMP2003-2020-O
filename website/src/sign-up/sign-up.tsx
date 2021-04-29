@@ -5,6 +5,10 @@ import {
   Button,
   Paper,
 } from "@material-ui/core";
+import get = Reflect.get;
+
+let UserPassword = "";
+let ConfirmPassword = "";
 
 interface Props {}
 
@@ -28,14 +32,18 @@ const signUp: React.FC<Props> = () => {
                 variant="outlined"
                 id="userPassword"
                 label="Your password"
+                onChange={(e) => UserPassword = e.target.value}
             />
             <h3>Confirm password</h3>
             <TextField
                 variant="outlined"
                 id="confirmPassword"
                 label="Conform your email"
+                onChange={(e) => ConfirmPassword = e.target.value}
             />
-            <Button color="primary" style={{ margin: "auto 0px auto auto" }}>
+            <Button color="primary" style={{ margin: "auto 0px auto auto" }}
+                    onClick={() => {if(UserPassword == ConfirmPassword) console.log("Passwords match")}}
+            >
               Sign Up!
             </Button>
           </FormGroup>
