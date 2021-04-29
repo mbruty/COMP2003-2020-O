@@ -40,6 +40,9 @@ const signUp: React.FC<Props> = () => {
               id="confirmPassword"
               label="Conform your email"
           />
+          <Button color="primary" style={{ margin: "auto 0px auto auto" }}>
+              Sign Up!
+          </Button>
         </Paper>
 
       </div>
