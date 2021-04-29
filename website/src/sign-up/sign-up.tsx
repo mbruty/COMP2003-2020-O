@@ -5,7 +5,6 @@ import {
   Button,
   Paper,
 } from "@material-ui/core";
-import get = Reflect.get;
 
 let UserPassword = "";
 let ConfirmPassword = "";
@@ -42,7 +41,7 @@ const signUp: React.FC<Props> = () => {
                 onChange={(e) => ConfirmPassword = e.target.value}
             />
             <Button color="primary" style={{ margin: "auto 0px auto auto" }}
-                    onClick={() => {if(UserPassword == ConfirmPassword) console.log("Passwords match")}}
+                    onClick={() => {if(UserPassword == ConfirmPassword) console.log("Passwords match")}} //console log is currently a placeholder until link with API established
             >
               Sign Up!
             </Button>
