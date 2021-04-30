@@ -78,7 +78,7 @@ namespace api.Backend.Events.Users
         {
             Session[] users = await Binding.GetTable<Session>().Select<Session>(perm.user_id);
 
-            await users[0].Delete();
+            await users[0].Delete<Session>();
 
             response.StatusCode = 200;
             response.AddToData("message", "You are now logged out");
@@ -162,7 +162,7 @@ namespace api.Backend.Events.Users
 
             if (nickname != null) user.Nickname = nickname;
 
-            if (!await user.Insert(true))
+            if (!await user.Insert<User>(true))
             {
                 response.StatusCode = 500;
                 response.AddToData("error", "Database Insertion Failure");
@@ -253,31 +253,31 @@ namespace api.Backend.Events.Users
 
     public class LoginCredentials
     {
-        #region Properties
+        #region Fields
 
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email;
+        public string Password;
 
-        #endregion Properties
+        #endregion Fields
     }
 
     public class UserIdWithToken
     {
-        #region Properties
+        #region Fields
 
-        public string AuthToken { get; set; }
-        public string UserID { get; set; }
+        public string AuthToken;
+        public string UserID;
 
-        #endregion Properties
+        #endregion Fields
     }
 
     public class ValidationCode
     {
-        #region Properties
+        #region Fields
 
-        public string Code { get; set; }
-        public string UserID { get; set; }
+        public string Code;
+        public string UserID;
 
-        #endregion Properties
+        #endregion Fields
     }
 }

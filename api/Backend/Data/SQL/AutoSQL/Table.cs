@@ -19,7 +19,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <typeparam name="T"> </typeparam>
         /// <param name="Data"> </param>
         /// <returns> An array of T, with the Data inserted </returns>
-        private T[] SetFieldValues<T>(List<object[]> Data) where T : Object, new()
+        private T[] SetFieldValues<T>(List<object[]> Data) where T : Obj.Object, new()
         {
             Type t = typeof(T);
 
@@ -91,17 +91,17 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <param name="FieldName">  Collumn name in DB </param>
         /// <param name="FieldValue"> Value to check is equal </param>
         /// <returns> Any Selected Objects </returns>
-        public virtual async Task<T[]> Select<T>(string FieldName, object FieldValue, int Limit = 0) where T : Object, new()
+        public virtual async Task<T[]> Select<T>(string FieldName, object FieldValue, int Limit = 0) where T : Obj.Object, new()
         {
             return await Select<T>(new string[] { FieldName }, new object[] { FieldValue }, Limit);
         }
 
-        public virtual async Task<T[]> Select<T>(int id, int Limit = 0) where T : Object, new()
+        public virtual async Task<T[]> Select<T>(int id, int Limit = 0) where T : Obj.Object, new()
         {
             return await Select<T>(new object[] { id }, Limit);
         }
 
-        public virtual async Task<T[]> Select<T>(uint id, int Limit = 0) where T : Object, new()
+        public virtual async Task<T[]> Select<T>(uint id, int Limit = 0) where T : Obj.Object, new()
         {
             return await Select<T>(new object[] { id }, Limit);
         }
@@ -113,7 +113,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <param name="FieldNames">  Array of Column names in DB </param>
         /// <param name="FieldValues"> Values to check Columns equal against </param>
         /// <returns> Any Selected Objects </returns>
-        public virtual async Task<T[]> Select<T>(string[] FieldNames, object[] FieldValues, int Limit = 0) where T : Object, new()
+        public virtual async Task<T[]> Select<T>(string[] FieldNames, object[] FieldValues, int Limit = 0) where T : Obj.Object, new()
         {
             List<Tuple<string, object>> Params = new List<Tuple<string, object>>();
             string Where = "";
@@ -143,7 +143,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <typeparam name="T"> </typeparam>
         /// <param name="PrimaryKeyValues"> Values for all primary key columns in the table </param>
         /// <returns> Any Selected Objects </returns>
-        public virtual async Task<T[]> Select<T>(object[] PrimaryKeyValues, int Limit = 0) where T : Object, new()
+        public virtual async Task<T[]> Select<T>(object[] PrimaryKeyValues, int Limit = 0) where T : Obj.Object, new()
         {
             Column[] PrimaryKeys = this.PrimaryKeys;
 
@@ -174,7 +174,7 @@ namespace api.Backend.Data.SQL.AutoSQL
         /// <typeparam name="T"> </typeparam>
         /// <param name="where"> </param>
         /// <returns> Any Selected Objects </returns>
-        public virtual async Task<T[]> SelectCustom<T>(string where = "TRUE", int Limit = 0) where T : Object, new()
+        public virtual async Task<T[]> SelectCustom<T>(string where = "TRUE", int Limit = 0) where T : Obj.Object, new()
         {
             string Lim = "";
             if (Limit > 0) Lim = $"LIMIT {Limit}";
@@ -184,7 +184,7 @@ namespace api.Backend.Data.SQL.AutoSQL
             return SetFieldValues<T>(Data);
         }
 
-        public virtual async Task<T[]> SelectCustom<T>(string what = null, string tables = null, string where = "TRUE", List<Tuple<string, object>> Params = null, int Limit = 0) where T : Object, new()
+        public virtual async Task<T[]> SelectCustom<T>(string what = null, string tables = null, string where = "TRUE", List<Tuple<string, object>> Params = null, int Limit = 0) where T : Obj.Object, new()
         {
             if (what == null) what = $"{Name}.*";
 

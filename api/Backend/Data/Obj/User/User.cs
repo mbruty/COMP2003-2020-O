@@ -19,8 +19,9 @@ namespace api.Backend.Data.Obj
 
         #region Methods
 
-        public async override Task<bool> Delete()
+        public async override Task<bool> Delete<T>()
         {
+            Redis.Instance.InvalidateKey(Binding.GetTable<User>().GetKey<User>(this).ToString());
             return await SQL.Instance.Execute("CALL `Run-RemoveUser`(@id)",
                 new List<Tuple<string, object>>() { new Tuple<string, object>("id", UserID) });
         }

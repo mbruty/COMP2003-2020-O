@@ -17,7 +17,7 @@ namespace api.Backend.Events.Users
         {
             User[] users = await Binding.GetTable<User>().Select<User>("userid", perm.user_id);
 
-            await users[0].Delete();
+            await users[0].Delete<User>();
 
             response.AddToData("message", "Deleted User");
             response.StatusCode = 200;

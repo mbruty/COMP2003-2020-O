@@ -22,7 +22,7 @@ namespace api.Backend.Events.FoodTag
 
             if (tags.Length == 0)
             {
-                await new FoodTags(body.name).Insert();
+                await new FoodTags(body.name).Insert<FoodTags>();
                 response.StatusCode = 201;
 
                 // Get the inserted food tag
@@ -111,18 +111,14 @@ namespace api.Backend.Events.FoodTag
         }
 
         #endregion Methods
+    }
 
-        #region Classes
+    public class FoodTagBody
+    {
+        #region Properties
 
-        public class FoodTagBody
-        {
-            #region Properties
+        public string name { get; set; }
 
-            public string name { get; set; }
-
-            #endregion Properties
-        }
-
-        #endregion Classes
+        #endregion Properties
     }
 }

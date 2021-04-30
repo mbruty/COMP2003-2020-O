@@ -80,7 +80,7 @@ namespace api.Backend.Events.RestaurantAdmins
         {
             RAdminSession[] admins = await Binding.GetTable<RAdminSession>().Select<RAdminSession>(perm.admin_id);
 
-            await admins[0].Delete();
+            await admins[0].Delete<RAdminSession>();
 
             response.StatusCode = 200;
             response.AddToData("message", "You are now logged out");
@@ -90,7 +90,7 @@ namespace api.Backend.Events.RestaurantAdmins
         public static async Task resendcode(AdminIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Get the user
-            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", user.AdminID, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", perm.admin_id, 1);
 
             // Users will always be of length 1 if they exist, and 0 if they don't as we're
             // selecting by pk
@@ -115,7 +115,7 @@ namespace api.Backend.Events.RestaurantAdmins
             Email.SendConfirmation(users[0].Email, code, users[0].Email);
 
             // Update the database with the code
-            Backend.Data.Redis.Instance.SetStringWithExpiration($"admin-signup-code:{user.AdminID}", code, new TimeSpan(0, 30, 0));
+            Backend.Data.Redis.Instance.SetStringWithExpiration($"admin-signup-code:{perm.admin_id}", code, new TimeSpan(0, 30, 0));
         }
 
         [WebEvent(typeof(RestaurantAdmin), "/admin/signup", "POST", false)]
@@ -155,7 +155,7 @@ namespace api.Backend.Events.RestaurantAdmins
 
             RestaurantAdmin user = new RestaurantAdmin() { Email = email, Password = "PASSWORD PENDING" };
 
-            if (!await user.Insert(true))
+            if (!await user.Insert<RestaurantAdmin>(true))
             {
                 response.StatusCode = 500;
                 response.AddToData("error", "Database Insertion Failure");
@@ -193,7 +193,7 @@ namespace api.Backend.Events.RestaurantAdmins
             }
 
             // Get the user
-            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", validation.AdminID, 1);
+            RestaurantAdmin[] users = await Binding.GetTable<RestaurantAdmin>().Select<RestaurantAdmin>("radminid", perm.admin_id, 1);
 
             // Users will always be of length 1 if they exist, and 0 if they don't as we're
             // selecting by pk
@@ -212,7 +212,7 @@ namespace api.Backend.Events.RestaurantAdmins
                 return;
             }
 
-            string code = await Backend.Data.Redis.Instance.GetString($"admin-signup-code:{validation.AdminID}");
+            string code = await Backend.Data.Redis.Instance.GetString($"admin-signup-code:{perm.admin_id}");
 
             // Correct code!
             if (code == validation.Code)
@@ -224,9 +224,9 @@ namespace api.Backend.Events.RestaurantAdmins
                 if (updated)
                 {
                     // Remove the key
-                    Backend.Data.Redis.Instance.InvalidateKey($"admin-signup-code:{validation.AdminID}");
+                    Backend.Data.Redis.Instance.InvalidateKey($"admin-signup-code:{perm.admin_id}");
                     // Invalidate the user in the cache
-                    Backend.Data.Redis.Instance.InvalidateKey($"RestaurantAdmin-{validation.AdminID}");
+                    Backend.Data.Redis.Instance.InvalidateKey($"RestaurantAdmin-{perm.admin_id}");
                     response.StatusCode = 200;
                 }
                 else
@@ -242,29 +242,25 @@ namespace api.Backend.Events.RestaurantAdmins
         }
 
         #endregion Methods
+    }
 
-        #region Classes
+    public class AdminIdWithToken
+    {
+        #region Properties
 
-        public class AdminIdWithToken
-        {
-            #region Properties
+        public string AdminID { get; set; }
+        public string AuthToken { get; set; }
 
-            public string AdminID { get; set; }
-            public string AuthToken { get; set; }
+        #endregion Properties
+    }
 
-            #endregion Properties
-        }
+    public class ValidationCode
+    {
+        #region Properties
 
-        public class ValidationCode
-        {
-            #region Properties
+        public string AdminID { get; set; }
+        public string Code { get; set; }
 
-            public string AdminID { get; set; }
-            public string Code { get; set; }
-
-            #endregion Properties
-        }
-
-        #endregion Classes
+        #endregion Properties
     }
 }
