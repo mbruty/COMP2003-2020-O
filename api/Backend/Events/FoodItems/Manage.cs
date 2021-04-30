@@ -23,6 +23,7 @@ namespace api.Backend.Events.FoodItems
         public static async Task CreatFoodItem(FoodItemBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             Data.Obj.FoodChecks _checks = body.Checks;
+            if (_checks == null) _checks = new FoodChecks();
             if (body.FoodName == null || body.FoodNameShort == null || body.FoodDescription == null || !body.Price.HasValue || !body.MenuID.HasValue)
             {
                 response.StatusCode = 401;
@@ -105,6 +106,44 @@ namespace api.Backend.Events.FoodItems
             }
 
             response.AddToData("message", "Deleted food item");
+            response.StatusCode = 200;
+        }
+
+        [WebEvent(typeof(FoodItemBody), "/fooditem/modify", "POST", false, SecurityGroup.Administrator)]
+        public static async Task ModifyFoodItem(FoodItemBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Data.Obj.FoodItem[] _items = await Binding.GetTable<FoodItem>().Select<FoodItem>(body.FoodID.Value);
+
+            if (!_items.Any())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Incorrect FoodID");
+                return;
+            }
+
+            if (_items[0].Creator != perm.admin_id)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Insignificant Permissions!");
+                return;
+            }
+
+            FoodItem _item = _items[0];
+
+            if (body.FoodName != null) _item.FoodName = body.FoodName;
+            if (body.FoodNameShort != null) _item.FoodNameShort = body.FoodNameShort;
+            if (body.FoodDescription != null) _item.FoodDescription = body.FoodDescription;
+            if (body.Price.HasValue) _item.Price = body.Price.Value;
+
+            if (!await _item.Update<FoodItem>())
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Something went wrong!");
+                return;
+            }
+
+            response.AddToData("message", "Updated food item");
+            response.AddObjectToData("food", _item);
             response.StatusCode = 200;
         }
 
