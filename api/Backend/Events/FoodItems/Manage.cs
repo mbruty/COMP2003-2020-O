@@ -135,6 +135,20 @@ namespace api.Backend.Events.FoodItems
             if (body.FoodDescription != null) _item.FoodDescription = body.FoodDescription;
             if (body.Price.HasValue) _item.Price = body.Price.Value;
 
+            if (body.Tags != null)
+            {
+                List<Task> tasks = new List<Task>();
+
+                foreach (FoodTagsBody ft in body.Tags)
+                {
+                    tasks.Add(
+                        new FoodItemTags() { FoodID = _item.FoodID, TagID = ft.FoodTagID }.Insert<FoodItemTags>()
+                    );
+                }
+
+                await Task.WhenAll(tasks);
+            }
+
             if (!await _item.Update<FoodItem>())
             {
                 response.StatusCode = 401;
