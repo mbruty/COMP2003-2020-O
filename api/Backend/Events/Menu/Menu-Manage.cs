@@ -14,14 +14,14 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(MenuBody), "/menu/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(MenuBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (!body.MenuID.HasValue || body.MenuName == null)
+            if ( body.MenuName == null)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");
                 return;
             }
 
-            Data.Obj.Menu _menu = new Data.Obj.Menu() { MenuID = body.MenuID.Value, IsChildMenu = body.IsChildMenu.HasValue && body.IsChildMenu.Value, MenuName = body.MenuName };
+            Data.Obj.Menu _menu = new Data.Obj.Menu() { IsChildMenu = body.IsChildMenu.HasValue && body.IsChildMenu.Value, MenuName = body.MenuName };
 
             if (!await _menu.Insert<Menu>(true))
             {

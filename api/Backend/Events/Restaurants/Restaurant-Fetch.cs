@@ -19,13 +19,6 @@ namespace api.Backend.Events.Restaurants
             RestaurantAdmin[] admins = await Binding.GetTable<Data.Obj.RestaurantAdmin>().Select<RestaurantAdmin>(perm.admin_id);
             Data.Obj.Restaurant[] restaurants = await admins[0].GetRestaurantsOwned();
 
-            if (restaurants.Length == 0)
-            {
-                response.StatusCode = 404;
-                response.AddToData("error", "That Restaurant Id does not exist");
-                return;
-            }
-
             response.AddToData("message", "Fetched restaurants");
             response.AddObjectToData("restaurants", restaurants);
             response.StatusCode = 200;
