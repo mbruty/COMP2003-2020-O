@@ -135,19 +135,36 @@ namespace api.Backend.Events.FoodItems
             if (body.FoodDescription != null) _item.FoodDescription = body.FoodDescription;
             if (body.Price.HasValue) _item.Price = body.Price.Value;
 
+            FoodTags[] _tags = await _item.GetFoodTags();
+
+            List<Task> tasks = new List<Task>();
+
             if (body.Tags != null)
             {
-                List<Task> tasks = new List<Task>();
+                IEnumerable<FoodTagsBody> _nonDuplicateTags = body.Tags.Where(x => _tags.Count(y => x.FoodTagID == y.FoodTagID) == 0);
 
-                foreach (FoodTagsBody ft in body.Tags)
+                foreach (FoodTagsBody ft in _nonDuplicateTags)
                 {
                     tasks.Add(
                         new FoodItemTags() { FoodID = _item.FoodID, TagID = ft.FoodTagID }.Insert<FoodItemTags>()
                     );
                 }
-
-                await Task.WhenAll(tasks);
             }
+
+            if (body.RemoveTags != null)
+            {
+                IEnumerable<FoodTagsBody> _DuplicateTags = body.RemoveTags.Where(x => _tags.Count(y => x.FoodTagID == y.FoodTagID) > 0);
+
+                Table t = Binding.GetTable<FoodItemTags>();
+                foreach (FoodTagsBody ft in _DuplicateTags)
+                {
+                    tasks.Add(
+                        (await t.Select<FoodItemTags>(new object[] { body.FoodID, ft.FoodTagID }))[0]?.Delete<FoodItemTags>()
+                    );
+                }
+            }
+
+            await Task.WhenAll(tasks);
 
             if (!await _item.Update<FoodItem>())
             {
@@ -244,6 +261,7 @@ namespace api.Backend.Events.FoodItems
         public decimal? Price;
 
         public FoodTagsBody[] Tags;
+        public FoodTagsBody[] RemoveTags;
 
         public FoodChecks Checks;
 
