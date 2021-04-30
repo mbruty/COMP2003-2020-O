@@ -145,7 +145,7 @@ namespace api.Backend.Events.Restaurants
         #region Fields
 
         public bool? IsChildMenu;
-        public uint MenuID, RestaurantID;
+        public uint? MenuID, RestaurantID;
         public string MenuName;
 
         #endregion Fields

@@ -21,7 +21,7 @@ namespace api.Backend.Events.Restaurants
 
             if (restaurants.Length == 0)
             {
-                response.StatusCode = 401;
+                response.StatusCode = 404;
                 response.AddToData("error", "That Restaurant Id does not exist");
                 return;
             }
@@ -34,8 +34,15 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(RestaurantBody), "/restaurant", "GET", false, SecurityGroup.Administrator)]
         public static async Task GetRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
+            if (!body.RestaurantID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
             Table table = Binding.GetTable<Data.Obj.Restaurant>();
-            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID);
+            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID.Value);
 
             if (restaurants.Length == 0)
             {
@@ -61,8 +68,15 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(RestaurantReqWithTimes), "/restaurant/menus", "GET", false, SecurityGroup.Administrator)]
         public static async Task GetRestaurantMenus(RestaurantReqWithTimes body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
+            if (!body.RestaurantID.HasValue)
+            {
+                response.StatusCode = 401;
+                response.AddToData("error", "Missing Required Inputs");
+                return;
+            }
+
             Table table = Binding.GetTable<Data.Obj.Restaurant>();
-            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID);
+            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID.Value);
 
             if (restaurants.Length == 0)
             {
@@ -123,8 +137,8 @@ namespace api.Backend.Events.Restaurants
     {
         #region Fields
 
-        public float Longitude, Latitude;
-        public uint RestaurantID;
+        public float? Longitude, Latitude;
+        public uint? RestaurantID;
         public string RestaurantName, RestaurantDescription, Phone, Email, Site, Street1, Street2, Town, County, Postcode;
 
         #endregion Fields
@@ -133,7 +147,7 @@ namespace api.Backend.Events.Restaurants
 
         public bool IsValid()
         {
-            return ValidityChecks.IsValidEmail(Email) && ValidityChecks.IsValidPhone(Phone) && ValidityChecks.IsValidSite(Site) && Longitude > -180 && Longitude < 180 && Latitude > -90 && Latitude < 90;
+            return ValidityChecks.IsValidEmail(Email) && ValidityChecks.IsValidPhone(Phone) && ValidityChecks.IsValidSite(Site) && Longitude > -180 && Longitude < 180 && Latitude > -90 && Latitude < 90 && Street1 != null && Street2 != null && Town != null && County != null && Postcode != null;
         }
 
         #endregion Methods
@@ -143,7 +157,7 @@ namespace api.Backend.Events.Restaurants
     {
         #region Fields
 
-        public uint RestaurantID;
+        public uint? RestaurantID;
         public DateTime? When;
 
         #endregion Fields

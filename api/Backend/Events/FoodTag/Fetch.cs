@@ -11,8 +11,8 @@ namespace api.Backend.Events.FoodTag
     {
         #region Methods
 
-        [WebEvent(typeof(tagLike), "/foodtags/like", "GET", false, SecurityGroup.None)]
-        public static async Task GetTagsLike(tagLike like, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(tagLikeBody), "/foodtags/like", "GET", false, SecurityGroup.None)]
+        public static async Task GetTagsLike(tagLikeBody like, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
                 where: "Tag LIKE CONCAT('%', @str, '%')",
@@ -24,18 +24,14 @@ namespace api.Backend.Events.FoodTag
         }
 
         #endregion Methods
+    }
 
-        #region Classes
+    public class tagLikeBody
+    {
+        #region Fields
 
-        public class tagLike
-        {
-            #region Fields
+        public string tag;
 
-            public string tag;
-
-            #endregion Fields
-        }
-
-        #endregion Classes
+        #endregion Fields
     }
 }

@@ -19,7 +19,7 @@ const MenuBuilder: React.FC<Props> = (props) => {
       setData(body);
     })();
   }, []);
-  const foodObserver = React.useMemo(() => new Observer(data), [data]);
+  const foodObserver = React.useMemo(() => new Observer(), []);
   const menuObserver = React.useMemo(() => new MenuObserver(data), [data]);
   return (
     <div

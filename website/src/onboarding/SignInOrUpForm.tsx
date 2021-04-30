@@ -22,12 +22,6 @@ function a11yProps(index: any) {
   };
 }
 
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-});
-
 const Form: React.FC<Props> = ({ tabIdx, setTabIdx, refresh }) => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabIdx(newValue);

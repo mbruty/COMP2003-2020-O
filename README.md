@@ -387,14 +387,14 @@ Returns a reference string for the day in question between Sunday-Saturday (resp
 
 ## MySQL Database Documentation
 
-### Entity Relationship Diagram (Version 6.2)
+### Entity Relationship Diagram (Version 6.3.1)
 
-*This diagram is not up to date. Currently working off v6.3.0 as of *11/04/21. See docs folder for latest version.*
+*This diagram is up to date as of 27/04/2021.*
 
 <br>
 
 <p>
-  <img alt="The entity relationship diagram associated with the project." width="926" height="625" src="https://i.imgur.com/wWIOH9J.png">
+  <img alt="The entity relationship diagram associated with the project." width="55%" height="55%" src="https://i.imgur.com/Buc2kGQ.png">
 </p>
 
 <br>

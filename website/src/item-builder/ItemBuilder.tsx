@@ -18,8 +18,9 @@ import IFoodTag from "../interfaces/IFoodTag";
 import DragNDrop from "../file-upload/DragNDrop";
 import { Close, Edit, Save } from "@material-ui/icons";
 import { Alert } from "@material-ui/lab";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useHistory } from "react-router";
 import { API_URL } from "../constants";
+import { Link } from "react-router-dom";
 
 const allOffState = {
   IsVegetarian: false,
@@ -29,7 +30,7 @@ const allOffState = {
   HasLactose: false,
   HasNuts: false,
   HasGluten: false,
-  HasEggs: false,
+  HasEgg: false,
   HasSoy: false,
   none: false,
 };
@@ -46,6 +47,7 @@ const getOptions = async (searchText: string) => {
 };
 
 const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
+  const history = useHistory();
   const [tagId, setTagId] = React.useState<number>(-1);
   const [value, setValue] = React.useState<IFoodTag[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -106,7 +108,12 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
     ...allOffState,
   });
 
-  const showUpload = tagId > 0 && (imgError || editImg);
+  React.useEffect(() => {
+    // Some times this will get set to true before we fetch the tag id from the api
+    setImgError(false);
+  }, [tagId])
+
+  const showUpload = imgError || editImg;
 
   return (
     <div className="content">
@@ -141,18 +148,27 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
             id="itemName"
             label="Item Name"
             value={itemDetails.name}
+            onChange={(e) =>
+              setItemDetails({ ...itemDetails, name: e.target.value })
+            }
           />
           <TextField
             variant="outlined"
             id="itemShortName"
             label="Short Name"
             value={itemDetails.shortName}
+            onChange={(e) =>
+              setItemDetails({ ...itemDetails, shortName: e.target.value })
+            }
           />
           <TextField
             variant="outlined"
             id="itemDescription"
             label="Description"
             value={itemDetails.description}
+            onChange={(e) =>
+              setItemDetails({ ...itemDetails, description: e.target.value })
+            }
           />
           <TextField
             variant="outlined"
@@ -221,7 +237,7 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
                         IsVegetarian: true,
                         IsVegan: true,
                         HasLactose: false,
-                        HasEggs: false,
+                        HasEgg: false,
                         none: false,
                       });
                     }
@@ -362,12 +378,12 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               control={
                 <Checkbox
                   name="checkedEggs"
-                  checked={checkBoxData.HasEggs}
+                  checked={checkBoxData.HasEgg}
                   onChange={() => {
-                    if (checkBoxData.HasEggs) {
+                    if (checkBoxData.HasEgg) {
                       setCheckBoxData({
                         ...checkBoxData,
-                        HasEggs: false,
+                        HasEgg: false,
                         none: false,
                       });
                     } else {
@@ -375,7 +391,7 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
                       setCheckBoxData({
                         ...checkBoxData,
                         IsVegan: false,
-                        HasEggs: true,
+                        HasEgg: true,
                         none: false,
                       });
                     }
@@ -440,11 +456,14 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
               <TextField {...params} label="Food Tag" variant="outlined" />
             )}
           />
+          <p>
+            Can't find one that you like? <Link to="/tags">Request a tag</Link>
+          </p>
         </div>
 
         <Divider style={{ marginTop: "1em" }} />
 
-        {!tagId && (
+        {tagId === -1 && (
           <h3 style={{ color: "#aaa" }}>
             You must create your item before uploading the image
           </h3>
@@ -486,10 +505,28 @@ const ItemBuilder: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
           <Button
             color="primary"
             style={{ margin: "auto 0px auto auto" }}
-            onClick={() => {
+            onClick={async () => {
               // Do save here
+              const res = await fetch(API_URL + "/fooditem/create", {
+                mode: "cors",
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({
+                  FoodName: itemDetails.name,
+                  FoodNameShort: itemDetails.shortName,
+                  FoodDescription: itemDetails.description,
+                  Price: itemDetails.price,
+                  Tags: value.map((v) => {
+                    return { FoodTagID: v.id };
+                  }),
+                  Checks: checkBoxData
+                }),
+              });
+              if (res.status !== 200) return;
+              const json = await res.json();
               setSaveVisible(true);
               setTimeout(() => setSaveVisible(false), 5000);
+              history.push("/item-builder/" + json.item.FoodID);
             }}
           >
             <Save style={{ marginRight: "5px" }} />
