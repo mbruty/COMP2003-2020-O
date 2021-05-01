@@ -85,7 +85,7 @@ DROP FUNCTION IF EXISTS `Func-GetEmailStarts`;
 DROP FUNCTION IF EXISTS `Func-GetDomains`;
 DROP FUNCTION IF EXISTS `Func-GetNicknames`;
 DROP FUNCTION IF EXISTS `Func-DayToRef`;
-
+USE tat;
 
 
 DELIMITER //
@@ -182,16 +182,18 @@ BEGIN
 
     SELECT IFNULL (order_time, CURRENT_TIME()) INTO present_time;
 
-    SELECT IFNULL ((SELECT DayRef FROM Days WHERE DayRef = order_date_ref), Func-DayToRef(DAYOFWEEK(CURRENT_DATE()))) INTO present_day_ref;
+    SELECT IFNULL ((SELECT DayRef FROM Days WHERE DayRef = order_date_ref), `Func-DayToRef`(DAYOFWEEK(CURRENT_DATE()))) INTO present_day_ref;
 
         -- FROM https://stackoverflow.com/questions/29553895/querying-mysql-for-latitude-and-longitude-coordinates-that-are-within-a-given-mi    
     SELECT RestaurantID, IsVegetarian, IsVegan, IsHalal, IsKosher, HasLactose, HasNuts, HasGluten, HasEgg, HasSoy, FoodID, FoodName, IsChildMenu, FoodTagID
     FROM RestaurantMenuView
     WHERE ( 3959 * acos( cos( radians(user_lat) ) * cos( radians( Latitude ) )
         * cos( radians( Longitude ) - radians(user_long) ) + sin( radians(user_lat) ) * sin(radians(Latitude)) ) ) < max_distance
-    AND ADDTIME(StartServing, TimeServing) > ADDTIME(present_time, '1:00')
+    AND ADDTIME(StartServing, ServingFor) > ADDTIME(present_time, '1:00')
     AND DayRef = present_day_ref;
 END //
+
+DELIMITER ;
 
 
     -- Requires README documentation.
