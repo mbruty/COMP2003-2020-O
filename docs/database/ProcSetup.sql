@@ -193,9 +193,6 @@ BEGIN
     AND DayRef = present_day_ref;
 END //
 
-DELIMITER ;
-
-
     -- Requires README documentation.
 CREATE PROCEDURE `Run-GetFoodChecksByID` (IN input_id INT)
 BEGIN
