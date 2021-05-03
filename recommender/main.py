@@ -1,5 +1,7 @@
 from flask import Flask
+from flask import jsonify
 from flask_restful import Api, Resource, reqparse
+import json
 import sys
 from get_details import get_name
 from process_swipe import process_swipe
@@ -10,6 +12,7 @@ import random
 from eventlet import wsgi
 import eventlet
 from redis_instance import get_instance
+from RecommendationEngine import get_swipe_stack
 r = get_instance()
 
 # 1 day
@@ -25,10 +28,41 @@ like_post_args.add_argument(
 like_post_args.add_argument(
     "isfavourite", type=bool, help="If it was a super like")
 
+swipestack_args = reqparse.RequestParser()
+swipestack_args.add_argument(
+    "lat", type=float, help="Lattitude of where to search recommendations"
+)
+swipestack_args.add_argument(
+    "lng", type=float, help="Longitude of where to search recommendations"
+)
+swipestack_args.add_argument(
+    "userid", type=str, help="The userID"
+)
+swipestack_args.add_argument("authtoken", type=str, help="Authorisation token")
+swipestack_args.add_argument(
+    "distance", type=float, help="Radius of the circle to search within"
+)
+
 app = Flask(__name__)
 api = Api(app)
 socketio = SocketIO(app)
 
+
+class RecommenderController(Resource):
+    #get [/swipestack]
+    def post(self):
+        args = swipestack_args.parse_args()
+        print(args)
+        payload = {"authtoken": args.authtoken, "userid": args.userid}
+        r = requests.post(
+            'http://devapi.trackandtaste.com/user/authcheck', json=payload)
+        if r.status_code != 200:
+            return '', r.status_code
+        try:
+            data = get_swipe_stack(args.lat, args.lng, args.userid, args.distance)
+        except:
+            return '', 404 # We couldn't find any restaurants
+        return json.loads(data), 200        
 
 class SwipeController(Resource):
     # post [/swipe]
@@ -39,14 +73,13 @@ class SwipeController(Resource):
             'http://devapi.trackandtaste.com/user/authcheck', json=payload)
         if r.status_code != 200:
             return '', r.status_code
-        else:
-            try:
-                process_swipe(args.userid, args.foodid,
-                              args.islike, args.isfavourite)
-            except Exception:
-                # Food item not found
-                return '', 404
-            return '', 201
+        try:
+            process_swipe(args.userid, args.foodid,
+                            args.islike, args.isfavourite)
+        except Exception:
+            # Food item not found
+            return '', 404
+        return '', 201
 
 
 @socketio.on('message')
@@ -127,6 +160,14 @@ def on_join(data):
     users = get_all_users_in_room(room)
     emit("user_join", users, room=room)
 
+@socketio.on('ready')
+def handle_ready(data):
+    uid = data["id"]
+    ready = data["ready"]
+    room = data["room"]
+    name = get_name(uid)
+    r.srem(f"room-{room}-users", f"{id}:{name}:{not ready}:false")
+
 
 @socketio.on('leave')
 def on_leave(data):
@@ -157,7 +198,7 @@ def get_all_users_in_room(id):
 
 
 api.add_resource(SwipeController, "/swipe")
-
+api.add_resource(RecommenderController, "/swipestack")
 if __name__ == "__main__":
     socketio.run(app)
     wsgi.server(eventlet.listen(('', 8000)), app)
