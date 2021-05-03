@@ -10,11 +10,11 @@
             IsVegan = false,
             IsHalal = false,
             IsKosher = false,
-            HasLactose = true,
-            HasNuts = true,
-            HasGluten = true,
-            HasEgg = true,
-            HasSoy = true;
+            HasLactose = false,
+            HasNuts = false,
+            HasGluten = false,
+            HasEgg = false,
+            HasSoy = false;
 
         #endregion Fields
     }
