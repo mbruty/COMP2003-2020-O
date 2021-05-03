@@ -9,6 +9,7 @@ import { includeAuth } from "../includeAuth";
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
   isHost: boolean;
+  onReady: () => void;
   roomCode: number;
   members: SocketUser[] | undefined;
 }
@@ -103,6 +104,15 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
           padding: "3%",
           borderRadius: 20,
           marginBottom: 150,
+        }}
+        onPress={() => {
+          if(props.isHost) {
+            // TODO
+            // Start the swiping process 
+          } else {
+            // They aren't  host.. So just ready up
+            props.onReady();
+          }
         }}
       >
         <Text style={{ textAlign: "center", color: "white" }}>

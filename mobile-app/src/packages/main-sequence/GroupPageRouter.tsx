@@ -77,6 +77,9 @@ const GroupPageRouter: React.FC<Props> = (props) => {
           isHost={isHost}
           roomCode={code}
           members={members}
+          onReady={() => {
+            observer.toggleReady();
+          }}
         />
       );
     case Page.map_view:

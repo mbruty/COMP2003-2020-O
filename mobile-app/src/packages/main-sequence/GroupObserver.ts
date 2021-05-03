@@ -20,7 +20,7 @@ export class GroupObserver {
   constructor() {
     console.log("New observer");
 
-    this.socket = io("http://d9c5222fe2c8.ngrok.io", {
+    this.socket = io("http://79efde88a2a4.ngrok.io", {
       transports: ["websocket"],
       jsonp: false,
     });
@@ -70,8 +70,7 @@ export class GroupObserver {
 
   public async join(room) {
     try {
-      const auth = await includeAuth();
-      this.socket.emit("join", { id: auth.userid, room: room });
+      this.socket.emit("join", { id: 1, room: room });
       this.code = room;
       this.onChange();
     } catch (e) {
@@ -79,6 +78,12 @@ export class GroupObserver {
     }
   }
 
+  public async toggleReady() {
+    // Get the ready state of the current user
+    const auth = await includeAuth();
+    const currentUser = this.members.find(el => el.uid === auth.userid);
+    this.socket.emit("ready", {ready: !currentUser.ready, id: currentUser.uid})
+  }
   public subscribe(observer: SocketObserver) {
     this.observers.push(observer);
   }
