@@ -25,16 +25,16 @@ const { width, height } = Dimensions.get("screen");
 export const CARD_WIDTH = Math.floor(width * 0.95);
 export const CARD_HEIGHT = 480;
 
-console.log(CARD_WIDTH);
-
-
 const SwipeCard: React.FC<Props> = (props) => {
-  console.log("Props", props);
   return (
     <View style={[styles.container]}>
       <View style={[styles.card]}>
-        <Image style={[styles.image]} source={{ uri: IMG_URL + props.foodID + ".png" }} />
-        <Text style={styles.title}>{props.title}</Text> 
+        {/* Adding a meaningless query so we fetch the most up-to-date image */}
+        <Image
+          style={[styles.image]}
+          source={{ uri: IMG_URL + props.foodID + ".png?1=1" }}
+        />
+        <Text style={styles.title}>{props.title}</Text>
       </View>
     </View>
   );
