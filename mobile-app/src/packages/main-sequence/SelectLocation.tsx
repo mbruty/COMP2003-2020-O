@@ -1,13 +1,20 @@
 import React from "react";
-import { Button, StyleSheet, Text, View, BackHandler, Dimensions } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  BackHandler,
+  Dimensions,
+} from "react-native";
 import { Page } from "./GroupPageRouter";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import MapView, { LatLng, Marker, Circle } from "react-native-maps";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CONSTANT_COLOURS } from "../../constants";
 import Slider from "@react-native-community/slider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
   setPage?: React.Dispatch<React.SetStateAction<Page>>;
@@ -21,41 +28,41 @@ let mapRef = null;
 const mile2meter = (distance: number) => distance * 1609.344;
 
 const SelectLocation: React.FC<Props> = (props) => {
-
-
   const [distance, setDistance] = React.useState(1);
 
-  const [markerLocation, setMarkerLocation] = React.useState<LatLng | undefined>();
+  const [markerLocation, setMarkerLocation] = React.useState<
+    LatLng | undefined
+  >();
 
   React.useEffect(() => {
     if (mapRef) {
       mapRef.animateToRegion({
         latitude: markerLocation.latitude,
-        longitude: markerLocation.longitude
+        longitude: markerLocation.longitude,
       });
     } else {
       console.log("Nope");
     }
-  }, [markerLocation])
+  }, [markerLocation]);
 
   React.useEffect(() => {
     if (!props.isGroup) {
       (async () => {
         const settings = JSON.parse(await AsyncStorage.getItem("location"));
         if (settings) {
+          console.log(settings);
+
           setMarkerLocation(settings.latlon);
-          setDistance(settings.distance);
+          if (settings.distance) setDistance(settings.distance);
         }
       })();
     }
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     const backAction = () => {
-      if (props.setPage)
-        props.setPage(Page.join_create);
-      else
-        props.onBack();
+      if (props.setPage) props.setPage(Page.join_create);
+      else props.onBack();
       return true;
     };
 
@@ -66,11 +73,10 @@ const SelectLocation: React.FC<Props> = (props) => {
     return () => backHandler.remove();
   }, []);
 
-
   React.useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
-      if (status !== 'granted') {
+      if (status !== "granted") {
         return;
       }
 
@@ -90,7 +96,7 @@ const SelectLocation: React.FC<Props> = (props) => {
           onResponderStart={() => console.log("Ha")}
           compassOffset={{
             x: 0,
-            y: 25
+            y: 25,
           }}
           loadingEnabled={true}
           showsUserLocation={true}
@@ -101,14 +107,14 @@ const SelectLocation: React.FC<Props> = (props) => {
             latitudeDelta: 0.05,
             longitudeDelta: 0.05,
           }}
-          onPress={e => {
-            setMarkerLocation(e.nativeEvent.coordinate)
+          onPress={(e) => {
+            setMarkerLocation(e.nativeEvent.coordinate);
           }}
-          ref={ref => { mapRef = ref; }}
+          ref={(ref) => {
+            mapRef = ref;
+          }}
         >
-          <Marker coordinate={markerLocation}>
-
-          </Marker>
+          <Marker coordinate={markerLocation}></Marker>
           <Circle
             center={markerLocation}
             radius={mile2meter(distance)}
@@ -118,40 +124,47 @@ const SelectLocation: React.FC<Props> = (props) => {
             strokeWidth={2}
           />
         </MapView>
-        <View style={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-        }}>
-          <TouchableOpacity style={{
-            backgroundColor: "white",
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            borderRadius: 100,
-            marginBottom: 15
+        <View
+          style={{
+            position: "absolute",
+            top: 20,
+            left: 20,
           }}
+        >
+          <TouchableOpacity
+            style={{
+              backgroundColor: "white",
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              borderRadius: 100,
+              marginBottom: 15,
+            }}
             onPress={() => {
-              if (props.setPage)
-                props.setPage(Page.join_create);
-              else
-                props.onBack();
-            }}>
-            <MaterialCommunityIcons name="keyboard-backspace" size={24} color="black" />
+              if (props.setPage) props.setPage(Page.join_create);
+              else props.onBack();
+            }}
+          >
+            <MaterialCommunityIcons
+              name="keyboard-backspace"
+              size={24}
+              color="black"
+            />
           </TouchableOpacity>
-
-
         </View>
-        <View style={{
-          width: "100%",
-        }}>
-          <TouchableOpacity onPress={async () => {
-            const userLocation = await Location.getCurrentPositionAsync({});
-
-            setMarkerLocation({
-              latitude: userLocation.coords.latitude,
-              longitude: userLocation.coords.longitude,
-            });
+        <View
+          style={{
+            width: "100%",
           }}
+        >
+          <TouchableOpacity
+            onPress={async () => {
+              const userLocation = await Location.getCurrentPositionAsync({});
+
+              setMarkerLocation({
+                latitude: userLocation.coords.latitude,
+                longitude: userLocation.coords.longitude,
+              });
+            }}
             style={{
               backgroundColor: CONSTANT_COLOURS.RED,
               paddingHorizontal: 10,
@@ -161,8 +174,9 @@ const SelectLocation: React.FC<Props> = (props) => {
               borderRadius: 100,
               marginLeft: "auto",
               marginRight: 20,
-              marginBottom: 15
-            }}>
+              marginBottom: 15,
+            }}
+          >
             <MaterialIcons name="my-location" size={24} color="white" />
           </TouchableOpacity>
           <View style={[styles.box]}>
@@ -171,11 +185,13 @@ const SelectLocation: React.FC<Props> = (props) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                paddingTop: 10
+                paddingTop: 10,
               }}
             >
               <Text style={styles.text}>Maximum Distance:</Text>
-              <Text style={styles.text}>{Math.round(distance * 10) / 10} miles</Text>
+              <Text style={styles.text}>
+                {Math.round(distance * 10) / 10} miles
+              </Text>
             </View>
             <Slider
               style={{ height: 50 }}
@@ -197,41 +213,60 @@ const SelectLocation: React.FC<Props> = (props) => {
             >
               <Text style={styles.text}>Min</Text>
               <Text style={styles.text}>Max</Text>
-            </View >
-            <TouchableOpacity onPress={async () => {
-              if (props.isGroup) {
-                await AsyncStorage.setItem("groupLocation", JSON.stringify({ latlon: markerLocation, distance: Math.round(distance * 10) / 10 }));
-              } else {
-                const settings = JSON.parse(await AsyncStorage.getItem("location"));
-                console.log("Settings:", settings);
-                await AsyncStorage.setItem("location", JSON.stringify({ ...settings, latlon: markerLocation, distance: Math.round(distance * 10) / 10 }));
-                const settings2 = JSON.parse(await AsyncStorage.getItem("location"));
-                console.log("Settings2:", settings2);
-              }
-              props.onSave(markerLocation, distance);
-            }}>
+            </View>
+            <TouchableOpacity
+              onPress={async () => {
+                if (props.isGroup) {
+                  await AsyncStorage.setItem(
+                    "groupLocation",
+                    JSON.stringify({
+                      latlon: markerLocation,
+                      distance: Math.round(distance * 10) / 10,
+                    })
+                  );
+                } else {
+                  const settings = JSON.parse(
+                    await AsyncStorage.getItem("location")
+                  );
+                  console.log("Settings:", settings);
+                  await AsyncStorage.setItem(
+                    "location",
+                    JSON.stringify({
+                      ...settings,
+                      latlon: markerLocation,
+                      distance: Math.round(distance * 10) / 10,
+                    })
+                  );
+                  const settings2 = JSON.parse(
+                    await AsyncStorage.getItem("location")
+                  );
+                  console.log("Settings2:", settings2);
+                }
+                props.onSave(markerLocation, distance);
+              }}
+            >
               <View style={styles.btn}>
-                <Text style={[styles.text, { color: "white" }]}>Save Location</Text>
+                <Text style={[styles.text, { color: "white" }]}>
+                  Save Location
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
         </View>
-      </View >
+      </View>
     );
   } else {
-
     return null;
   }
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    justifyContent: "flex-end",
+    alignItems: "center",
     height: Dimensions.get("screen").height - 100,
-    zIndex: 100
-
+    zIndex: 100,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -257,7 +292,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: {
       height: -5,
-      width: 0
+      width: 0,
     },
     shadowOpacity: 0.2,
     elevation: 2,
@@ -269,7 +304,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginRight: "auto",
     marginLeft: "auto",
-    padding: 5
-  }
-})
+    padding: 5,
+  },
+});
 export default SelectLocation;
