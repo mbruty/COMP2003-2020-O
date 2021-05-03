@@ -75,8 +75,8 @@ DROP PROCEDURE IF EXISTS `Run-PermaDeleteUser`;
 DROP PROCEDURE IF EXISTS `Run-GenerateUserData`;
 DROP PROCEDURE IF EXISTS `Run-VerifyRestaurant`;
 DROP PROCEDURE IF EXISTS `Run-ResetRecommendations`;
-DROP PROCEDURE IF EXISTS `Run-GetRestaurantsWithinDistance`;
-DROP PROCEDURE IF EXISTS `Run-GetFoodChecksByID`;
+DROP PROCEDURE IF EXISTS `GetRestaurantsWithinDistance`;
+DROP PROCEDURE IF EXISTS `GetFoodChecksByID`;
 
 DROP FUNCTION IF EXISTS `Func-RandomSelection`;
 DROP FUNCTION IF EXISTS `Func-CountDelimiters`;
@@ -84,7 +84,7 @@ DROP FUNCTION IF EXISTS `Func-RandomNumber`;
 DROP FUNCTION IF EXISTS `Func-GetEmailStarts`;
 DROP FUNCTION IF EXISTS `Func-GetDomains`;
 DROP FUNCTION IF EXISTS `Func-GetNicknames`;
-DROP FUNCTION IF EXISTS `Func-DayToRef`;
+DROP FUNCTION IF EXISTS `DayToRef`;
 USE tat;
 
 
@@ -175,17 +175,17 @@ BEGIN
 END //
 
 
-CREATE PROCEDURE `Run-GetRestaurantsWithinDistance` (IN user_lat FLOAT, IN user_long FLOAT, IN max_distance INT, IN order_date_ref VARCHAR(5), IN order_time TIME)
+CREATE PROCEDURE `GetRestaurantsWithinDistance` (IN user_lat FLOAT, IN user_long FLOAT, IN max_distance INT)
 BEGIN
     DECLARE present_day_ref VARCHAR(5);
     DECLARE present_time TIME;
 
-    SELECT IFNULL (order_time, CURRENT_TIME()) INTO present_time;
+    SELECT CURRENT_TIME() INTO present_time;
 
-    SELECT IFNULL ((SELECT DayRef FROM Days WHERE DayRef = order_date_ref), `Func-DayToRef`(DAYOFWEEK(CURRENT_DATE()))) INTO present_day_ref;
+    SELECT DayToRef(DAYOFWEEK(CURRENT_DATE())) INTO present_day_ref;
 
-        -- FROM https://stackoverflow.com/questions/29553895/querying-mysql-for-latitude-and-longitude-coordinates-that-are-within-a-given-mi    
-    SELECT RestaurantID, IsVegetarian, IsVegan, IsHalal, IsKosher, HasLactose, HasNuts, HasGluten, HasEgg, HasSoy, FoodID, FoodName, IsChildMenu, FoodTagID
+        -- FROM https://stackoverflow.com/questions/29553895/querying-mysql-for-latitude-and-longitude-coordinates-that-are-within-a-given-mi
+    SELECT DISTINCT RestaurantID, IsVegetarian, IsVegan, IsHalal, IsKosher, HasLactose, HasNuts, HasGluten, HasEgg, HasSoy, FoodID, FoodName, FoodNameShort, IsChildMenu, FoodTagID
     FROM RestaurantMenuView
     WHERE ( 3959 * acos( cos( radians(user_lat) ) * cos( radians( Latitude ) )
         * cos( radians( Longitude ) - radians(user_long) ) + sin( radians(user_lat) ) * sin(radians(Latitude)) ) ) < max_distance
@@ -194,7 +194,7 @@ BEGIN
 END //
 
     -- Requires README documentation.
-CREATE PROCEDURE `Run-GetFoodChecksByID` (IN input_id INT)
+CREATE PROCEDURE `GetFoodChecksByID` (IN input_id INT)
 BEGIN
     SELECT * FROM FoodChecks 
     WHERE FoodCheckID = (SELECT FoodCheckID FROM User WHERE UserID = input_id);
@@ -305,16 +305,16 @@ BEGIN
 END //
 
 
-CREATE FUNCTION `Func-DayToRef` (day_num int)
+CREATE FUNCTION `DayToRef` (day_num int)
 RETURNS VARCHAR(5)
 DETERMINISTIC
 BEGIN
     RETURN CASE
                WHEN day_num = 1 THEN 'SUN'
                WHEN day_num = 2 THEN 'MON'
-               WHEN day_num = 3 THEN 'TUES'
+               WHEN day_num = 3 THEN 'TUE'
                WHEN day_num = 4 THEN 'WED'
-               WHEN day_num = 5 THEN 'THURS'
+               WHEN day_num = 5 THEN 'THU'
                WHEN day_num = 6 THEN 'FRI'
                WHEN day_num = 7 THEN 'SAT'
         END;
