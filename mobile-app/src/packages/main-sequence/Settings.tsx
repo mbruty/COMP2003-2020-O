@@ -12,7 +12,7 @@ import {
   Switch,
   ScrollView,
 } from "react-native";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
@@ -31,7 +31,6 @@ interface Props {
 
 let mapRef = null;
 
-
 const Settings: React.FC<Props> = (props) => {
   const [modalVisiblePassword, setModalVisiblePassword] = useState(false);
   const [modalVisibleName, setModalVisibleName] = useState(false);
@@ -40,27 +39,29 @@ const Settings: React.FC<Props> = (props) => {
   const [toggle, setToggle] = useState<boolean>(true);
   const [showMap, setShowMap] = useState<boolean>(false);
 
-  const [markerLocation, setMarkerLocation] = React.useState<LatLng | undefined>();
+  const [markerLocation, setMarkerLocation] = React.useState<
+    LatLng | undefined
+  >();
 
   React.useEffect(() => {
     if (mapRef) {
       mapRef.animateToRegion({
         latitude: markerLocation.latitude,
-        longitude: markerLocation.longitude
+        longitude: markerLocation.longitude,
       });
     } else {
       console.log("Nope");
     }
-  }, [markerLocation])
+  }, [markerLocation]);
 
   useEffect(() => {
     (async () => {
       try {
         const settings = JSON.parse(await AsyncStorage.getItem("location"));
         console.log("settings", settings);
-        
+
         setToggle(settings.toggle);
-        setDistance(settings.distance);
+        setDistance(settings.distance || 1);
         setMarkerLocation(settings.latlon);
       } catch (e) {
         console.log(e);
@@ -68,12 +69,12 @@ const Settings: React.FC<Props> = (props) => {
         // Couldn't get settings... Just continue with defaults
       }
     })();
-  }, [showMap])
+  }, [showMap]);
 
   React.useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
-      if (status !== 'granted') {
+      if (status !== "granted") {
         return;
       }
 
@@ -87,11 +88,16 @@ const Settings: React.FC<Props> = (props) => {
   }, []);
 
   // Is any modal showing?
-  const modalShowing = modalVisibleName || modalVisiblePassword || modalVisibleDelete;
+  const modalShowing =
+    modalVisibleName || modalVisiblePassword || modalVisibleDelete;
   if (showMap) {
     return (
-      <SelectLocation isGroup={false} onSave={() => setShowMap(false)} onBack={() => setShowMap(false)} />
-    )
+      <SelectLocation
+        isGroup={false}
+        onSave={() => setShowMap(false)}
+        onBack={() => setShowMap(false)}
+      />
+    );
   }
   return (
     <ScrollView style={{ opacity: modalShowing ? 0.2 : 1 }}>
@@ -99,11 +105,11 @@ const Settings: React.FC<Props> = (props) => {
         <Text style={styles.title}>Distance Preferences</Text>
         <View style={styles.box}>
           <View style={[styles.mapContainer]}>
-            {markerLocation &&
+            {markerLocation && (
               <MapView
                 compassOffset={{
                   x: 0,
-                  y: 25
+                  y: 25,
                 }}
                 showsUserLocation={true}
                 style={styles.map}
@@ -113,7 +119,9 @@ const Settings: React.FC<Props> = (props) => {
                   latitudeDelta: 0.05,
                   longitudeDelta: 0.05,
                 }}
-                ref={ref => { mapRef = ref; }}
+                ref={(ref) => {
+                  mapRef = ref;
+                }}
               >
                 <Marker coordinate={markerLocation} />
                 <Circle
@@ -125,17 +133,26 @@ const Settings: React.FC<Props> = (props) => {
                   strokeWidth={2}
                 />
               </MapView>
-            }
+            )}
           </View>
-          <TouchableOpacity onPress={() => setShowMap(true)} style={{ backgroundColor: "rgba(0,0,0,0.05)", borderRadius: 20, marginTop: 10 }}>
+          <TouchableOpacity
+            onPress={() => setShowMap(true)}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.05)",
+              borderRadius: 20,
+              marginTop: 10,
+            }}
+          >
             <Text style={[styles.text]}>Open Distance Preferences</Text>
           </TouchableOpacity>
-          <View style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            marginTop: 10
-          }}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              marginTop: 10,
+            }}
+          >
             <Text style={styles.text}>Always use my current location</Text>
             <Switch
               trackColor={{ false: "#767577", true: "#19e664" }}
@@ -144,9 +161,14 @@ const Settings: React.FC<Props> = (props) => {
               onValueChange={() => {
                 (async () => {
                   try {
-                    const settings = JSON.parse(await AsyncStorage.getItem("location"));
+                    const settings = JSON.parse(
+                      await AsyncStorage.getItem("location")
+                    );
                     console.log("Settings:", settings);
-                    await AsyncStorage.setItem("location", JSON.stringify({ ...settings, toggle: !toggle }));
+                    await AsyncStorage.setItem(
+                      "location",
+                      JSON.stringify({ ...settings, toggle: !toggle })
+                    );
                   } catch (e) {
                     console.log("error", e);
                   }
@@ -295,11 +317,13 @@ const Settings: React.FC<Props> = (props) => {
             }}
           >
             <View style={[styles.filledContainer]}>
-              <Text style={styles.title}>Are you sure you want to delete your account?</Text>
+              <Text style={styles.title}>
+                Are you sure you want to delete your account?
+              </Text>
               <View style={[styles.btnContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
                   onPress={(e) => {
-                    console.log(e)
+                    console.log(e);
                     setModalVisibleName(false);
                   }}
                 >
@@ -312,10 +336,9 @@ const Settings: React.FC<Props> = (props) => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("press")
+                    console.log("press");
                     deleteUser();
                     setModalVisibleName(false);
-
                   }}
                 >
                   <View style={[styles.btn, CONSTANT_STYLES.BG_RED]}>
@@ -377,7 +400,6 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 10,
-
   },
   mapContainer: {
     width: "100%",
