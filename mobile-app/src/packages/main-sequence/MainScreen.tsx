@@ -10,6 +10,7 @@ import SmartPage from "react-native-smart-page";
 import { CONSTANT_COLOURS } from "../../constants";
 import getUserInfo from "../requests/getUserInfo";
 import GroupPageRouter from "./GroupPageRouter";
+import { AuthContext } from "../../AuthContext";
 
 interface Props {
   logOut: () => void;
@@ -45,6 +46,7 @@ const MainScreen: React.FC<Props> = (props) => {
   
   const setPage = (index: number) => {
     console.log(scrollRef);
+    // @ts-ignore
     pageRef.current.flingToPage(index, 0.99);
     // If you don't know about the setTimeout 0 trick and why it's needed
     // Please educate yourself on it before touching this
@@ -64,7 +66,9 @@ const MainScreen: React.FC<Props> = (props) => {
   }, [pageIdx]);
 
   return (
-    <>
+    <AuthContext.Consumer>
+      {(auth) =>
+      <>
       <Nav setPage={setPage} selectedIdx={pageIdx} />
       <SmartPage
         loadMinimal={false}
@@ -97,7 +101,9 @@ const MainScreen: React.FC<Props> = (props) => {
           <Settings scrollEnabled={scrollEnabled} setScrollEnabled={setScrollEnabled} logOut={props.logOut} />
         </View>
       </SmartPage>
-    </>
+      </>
+}
+    </AuthContext.Consumer>
   );
 };
 
