@@ -27,7 +27,7 @@ const RecentVisits: React.FC<Props> = ({restaurants}) => {
   const [showingVisit, setShowingVisit] = React.useState<boolean>(true);
   // Possibly move this over to the api??
   const cards = restaurants.slice(0, restaurants.length > 10 ? 10 : restaurants.length);
-  if (showingVisit){return <RecentVisitDetails restaurantID={0}/>}
+  if (showingVisit){return <RecentVisitDetails restaurantID={0} rating={3}/>}
   return <AnimatedScroll handleSwipe={handleSwipe} cards={cards} />;
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Component }from "react";
 import {
   Text,
   View,
@@ -9,19 +9,49 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Image,
+  BackHandler,
 } from "react-native";
 import { CONSTANT_STYLES, CONSTANT_COLOURS, IMG_URL } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
 import { reset } from "../includeAuth";
 import { ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Rating } from 'react-native-ratings';
 
 interface Props {
     onBack?: () => void;
     restaurantID: number;
+    rating: number;
 }
 
 const RecentVisitDetails: React.FC<Props> = (props) => {
+
+  const [newRating, ratingCompleted] = React.useState(1);
+
+  ratingCompleted(newRating) {
+    console.log("Rating is: " + newRating)
+  }
+
+  React.useEffect(() => {
+    if (newRating != props.rating) {
+        props.rating = newRating;
+        console.log("Rating Updated")
+    }
+  }, [])
+
+  React.useEffect(() => {
+    const backAction = () => {
+        props.onBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <View>
       <View style={styles.box}>
@@ -46,6 +76,11 @@ const RecentVisitDetails: React.FC<Props> = (props) => {
         <Text>A bit of info about the restaurant, will this be stored in the database? 
             Maybe some info about the exact menu item that was selected for you.</Text>
         </View>
+        <Rating
+          showRating
+          onFinishRating={ratingCompleted}
+          style={{ paddingVertical: 10 }}
+        />
         </ScrollView>
       </View>
     </View>
@@ -134,7 +169,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     marginTop: 15,
-    color: CONSTANT_COLOURS.DARK_GREY,
+    color: CONSTANT_COLOURS.RED,
     fontSize: 18,
   },
   danger: {
