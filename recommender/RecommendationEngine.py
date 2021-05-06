@@ -3,43 +3,80 @@ from FoodItem import FoodItem
 import pandas as pd
 import numpy as np
 from user import User
+import pickle
 
 column_rows = ["IsVegetarian", "IsVegan", "IsHalal", "IsKosher", "HasLactose", "HasNuts", "HasGluten", "HasEgg", "HasSoy"]
 
 
 class RecommendationEngine:
     #initialiser for the class
-    def __init__ (self, inFoodItems, inUsers):
+    def __init__ (self, inFoodItems, inUsers, currentUser):
         self.FoodItems = inFoodItems
         self.Users = inUsers
+        self.User = currentUser
+        currentUser.print()
+        self.preprocessing()
+        pickle.dump( self, open( "recommender.p", "wb" ) )
 
-        for u in self.Users:
-            u.print()
 
-        for f in self.FoodItems:
-            f.printInfo()
+    def recommend(self):
+        results = []
+        # Loop through all food items in the area
+        for item in self.FoodItems:
+            rating = 0
+            for tags in item.FoodTags:
+                userRating = self.User.getSwipePct(tags)
+                if userRating == None:
+                    rating += self.weightedAvg[tags]
+                else:
+                    rating += ( userRating + self.weightedAvg[tags] ) / 2
+                
+            results.append((item.ID, rating / len(item.FoodTags)))
+
+
+        sortedItems = sorted(results, key=lambda tup: tup[1])
+        sortedItems.reverse()
+        itemsToGet = sortedItems
+        gotItems = []
+        for item in itemsToGet:
+            for fi in self.FoodItems:
+                if fi.ID == item[0]:
+                    gotItems.append(fi)
+        return gotItems
+
+    # Helper for the juptyer notebook
+    def getFoodItems(self):
+        return self.FoodItems
+    
+    # Helper for the juptyer notebook
+    def getUsers(self):
+        return self.Users
 
     def preprocessing (self):
-        FoodItemAverage = []
-        for FoodItem in self.FoodItems:
-            FoodTagAverage = []
-            for FoodTag in FoodItem:
-                Reviews = []
-                Total = 0
-                for user in self.Users:
-                    Reviews.append(user.GetSwipePct(FoodTag.ID))
-                    Total = Total + user.GetSwipePct(FoodTag.ID)
-                FoodTagAverage[FoodTag.ID] = Total/Reviews.count 
-            Sum = 0
-            for FoodTag in FoodTagAverage:
-                Sum = Sum + FoodTag
-            Average = Sum / FoodTagAverage.count
-            FoodItemAverage.append(FoodItem.ID, Average)
+        tags = []
+        averages = {}
+        for F in self.FoodItems:
+            tags = tags + F.FoodTags
+        unique = set(tags)
+        for tag in unique:
+            total = 0
+            count = 0
+            for user in self.Users:
+                rating = user.getSwipePct(tag)
+                if rating != None:
+                    for i in range(int(user.bias) * 10):
+                        total += rating
+                        count += 1
+            if count == 0:
+                # We don't have any users like this one
+                # that has rated this... So give it a slightly higher than 1
+                # rating so that we can get data on it
+                averages[tag] = 1.3 
+            else:
+                averages[tag] = total / count
+        self.weightedAvg = averages
     
 def get_swipe_stack(lat, lng, userid, distance):
-    print(lat)
-    print(lng)
-    print(userid)
     cursor = get_cursor()
     cursor.callproc("GetFoodChecksByID", (userid,))
     checks = []
@@ -82,10 +119,18 @@ def get_swipe_stack(lat, lng, userid, distance):
         # For each unique food id
         # Extract that part of the dataframe, and create a new food item from it
         food_items.append(FoodItem(df[df["FoodID"] == food_id]))
-    cursor.close()
 
-    r = RecommendationEngine(food_items, getUserData(userid))
-    return jsonifyFoodItemArray(food_items)
+    cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID={userid};")
+
+    result = cursor.fetchall()
+    df = pd.DataFrame(result)
+    df.columns = ["UserID", "FoodTagID", "RightSwipePct"]
+    df["Bias"] = 1
+    u = User(df[df["UserID"] == int(userid)])
+    r = RecommendationEngine(food_items, getUserData(userid), u)
+    got_items = r.recommend()
+    cursor.close()
+    return jsonifyFoodItemArray(got_items)
 
 def jsonifyFoodItemArray(items):
     jsonified = "["
