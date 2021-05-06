@@ -14,10 +14,7 @@ class RecommendationEngine:
         self.FoodItems = inFoodItems
         self.Users = inUsers
         self.User = currentUser
-        currentUser.print()
         self.preprocessing()
-        pickle.dump( self, open( "recommender.p", "wb" ) )
-
 
     def recommend(self):
         results = []
@@ -25,11 +22,13 @@ class RecommendationEngine:
         for item in self.FoodItems:
             rating = 0
             for tags in item.FoodTags:
-                userRating = self.User.getSwipePct(tags)
+                userRating = None
+                if self.User != None:
+                    userRating = self.User.getSwipePct(tags)
                 if userRating == None:
                     rating += self.weightedAvg[tags]
                 else:
-                    rating += ( userRating + self.weightedAvg[tags] ) / 2
+                    rating += ( float(userRating) + self.weightedAvg[tags] ) / 2
                 
             results.append((item.ID, rating / len(item.FoodTags)))
 
@@ -123,11 +122,15 @@ def get_swipe_stack(lat, lng, userid, distance):
     cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID={userid};")
 
     result = cursor.fetchall()
-    df = pd.DataFrame(result)
-    df.columns = ["UserID", "FoodTagID", "RightSwipePct"]
-    df["Bias"] = 1
-    u = User(df[df["UserID"] == int(userid)])
-    r = RecommendationEngine(food_items, getUserData(userid), u)
+    r = None
+    if len(result) == 0:
+        r = RecommendationEngine(food_items, getUserData(userid), None)
+    else:
+        df = pd.DataFrame(result)
+        df.columns = ["UserID", "FoodTagID", "RightSwipePct"]
+        df["Bias"] = 1
+        u = User(df[df["UserID"] == int(userid)])
+        r = RecommendationEngine(food_items, getUserData(userid), u)
     got_items = r.recommend()
     cursor.close()
     return jsonifyFoodItemArray(got_items)
@@ -158,33 +161,61 @@ def getUserData(userid):
 
     cursor.execute(f"SELECT FoodTagID FROM FoodOpinionRightSwipePercent WHERE UserID={user_id[0]};")
     result = cursor.fetchall()
-    food_tags = [str(i[0]) for i in result[:5] + result[-5:]] # Select top 5 and bottom 5 rated tags
-    cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID IN(SELECT UserID FROM tat.UserFoodCheckView WHERE {food_checks_builder(checks)} AND UserID<>{user_id[0]}) AND FoodTagID IN ({','.join(food_tags)});")
-    result = cursor.fetchall()
-    tag_dict = {}
-    cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID={user_id[0]};")
-    user = cursor.fetchall()
-    for row in user:
-        tag_dict[row[1]] = float(row[2])
-        ptr = 0
-    count_dict = {55: 2}
-    TOLERANCE = 0.3
+    ids_to_get = None
+    count_dict = {}
 
-    # Go through all results, and count how many tags are within the tolerance
-    for row in result:
-        user_val = tag_dict[row[1]]
-        # Within the user's swipe percentage + / - 0.3
-        if user_val - TOLERANCE <= row[2] <= user_val + TOLERANCE:
-            try:
-                count = count_dict[row[0]]
-                count_dict[row[0]] = count + 1
-            except:
-                count_dict[row[0]] = 1
+    if len(result) < 10:
+       # We haven't swiped on enough yet
+        ids = []
+        cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID IN(SELECT UserID FROM tat.UserFoodCheckView WHERE {food_checks_builder(checks)} AND UserID<>{user_id[0]});")
+        result = cursor.fetchall()
+        for row in result:
+            ids.append(row[0])
+        ids_to_get = list(set(ids))
+    else :
+        # If we have swiped on more than 10 items
+        # Do :
+        food_tags = [str(i[0]) for i in result[:5] + result[-5:]] # Select top 5 and bottom 5 rated tags
+        cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID IN(SELECT UserID FROM tat.UserFoodCheckView WHERE {food_checks_builder(checks)} AND UserID<>{user_id[0]}) AND FoodTagID IN ({','.join(food_tags)});")
+        result = cursor.fetchall()
+        tag_dict = {}
+        cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID={user_id[0]};")
+        user = cursor.fetchall()
+        for row in user:
+            tag_dict[row[1]] = float(row[2])
+            ptr = 0
+        TOLERANCE = 0.3
+        ids_to_get = None
+        while True:
+            ptr = 0
+            # Go through all results, and count how many tags are within the tolerance
+            for row in result:
+                user_val = tag_dict[row[1]]
+                # Within the user's swipe percentage + / - 0.3
+                if user_val - TOLERANCE <= row[2] <= user_val + TOLERANCE:
+                    try:
+                        count = count_dict[row[0]]
+                        count_dict[row[0]] = count + 1
+                    except:
+                        count_dict[row[0]] = 1
 
-    ids_to_get = []
-    for user in count_dict.items():
-        if(user[1] >= 5):
-            ids_to_get.append(str(user[0]))
+            ids = []
+
+            for user in count_dict.items():
+                if(user[1] >= 5):
+                    print(user)
+                    ids.append(str(user[0]))
+            if len(ids) < 3:
+                TOLERANCE += 0.1
+                print(TOLERANCE)
+            elif TOLERANCE > 1:
+                ids_to_get = ids
+                break
+            else:
+                ids_to_get = ids
+                break
+
+    ids_to_get = map(str, ids_to_get)
     cursor.execute(f"SELECT UserID, FoodTagID, RightSwipePercent FROM FoodOpinionRightSwipePercent WHERE UserID IN ({','.join(ids_to_get)});")
     result = cursor.fetchall()
     df = pd.DataFrame(result)
@@ -192,13 +223,16 @@ def getUserData(userid):
     similarities = []
     for row in df.iterrows():
         id = row[1][0]
-        similarities.append(count_dict[id] / 5)
+        if len(count_dict) != 0:
+            similarities.append(count_dict[id] / 5)
+        else:
+            similarities.append(1)
 
     df["Bias"] = similarities
     user_data = []
     for user_id in ids_to_get:
         # For each user id in the one's we want to get
         # Extract that part of the dataframe, and create a new user object from it
-        user_data.append(User(df[df["UserID"] == int(user_id)]))
+        user_data.append(User(df.loc[df["UserID"] == int(user_id)].reset_index()))
 
     return user_data
