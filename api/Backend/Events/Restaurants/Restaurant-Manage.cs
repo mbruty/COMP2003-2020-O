@@ -37,12 +37,12 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(RestaurantBody), "/restaurant/create", "POST", false, SecurityGroup.Administrator)]
         public static async Task CreateRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (!body.IsValid())
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Restuarant Details Are Invalid");
-                return;
-            }
+            //if (!body.IsValid())
+            //{
+            //    response.StatusCode = 401;
+            //    response.AddToData("error", "Restuarant Details Are Invalid");
+            //    return;
+            //}
 
             Data.Obj.Restaurant _restaurant = new Data.Obj.Restaurant() { Email = body.Email, Phone = body.Phone, Longitude = body.Longitude.Value, IsVerified = false, Latitude = body.Latitude.Value, OwnerID = perm.admin_id, RestaurantDescription = body.RestaurantDescription, RestaurantName = body.RestaurantName, Site = body.Site, Street1 = body.Street1, Street2 = body.Street2, Town = body.Town, County = body.County, Postcode = body.Postcode };
 
