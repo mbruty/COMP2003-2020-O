@@ -24,7 +24,7 @@ namespace api.Backend.Events.FoodItems
         {
             Data.Obj.FoodChecks _checks = body.Checks;
             if (_checks == null) _checks = new FoodChecks();
-            if (body.FoodName == null || body.FoodNameShort == null || body.FoodDescription == null || !body.Price.HasValue || !body.MenuID.HasValue)
+            if (body.FoodName == null || body.FoodNameShort == null || body.FoodDescription == null || !body.Price.HasValue)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");
@@ -52,15 +52,6 @@ namespace api.Backend.Events.FoodItems
                 response.StatusCode = 401;
                 response.AddToData("error", "Something went wrong!");
                 return;
-            }
-
-            LinkMenuFood _link = new LinkMenuFood() { FoodID = _item.FoodID, MenuID = body.MenuID.Value };
-
-            if (!await _link.Insert<LinkMenuFood>(false))
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "Something went wrong!");
-                await _item.Delete<FoodItem>();
             }
 
             List<Task> tasks = new List<Task>();
