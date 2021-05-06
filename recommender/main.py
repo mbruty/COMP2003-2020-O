@@ -13,6 +13,7 @@ from eventlet import wsgi
 import eventlet
 from redis_instance import get_instance
 from RecommendationEngine import get_swipe_stack
+import traceback
 r = get_instance()
 
 # 1 day
@@ -52,7 +53,6 @@ class RecommenderController(Resource):
     #get [/swipestack]
     def post(self):
         args = swipestack_args.parse_args()
-        print(args)
         payload = {"authtoken": args.authtoken, "userid": args.userid}
         r = requests.post(
             'http://devapi.trackandtaste.com/user/authcheck', json=payload)
@@ -60,7 +60,9 @@ class RecommenderController(Resource):
             return '', r.status_code
         try:
             data = get_swipe_stack(args.lat, args.lng, args.userid, args.distance)
-        except:
+        except Exception as e :
+            print(e)
+            print(traceback.format_exc())
             return '', 404 # We couldn't find any restaurants
         return json.loads(data), 200        
 
