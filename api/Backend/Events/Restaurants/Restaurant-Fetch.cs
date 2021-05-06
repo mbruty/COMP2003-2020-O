@@ -140,7 +140,8 @@ namespace api.Backend.Events.Restaurants
 
         public bool IsValid()
         {
-            return ValidityChecks.IsValidEmail(Email) && ValidityChecks.IsValidPhone(Phone) && ValidityChecks.IsValidSite(Site) && Longitude > -180 && Longitude < 180 && Latitude > -90 && Latitude < 90 && Street1 != null && Street2 != null && Town != null && County != null && Postcode != null;
+            return RestaurantName.Length > 0 && RestaurantDescription.Length > 0;
+            //return ValidityChecks.IsValidEmail(Email) && ValidityChecks.IsValidPhone(Phone) && ValidityChecks.IsValidSite(Site) && Longitude > -180 && Longitude < 180 && Latitude > -90 && Latitude < 90 && Street1 != null && Street2 != null && Town != null && County != null && Postcode != null;
         }
 
         #endregion Methods
