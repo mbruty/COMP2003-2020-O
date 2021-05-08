@@ -39,9 +39,9 @@ export const CONSTANT_STYLES = StyleSheet.create({
 export const CONSTANT_COLOURS = {
   DARK_GREY: "#707070",
   RED: "#FD4040",
-  BG_BASE: "#F1F1F1"
+  BG_BASE: "#F1F1F1",
 };
 
 export const API_URL = "http://devapi.trackandtaste.com";
-export const RECOMMENDER_URL = "http://1383c46e71dc.ngrok.io";
+export const RECOMMENDER_URL = "http://86.27.84.126:8000";
 export const IMG_URL = "https://storage.googleapis.com/tat-img/";
