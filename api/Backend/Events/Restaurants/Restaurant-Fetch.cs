@@ -24,10 +24,10 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody), "/restaurant", "GET", false, SecurityGroup.Administrator)]
-        public static async Task GetRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string), "/restaurant/:id:", "GET", false, SecurityGroup.None)]
+        public static async Task GetRestaurant(string body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (!body.RestaurantID.HasValue)
+            if (body == "")
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");
@@ -35,7 +35,7 @@ namespace api.Backend.Events.Restaurants
             }
 
             Table table = Binding.GetTable<Data.Obj.Restaurant>();
-            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID.Value);
+            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(Int32.Parse(body));
 
             if (restaurants.Length == 0)
             {
@@ -46,12 +46,6 @@ namespace api.Backend.Events.Restaurants
 
             Data.Obj.Restaurant restaurant = restaurants[0];
 
-            if (restaurant.OwnerID != perm.admin_id)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "This is not your restaurant");
-                return;
-            }
 
             response.AddToData("message", "Fetched restaurant");
             response.AddObjectToData("restaurant", restaurant);
@@ -140,7 +134,8 @@ namespace api.Backend.Events.Restaurants
 
         public bool IsValid()
         {
-            return ValidityChecks.IsValidEmail(Email) && ValidityChecks.IsValidPhone(Phone) && ValidityChecks.IsValidSite(Site) && Longitude > -180 && Longitude < 180 && Latitude > -90 && Latitude < 90 && Street1 != null && Street2 != null && Town != null && County != null && Postcode != null;
+            return RestaurantName.Length > 0 && RestaurantDescription.Length > 0;
+            //return ValidityChecks.IsValidEmail(Email) && ValidityChecks.IsValidPhone(Phone) && ValidityChecks.IsValidSite(Site) && Longitude > -180 && Longitude < 180 && Latitude > -90 && Latitude < 90 && Street1 != null && Street2 != null && Town != null && County != null && Postcode != null;
         }
 
         #endregion Methods

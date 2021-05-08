@@ -7,6 +7,7 @@ import SwipeCard from "./SwipeCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Loading } from "../../Loading";
 import { includeAuth } from "../includeAuth";
+import FoodItemView from "./FoodItemView";
 import { AuthContext } from "../../AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANT_COLOURS, RECOMMENDER_URL } from "../../constants";
@@ -28,6 +29,7 @@ export default function AnimatedSwipe(props) {
   const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [text, setText] = React.useState();
+  const [swipedOn, setSwipedOn] = React.useState();
   const auth = React.useContext(AuthContext);
   React.useEffect(() => {
     if (data.length === 0) {
@@ -96,6 +98,7 @@ export default function AnimatedSwipe(props) {
   const onSwiped = async (side, idx, isFavourite) => {
     // Send to python api
     const item = data[idx];
+    console.log(item);
     const res = await fetch(RECOMMENDER_URL + "/swipe", {
       method: "POST",
       body: JSON.stringify({
@@ -110,7 +113,7 @@ export default function AnimatedSwipe(props) {
         "Content-Type": "application/json",
       },
     });
-    console.log(item);
+    if (side === "LIKE") setSwipedOn(item);
     setIndex((prevIdx) => (prevIdx + 1) % data.length);
   };
 
@@ -122,6 +125,15 @@ export default function AnimatedSwipe(props) {
     setData([]);
   };
 
+  if (swipedOn) {
+    return (
+      <FoodItemView
+        itemId={swipedOn.FoodID}
+        restaurantId={swipedOn.RestaurantID}
+        onComplete={() => setSwipedOn(undefined)}
+      />
+    );
+  }
   return (
     <View style={styles.container}>
       {loading ? (
@@ -148,7 +160,11 @@ export default function AnimatedSwipe(props) {
           cards={data}
           cardIndex={index}
           renderCard={(card) => (
-            <SwipeCard foodID={card.FoodID} title={card.ShortName} />
+            <SwipeCard
+              foodID={card.FoodID}
+              title={card.ShortName}
+              price={card.Price}
+            />
           )}
           backgroundColor={"transparent"}
           onSwipedLeft={(id) => onSwiped("NOPE", id, false)}
