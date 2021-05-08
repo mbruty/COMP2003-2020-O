@@ -35,7 +35,6 @@ export default function AnimatedSwipe(props) {
     if (data.length === 0) {
       (async () => {
         const settings = JSON.parse(await AsyncStorage.getItem("location"));
-        console.log(auth);
         let requestObj = {
           userid: auth.userid,
           authtoken: auth.authtoken,
@@ -65,7 +64,6 @@ export default function AnimatedSwipe(props) {
             requestObj.distance = 10;
           }
         }
-        console.log(requestObj);
         try {
           const response = await fetch(RECOMMENDER_URL + "/swipestack", {
             method: "post",
@@ -78,7 +76,6 @@ export default function AnimatedSwipe(props) {
           console.log(response.status);
           if (response.status === 200) {
             const stack = await response.json();
-            console.log("New Data", stack, "New Data");
             setData(stack);
             setLoading(false);
           } else if (response.status === 404) {
@@ -98,7 +95,6 @@ export default function AnimatedSwipe(props) {
   const onSwiped = async (side, idx, isFavourite) => {
     // Send to python api
     const item = data[idx];
-    console.log(item);
     const res = await fetch(RECOMMENDER_URL + "/swipe", {
       method: "POST",
       body: JSON.stringify({
