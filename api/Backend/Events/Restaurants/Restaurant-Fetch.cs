@@ -27,7 +27,7 @@ namespace api.Backend.Events.Restaurants
         [WebEvent(typeof(string), "/restaurant/:id:", "GET", false, SecurityGroup.None)]
         public static async Task GetRestaurant(string body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (!body.HasValue)
+            if (body != "")
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");
