@@ -2,9 +2,7 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,18 +18,8 @@ namespace api.Backend.Events.Users
         #endregion Fields
 
         #region Methods
-        [WebEvent(typeof(string), "/user/logout", "DELETE", false, SecurityGroup.Administrator)]
-        public static async Task LogoutAdmin(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
-        {
-            Session[] users = await Binding.GetTable<Session>().Select<Session>(perm.user_id);
 
-            await users[0].Delete();
-
-            response.StatusCode = 200;
-            response.AddToData("message", "You are now logged out");
-        }
-
-        [WebEvent(typeof(string),"/user/authcheck", "POST", false, SecurityGroup.User)]
+        [WebEvent(typeof(string), "/user/authcheck", "POST", false, SecurityGroup.User)]
         public static async Task CheckAuthHttp(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             response.StatusCode = 200;
@@ -85,7 +73,18 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Logged in");
         }
 
-        [WebEvent(typeof(UserIdWithToken),"/user/resendcode", "POST", false, SecurityGroup.User)]
+        [WebEvent(typeof(string), "/user/logout", "DELETE", false, SecurityGroup.Administrator)]
+        public static async Task LogoutAdmin(string Data, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        {
+            Session[] users = await Binding.GetTable<Session>().Select<Session>(perm.user_id);
+
+            await users[0].Delete<Session>();
+
+            response.StatusCode = 200;
+            response.AddToData("message", "You are now logged out");
+        }
+
+        [WebEvent(typeof(UserIdWithToken), "/user/resendcode", "POST", false, SecurityGroup.User)]
         public static async Task resendcode(UserIdWithToken user, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Get the user
@@ -117,7 +116,7 @@ namespace api.Backend.Events.Users
             Backend.Data.Redis.Instance.SetStringWithExpiration($"signup-code:{user.UserID}", code, new TimeSpan(0, 30, 0));
         }
 
-        [WebEvent(typeof(User),"/user/signup", "POST", false)]
+        [WebEvent(typeof(User), "/user/signup", "POST", false)]
         public static async Task SignUp(User creds, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             string email = creds.Email, password = creds.Password, dateOfBirth = creds.DateOfBirth.ToString(), nickname = creds.Nickname;
@@ -163,7 +162,7 @@ namespace api.Backend.Events.Users
 
             if (nickname != null) user.Nickname = nickname;
 
-            if (!await user.Insert(true))
+            if (!await user.Insert<User>(true))
             {
                 response.StatusCode = 500;
                 response.AddToData("error", "Database Insertion Failure");
@@ -190,7 +189,7 @@ namespace api.Backend.Events.Users
             response.AddToData("message", "Signed Up");
         }
 
-        [WebEvent(typeof(ValidationCode),"/user/validatecode", "POST", false)]
+        [WebEvent(typeof(ValidationCode), "/user/validatecode", "POST", false)]
         public static async Task ValidateCode(ValidationCode validation, Endpoints.WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             if (validation.UserID == null || validation.Code == null || !codePattern.IsMatch(validation.Code))
@@ -254,31 +253,31 @@ namespace api.Backend.Events.Users
 
     public class LoginCredentials
     {
-        #region Properties
+        #region Fields
 
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email;
+        public string Password;
 
-        #endregion Properties
+        #endregion Fields
     }
 
     public class UserIdWithToken
     {
-        #region Properties
+        #region Fields
 
-        public string AuthToken { get; set; }
-        public string UserID { get; set; }
+        public string AuthToken;
+        public string UserID;
 
-        #endregion Properties
+        #endregion Fields
     }
 
     public class ValidationCode
     {
-        #region Properties
+        #region Fields
 
-        public string Code { get; set; }
-        public string UserID { get; set; }
+        public string Code;
+        public string UserID;
 
-        #endregion Properties
+        #endregion Fields
     }
 }

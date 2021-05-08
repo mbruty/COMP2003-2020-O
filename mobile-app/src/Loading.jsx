@@ -1,68 +1,163 @@
 import React from "react";
-import { Dimensions, Easing, Image, View } from "react-native";
-import Animated from "react-native-reanimated";
+import { Dimensions, Image, View } from "react-native";
+import Animated, { Easing, stopClock } from "react-native-reanimated";
 import { CONSTANT_COLOURS } from "./constants";
+const {
+  useCode,
+  block,
+  set,
+  Value,
+  Clock,
+  eq,
+  clockRunning,
+  not,
+  or,
+  defined,
+  cond,
+  startClock,
+  timing,
+  interpolate,
+  and,
+  add,
+  greaterOrEq
+} = Animated;
+
+const delay = (clock, time, node, nodeBefore = 0, reset = new Value(0)) => {
+  const when = new Value();
+  return block([
+    cond(or(not(defined(when)), reset), [
+      set(when, add(clock, time)),
+      set(reset, 0),
+    ]),
+    cond(greaterOrEq(clock, when), node, nodeBefore),
+  ]);
+};
+
+const runTiming = (clock) => {
+  const state = {
+    finished: new Value(0),
+    position: new Value(0),
+    time: new Value(0),
+    frameTime: new Value(0),
+  };
+
+  const config = {
+    duration: 1400,
+    toValue: 1,
+    easing: Easing.linear,
+  };
+
+  return block([
+    // we run the step here that is going to update position
+    cond(
+      not(clockRunning(clock)),
+      set(state.time, 0),
+      timing(clock, state, config)
+    ),
+    cond(eq(state.finished, 1), [
+      set(state.finished, 0),
+      set(state.position, 0),
+      set(state.frameTime, 0),
+      set(state.time, 0),
+    ]),
+    state.position,
+  ]);
+};
+
+const runTimingDelayed = (clock) => {
+  const state = {
+    finished: new Value(0),
+    position: new Value(0),
+    time: new Value(0),
+    frameTime: new Value(0),
+  };
+
+  const config = {
+    duration: 1400,
+    toValue: 1,
+    easing: Easing.linear,
+  };
+
+  return block([
+    delay(clock, timing(clock, state, config), 700),
+    // we run the step here that is going to update position
+    cond(
+      not(clockRunning(clock)),
+      set(state.time, 0),
+      timing(clock, state, config)
+    ),
+    cond(eq(state.finished, 1), [
+      set(state.finished, 0),
+      set(state.position, 0),
+      set(state.frameTime, 0),
+      set(state.time, 0),
+    ]),
+    state.position,
+  ]);
+};
 
 const { width } = Dimensions.get("window");
 export const Loading = () => {
-  const animatedValue = new Animated.Value(0);
-  const delayedValue = new Animated.Value(1);
-  React.useEffect(() => {
-    startAnimation();
-    const interval = setInterval(startAnimation, 2800);
-    return () => {
-      // Clear the interval on unmount
-      clearInterval(interval);
-    };
-  }, []);
+  const { progress, delayed, clock, isPlaying, delayedClock } = React.useMemo(
+    () => ({
+      progress: new Value(0),
+      delayed: new Value(0),
+      isPlaying: new Value(1),
+      clock: new Clock(),
+      delayedClock: new Clock(),
+    }),
+    []
+  );
 
-  const startAnimation = () => {
-    animatedValue.setValue(0);
-    // Run this once the event loop is clear
-    setTimeout(() => {
-      Animated.timing(animatedValue, {
-        toValue: 1,
-        duration: 1400,
-        easing: Easing.linear,
-      }).start();
-    }, 10);
+  useCode(
+    () =>
+      block([
+        cond(
+          and(not(clockRunning(clock)), eq(isPlaying, 1)),
+          startClock(clock)
+        ),
+        cond(and(clockRunning(clock), eq(isPlaying, 0)), stopClock(clock)),
+        set(progress, runTiming(clock)),
+      ]),
+    [progress, clock]
+  );
 
-    setTimeout(() => {
-      delayedValue.setValue(0);
-      setTimeout(() => {
-        Animated.timing(delayedValue, {
-          toValue: 1,
-          duration: 1400,
-          easing: Easing.linear,
-        }).start();
-      }, 10);
-    }, 700);
-  };
+  useCode(
+    () =>
+      block([
+        cond(
+          and(not(clockRunning(clock)), eq(isPlaying, 1)),
+          startClock(delayedClock)
+        ),
+        cond(
+          and(clockRunning(delayedClock), eq(isPlaying, 0)),
+          stopClock(delayedClock)
+        ),
+        set(delayed, runTimingDelayed(delayedClock)),
+      ]),
+    [delayed, delayedClock]
+  );
 
-  const interpolatedWidth = animatedValue.interpolate({
+  const interpolatedWidth = progress.interpolate({
     inputRange: [0, 1],
     outputRange: [width / 2, width / 1.1],
   });
 
-  const interpolatedOpacity = animatedValue.interpolate({
+  const interpolatedOpcaity = progress.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0],
   });
 
-  const delayedInterpolatedWidth = delayedValue.interpolate({
+  const delayedWidth = delayed.interpolate({
     inputRange: [0, 1],
-    outputRange: [width / 2, width / 1.1],
+    outputRange: [width / 3, width / 1.1],
   });
 
-  const delayedInterpolatedOpacity = delayedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
   const animatedStyle = {
     width: interpolatedWidth,
     height: interpolatedWidth,
     borderWidth: 8,
-    opacity: interpolatedOpacity,
+    opacity: interpolatedOpcaity,
     borderColor: CONSTANT_COLOURS.RED,
     borderRadius: 500,
     marginLeft: "auto",
@@ -71,11 +166,11 @@ export const Loading = () => {
     marginBottom: "auto",
   };
 
-  const delayedAnimatedStyle = {
-    width: delayedInterpolatedWidth,
-    height: delayedInterpolatedWidth,
+  const delayedStyle = {
+    width: delayedWidth,
+    height: delayedWidth,
     borderWidth: 8,
-    opacity: delayedInterpolatedOpacity,
+    opacity: 1,
     borderColor: CONSTANT_COLOURS.RED,
     borderRadius: 500,
     marginLeft: "auto",
@@ -121,7 +216,7 @@ export const Loading = () => {
           display: "flex",
         }}
       >
-        <Animated.View style={delayedAnimatedStyle} />
+        {/* <Animated.View style={delayedStyle} /> */}
       </View>
     </View>
   );

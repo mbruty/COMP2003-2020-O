@@ -4,7 +4,7 @@ def process_swipe(user_id, food_id, is_like, is_favourite):
   cursor = get_cursor()
   cursor.execute(f"SELECT FoodTagID FROM FoodTags JOIN FoodItemTags FIT on FoodTags.FoodTagID = FIT.TagID JOIN FoodItem FI on FI.FoodID = FIT.FoodID WHERE FI.FoodID ={food_id};")
   results = cursor.fetchall()
-
+  cursor.execute(f"INSERT INTO SwipeData(FoodID, SwipeDate, RightSwipes, LeftSwipes) VALUE (1, CURDATE(), {int(is_like)} ,{int(not is_like)}) ON DUPLICATE KEY UPDATE RightSwipes = RightSwipes + {int(is_like or is_favourite)}, LeftSwipes = LeftSwipes + {int(not is_like)};")
   if len(results) == 0:
     raise Exception("Food ID not found") 
 

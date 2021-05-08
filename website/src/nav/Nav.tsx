@@ -20,7 +20,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import { Badge, Button, InputBase, Menu, MenuItem } from "@material-ui/core";
 import MoreIcon from "@material-ui/icons/MoreVert";
@@ -37,8 +36,6 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from "react-router";
 
 const drawerWidth = 280;
@@ -401,6 +398,9 @@ export default function Nav(props: Props) {
                         <div style={{ marginBottom: "5px" }}>
                           <Button
                             onClick={() => {
+                              if(restaurant.name === "Create a restaurant"){
+                                history.push("/restaurant-builder")
+                              }
                               props.setSelectedRestaurant(restaurant);
                               setExpanded(false);
                             }}

@@ -13,7 +13,7 @@ namespace api.Backend.Data.Obj
         public float Longitude, Latitude;
         public uint RestaurantID, OwnerID;
 
-        public string RestaurantName, RestaurantDescription, Phone, Email, Site;
+        public string RestaurantName, RestaurantDescription, Phone, Email, Site, Street1, Street2, Town, County, Postcode, WebhookURI;
 
         #endregion Fields
 
@@ -24,7 +24,7 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Menu>().SelectCustom<Menu>(
                 tables: "LinkMenuRestaurant,Menu",
                 where: "LinkMenuRestaurant.MenuID = Menu.MenuID AND LinkMenuRestaurant.RestaurantID = @RestPar",
-                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ResetPar", RestaurantID) }
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("RestPar", RestaurantID) }
                 );
         }
 
@@ -48,13 +48,19 @@ namespace api.Backend.Data.Obj
             return await Binding.GetTable<Review>().SelectCustom<Review>(
                 tables: "Review,Visit",
                 where: "Review.VisitRef = Visit.VisitRef AND Visit.RestaurantID = @RestPar",
-                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("ResetPar", RestaurantID) }
+                Params: new List<Tuple<string, object>>() { new Tuple<string, object>("RestPar", RestaurantID) }
                 );
         }
 
         public async Task<Visit[]> GetVisits()
         {
             return await Binding.GetTable<Visit>().Select<Visit>("RestaurantID", RestaurantID);
+        }
+
+        public async Task<bool> UpdateWebhook()
+        {
+            return await SQL.Instance.Execute("UPDATE Restaurant SET WebhookURI=@uri where RestaurantID=@id",
+                 new List<Tuple<string, object>>() { new Tuple<string, object>("uri", WebhookURI), new Tuple<string, object>("id", RestaurantID) });
         }
 
         #endregion Methods

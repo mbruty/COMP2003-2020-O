@@ -1,14 +1,16 @@
 import React from "react";
 import { Image, StyleSheet, Text, View, Dimensions } from "react-native";
-
-import data from "./data";
+import * as Location from "expo-location";
 import Swiper from "react-native-deck-swiper";
 import { Feather as Icon } from "@expo/vector-icons";
 import SwipeCard from "./SwipeCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Loading } from "../../Loading";
 import { includeAuth } from "../includeAuth";
-
+import FoodItemView from "./FoodItemView";
+import { AuthContext } from "../../AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CONSTANT_COLOURS, RECOMMENDER_URL } from "../../constants";
 const { height, width } = Dimensions.get("screen");
 const stackSize = 4;
 const colors = {
@@ -22,17 +24,85 @@ const colors = {
 
 const swiperRef = React.createRef();
 
-export default function App() {
+export default function AnimatedSwipe(props) {
   const [index, setIndex] = React.useState(0);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [data, setData] = React.useState([]);
+  const [text, setText] = React.useState();
+  const [swipedOn, setSwipedOn] = React.useState();
+  const auth = React.useContext(AuthContext);
+  React.useEffect(() => {
+    if (data.length === 0) {
+      (async () => {
+        const settings = JSON.parse(await AsyncStorage.getItem("location"));
+        console.log(auth);
+        let requestObj = {
+          userid: auth.userid,
+          authtoken: auth.authtoken,
+        };
+        if (settings && !settings.toggle && settings.latlon) {
+          // If settings isn't undefined AND if use current location is off AND we have an object for the selected latlon do...
+          // Basically if we aren't using the current location, and we have a location to go off of
+          requestObj.lat = settings.latlon.latitude;
+          requestObj.lng = settings.latlon.longitude;
+          requestObj.distance = settings.distance || 10; // The distance saved or 10 miles
+        } else {
+          // Use the current location
+          // We've requested access to location elsewhere
+          const userLocation = await Location.getCurrentPositionAsync({});
+          if (!userLocation) {
+            setLoading(true);
+            setText(
+              "Please enable location, or set a location to swipe in settings"
+            );
+            return;
+          }
+          requestObj.lat = userLocation.coords.latitude;
+          requestObj.lng = userLocation.coords.longitude;
+          if (settings && settings.distance) {
+            requestObj.distance = settings.distance;
+          } else {
+            requestObj.distance = 10;
+          }
+        }
+        console.log(requestObj);
+        try {
+          const response = await fetch(RECOMMENDER_URL + "/swipestack", {
+            method: "post",
+            body: JSON.stringify(requestObj),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          });
+          console.log(response.status);
+          if (response.status === 200) {
+            const stack = await response.json();
+            console.log("New Data", stack, "New Data");
+            setData(stack);
+            setLoading(false);
+          } else if (response.status === 404) {
+            setLoading(true);
+            setText("No restaurants found within your specified distance");
+          } else {
+            console.log(response.status);
+            console.log(await response.json());
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    }
+  }, [loading, auth]);
 
-  const onSwiped = async (side, id, isFavourite) => {
-    const auth = await includeAuth();
+  const onSwiped = async (side, idx, isFavourite) => {
     // Send to python api
-    const res = await fetch("http://127.0.0.1:5000/swipe", {
+    const item = data[idx];
+    console.log(item);
+    const res = await fetch(RECOMMENDER_URL + "/swipe", {
       method: "POST",
       body: JSON.stringify({
-        foodid: id,
+        foodid: item.FoodID,
         userid: auth.userid,
         authtoken: auth.authtoken,
         islike: side === "LIKE",
@@ -43,7 +113,7 @@ export default function App() {
         "Content-Type": "application/json",
       },
     });
-    console.log(res.status);
+    if (side === "LIKE") setSwipedOn(item);
     setIndex((prevIdx) => (prevIdx + 1) % data.length);
   };
 
@@ -51,13 +121,38 @@ export default function App() {
     //ToDo:
     //Fetch some more data from the recommender
     setLoading(true);
+    setText("Our robots are searching for more food to serve their master");
+    setData([]);
   };
 
+  if (swipedOn) {
+    return (
+      <FoodItemView
+        itemId={swipedOn.FoodID}
+        restaurantId={swipedOn.RestaurantID}
+        onComplete={() => setSwipedOn(undefined)}
+      />
+    );
+  }
   return (
     <View style={styles.container}>
       {loading ? (
         <View style={{ marginTop: "-20%" }}>
           <Loading />
+          {text && (
+            <Text
+              style={{
+                position: "absolute",
+                width: "100%",
+                top: "70%",
+                textAlign: "center",
+                fontSize: 20,
+                color: CONSTANT_COLOURS.DARK_GREY,
+              }}
+            >
+              {text}
+            </Text>
+          )}
         </View>
       ) : (
         <Swiper
@@ -65,7 +160,11 @@ export default function App() {
           cards={data}
           cardIndex={index}
           renderCard={(card) => (
-            <SwipeCard foodID={card.foodid} title={card.name} />
+            <SwipeCard
+              foodID={card.FoodID}
+              title={card.ShortName}
+              price={card.Price}
+            />
           )}
           backgroundColor={"transparent"}
           onSwipedLeft={(id) => onSwiped("NOPE", id, false)}

@@ -1,14 +1,12 @@
 import React from "react";
 import CSS from "csstype";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import CheckIcon from "@material-ui/icons/Check";
 import TextField from "@material-ui/core/TextField";
 import { Paper } from "@material-ui/core";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import { API_URL } from "../constants";
 import MapsAutocomplete from "./MapsAutocomplete";
+import { address } from "./GetGeoLocation";
 
 const mainStyle: CSS.Properties = {
   textAlign: "center",
@@ -37,35 +35,44 @@ interface Data {
   phone: string;
   email: string;
   site: string;
-  address: string;
+  address: address;
   geo: {
     lat: number;
-    lon: number;
+    lng: number;
   };
 }
 
+const initialState = {
+  restaurantname: "",
+  restaurantdescription: "",
+  phone: "",
+  email: "",
+  site: "",
+  address: {
+    Street1: "",
+    Town: "",
+    County: "",
+    Country: "",
+    Postcode: "",
+  },
+  geo: {
+    lat: 0,
+    lng: 0,
+  },
+};
+
 const RestaurantBuilder: React.FC<Props> = () => {
-  const [data, setData] = React.useState<Data>({
-    restaurantname: "",
-    restaurantdescription: "",
-    phone: "",
-    email: "",
-    site: "",
-    address: "",
-    geo: {
-      lat: 0,
-      lon: 0,
-    },
-  });
+  const [data, setData] = React.useState<Data>({ ...initialState });
 
-  console.log(data);
-
-  const canVerifyNow = data.address !== "";
+  const canVerifyNow = Object.values(data.address).some((v) => !!v);
   return (
     <div className="content" style={mainStyle}>
       <Paper style={{ padding: "2rem" }}>
         <h1>Restaurant Builder</h1>
-        <p>Ensure valid information inputted... Validation will be done next sprint</p>
+        <p>
+          Ensure valid information inputted... Validation will be done next
+          sprint
+        </p>
 
         <div>
           <h2 style={headingStyle}>Name</h2>
@@ -158,11 +165,31 @@ const RestaurantBuilder: React.FC<Props> = () => {
           startIcon={<CheckIcon />}
           color="primary"
           onClick={async () => {
-            const result = await fetch(API_URL + "/restaurants/create", {
+            const result = await fetch(API_URL + "/restaurant/create", {
               method: "POST",
-              body: JSON.stringify(data),
+              body: JSON.stringify({
+                Longitude: data.geo.lng,
+                Latitude: data.geo.lat,
+                RestaurantName: data.restaurantname,
+                RestaurantDescription: data.restaurantdescription,
+                Phone: data.phone,
+                Email: data.email,
+                Site: data.site,
+                Street1: data.address.Street1,
+                Town: data.address.Town,
+                County: data.address.County,
+                Postcode: data.address.Postcode,
+              }),
               credentials: "include",
             });
+
+            if (result.status === 200) {
+              // We've created it!
+              setData({ ...initialState });
+            }
+            else {
+              // Handle errors
+            }
           }}
         >
           {canVerifyNow ? "Start Verification" : "Create Now, Verify Later"}
