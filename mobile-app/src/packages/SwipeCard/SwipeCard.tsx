@@ -18,6 +18,7 @@ export interface Item {
 interface Props {
   foodID: number;
   title: string;
+  price: number;
 }
 
 const { width, height } = Dimensions.get("screen");
@@ -34,6 +35,22 @@ const SwipeCard: React.FC<Props> = (props) => {
           style={[styles.image]}
           source={{ uri: IMG_URL + props.foodID + ".png?1=1" }}
         />
+        <View
+          style={{
+            position: "absolute",
+            bottom: 50,
+            padding: 5,
+            borderRadius: 10,
+            left: 15,
+            borderColor: CONSTANT_COLOURS.DARK_GREY,
+            borderWidth: 1,
+            backgroundColor: "white",
+          }}
+        >
+          <Text style={{ fontSize: 20, color: CONSTANT_COLOURS.DARK_GREY }}>
+            £{props.price}
+          </Text>
+        </View>
         <Text style={styles.title}>{props.title}</Text>
       </View>
     </View>
