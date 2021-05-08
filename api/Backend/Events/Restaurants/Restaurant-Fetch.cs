@@ -24,10 +24,10 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody), "/restaurant", "GET", false, SecurityGroup.None)]
-        public static async Task GetRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string), "/restaurant/:id:", "GET", false, SecurityGroup.None)]
+        public static async Task GetRestaurant(string body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
-            if (!body.RestaurantID.HasValue)
+            if (!body.HasValue)
             {
                 response.StatusCode = 401;
                 response.AddToData("error", "Missing Required Inputs");
@@ -35,7 +35,7 @@ namespace api.Backend.Events.Restaurants
             }
 
             Table table = Binding.GetTable<Data.Obj.Restaurant>();
-            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body.RestaurantID.Value);
+            Data.Obj.Restaurant[] restaurants = await table.Select<Data.Obj.Restaurant>(body);
 
             if (restaurants.Length == 0)
             {
