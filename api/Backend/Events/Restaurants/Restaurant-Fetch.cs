@@ -24,7 +24,7 @@ namespace api.Backend.Events.Restaurants
             response.StatusCode = 200;
         }
 
-        [WebEvent(typeof(RestaurantBody), "/restaurant", "GET", false, SecurityGroup.Administrator)]
+        [WebEvent(typeof(RestaurantBody), "/restaurant", "GET", false, SecurityGroup.None)]
         public static async Task GetRestaurant(RestaurantBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             if (!body.RestaurantID.HasValue)
@@ -46,12 +46,6 @@ namespace api.Backend.Events.Restaurants
 
             Data.Obj.Restaurant restaurant = restaurants[0];
 
-            if (restaurant.OwnerID != perm.admin_id)
-            {
-                response.StatusCode = 401;
-                response.AddToData("error", "This is not your restaurant");
-                return;
-            }
 
             response.AddToData("message", "Fetched restaurant");
             response.AddObjectToData("restaurant", restaurant);
