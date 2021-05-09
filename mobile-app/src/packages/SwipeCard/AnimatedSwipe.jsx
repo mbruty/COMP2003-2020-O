@@ -171,7 +171,8 @@ export default function AnimatedSwipe(props) {
               price={card.Price}
             />
           )}
-          marginTop={0}
+          cardVerticalMargin={20}
+          containerStyle={{ height: height - 130 }}
           backgroundColor={"transparent"}
           onSwipedLeft={(id) => onSwiped("NOPE", id, false)}
           onSwipedRight={(id) => onSwiped("LIKE", id, false)}
@@ -271,9 +272,7 @@ export default function AnimatedSwipe(props) {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    height: height - 100,
-    position: "relative",
-    borderColor: "black",
+    height: height - 130,
   },
   text: {
     textAlign: "center",
