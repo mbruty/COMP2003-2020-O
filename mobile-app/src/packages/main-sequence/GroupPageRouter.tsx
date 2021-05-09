@@ -1,11 +1,15 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
+import { Text, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { LatLng } from "react-native-maps";
+import { CONSTANT_COLOURS } from "../../constants";
 import { auth, includeAuth } from "../includeAuth";
 import { GroupObserver, SocketUser } from "./GroupObserver";
 import GroupPage from "./GroupPage";
 import GroupWaitingRoom from "./GroupWaitingRoom";
 import SelectLocation from "./SelectLocation";
-
+import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
 interface Props {
   setScrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   scrollEnabled: boolean;
@@ -29,7 +33,7 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   const observer = React.useMemo(() => {
     if (props.auth && props.auth.userid) {
       const observer = new GroupObserver(props.auth.userid);
-      observer.subscribe(async (newMembers, newCode) => {
+      observer.subscribe(async (newMembers, newCode, swipeStarted) => {
         try {
           console.log("newMembers", newMembers);
 
@@ -43,9 +47,11 @@ const GroupPageRouter: React.FC<Props> = (props) => {
           if (isHost !== isOwner) {
             setIsHost(isOwner);
           }
-
+          if (swipeStarted) {
+            setPage(Page.swipe);
+            return;
+          }
           if (newCode === -1) {
-            alert("Leaving");
             setCode(0);
             setPage(Page.join_create);
           } else if (newCode !== code) {
@@ -59,12 +65,13 @@ const GroupPageRouter: React.FC<Props> = (props) => {
         }
       });
 
-      observer.onError = () => {
-        setError(
-          "That group doesn't exist, please check the code and try again"
-        );
+      observer.onError = (message: string) => {
+        setError(message);
         setPage(Page.join_create);
         setTimeout(() => setError(""), 5000);
+      };
+      observer.onSwipeStart = () => {
+        setPage(Page.swipe);
       };
       return observer;
     }
@@ -112,6 +119,65 @@ const GroupPageRouter: React.FC<Props> = (props) => {
           }}
           setPage={setPage}
         />
+      );
+    case Page.swipe:
+      return (
+        <>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              borderColor: "blac",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                marginTop: 10,
+                backgroundColor: "white",
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+                borderRadius: 100,
+                display: "flex",
+                width: 140,
+                flexDirection: "row",
+                marginLeft: 15,
+              }}
+              onPress={() => {
+                observer.leave();
+              }}
+            >
+              <MaterialCommunityIcons
+                name="keyboard-backspace"
+                size={24}
+                color="black"
+              />
+              <Text style={{ paddingLeft: 10, paddingTop: 3 }}>
+                Leave Group
+              </Text>
+            </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: 18,
+                color: CONSTANT_COLOURS.DARK_GREY,
+                marginTop: 20,
+                marginRight: 15,
+              }}
+            >
+              Swiping in group {code}
+            </Text>
+          </View>
+          <View>
+            <AnimatedSwipe
+              isGroup={true}
+              onSwipe={(side: string, isFavourite: boolean, item) => {
+                console.log(item);
+                const isLike = side === "LIKE" || isFavourite;
+                observer.onSwipe(item.RestaurantID, item.FoodID, isLike);
+              }}
+            />
+          </View>
+        </>
       );
   }
   return null;

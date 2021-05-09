@@ -47,6 +47,12 @@ io.on("connection", (socket) => {
   socket.on("leave", (message) => leaveHandler(message, socket));
 
   socket.on("ready", (message) => readyHandler(message, socket));
+
+  socket.on("kick", (message) => kickHandler(message, socket));
+
+  socket.on("start_swipe", (message) => startSwipeHanlder(message, socket));
+
+  socket.on("swipe", (message) => swipeHanlder(message, socket));
 });
 
 http.listen(process.env.PORT, function () {
@@ -65,22 +71,23 @@ async function createHandler(message, socket) {
   let code = Math.floor(100000 + Math.random() * 900000);
   // While the code doesn't exist, make a new code
   // This could break if we have like 100k + rooms?
-  console.log(await collection.countDocuments({ code: code }));
   while ((await collection.countDocuments({ code: code })) !== 0) {
     code = Math.floor(100000 + Math.random() * 900000);
   }
+  const nick = await getNameFromID(message.id);
 
   await collection.insertOne({
-    code: code,
+    code: code.toString(),
     geo: message.latlon,
     distance: Math.round(message.distance * 10) / 10,
     users: [{ id: message.id, name: nick, ready: true }],
     owner: message.id,
+    started: false,
+    restaurants: [],
     lastAccessed: new Date(),
   });
-  const nick = await getNameFromID(message.id);
-  socket.join(code);
-  socket.emit("room_code", code);
+  socket.join(code.toString());
+  socket.emit("room_code", code.toString());
   socket.emit("users_change", {
     owner: message.id,
     users: [{ id: message.id, name: nick, ready: true }],
@@ -88,11 +95,16 @@ async function createHandler(message, socket) {
 }
 
 async function joinHandler(message, socket) {
-  console.log(message.room);
   const room = await collection.findOne({ code: message.room });
-  console.log(room);
   if (!room) {
-    // handle error
+    socket.emit("message", "Room does not exist");
+    return;
+  }
+  if (
+    room.bannedUsers &&
+    room.bannedUsers.some(({ id }) => id === message.id)
+  ) {
+    socket.emit("message", "You have been banned from this room");
     return;
   }
   const nick = await getNameFromID(message.id);
@@ -109,43 +121,52 @@ async function joinHandler(message, socket) {
 }
 
 async function joinCheckHandler(message, socket) {
-  const ownedRooms = await collection.findOne(
-    { owner: message.id },
-    { projection: { code: 1 } }
-  );
-  if (ownedRooms) {
-    socket.emit("room_code", ownedRooms.code);
-    socket.join(ownedRooms.code);
-    const room = await getAllUsersInRoom(ownedRooms.code);
-    console.log(room);
-    socket.emit("users_change", room);
+  const joinedRoom = await collection.findOne({ "users.id": message.id });
+  if (joinedRoom) {
+    socket.emit("room_code", joinedRoom.code);
+    socket.join(joinedRoom.code);
+    socket.emit("users_change", joinedRoom);
   }
 }
 
 async function getAllUsersInRoom(code) {
   const room = await collection.findOne(
     { code },
-    { projection: { users: 1, owner: 1 } }
+    { projection: { users: 1, owner: 1, started: 1 } }
   );
   return room;
 }
 
 async function leaveHandler(message, socket) {
-  console.log(message.room);
-  const res = await collection.updateOne(
+  const room = await collection.findOne(
+    {
+      code: message.room,
+    },
+    {
+      projection: { owner: 1 },
+    }
+  );
+  if (room && room.owner === message.id) {
+    // Owner leaving, delete!
+    collection.removeOne({ code: message.room });
+    io.to(message.room).emit("disband", true);
+    socket.leave(message.room);
+
+    return;
+  }
+  await collection.updateOne(
     { code: message.room },
     {
       $pull: { users: { id: message.id } },
     }
   );
   socket.leave(message.room);
-  const room = await getAllUsersInRoom(message.room);
+  const updated = await getAllUsersInRoom(message.room);
 
-  io.to(message.room).emit("users_change", room);
+  io.to(message.room).emit("users_change", updated);
 }
 
 async function readyHandler(message, socket) {
-  console.log(message);
   const room = await getAllUsersInRoom(message.room);
   const updated = room.users.map((item) => {
     if (item.id === message.id) {
@@ -160,4 +181,31 @@ async function readyHandler(message, socket) {
     }
   );
   io.to(message.room).emit("users_change", { ...room, users: updated });
+}
+
+async function kickHandler(message, socket) {
+  const res = await collection.updateOne(
+    { code: message.room },
+    {
+      $pull: { users: { id: message.id } },
+      $addToSet: { bannedUsers: { id: message.id } },
+    }
+  );
+  io.to(message.room).emit("kicked", message.id);
+  const room = await getAllUsersInRoom(message.room);
+  io.to(message.room).emit("users_change", { room: message.room, users: room });
+}
+
+async function startSwipeHanlder(message, socket) {
+  console.log(message);
+  io.to(message.room).emit("start_swipe", "");
+  await collection.updateOne(
+    { code: message.room },
+    { $set: { started: true } }
+  );
+}
+
+async function swipeHanlder(message, socket) {
+  console.log(message);
+  const rooom = await collection.findOne({ code: message.room });
 }

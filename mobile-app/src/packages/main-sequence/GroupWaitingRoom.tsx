@@ -134,8 +134,7 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
         }}
         onPress={() => {
           if (props.isHost) {
-            // TODO
-            // Start the swiping process
+            props.observer.startSwipe();
           } else {
             // They aren't  host.. So just ready up
             props.onReady();

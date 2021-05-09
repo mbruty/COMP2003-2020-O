@@ -3,7 +3,11 @@ import { io, Socket } from "socket.io-client";
 import { WS_URL } from "../../constants";
 import { includeAuth } from "../includeAuth";
 
-type SocketObserver = (users: SocketUser[], code: number) => void;
+type SocketObserver = (
+  users: SocketUser[],
+  code: number,
+  swipeStarted: boolean
+) => void;
 
 export interface SocketUser {
   name: string;
@@ -18,7 +22,9 @@ export class GroupObserver {
   private members: SocketUser[];
   private code: number = 0;
   private userId: string;
-  public onError: () => void | undefined;
+  private swipeStarted: boolean = false;
+  public onError: (message: string) => void | undefined;
+  public onSwipeStart: () => void | undefined;
   constructor(userId: string) {
     console.log("New observer");
     this.userId = userId;
@@ -29,11 +35,9 @@ export class GroupObserver {
 
     this.socket.on("message", (message) => {
       console.log(message);
-      if (message === "Room does not exist") {
-        this.code = 0;
-        this.onError();
-        this.onChange();
-      }
+      this.code = 0;
+      this.onError(message);
+      this.onChange();
     });
     // Initalize listeners
     this.socket.on("connect", () => {
@@ -41,6 +45,9 @@ export class GroupObserver {
     });
 
     this.socket.on("users_change", (data) => {
+      if (data.started !== undefined) {
+        this.swipeStarted = data.started;
+      }
       // Convert each element's ready string to a boolean
       this.members = data.users.map((element) => {
         element.owner = element.id === data.owner;
@@ -54,10 +61,47 @@ export class GroupObserver {
       this.code = code;
       this.onChange();
     });
+
+    this.socket.on("kicked", (kickedId) => {
+      this.socket.emit("leave", { id: this.userId, room: this.code });
+      if (kickedId === this.userId) {
+        this.code = 0;
+        this.onError("You have been banned from this room");
+        this.onChange();
+      }
+    });
+
+    this.socket.on("disband", () => {
+      console.log("disband");
+
+      // Leave the room
+      this.socket.emit("leave", { room: this.code, id: this.userId });
+      this.code = 0;
+      this.onError("The owner of the room has delete the room");
+      this.onChange();
+    });
+
+    this.socket.on("start_swipe", () => {
+      if (this.onSwipeStart) {
+        this.onSwipeStart();
+      }
+    });
+  }
+
+  public onSwipe(restaurantID: number, foodID: number, isLike: boolean) {
+    if (isLike) {
+      this.socket.emit("swipe", {
+        restaurantID,
+        foodID,
+        room: this.code,
+        id: this.userId,
+      });
+    }
   }
 
   public kick(id: string) {
     // ToDo : Ban the user from the room
+    this.socket.emit("kick", { id, room: this.code });
   }
 
   public async create(latlon: LatLng, distance: number) {
@@ -72,6 +116,7 @@ export class GroupObserver {
   public leave() {
     this.socket.emit("leave", { id: this.userId, room: this.code });
     this.code = -1;
+    this.swipeStarted = false;
     this.onChange();
   }
   public async join(room) {
@@ -84,6 +129,10 @@ export class GroupObserver {
     } catch (e) {
       alert(e);
     }
+  }
+
+  public startSwipe() {
+    this.socket.emit("start_swipe", { room: this.code });
   }
 
   public async toggleReady() {
@@ -102,6 +151,8 @@ export class GroupObserver {
 
   private onChange() {
     if (this.observers.length > 0)
-      this.observers.forEach((o) => o(this.members, this.code));
+      this.observers.forEach((o) =>
+        o(this.members, this.code, this.swipeStarted)
+      );
   }
 }

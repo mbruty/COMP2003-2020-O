@@ -31,6 +31,12 @@ export default function AnimatedSwipe(props) {
   const [text, setText] = React.useState();
   const [swipedOn, setSwipedOn] = React.useState();
   const auth = React.useContext(AuthContext);
+
+  React.useEffect(() => {
+    if (props.swipedOn) {
+      setSwipedOn(props.swipedOn);
+    }
+  }, [props]);
   React.useEffect(() => {
     if (data.length === 0) {
       (async () => {
@@ -109,7 +115,10 @@ export default function AnimatedSwipe(props) {
         "Content-Type": "application/json",
       },
     });
-    if (side === "LIKE") setSwipedOn(item);
+    if (props.isGroup) {
+      props.onSwipe(side, isFavourite, item);
+      return;
+    } else if (side === "LIKE") setSwipedOn(item);
     setIndex((prevIdx) => (prevIdx + 1) % data.length);
   };
 
@@ -162,6 +171,7 @@ export default function AnimatedSwipe(props) {
               price={card.Price}
             />
           )}
+          marginTop={0}
           backgroundColor={"transparent"}
           onSwipedLeft={(id) => onSwiped("NOPE", id, false)}
           onSwipedRight={(id) => onSwiped("LIKE", id, false)}
@@ -263,6 +273,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: height - 100,
     position: "relative",
+    borderColor: "black",
   },
   text: {
     textAlign: "center",
