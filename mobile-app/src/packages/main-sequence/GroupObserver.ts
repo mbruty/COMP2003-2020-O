@@ -1,7 +1,12 @@
+import { ExpoPushToken } from "expo-notifications";
 import { LatLng } from "react-native-maps";
 import { io, Socket } from "socket.io-client";
 import { WS_URL } from "../../constants";
 import { includeAuth } from "../includeAuth";
+import * as Permissions from "expo-permissions";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+import { Alert, Platform } from "react-native";
 
 type SocketObserver = (
   users: SocketUser[],
@@ -59,6 +64,8 @@ export class GroupObserver {
 
     this.socket.on("room_code", (code) => {
       this.code = code;
+      // Try and get the push notification token
+      this.registerForPushNotifications();
       this.onChange();
     });
 
@@ -85,6 +92,13 @@ export class GroupObserver {
       if (this.onSwipeStart) {
         this.onSwipeStart();
       }
+    });
+    this.socket.on("finish", (message) => {
+      alert("Match!" + message.restaurantID);
+    });
+    this.socket.on("joined", () => {
+      this.registerForPushNotifications(); // Once we've joined, try and get the push notification token
+      this.onChange();
     });
   }
 
@@ -119,13 +133,13 @@ export class GroupObserver {
     this.swipeStarted = false;
     this.onChange();
   }
-  public async join(room) {
-    console.log({ room });
-
+  public join(room) {
     try {
-      this.socket.emit("join", { id: this.userId, room: room });
+      this.socket.emit("join", {
+        id: this.userId,
+        room: room,
+      });
       this.code = room;
-      this.onChange();
     } catch (e) {
       alert(e);
     }
@@ -154,5 +168,55 @@ export class GroupObserver {
       this.observers.forEach((o) =>
         o(this.members, this.code, this.swipeStarted)
       );
+  }
+  private async registerForPushNotifications() {
+    if (Constants.isDevice) {
+      // We can't get notifications from a simulator :(
+      // Get the notifications permission
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Permissions.askAsync(
+          Permissions.NOTIFICATIONS
+        );
+        finalStatus = status;
+      }
+
+      if (finalStatus !== "granted") {
+        return;
+      }
+      if (Platform.OS === "android") {
+        console.log("here");
+        try {
+          Notifications.setNotificationChannelAsync(
+            "notifications-sound-channel",
+            {
+              name: "Track and taste",
+              importance: Notifications.AndroidImportance.MAX,
+              vibrationPattern: [0, 250, 250, 250],
+              lightColor: "#FF231F7C",
+            }
+          );
+        } catch (e) {
+          alert(e);
+        }
+      }
+
+      // If the permission was granted, then get the token
+      const token = await Notifications.getExpoPushTokenAsync();
+      alert(token.data);
+      // Sometimes we won't have this
+      // Some devices do not support push tokens...
+      // Some users won't give us perms
+      this.socket.emit("register_notifications", {
+        id: this.userId,
+        room: this.code,
+        token: token.data,
+      });
+    }
   }
 }
