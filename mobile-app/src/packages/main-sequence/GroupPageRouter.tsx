@@ -170,6 +170,7 @@ const GroupPageRouter: React.FC<Props> = (props) => {
           <View>
             <AnimatedSwipe
               isGroup={true}
+              code={code}
               onSwipe={(side: string, isFavourite: boolean, item) => {
                 console.log(item);
                 const isLike = side === "LIKE" || isFavourite;

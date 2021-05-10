@@ -208,7 +208,6 @@ export class GroupObserver {
 
       // If the permission was granted, then get the token
       const token = await Notifications.getExpoPushTokenAsync();
-      alert(token.data);
       // Sometimes we won't have this
       // Some devices do not support push tokens...
       // Some users won't give us perms

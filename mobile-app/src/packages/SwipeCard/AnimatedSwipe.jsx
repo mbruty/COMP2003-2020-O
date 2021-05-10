@@ -71,6 +71,8 @@ export default function AnimatedSwipe(props) {
           }
         }
         try {
+          requestObj.isGroup = props.isGroup;
+          requestObj.code = props.code || "";
           const response = await fetch(RECOMMENDER_URL + "/swipestack", {
             method: "post",
             body: JSON.stringify(requestObj),
@@ -109,6 +111,7 @@ export default function AnimatedSwipe(props) {
         authtoken: auth.authtoken,
         islike: side === "LIKE",
         isfavourite: isFavourite,
+        isGroup: props.isGroup,
       }),
       headers: {
         Accept: "application/json",
