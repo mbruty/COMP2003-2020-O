@@ -6,6 +6,85 @@ import jsonpickle
 
 app = Flask(__name__)
 api = Api(app)
+<<<<<<< Updated upstream
+=======
+socketio = SocketIO(app)
+
+
+class RecommenderController(Resource):
+    #get [/swipestack]
+    def post(self):
+        args = swipestack_args.parse_args()
+        payload = {"authtoken": args.authtoken, "userid": args.userid}
+        r = requests.post(
+            'http://devapi.trackandtaste.com/user/authcheck', json=payload)
+        if r.status_code != 200:
+            return '', r.status_code
+        try:
+            data = get_swipe_stack(args.lat, args.lng, args.userid, args.distance)
+        except Exception as e :
+            print(e)
+            print(traceback.format_exc())
+            return '', 404 # We couldn't find any restaurants
+        return json.loads(data), 200        
+
+class SwipeController(Resource):
+    # post [/swipe]
+    def post(self):
+        args = like_post_args.parse_args()
+        payload = {"authtoken": args.authtoken, "userid": args.userid}
+        r = requests.post(
+            'http://devapi.trackandtaste.com/user/authcheck', json=payload)
+        if r.status_code != 200:
+            return '', r.status_code
+        try:
+            process_swipe(args.userid, args.foodid,
+                            args.islike, args.isfavourite)
+            r.lpush(f"Recommendations-{args.userid}", *args.foodid)
+            r.expire(f"Recommendations-{args.userid}", 7200)
+        except Exception:
+            # Food item not found
+            return '', 404
+        return '', 201
+
+
+@socketio.on('message')
+def handle_message(message):
+    print(message)
+
+
+@socketio.on('create')
+def handle_create(data):
+    uid = data["id"]
+    latlon = data["latlon"]
+    distance = data["distance"]
+    print(latlon)
+    print(distance)
+    name = get_name(uid)[0]
+    code = random.randint(100000, 999999)
+    # Check for the odd ocassion that the code exists
+    while r.exists(f"room-{code}-users"):
+        code = random.randint(100000, 999999)
+    # Send back the code
+    emit("room_code", code)
+    # Join the room
+    join_room(code)
+    # Create the list of users
+    r.sadd(f"room-{code}-users", f"{uid}:{name}:false:true")
+    r.set(f"room-{code}-location", latlon)
+    r.set(f"room-{code}-distance", distance)
+    
+    # Create a key value for the owwner so we can re-route them to the room on connectg
+    r.set(f"room-owner-{uid}", code)
+
+    r.expire(f"room-{code}-users", EXPIRATION_TIME)
+    r.expire(f"room-{code}-location", EXPIRATION_TIME)
+    r.expire(f"room-{code}-distance", EXPIRATION_TIME)
+
+    users = get_all_users_in_room(code)
+    emit("user_join", users, room=code)
+
+>>>>>>> Stashed changes
 
 def serialize_user(user_arr):
 	data = []
