@@ -3,8 +3,9 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { CONSTANT_COLOURS } from "../../constants";
 import { ScrollView } from "react-native-gesture-handler";
 import { Page } from "./GroupPageRouter";
-import { SocketUser } from "./GroupObserver";
+import { GroupObserver, SocketUser } from "./GroupObserver";
 import { includeAuth } from "../includeAuth";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<Page>>;
@@ -12,6 +13,7 @@ interface Props {
   onReady: () => void;
   roomCode: number;
   members: SocketUser[] | undefined;
+  observer: GroupObserver;
 }
 
 const GroupWaitingRoom: React.FC<Props> = (props) => {
@@ -23,10 +25,32 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
     })();
   }, []);
 
-  
-
   return (
     <View style={{ display: "flex", height: "100%" }}>
+      <TouchableOpacity
+        style={{
+          marginTop: 10,
+          backgroundColor: "white",
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          borderRadius: 100,
+          zIndex: 100,
+          display: "flex",
+          width: 140,
+          flexDirection: "row",
+          marginLeft: 15,
+        }}
+        onPress={() => {
+          props.observer.leave();
+        }}
+      >
+        <MaterialCommunityIcons
+          name="keyboard-backspace"
+          size={24}
+          color="black"
+        />
+        <Text style={{ paddingLeft: 10, paddingTop: 3 }}>Leave Group</Text>
+      </TouchableOpacity>
       <Text style={styles.title}>Room Code: {props.roomCode}</Text>
       <View style={styles.box}>
         <ScrollView>
@@ -34,7 +58,7 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
           {props.members &&
             props.members.map((member) => (
               <View
-                key={member.uid}
+                key={member.id}
                 style={[
                   styles.box,
                   { flexDirection: "row", alignItems: "center" },
@@ -74,7 +98,7 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
                     Not Ready
                   </Text>
                 )}
-                {props.isHost && member.uid !== me && (
+                {props.isHost && member.id !== me && (
                   <TouchableOpacity
                     style={{
                       backgroundColor: CONSTANT_COLOURS.RED,
@@ -82,6 +106,9 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
                       paddingHorizontal: 10,
                       borderRadius: 5,
                       marginLeft: 15,
+                    }}
+                    onPress={() => {
+                      props.observer.kick(member.id);
                     }}
                   >
                     <Text style={{ color: "white" }}>Kick</Text>
@@ -106,9 +133,8 @@ const GroupWaitingRoom: React.FC<Props> = (props) => {
           marginBottom: 150,
         }}
         onPress={() => {
-          if(props.isHost) {
-            // TODO
-            // Start the swiping process 
+          if (props.isHost) {
+            props.observer.startSwipe();
           } else {
             // They aren't  host.. So just ready up
             props.onReady();

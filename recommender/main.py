@@ -78,6 +78,8 @@ class SwipeController(Resource):
         try:
             process_swipe(args.userid, args.foodid,
                             args.islike, args.isfavourite)
+            r.lpush(f"Recommendations-{args.userid}", *args.foodid)
+            r.expire(f"Recommendations-{args.userid}", 7200)
         except Exception:
             # Food item not found
             return '', 404
