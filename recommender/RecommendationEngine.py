@@ -3,23 +3,47 @@ from FoodItem import FoodItem
 import pandas as pd
 import numpy as np
 from user import User
+from redis_instance import get_instance
+import pymongo
 import pickle
-
+r = get_instance()
+mongod = pymongo.MongoClient("")
+db = mongod["tat"]
+collection = db["sessions"]
+print(collection.find_one({"code" : "666207"}))
 column_rows = ["IsVegetarian", "IsVegan", "IsHalal", "IsKosher", "HasLactose", "HasNuts", "HasGluten", "HasEgg", "HasSoy"]
 
 
 class RecommendationEngine:
     #initialiser for the class
-    def __init__ (self, inFoodItems, inUsers, currentUser):
+    def __init__ (self, inFoodItems, inUsers, currentUser, isGroup, room, userid=None):
         self.FoodItems = inFoodItems
+        
+        if currentUser == None:
+            self.userID = userid
         self.Users = inUsers
         self.User = currentUser
         self.preprocessing()
+        self.isGroup = isGroup
+        self.room = room
 
     def recommend(self):
         results = []
-        likedItems = [i.decode("UTF-8") for i in r.lrange(f"Recommendations-{self.User}", 0, -1)]
-        
+        likedItems = None
+        searchId = self.User.id if self.User != None else self.userID
+
+        if self.isGroup:
+            likedItems = []
+            # Get already liked items from mongo
+            room = collection.find_one({"code" : self.room}, {"restaurantsLiked": 1})
+            for restaurant in room["restaurantsLiked"]:
+                for user in restaurant["likes"]:
+                    if user["userID"] == str(searchId):
+                        for item in user["items"]:
+                            likedItems.append(item)
+        else:
+            # # Get already liked items from redis
+            likedItems = [i.decode("UTF-8") for i in r.lrange(f"Recommendations-{searchId}", 0, -1)]
         # Loop through all food items in the area
         for item in self.FoodItems:
             rating = 0
@@ -40,12 +64,18 @@ class RecommendationEngine:
         itemsToGet = sortedItems
         gotItems = []
         filteredItems = []
+        cursor = get_cursor()
+        cursor.execute(f"SELECT FoodTagID FROM FoodOpinion WHERE UserID = {searchId} AND NeverShow = True;")
+        result = cursor.fetchall()
+        neverShows = []
+        for tag in result:
+            neverShows.append(tag[0])
         for item in itemsToGet:
             for fi in self.FoodItems:
                 if fi.ID == item[0]:
                     gotItems.append(fi)
         for item in gotItems:
-            if item.FoodID not in likedItems:
+            if str(item.ID) not in likedItems and item.ID not in neverShows:
                 filteredItems.append(item)
         return filteredItems
 
@@ -81,14 +111,25 @@ class RecommendationEngine:
                 averages[tag] = total / count
         self.weightedAvg = averages
     
-def get_swipe_stack(lat, lng, userid, distance):
+def get_swipe_stack(lat, lng, userid, distance, isGroup=False, room=None):
+    # If it is a group, get the geolocation from mongo
+    # If it isn't a group, just use what was sent in the request
+    if isGroup:
+        room = collection.find_one({"code" : room}, {"geo": 1, "distance": 1})
+        geo = room["geo"]
+        lat = geo["lat"]
+        lng = geo["lng"]
+        disance = room["distance"]
+
     cursor = get_cursor()
     cursor.callproc("GetFoodChecksByID", (userid,))
     checks = []
     # stored_results is iterable, have to do this way
     for result in cursor.stored_results():
         checks = result.fetchall()[0][1:]
-    cursor.callproc("GetRestaurantsWithinDistance", (lat, lng, 10))
+    # For demo: distance is set to 1000 miles so any one testing in england won't have to mess with settings
+    # It works with the distance aswell!
+    cursor.callproc("GetRestaurantsWithinDistance", (lat, lng, 1000))
     data = []
 
     df = None
@@ -98,8 +139,9 @@ def get_swipe_stack(lat, lng, userid, distance):
 
     if(df.size < 1):
         raise Exception("No restaurants found within specified distance")
+    
+    df.columns = ["RestaurantID", "IsVegetarian", "IsVegan", "IsHalal", "IsKosher", "HasLactose", "HasNuts", "HasGluten", "HasEgg", "HasSoy", "FoodID", "FoodName", "Price", "FoodNameShort", "IsChildMenu", "FoodTagID"]
 
-    df.columns = ["RestaurantID", "IsVegetarian", "IsVegan", "IsHalal", "IsKosher", "HasLactose", "HasNuts", "HasGluten", "HasEgg", "HasSoy", "FoodID", "FoodName", "FoodNameShort", "IsChildMenu", "FoodTagID"]
     if checks[0]:
         df = df.drop(df[df["IsVegetarian"] != checks[0]].index)
     if checks[1]:
@@ -129,14 +171,15 @@ def get_swipe_stack(lat, lng, userid, distance):
 
     result = cursor.fetchall()
     r = None
-    if len(result) == 0:
-        r = RecommendationEngine(food_items, getUserData(userid), None)
+    if len(result) < 10:
+        r = RecommendationEngine(food_items, getUserData(userid), None, isGroup, room, userid=userid)
     else:
         df = pd.DataFrame(result)
         df.columns = ["UserID", "FoodTagID", "RightSwipePct"]
         df["Bias"] = 1
+        print(df)
         u = User(df[df["UserID"] == int(userid)])
-        r = RecommendationEngine(food_items, getUserData(userid), u)
+        r = RecommendationEngine(food_items, getUserData(userid), u, isGroup, room)
     got_items = r.recommend()
     cursor.close()
     return jsonifyFoodItemArray(got_items)
@@ -209,11 +252,9 @@ def getUserData(userid):
 
             for user in count_dict.items():
                 if(user[1] >= 5):
-                    print(user)
                     ids.append(str(user[0]))
             if len(ids) < 3:
                 TOLERANCE += 0.1
-                print(TOLERANCE)
             elif TOLERANCE > 1:
                 ids_to_get = ids
                 break
