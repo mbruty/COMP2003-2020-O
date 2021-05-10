@@ -71,26 +71,6 @@ const FoodItemView: React.FC<Props> = (props) => {
           longitudeDelta: 0.05,
         }}
       >
-        <TouchableOpacity
-          style={{
-            marginTop: 10,
-            backgroundColor: "white",
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            borderRadius: 100,
-            width: 40,
-            zIndex: 100,
-          }}
-          onPress={() => {
-            props.onComplete();
-          }}
-        >
-          <MaterialCommunityIcons
-            name="keyboard-backspace"
-            size={24}
-            color="black"
-          />
-        </TouchableOpacity>
         <Marker
           coordinate={{
             latitude: restaurantData.restaurant.Latitude,
@@ -98,8 +78,28 @@ const FoodItemView: React.FC<Props> = (props) => {
           }}
         />
       </MapView>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          marginLeft: 15,
+          backgroundColor: "white",
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          borderRadius: 100,
+          width: 40,
+        }}
+        onPress={() => {
+          props.onComplete();
+        }}
+      >
+        <MaterialCommunityIcons
+          name="keyboard-backspace"
+          size={24}
+          color="black"
+        />
+      </TouchableOpacity>
       <KeyboardAvoidingView
-        style={{ position: "absolute", top: "35%", width: "100%" }}
+        style={{ marginTop: "70%", width: "100%" }}
         behavior="position"
       >
         <View
