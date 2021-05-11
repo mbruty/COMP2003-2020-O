@@ -17,34 +17,28 @@ import { reset } from "../includeAuth";
 import { ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Rating } from 'react-native-ratings';
+import TapRating from "react-native-ratings/dist/TapRating";
 
 interface Props {
     onBack?: () => void;
     restaurantID: number;
     rating: number;
+    restaurantName: string;
+    dateOfVisit: string;
 }
 
 const RecentVisitDetails: React.FC<Props> = (props) => {
 
-  const [newRating, ratingCompleted] = React.useState(1);
-
-  ratingCompleted(newRating) {
-    console.log("Rating is: " + newRating)
+  function ratingCompleted(newRating){
+    console.log("New rating is: " + newRating);
+    //Update rating in datbase here
   }
-
-  React.useEffect(() => {
-    if (newRating != props.rating) {
-        props.rating = newRating;
-        console.log("Rating Updated")
-    }
-  }, [])
 
   React.useEffect(() => {
     const backAction = () => {
         props.onBack();
       return true;
     };
-
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction
@@ -56,7 +50,7 @@ const RecentVisitDetails: React.FC<Props> = (props) => {
     <View>
       <View style={styles.box}>
       <TouchableOpacity style={{
-            backgroundColor: "grey",
+            backgroundColor: "#c2c2c2",
             paddingHorizontal: 10,
             paddingVertical: 10,
             borderRadius: 100,
@@ -67,19 +61,20 @@ const RecentVisitDetails: React.FC<Props> = (props) => {
                 props.onBack();
             }}>
             <MaterialCommunityIcons name="keyboard-backspace" size={24} color="black" />
-          </TouchableOpacity>
+      </TouchableOpacity>
           <ScrollView>
-          <View style={[styles.image]}></View>
-        <Text style={[styles.title]}>Restaurant Name</Text>
-        <Text>Date of Visit</Text>
+          <Image style={[styles.image]} source={{ uri: IMG_URL + props.restaurantID + ".png" }}/>
+          {/*Not sure if we're storing restaurant photos*/}
+        <Text style={[styles.title]}>{props.restaurantName}</Text>
+        <Text>{props.dateOfVisit}</Text>
         <View style={styles.box}>
         <Text>A bit of info about the restaurant, will this be stored in the database? 
             Maybe some info about the exact menu item that was selected for you.</Text>
         </View>
-        <Rating
-          showRating
-          onFinishRating={ratingCompleted}
-          style={{ paddingVertical: 10 }}
+        <TapRating 
+        showRating
+        defaultRating={props.rating}
+        onFinishRating={ratingCompleted}
         />
         </ScrollView>
       </View>
@@ -94,14 +89,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0)",
   },
-  card: {
-    width: "95%",
-    height: 520,
-    borderRadius: 30,
-    backgroundColor: "#FFF",
-    borderColor: "#AAA",
-    borderWidth: 1,
-  },
   image: {
     width: "100%",
     height: 200,
@@ -110,7 +97,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderRadius: 20,
     alignSelf: "center",
-    backgroundColor: "#c2c2c2"
   },
   filledContainer: {
     display: "flex",
@@ -133,26 +119,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: CONSTANT_COLOURS.DARK_GREY,
   },
-  btn: {
-    marginTop: 5,
-    marginLeft: 5,
-    paddingHorizontal: 5,
-    paddingVertical: 10,
-    borderRadius: 5,
-    backgroundColor: CONSTANT_COLOURS.RED,
-  },
-  btnTxt: {
-    textAlign: "center",
-    fontSize: 16,
-  },
-  btnContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    width: "75%",
-    alignSelf: "center",
-    paddingTop: 5,
-  },
   box: {
     backgroundColor: "white",
     width: "95%",
@@ -171,38 +137,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: CONSTANT_COLOURS.RED,
     fontSize: 18,
-  },
-  danger: {
-    fontSize: 16,
-    paddingTop: 5,
-    paddingBottom: 5,
-    textAlign: "center",
-    color: CONSTANT_COLOURS.RED,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  },
-  spacer: {
-    width: "100%",
-    marginTop: 20,
-    height: 1,
-    borderColor: "#CCC",
-    borderWidth: 1,
-    borderRadius: 2,
-  },
-  spacerContainer: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    paddingLeft: 10,
-    marginBottom: 15,
-  },
-  spacer1: {
-    width: "45%",
-    marginTop: 17,
-    height: 1,
-    borderColor: "#CCC",
-    borderWidth: 1,
-    borderRadius: 2,
   },
 });
 
