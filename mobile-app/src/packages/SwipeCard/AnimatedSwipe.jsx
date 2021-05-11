@@ -7,7 +7,7 @@ import SwipeCard from "./SwipeCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Loading } from "../../Loading";
 import { includeAuth } from "../includeAuth";
-import FoodItemView from "./FoodItemView";
+import MatchedScreen from "../main-sequence/MatchedScreen";
 import { AuthContext } from "../../AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANT_COLOURS, RECOMMENDER_URL } from "../../constants";
@@ -37,6 +37,11 @@ export default function AnimatedSwipe(props) {
       setSwipedOn(props.swipedOn);
     }
   }, [props]);
+  React.useEffect(() => {
+    if (swipedOn) {
+      props.lockScroll();
+    }
+  }, [swipedOn]);
   React.useEffect(() => {
     if (data.length === 0) {
       (async () => {
@@ -101,6 +106,7 @@ export default function AnimatedSwipe(props) {
   const onSwiped = async (side, idx, isFavourite) => {
     // Send to python api
     const item = data[idx];
+    console.log(item.RestaurantID);
     const res = await fetch(RECOMMENDER_URL + "/swipe", {
       method: "POST",
       body: JSON.stringify({
@@ -108,7 +114,7 @@ export default function AnimatedSwipe(props) {
         userid: auth.userid,
         authtoken: auth.authtoken,
         islike: side === "LIKE",
-        restaurantid: item.RestaurantID,
+        restuarantid: item.RestaurantID,
         isfavourite: isFavourite,
       }),
       headers: {
@@ -133,10 +139,15 @@ export default function AnimatedSwipe(props) {
 
   if (swipedOn) {
     return (
-      <FoodItemView
+      <MatchedScreen
         itemId={swipedOn.FoodID}
         restaurantId={swipedOn.RestaurantID}
-        onComplete={() => setSwipedOn(undefined)}
+        onClose={() => setSwipedOn(undefined)}
+        auth={props.auth}
+        onClose={() => {
+          props.unlockScroll();
+          setSwipedOn(undefined);
+        }}
       />
     );
   }

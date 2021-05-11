@@ -13,7 +13,12 @@ import {
   Text,
   View,
 } from "react-native";
-import { API_URL, CONSTANT_COLOURS, IMG_URL } from "../../constants";
+import {
+  API_URL,
+  CONSTANT_COLOURS,
+  IMG_URL,
+  RECOMMENDER_URL,
+} from "../../constants";
 import {
   AntDesign,
   Foundation,
@@ -23,63 +28,54 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 import Clipboard from "expo-clipboard";
 import DatePicker from "@react-native-community/datetimepicker";
+import { auth } from "../includeAuth";
 interface Props {
   restaurantId: number;
+  auth: auth;
+  isGroup: boolean;
+  roomCode?: number;
+  onClose: () => void;
 }
 
-const items = [
-  {
-    foodID: 1,
-    nameShort: "Vegan Calzone",
-    price: 10.99,
-  },
-  {
-    foodID: 2,
-    nameShort: "Vegan Calzone",
-    price: 10.99,
-  },
-  {
-    foodID: 10,
-    nameShort: "Vegan Calzone",
-    price: 10.99,
-  },
-  {
-    foodID: 60,
-    nameShort: "Vegan Calzone",
-    price: 10.99,
-  },
-  {
-    foodID: 13,
-    nameShort: "Vegan Calzone",
-    price: 10.99,
-  },
-];
+interface ItemData {
+  price: string;
+  name: string;
+  id: number;
+}
+
 const { width, height } = Dimensions.get("screen");
 
 const MatchedScreen: React.FC<Props> = (props) => {
+  const [data, setData] =
+    React.useState<{ items: ItemData[]; restaurant: RequestObj } | undefined>();
   const [showDatePicker, setShowDatePicker] = React.useState<boolean>(false);
   const [showTimePicker, setShowTimePicker] = React.useState<boolean>(false);
   const [scrollAmount, setScrollAmount] = React.useState<number>(1);
 
-  const [restaurantData, setRestaurantData] =
-    React.useState<RequestObj | undefined>();
   const [size, setSize] = React.useState<number>(1);
   const [date, setDate] = React.useState<Date>(new Date());
 
   React.useEffect(() => {
     (async () => {
-      const res = await fetch(API_URL + "/restaurant/" + props.restaurantId);
-      const data: RequestObj = await res.json();
-      setRestaurantData(data);
+      const promise1 = fetch(API_URL + "/restaurant/" + props.restaurantId);
+      const promise2 = fetch(
+        RECOMMENDER_URL +
+          `/likeditems?isGroup=${"false"}&userID=${"2"}&restaurantID=${
+            props.restaurantId
+          }`
+      );
+
+      const [restaurant, items] = await Promise.all([promise1, promise2]);
+
+      const rdata: RequestObj = await restaurant.json();
+
+      const data = await items.json();
+      setData({ items: data, restaurant: rdata });
     })();
   }, []);
   React.useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
-
-  if (!restaurantData) {
-    return <Text>Loading...</Text>;
-  }
 
   const handleSizeChange = (e: number) => {
     if (e < 1) {
@@ -99,7 +95,7 @@ const MatchedScreen: React.FC<Props> = (props) => {
           borderRadius: 20,
           alignSelf: "center",
         }}
-        source={{ uri: IMG_URL + item.foodID + ".png?1=1" }}
+        source={{ uri: IMG_URL + item.id + ".png?1=1" }}
       />
       <View
         style={{
@@ -108,11 +104,16 @@ const MatchedScreen: React.FC<Props> = (props) => {
           justifyContent: "space-between",
         }}
       >
-        <Text style={styles.text}>{item.nameShort}</Text>
+        <Text style={styles.text}>{item.name}</Text>
         <Text style={styles.text}>{"£ " + item.price}</Text>
       </View>
     </View>
   );
+
+  if (!data) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -124,16 +125,16 @@ const MatchedScreen: React.FC<Props> = (props) => {
           }}
           showsUserLocation={true}
           region={{
-            latitude: restaurantData.restaurant.Latitude,
-            longitude: restaurantData.restaurant.Longitude,
+            latitude: data.restaurant.restaurant.Latitude,
+            longitude: data.restaurant.restaurant.Longitude,
             latitudeDelta: 0.05,
             longitudeDelta: 0.05,
           }}
         >
           <Marker
             coordinate={{
-              latitude: restaurantData.restaurant.Latitude,
-              longitude: restaurantData.restaurant.Longitude,
+              latitude: data.restaurant.restaurant.Latitude,
+              longitude: data.restaurant.restaurant.Longitude,
             }}
           />
         </MapView>
@@ -144,9 +145,13 @@ const MatchedScreen: React.FC<Props> = (props) => {
         scrollEventThrottle={100}
         onScroll={(e) => {
           // If the scroll amount is negative
-          if (e.nativeEvent.contentOffset.y < 0)
+          if (e.nativeEvent.contentOffset.y < 0) {
+            if (e.nativeEvent.contentOffset.y <= -75) {
+              // If they have pulled down enough
+              props.onClose();
+            }
             setScrollAmount(e.nativeEvent.contentOffset.y);
-          else setScrollAmount(1);
+          } else setScrollAmount(1);
         }}
       >
         <KeyboardAvoidingView
@@ -215,19 +220,19 @@ const MatchedScreen: React.FC<Props> = (props) => {
                 color: CONSTANT_COLOURS.DARK_GREY,
               }}
             >
-              {restaurantData.restaurant.RestaurantName}
+              {data.restaurant.restaurant.RestaurantName}
             </Text>
             <Text style={styles.text}>
-              {restaurantData.restaurant.RestaurantDescription}
+              {data.restaurant.restaurant.RestaurantDescription}
             </Text>
             <TouchableOpacity
               onPress={() => {
-                const url = `tel:${restaurantData.restaurant.Phone}`;
+                const url = `tel:${data.restaurant.restaurant.Phone}`;
                 Linking.canOpenURL(url).then((supported) => {
                   // If we can open the telephone url
                   if (supported) return Linking.openURL(url);
                   // else copy the number to clipboard
-                  Clipboard.setString(restaurantData.restaurant.Phone);
+                  Clipboard.setString(data.restaurant.restaurant.Phone);
                   alert("Phone number coppied to clipboard");
                 });
               }}
@@ -251,13 +256,13 @@ const MatchedScreen: React.FC<Props> = (props) => {
                   color: CONSTANT_COLOURS.DARK_GREY,
                 }}
               >
-                Telephone: {restaurantData.restaurant.Phone}
+                Telephone: {data.restaurant.restaurant.Phone}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 let daddr = encodeURIComponent(
-                  `${restaurantData.restaurant.Street1} ${restaurantData.restaurant.Postcode}`
+                  `${data.restaurant.restaurant.Street1} ${data.restaurant.restaurant.Postcode}`
                 );
 
                 if (Platform.OS === "ios") {
@@ -289,7 +294,7 @@ const MatchedScreen: React.FC<Props> = (props) => {
               </Text>
             </TouchableOpacity>
             <Text style={styles.text}>
-              Item{items.length > 1 ? "s" : ""} you've liked from this
+              Item{data.items.length > 1 ? "s" : ""} you've liked from this
               restaurant
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -303,7 +308,7 @@ const MatchedScreen: React.FC<Props> = (props) => {
                   marginBottom: 0,
                 }}
               >
-                {items.map((item) => renderItem(item))}
+                {data.items.map((item) => renderItem(item))}
               </View>
             </ScrollView>
             <Text
@@ -451,10 +456,10 @@ const MatchedScreen: React.FC<Props> = (props) => {
                 justifyContent: "center",
               }}
               onPress={async () => {
-                if (restaurantData.restaurant.WebhookURI) {
+                if (data.restaurant.restaurant.WebhookURI) {
                   // Need a way to get the user's email
                   const res = await fetch(
-                    restaurantData.restaurant.WebhookURI,
+                    data.restaurant.restaurant.WebhookURI,
                     {
                       method: "POST",
                       body: JSON.stringify({

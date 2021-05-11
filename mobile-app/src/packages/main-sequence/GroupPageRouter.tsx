@@ -162,7 +162,14 @@ const GroupPageRouter: React.FC<Props> = (props) => {
         </>
       );
     case Page.matched:
-      return <MatchedScreen restaurantId={1} />;
+      return (
+        <MatchedScreen
+          onClose={() => null}
+          isGroup={true}
+          auth={props.auth}
+          restaurantId={1}
+        />
+      );
   }
   return null;
 };

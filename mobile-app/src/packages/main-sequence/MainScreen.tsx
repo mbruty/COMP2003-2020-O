@@ -69,6 +69,9 @@ const MainScreen: React.FC<Props> = (props) => {
     setScrollEnabled(false);
   };
 
+  const unlockScroll = () => {
+    setScrollEnabled(true);
+  };
   return (
     <AuthContext.Consumer>
       {(auth) => (
@@ -84,7 +87,12 @@ const MainScreen: React.FC<Props> = (props) => {
             scrollEnabled={scrollEnabled}
           >
             <View style={styles.screen}>
-              <AnimatedSwipe />
+              <AnimatedSwipe
+                lockScroll={lockScroll}
+                userID={auth}
+                isGroup={false}
+                unlockScroll={unlockScroll}
+              />
             </View>
             <View style={styles.screen}>
               <GroupPageRouter
