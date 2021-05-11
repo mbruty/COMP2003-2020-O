@@ -90,10 +90,11 @@ async function createHandler(message, socket) {
     owner: message.id,
     started: false,
     restaurantsLiked: [],
+    matched: false,
     lastAccessed: new Date(),
   });
   socket.join(code.toString());
-  socket.emit("room_code", code.toString());
+  socket.emit("room_code", { code: code.toString(), state: "waiting" });
   socket.emit("users_change", {
     owner: message.id,
     users: [{ id: message.id, name: nick, ready: true }],
@@ -136,7 +137,14 @@ async function joinHandler(message, socket) {
 async function joinCheckHandler(message, socket) {
   const joinedRoom = await collection.findOne({ "users.id": message.id });
   if (joinedRoom) {
-    socket.emit("room_code", joinedRoom.code);
+    let roomState = joinedRoom.started ? "swipe" : "waiting";
+    if (joinedRoom.matched) {
+      roomState = "matched";
+    }
+    socket.emit("room_code", {
+      code: joinedRoom.code,
+      state: roomState,
+    });
     socket.join(joinedRoom.code);
     socket.emit("users_change", joinedRoom);
   }

@@ -32,7 +32,14 @@ interface GroupCardProps {
   onSwipe: (index: number) => void;
 }
 
-const GroupCard = ({ type, y, index, name, visitDate, onSwipe }: GroupCardProps) => {
+const GroupCard = ({
+  type,
+  y,
+  index,
+  name,
+  visitDate,
+  onSwipe,
+}: GroupCardProps) => {
   const position = Animated.subtract(index * CARD_HEIGHT, y);
   const isDisappearing = -CARD_HEIGHT;
   const isTop = 0;

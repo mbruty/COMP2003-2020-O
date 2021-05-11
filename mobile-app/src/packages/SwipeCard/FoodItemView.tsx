@@ -105,6 +105,7 @@ const FoodItemView: React.FC<Props> = (props) => {
         <View
           style={{
             padding: 25,
+            paddingBottom: 50,
             width: "100%",
             borderTopRightRadius: 25,
             borderTopLeftRadius: 25,

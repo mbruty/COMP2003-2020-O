@@ -60,10 +60,14 @@ const MainScreen: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (!scrollEnabled) {
-      console.log("Enabling scroll");
       setScrollEnabled(true);
     }
   }, [pageIdx]);
+
+  const lockScroll = () => {
+    console.log("lock");
+    setScrollEnabled(false);
+  };
 
   return (
     <AuthContext.Consumer>
@@ -85,6 +89,7 @@ const MainScreen: React.FC<Props> = (props) => {
             <View style={styles.screen}>
               <GroupPageRouter
                 auth={auth}
+                lockScroll={lockScroll}
                 setScrollEnabled={setScrollEnabled}
                 scrollEnabled={scrollEnabled}
               />

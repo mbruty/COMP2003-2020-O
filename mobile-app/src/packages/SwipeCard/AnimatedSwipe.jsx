@@ -108,6 +108,7 @@ export default function AnimatedSwipe(props) {
         userid: auth.userid,
         authtoken: auth.authtoken,
         islike: side === "LIKE",
+        restaurantid: item.RestaurantID,
         isfavourite: isFavourite,
       }),
       headers: {
