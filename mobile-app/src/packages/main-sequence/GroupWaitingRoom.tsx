@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { CONSTANT_COLOURS } from "../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import { Page } from "./GroupPageRouter";
-import { GroupObserver, SocketUser } from "./GroupObserver";
+import { GroupObserver, Page, SocketUser } from "./GroupObserver";
 import { includeAuth } from "../includeAuth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface Props {
-  setPage: React.Dispatch<React.SetStateAction<Page>>;
   isHost: boolean;
   onReady: () => void;
   roomCode: number;

@@ -1,26 +1,21 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Text, View } from "react-native";
+import { PickerIOSComponent, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { LatLng } from "react-native-maps";
 import { CONSTANT_COLOURS } from "../../constants";
 import { auth, includeAuth } from "../includeAuth";
-import { GroupObserver, SocketUser } from "./GroupObserver";
+import { GroupObserver, Page, SocketUser } from "./GroupObserver";
 import GroupPage from "./GroupPage";
 import GroupWaitingRoom from "./GroupWaitingRoom";
 import SelectLocation from "./SelectLocation";
 import AnimatedSwipe from "../SwipeCard/AnimatedSwipe";
+import MatchedScreen from "./MatchedScreen";
 interface Props {
   setScrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   scrollEnabled: boolean;
   auth: auth;
-}
-
-export enum Page {
-  join_create,
-  map_view,
-  swipe,
-  waiting,
+  lockScroll: () => void;
 }
 
 const GroupPageRouter: React.FC<Props> = (props) => {
@@ -29,37 +24,31 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   const [page, setPage] = React.useState<Page>(Page.join_create);
   const [isHost, setIsHost] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
+  const [restuarantID, setRestaurantID] = React.useState<number>();
   // Create the observer on mount
   const observer = React.useMemo(() => {
     if (props.auth && props.auth.userid) {
       const observer = new GroupObserver(props.auth.userid);
-      observer.subscribe(async (newMembers, newCode, swipeStarted) => {
+      observer.subscribe(async (newMembers, newCode, newPage, restaurantID) => {
         try {
-          console.log("newMembers", newMembers);
-
           // Select the user in the array that is the owner
           const owner = newMembers?.filter((user) => user.owner)[0];
-          console.log("owner", owner);
-          console.log(newCode);
-
           // If the owner's userid and this user's id match, they are the owner!
           const isOwner = owner && props.auth.userid == owner.id;
+          if (restaurantID) {
+            setRestaurantID(restaurantID);
+          }
           if (isHost !== isOwner) {
             setIsHost(isOwner);
           }
-          if (swipeStarted) {
-            setPage(Page.swipe);
-            return;
-          }
           if (newCode === -1) {
             setCode(0);
-            setPage(Page.join_create);
           } else if (newCode !== code) {
             // Code has changed!
             setCode(newCode);
-            setPage(Page.waiting);
           }
-          setMembers([...newMembers]);
+          if (Array.isArray(newMembers)) setMembers([...newMembers]);
+          if (page !== newPage) setPage(newPage);
         } catch (e) {
           console.log(e);
         }
@@ -70,16 +59,14 @@ const GroupPageRouter: React.FC<Props> = (props) => {
         setPage(Page.join_create);
         setTimeout(() => setError(""), 5000);
       };
-      observer.onSwipeStart = () => {
-        setPage(Page.swipe);
-      };
       return observer;
     }
   }, [props.auth]);
 
-  if (page !== Page.map_view && !props.scrollEnabled) {
-    props.setScrollEnabled(true);
+  if (page === Page.matched && props.scrollEnabled) {
+    props.lockScroll();
   }
+
   React.useEffect(() => {
     if (page === Page.map_view && props.scrollEnabled) {
       setPage(Page.join_create);
@@ -91,15 +78,14 @@ const GroupPageRouter: React.FC<Props> = (props) => {
       return (
         <GroupPage
           error={error}
+          observer={observer}
           onJoin={(code) => observer.join(code)}
-          setPage={setPage}
         />
       );
     case Page.waiting:
       return (
         <GroupWaitingRoom
           observer={observer}
-          setPage={setPage}
           isHost={isHost}
           roomCode={code}
           members={members}
@@ -170,6 +156,7 @@ const GroupPageRouter: React.FC<Props> = (props) => {
           <View>
             <AnimatedSwipe
               isGroup={true}
+              key="GroupSwipe"
               code={code}
               onSwipe={(side: string, isFavourite: boolean, item) => {
                 console.log(item);
@@ -179,6 +166,16 @@ const GroupPageRouter: React.FC<Props> = (props) => {
             />
           </View>
         </>
+      );
+    case Page.matched:
+      return (
+        <MatchedScreen
+          onClose={() => null}
+          isGroup={true}
+          auth={props.auth}
+          restaurantId={restuarantID}
+          roomCode={code}
+        />
       );
   }
   return null;

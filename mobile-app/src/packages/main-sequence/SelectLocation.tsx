@@ -7,7 +7,6 @@ import {
   BackHandler,
   Dimensions,
 } from "react-native";
-import { Page } from "./GroupPageRouter";
 import * as Location from "expo-location";
 import MapView, { LatLng, Marker, Circle } from "react-native-maps";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -15,6 +14,7 @@ import { CONSTANT_COLOURS } from "../../constants";
 import Slider from "@react-native-community/slider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Page } from "./GroupObserver";
 
 interface Props {
   setPage?: React.Dispatch<React.SetStateAction<Page>>;

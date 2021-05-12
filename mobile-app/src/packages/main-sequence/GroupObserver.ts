@@ -6,12 +6,19 @@ import { includeAuth } from "../includeAuth";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
-import { Alert, Platform } from "react-native";
-
+import { Platform } from "react-native";
+export enum Page {
+  join_create,
+  map_view,
+  swipe,
+  waiting,
+  matched,
+}
 type SocketObserver = (
   users: SocketUser[],
   code: number,
-  swipeStarted: boolean
+  page: Page,
+  restaurantID: number
 ) => void;
 
 export interface SocketUser {
@@ -27,9 +34,9 @@ export class GroupObserver {
   private members: SocketUser[];
   private code: number = 0;
   private userId: string;
-  private swipeStarted: boolean = false;
+  private matchedID: number;
+  private page: Page;
   public onError: (message: string) => void | undefined;
-  public onSwipeStart: () => void | undefined;
   constructor(userId: string) {
     console.log("New observer");
     this.userId = userId;
@@ -37,6 +44,8 @@ export class GroupObserver {
       transports: ["websocket"],
       jsonp: false,
     });
+
+    this.page = Page.join_create;
 
     this.socket.on("message", (message) => {
       console.log(message);
@@ -50,9 +59,6 @@ export class GroupObserver {
     });
 
     this.socket.on("users_change", (data) => {
-      if (data.started !== undefined) {
-        this.swipeStarted = data.started;
-      }
       // Convert each element's ready string to a boolean
       this.members = data.users.map((element) => {
         element.owner = element.id === data.owner;
@@ -62,7 +68,21 @@ export class GroupObserver {
       this.onChange();
     });
 
-    this.socket.on("room_code", (code) => {
+    this.socket.on("room_code", ({ code, state }) => {
+      console.log(state);
+      switch (state) {
+        case "waiting":
+          this.page = Page.waiting;
+          break;
+        case "swipe":
+          this.page = Page.swipe;
+          break;
+        case "matched":
+          this.page = Page.matched;
+          break;
+        default:
+          this.page = Page.join_create;
+      }
       this.code = code;
       // Try and get the push notification token
       this.registerForPushNotifications();
@@ -89,12 +109,13 @@ export class GroupObserver {
     });
 
     this.socket.on("start_swipe", () => {
-      if (this.onSwipeStart) {
-        this.onSwipeStart();
-      }
+      this.page = Page.swipe;
+      this.onChange();
     });
     this.socket.on("finish", (message) => {
-      alert("Match!" + message.restaurantID);
+      this.matchedID = message.restaurantID;
+      this.page = Page.matched;
+      this.onChange();
     });
     this.socket.on("joined", () => {
       this.registerForPushNotifications(); // Once we've joined, try and get the push notification token
@@ -102,6 +123,10 @@ export class GroupObserver {
     });
   }
 
+  public showMapView() {
+    this.page = Page.map_view;
+    this.onChange();
+  }
   public onSwipe(restaurantID: number, foodID: number, isLike: boolean) {
     if (isLike) {
       this.socket.emit("swipe", {
@@ -130,7 +155,7 @@ export class GroupObserver {
   public leave() {
     this.socket.emit("leave", { id: this.userId, room: this.code });
     this.code = -1;
-    this.swipeStarted = false;
+    this.page = Page.join_create;
     this.onChange();
   }
   public join(room) {
@@ -166,7 +191,7 @@ export class GroupObserver {
   private onChange() {
     if (this.observers.length > 0)
       this.observers.forEach((o) =>
-        o(this.members, this.code, this.swipeStarted)
+        o(this.members, this.code, this.page, this.matchedID)
       );
   }
   private async registerForPushNotifications() {
@@ -190,7 +215,6 @@ export class GroupObserver {
         return;
       }
       if (Platform.OS === "android") {
-        console.log("here");
         try {
           Notifications.setNotificationChannelAsync(
             "notifications-sound-channel",
