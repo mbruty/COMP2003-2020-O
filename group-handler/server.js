@@ -38,7 +38,6 @@ client.connect((error) => {
   http.listen(process.env.PORT, function () {
     console.log("⚡️ Server listening on port ", process.env.PORT);
   });
-  test();
 });
 require("dotenv").config();
 
@@ -66,10 +65,10 @@ io.on("connection", (socket) => {
 });
 
 async function getNameFromID(id) {
-  const [
-    rows,
-    _,
-  ] = await pool.execute("SELECT Nickname FROM User WHERE UserID = ?", [id]);
+  const [rows, _] = await pool.execute(
+    "SELECT Nickname FROM User WHERE UserID = ?",
+    [id]
+  );
   return rows[0].Nickname;
 }
 
@@ -102,6 +101,7 @@ async function createHandler(message, socket) {
 }
 
 async function joinHandler(message, socket) {
+  console.log("Join");
   const room = await collection.findOne({ code: message.room });
   if (!room) {
     socket.emit("message", "Room does not exist");
@@ -129,8 +129,15 @@ async function joinHandler(message, socket) {
       },
     }
   );
+  let state = "waiting";
+  if (room.started) {
+    state = "swipe";
+  }
+  if (room.matched) {
+    state = "matched";
+  }
   const data = await getAllUsersInRoom(room.code);
-  socket.emit("joined", true); // Tell the client they have successfully joined
+  socket.emit("room_code", { code: room.code.toString(), state: state }); // Tell the client they have successfully joined
   io.to(message.room).emit("users_change", data);
 }
 
@@ -139,6 +146,9 @@ async function joinCheckHandler(message, socket) {
   if (joinedRoom) {
     let roomState = joinedRoom.started ? "swipe" : "waiting";
     if (joinedRoom.matched) {
+      socket.emit("finish", {
+        restaurantID: joinedRoom.matchedRestaurant,
+      });
       roomState = "matched";
     }
     socket.emit("room_code", {
@@ -239,7 +249,7 @@ async function swipeHanlder(message, socket) {
     );
     // It exists, so update
     if (restaurantExistsInDoc) {
-      restaurantsLiked.forEach((restaurant) => {
+      restaurantsLiked.forEach(async (restaurant) => {
         // Find the correct restuarant
         if (restaurant.restaurantID === message.restaurantID) {
           // Find the user
@@ -274,11 +284,23 @@ async function swipeHanlder(message, socket) {
               }
             });
             if (isLikedByAll) {
+              await collection.updateOne(
+                { code: message.room },
+                {
+                  $set: {
+                    matched: true,
+                    matchedRestaurant: message.restaurantID,
+                  },
+                }
+              );
               io.to(message.room).emit("finish", {
                 restaurantID: message.restaurantID,
               });
-              console.log("It's a match!");
-              room.pushTokens.forEach((token) => {});
+              const [rows, _] = await pool.execute(
+                "SELECT RestaurantName FROM Restaurant WHERE RestaurantID=?",
+                [message.restaurantID]
+              );
+              sendToken(room.pushTokens, rows[0].RestaurantName);
             }
           }
         }
@@ -337,16 +359,17 @@ async function notificationHandler(message, socket) {
   );
 }
 
-async function test() {
+async function sendToken(tokens, name) {
   const messages = [];
-  const token = "";
-  if (Expo.isExpoPushToken(token)) {
-    messages.push({
-      to: token,
-      sound: "default",
-      body: "🔥🔥 Your group has decided on a place to eat! 🔥🔥",
-      channelId: "notifications-sound-channel",
-    });
+  for (let token of tokens) {
+    if (Expo.isExpoPushToken(token)) {
+      messages.push({
+        to: token,
+        sound: "default",
+        body: `🔥🔥 It looks like you're going to ${name} 🔥🔥`,
+        channelId: "notifications-sound-channel",
+      });
+    }
   }
   let chunks = expo.chunkPushNotifications(messages);
   let tickets = [];
