@@ -1,8 +1,6 @@
 import React from "react";
 import {
-  Button,
   Dimensions,
-  FlatList,
   Image,
   KeyboardAvoidingView,
   Linking,
@@ -57,12 +55,21 @@ const MatchedScreen: React.FC<Props> = (props) => {
 
   React.useEffect(() => {
     (async () => {
+      if (props.isGroup && !props.roomCode) {
+        // Race condition waiting for the websocket to send over the code...
+        // Event will be propogated next render
+        return;
+      }
+      console.log(props);
+
       const promise1 = fetch(API_URL + "/restaurant/" + props.restaurantId);
       const promise2 = fetch(
         RECOMMENDER_URL +
-          `/likeditems?isGroup=${"false"}&userID=${"2"}&restaurantID=${
+          `/likeditems?isGroup=${
+            props.isGroup
+          }&userID=${props.auth.userid.toString()}&restaurantID=${
             props.restaurantId
-          }`
+          }${props.roomCode ? "&room=" + props.roomCode : ""}`
       );
 
       const [restaurant, items] = await Promise.all([promise1, promise2]);
@@ -70,9 +77,10 @@ const MatchedScreen: React.FC<Props> = (props) => {
       const rdata: RequestObj = await restaurant.json();
 
       const data = await items.json();
+
       setData({ items: data, restaurant: rdata });
     })();
-  }, []);
+  }, [props.roomCode]);
   React.useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
@@ -85,6 +93,7 @@ const MatchedScreen: React.FC<Props> = (props) => {
     }
   };
 
+  console.log(data);
   const renderItem = (item) => (
     <View key={item.foodID} style={{ marginRight: 25 }}>
       <Image
@@ -294,8 +303,8 @@ const MatchedScreen: React.FC<Props> = (props) => {
               </Text>
             </TouchableOpacity>
             <Text style={styles.text}>
-              Item{data.items.length > 1 ? "s" : ""} you've liked from this
-              restaurant
+              Item{data.items.length > 1 ? "s" : ""} you've recently liked from
+              this restaurant
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View
