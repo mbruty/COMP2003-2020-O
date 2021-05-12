@@ -24,16 +24,20 @@ const GroupPageRouter: React.FC<Props> = (props) => {
   const [page, setPage] = React.useState<Page>(Page.join_create);
   const [isHost, setIsHost] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
+  const [restuarantID, setRestaurantID] = React.useState<number>();
   // Create the observer on mount
   const observer = React.useMemo(() => {
     if (props.auth && props.auth.userid) {
       const observer = new GroupObserver(props.auth.userid);
-      observer.subscribe(async (newMembers, newCode, newPage) => {
+      observer.subscribe(async (newMembers, newCode, newPage, restaurantID) => {
         try {
           // Select the user in the array that is the owner
           const owner = newMembers?.filter((user) => user.owner)[0];
           // If the owner's userid and this user's id match, they are the owner!
           const isOwner = owner && props.auth.userid == owner.id;
+          if (restaurantID) {
+            setRestaurantID(restaurantID);
+          }
           if (isHost !== isOwner) {
             setIsHost(isOwner);
           }
@@ -152,6 +156,8 @@ const GroupPageRouter: React.FC<Props> = (props) => {
           <View>
             <AnimatedSwipe
               isGroup={true}
+              key="GroupSwipe"
+              code={code}
               onSwipe={(side: string, isFavourite: boolean, item) => {
                 console.log(item);
                 const isLike = side === "LIKE" || isFavourite;
@@ -167,7 +173,8 @@ const GroupPageRouter: React.FC<Props> = (props) => {
           onClose={() => null}
           isGroup={true}
           auth={props.auth}
-          restaurantId={1}
+          restaurantId={restuarantID}
+          roomCode={code}
         />
       );
   }

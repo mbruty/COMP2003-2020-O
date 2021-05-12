@@ -88,8 +88,9 @@ const MainScreen: React.FC<Props> = (props) => {
           >
             <View style={styles.screen}>
               <AnimatedSwipe
+                key="SoloSwipe"
                 lockScroll={lockScroll}
-                userID={auth}
+                auth={auth}
                 isGroup={false}
                 unlockScroll={unlockScroll}
               />

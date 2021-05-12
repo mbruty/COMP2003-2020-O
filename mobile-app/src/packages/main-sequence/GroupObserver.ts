@@ -14,7 +14,12 @@ export enum Page {
   waiting,
   matched,
 }
-type SocketObserver = (users: SocketUser[], code: number, page: Page) => void;
+type SocketObserver = (
+  users: SocketUser[],
+  code: number,
+  page: Page,
+  restaurantID: number
+) => void;
 
 export interface SocketUser {
   name: string;
@@ -29,6 +34,7 @@ export class GroupObserver {
   private members: SocketUser[];
   private code: number = 0;
   private userId: string;
+  private matchedID: number;
   private page: Page;
   public onError: (message: string) => void | undefined;
   constructor(userId: string) {
@@ -77,7 +83,6 @@ export class GroupObserver {
         default:
           this.page = Page.join_create;
       }
-      this.page = Page.matched;
       this.code = code;
       // Try and get the push notification token
       this.registerForPushNotifications();
@@ -108,7 +113,9 @@ export class GroupObserver {
       this.onChange();
     });
     this.socket.on("finish", (message) => {
-      alert("Match!" + message.restaurantID);
+      this.matchedID = message.restaurantID;
+      this.page = Page.matched;
+      this.onChange();
     });
     this.socket.on("joined", () => {
       this.registerForPushNotifications(); // Once we've joined, try and get the push notification token
@@ -183,7 +190,9 @@ export class GroupObserver {
 
   private onChange() {
     if (this.observers.length > 0)
-      this.observers.forEach((o) => o(this.members, this.code, this.page));
+      this.observers.forEach((o) =>
+        o(this.members, this.code, this.page, this.matchedID)
+      );
   }
   private async registerForPushNotifications() {
     if (Constants.isDevice) {

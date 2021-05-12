@@ -69,6 +69,13 @@ export default function AnimatedSwipe(props) {
           }
           requestObj.lat = userLocation.coords.latitude;
           requestObj.lng = userLocation.coords.longitude;
+          if (props.isGroup && !props.code) {
+            // Race condition where the code hasn't propgated through... It'll be updated in the next render
+            return;
+          }
+          requestObj.isGroup = !!props.isGroup;
+          requestObj.code = props.code;
+
           if (settings && settings.distance) {
             requestObj.distance = settings.distance;
           } else {
@@ -76,12 +83,18 @@ export default function AnimatedSwipe(props) {
           }
         }
         try {
+          console.log(requestObj);
+          if (props.isGroup) {
+            await new Promise((resolve, _) => setTimeout(resolve, 1000));
+          }
           const response = await fetch(RECOMMENDER_URL + "/swipestack", {
             method: "post",
             body: JSON.stringify(requestObj),
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
+              pragma: "no-cache",
+              "cache-control": "no-cache",
             },
           });
           console.log(response.status);
@@ -101,7 +114,7 @@ export default function AnimatedSwipe(props) {
         }
       })();
     }
-  }, [loading, auth]);
+  }, [loading, auth, props.code]);
 
   const onSwiped = async (side, idx, isFavourite) => {
     // Send to python api
@@ -116,6 +129,7 @@ export default function AnimatedSwipe(props) {
         islike: side === "LIKE",
         restuarantid: item.RestaurantID,
         isfavourite: isFavourite,
+        isGroup: props.isGroup,
       }),
       headers: {
         Accept: "application/json",
