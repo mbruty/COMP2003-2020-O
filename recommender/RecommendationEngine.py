@@ -18,6 +18,8 @@ class RecommendationEngine:
 
     def recommend(self):
         results = []
+        likedItems = [i.decode("UTF-8") for i in r.lrange(f"Recommendations-{self.User}", 0, -1)]
+        
         # Loop through all food items in the area
         for item in self.FoodItems:
             rating = 0
@@ -37,11 +39,15 @@ class RecommendationEngine:
         sortedItems.reverse()
         itemsToGet = sortedItems
         gotItems = []
+        filteredItems = []
         for item in itemsToGet:
             for fi in self.FoodItems:
                 if fi.ID == item[0]:
                     gotItems.append(fi)
-        return gotItems
+        for item in gotItems:
+            if item.FoodID not in likedItems:
+                filteredItems.append(item)
+        return filteredItems
 
     # Helper for the juptyer notebook
     def getFoodItems(self):
