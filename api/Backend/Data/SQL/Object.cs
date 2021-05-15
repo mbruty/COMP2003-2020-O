@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace api.Backend.Data.SQL
 {
-    public class Object
+    public abstract class Object
     {
         #region Methods
 
