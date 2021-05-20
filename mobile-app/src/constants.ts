@@ -45,3 +45,4 @@ export const CONSTANT_COLOURS = {
 export const API_URL = "http://devapi.trackandtaste.com";
 export const RECOMMENDER_URL = "http://86.27.84.126:8000";
 export const IMG_URL = "https://storage.googleapis.com/tat-img/";
+export const WS_URL = "http://192.168.0.28:5999";

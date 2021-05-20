@@ -7,7 +7,7 @@ import SwipeCard from "./SwipeCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Loading } from "../../Loading";
 import { includeAuth } from "../includeAuth";
-import FoodItemView from "./FoodItemView";
+import MatchedScreen from "../main-sequence/MatchedScreen";
 import { AuthContext } from "../../AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANT_COLOURS, RECOMMENDER_URL } from "../../constants";
@@ -31,11 +31,21 @@ export default function AnimatedSwipe(props) {
   const [text, setText] = React.useState();
   const [swipedOn, setSwipedOn] = React.useState();
   const auth = React.useContext(AuthContext);
+
+  React.useEffect(() => {
+    if (props.swipedOn) {
+      setSwipedOn(props.swipedOn);
+    }
+  }, [props]);
+  React.useEffect(() => {
+    if (swipedOn) {
+      props.lockScroll();
+    }
+  }, [swipedOn]);
   React.useEffect(() => {
     if (data.length === 0) {
       (async () => {
         const settings = JSON.parse(await AsyncStorage.getItem("location"));
-        console.log(auth);
         let requestObj = {
           userid: auth.userid,
           authtoken: auth.authtoken,
@@ -59,26 +69,37 @@ export default function AnimatedSwipe(props) {
           }
           requestObj.lat = userLocation.coords.latitude;
           requestObj.lng = userLocation.coords.longitude;
+          if (props.isGroup && !props.code) {
+            // Race condition where the code hasn't propgated through... It'll be updated in the next render
+            return;
+          }
+          requestObj.isGroup = !!props.isGroup;
+          requestObj.code = props.code;
+
           if (settings && settings.distance) {
             requestObj.distance = settings.distance;
           } else {
             requestObj.distance = 10;
           }
         }
-        console.log(requestObj);
         try {
+          console.log(requestObj);
+          if (props.isGroup) {
+            await new Promise((resolve, _) => setTimeout(resolve, 1000));
+          }
           const response = await fetch(RECOMMENDER_URL + "/swipestack", {
             method: "post",
             body: JSON.stringify(requestObj),
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
+              pragma: "no-cache",
+              "cache-control": "no-cache",
             },
           });
           console.log(response.status);
           if (response.status === 200) {
             const stack = await response.json();
-            console.log("New Data", stack, "New Data");
             setData(stack);
             setLoading(false);
           } else if (response.status === 404) {
@@ -93,12 +114,12 @@ export default function AnimatedSwipe(props) {
         }
       })();
     }
-  }, [loading, auth]);
+  }, [loading, auth, props.code]);
 
   const onSwiped = async (side, idx, isFavourite) => {
     // Send to python api
     const item = data[idx];
-    console.log(item);
+    console.log(item.RestaurantID);
     const res = await fetch(RECOMMENDER_URL + "/swipe", {
       method: "POST",
       body: JSON.stringify({
@@ -106,14 +127,19 @@ export default function AnimatedSwipe(props) {
         userid: auth.userid,
         authtoken: auth.authtoken,
         islike: side === "LIKE",
+        restuarantid: item.RestaurantID,
         isfavourite: isFavourite,
+        isGroup: props.isGroup,
       }),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
     });
-    if (side === "LIKE") setSwipedOn(item);
+    if (props.isGroup) {
+      props.onSwipe(side, isFavourite, item);
+      return;
+    } else if (side === "LIKE") setSwipedOn(item);
     setIndex((prevIdx) => (prevIdx + 1) % data.length);
   };
 
@@ -127,10 +153,15 @@ export default function AnimatedSwipe(props) {
 
   if (swipedOn) {
     return (
-      <FoodItemView
+      <MatchedScreen
         itemId={swipedOn.FoodID}
         restaurantId={swipedOn.RestaurantID}
-        onComplete={() => setSwipedOn(undefined)}
+        onClose={() => setSwipedOn(undefined)}
+        auth={props.auth}
+        onClose={() => {
+          props.unlockScroll();
+          setSwipedOn(undefined);
+        }}
       />
     );
   }
@@ -166,6 +197,8 @@ export default function AnimatedSwipe(props) {
               price={card.Price}
             />
           )}
+          cardVerticalMargin={20}
+          containerStyle={{ height: height - 130 }}
           backgroundColor={"transparent"}
           onSwipedLeft={(id) => onSwiped("NOPE", id, false)}
           onSwipedRight={(id) => onSwiped("LIKE", id, false)}
@@ -265,8 +298,7 @@ export default function AnimatedSwipe(props) {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    height: height - 100,
-    position: "relative",
+    height: height - 130,
   },
   text: {
     textAlign: "center",

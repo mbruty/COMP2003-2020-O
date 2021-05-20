@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   screen: {
     height: height,
     width: width,
-    backgroundColor: CONSTANT_COLOURS.BG_BASE
+    backgroundColor: CONSTANT_COLOURS.BG_BASE,
   },
 });
 
@@ -39,11 +39,11 @@ const MainScreen: React.FC<Props> = (props) => {
 
   const disableScroll = () => {
     // Doing it like this to prevent re-render's if the scroll is already disabled
-    if(scrollEnabled) {
+    if (scrollEnabled) {
       setScrollEnabled(false);
     }
-  }
-  
+  };
+
   const setPage = (index: number) => {
     console.log(scrollRef);
     // @ts-ignore
@@ -55,54 +55,76 @@ const MainScreen: React.FC<Props> = (props) => {
 
   useEffect(() => {
     getUserInfo();
-  }, [])
+  }, []);
   const pageRef = React.createRef();
 
   useEffect(() => {
-    if(!scrollEnabled) {
-      console.log("Enabling scroll");
+    if (!scrollEnabled) {
       setScrollEnabled(true);
     }
   }, [pageIdx]);
 
+  const lockScroll = () => {
+    console.log("lock");
+    setScrollEnabled(false);
+  };
+
+  const unlockScroll = () => {
+    setScrollEnabled(true);
+  };
   return (
     <AuthContext.Consumer>
-      {(auth) =>
-      <>
-      <Nav setPage={setPage} selectedIdx={pageIdx} />
-      <SmartPage
-        loadMinimal={false}
-        ref={pageRef}
-        onPageSelected={(index: number) => {
-          setPageIdx(index);
-        }}
-        sensitiveScroll={false}
-        scrollEnabled={scrollEnabled}
-      >
-        <View style={styles.screen}>
-          <AnimatedSwipe />
-        </View>
-        <View style={styles.screen}>
-          <GroupPageRouter setScrollEnabled={setScrollEnabled} scrollEnabled={scrollEnabled}/>
-        </View>
-        <View style={styles.screen}>
-          <RecentVisits
-            restaurants={[
-              {
-                index: 0,
-                name: "The Bruty's Arms",
-                type: 0,
-                visitDate: "25-12-2020",
-              },
-            ]}
-          />
-        </View>
-        <View style={styles.screen}>
-          <Settings scrollEnabled={scrollEnabled} setScrollEnabled={setScrollEnabled} logOut={props.logOut} />
-        </View>
-      </SmartPage>
-      </>
-}
+      {(auth) => (
+        <>
+          <Nav setPage={setPage} selectedIdx={pageIdx} />
+          <SmartPage
+            loadMinimal={false}
+            ref={pageRef}
+            onPageSelected={(index: number) => {
+              setPageIdx(index);
+            }}
+            sensitiveScroll={false}
+            scrollEnabled={scrollEnabled}
+          >
+            <View style={styles.screen}>
+              <AnimatedSwipe
+                key="SoloSwipe"
+                lockScroll={lockScroll}
+                auth={auth}
+                isGroup={false}
+                unlockScroll={unlockScroll}
+              />
+            </View>
+            <View style={styles.screen}>
+              <GroupPageRouter
+                auth={auth}
+                lockScroll={lockScroll}
+                setScrollEnabled={setScrollEnabled}
+                scrollEnabled={scrollEnabled}
+              />
+            </View>
+            <View style={styles.screen}>
+              <RecentVisits
+                restaurants={[
+                  {
+                    index: 0,
+                    name: "The Bruty's Arms",
+                    type: 0,
+                    visitDate: "25-12-2020",
+                  },
+                ]}
+              />
+            </View>
+            <View style={styles.screen}>
+              <Settings
+                scrollEnabled={scrollEnabled}
+                setScrollEnabled={setScrollEnabled}
+                logOut={props.logOut}
+              />
+            </View>
+          </SmartPage>
+        </>
+      )}
     </AuthContext.Consumer>
   );
 };

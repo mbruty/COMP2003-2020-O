@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Track and Taste",
+    "description": "No description",
+    "slug": "tat",
+    "privacy": "public",
+    "primaryColor": "#cccccc",
+    "icon": "./src/resources/Logo.png",
+    "android": {
+      "useNextNotificationsApi": true,
+      "permissions": ["RECEIVE_BOOT_COMPLETED"]
+    },
+    "notification": {
+      "iosDisplayInForeground": true,
+      "androidMode": "collapse",
+      "androidCollapsedTitle": "#{unread_notifications} group notifications"
+    },
+    "splash": {
+      "image": "./src/resources/Logo.png"
+    }
+  }
+}

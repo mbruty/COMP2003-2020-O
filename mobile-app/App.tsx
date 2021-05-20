@@ -7,8 +7,6 @@ import authCheck from "./src/packages/requests/authCheck";
 import { IUser } from "./src/packages/user/IUser";
 import * as Notifications from "expo-notifications";
 import { Loading } from "./src/Loading";
-import Constants from "expo-constants";
-import * as Permissions from "expo-permissions";
 import { AuthContext } from "./src/AuthContext";
 
 Notifications.setNotificationHandler({
@@ -26,9 +24,6 @@ export default function App() {
   Set this to "main" when publishing */
 
   const [page, setPage] = useState<string>("loading");
-  useEffect(() => {
-    registerForPushNotifications().then(console.log).catch(console.log);
-  }, []);
   const logIn = () => {
     setIsLoggedIn(true);
     includeAuth().then((authObj) => setUser(authObj));
@@ -101,28 +96,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-const registerForPushNotifications = async function () {
-  if (Constants.isDevice) {
-    // Get the notifications permission
-    const { status: existingStatus } = await Permissions.getAsync(
-      Permissions.NOTIFICATIONS
-    );
-
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== "granted") {
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-      finalStatus = status;
-    }
-
-    if (finalStatus !== "granted") {
-      return;
-    }
-
-    // If the permission was granted, then get the token
-    const token = await Notifications.getExpoPushTokenAsync();
-
-    return token;
-  }
-};

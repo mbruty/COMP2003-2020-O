@@ -1,16 +1,11 @@
 import React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { Page } from "./GroupPageRouter";
+import { GroupObserver } from "./GroupObserver";
 
 interface Props {
-  setPage: React.Dispatch<React.SetStateAction<Page>>;
+  observer: GroupObserver;
   onJoin: (code: string) => void;
   error: string;
 }
@@ -39,17 +34,28 @@ const GroupPage: React.FC<Props> = (props) => {
           }}
           label="Group Code"
         />
-        {props.error !== "" && <Text style={{paddingTop: 5, marginLeft: 5, paddingRight: 10, color: "#8c1c1c"}}>{props.error}</Text>}
+        {props.error !== "" && (
+          <Text
+            style={{
+              paddingTop: 5,
+              marginLeft: 5,
+              paddingRight: 10,
+              color: "#8c1c1c",
+            }}
+          >
+            {props.error}
+          </Text>
+        )}
         <View style={styles.btnContainer}>
           <TouchableOpacity
             onPress={() => {
-              props.onJoin(code)
+              props.onJoin(code);
             }}
           >
             <View style={[styles.btn]}>
               <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
                 JOIN GROUP
-                    </Text>
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -64,13 +70,13 @@ const GroupPage: React.FC<Props> = (props) => {
       <View style={styles.btnContainer}>
         <TouchableOpacity
           onPress={() => {
-            props.setPage(Page.map_view);
+            props.observer.showMapView();
           }}
         >
           <View style={[styles.btn]}>
             <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
               CREATE A GROUP
-                    </Text>
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
