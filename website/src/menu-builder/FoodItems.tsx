@@ -17,9 +17,8 @@ const FoodItems: React.FC<Props> = (props) => {
 
   React.useEffect(
     () =>
-      props.observer.subscribe((items: FoodGrid) => {
-        console.log("items", items);
-        setItems(items);
+      props.observer.subscribe((items: FoodGrid | undefined) => {
+        if (items) setItems(items);
       }),
     [props.observer]
   );
@@ -31,7 +30,7 @@ const FoodItems: React.FC<Props> = (props) => {
           aria-label="text primary button group"
           style={{ justifyContent: "center", width: "100%" }}
         >
-          <Button onClick={() => history.push("/item-builder")}>
+          <Button onClick={() => history.push("/item-builder/create")}>
             <Add style={{ paddingRight: 5 }} /> Create a food item
           </Button>
           <Button onClick={() => props.observer.createNewGroup()}>

@@ -1,3 +1,4 @@
+import { API_URL } from "../constants";
 import IFoodItem from "../item-builder/IFoodItem";
 export type MenuObservers = ((menus: Menu[]) => void) | null;
 
@@ -23,12 +24,25 @@ export class MenuObserver {
     }
   }
 
-  public removeFromMenu(itemId: number, menuId: number) {
+  public async removeFromMenu(itemId: number, menuId: number) {
+    // Update db with removed link
+    const res = await fetch(API_URL + "/menu/unlinkfooditem", {
+      method: "DELETE",
+      mode: "cors",
+      credentials: "include",
+      body: JSON.stringify({
+        FoodID: itemId,
+        MenuID: menuId,
+      }),
+    });
+    if (res.status !== 200) return;
     this.menus = this.menus.map((menu) => {
       if (menu.MenuID !== menuId) return menu;
       // Will always be true, just satisfying the ts compiler
       if (menu.FoodItems) {
-        menu.FoodItems = menu.FoodItems.filter((item) => item.FoodID !== itemId);
+        menu.FoodItems = menu.FoodItems.filter(
+          (item) => item.FoodID !== itemId
+        );
       }
       return menu;
     });
@@ -36,9 +50,21 @@ export class MenuObserver {
     this.emitChange();
   }
 
-  public moveItemIntoGroup(item: IFoodItem, menuId: number) {
+  public async moveItemIntoGroup(item: IFoodItem, menuId: number) {
+    // Update the db with the new item
+    const res = await fetch(API_URL + "/menu/linkfooditem", {
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+      body: JSON.stringify({
+        FoodID: item.FoodID,
+        MenuID: menuId,
+      }),
+    });
+    if (res.status !== 200) return;
     this.menus = this.menus.map((menu) => {
       if (menu.MenuID !== menuId) return menu;
+
       if (menu.FoodItems) {
         menu.FoodItems = [...menu.FoodItems, item];
       } else {
@@ -52,12 +78,12 @@ export class MenuObserver {
         // If this the array that has been FoodItems into
         // Filter the items so they're only unique
         const res: IFoodItem[] = [];
-        menu.FoodItems?.forEach((FoodItems) => {
+        menu.FoodItems?.forEach((item) => {
           const i = res.findIndex((x) => x.FoodID === item.FoodID);
-          console.log(i);
-
-          if (i <= -1) res.push(item);
+          if (i === -1) res.push(item);
         });
+        console.log(res);
+
         menu.FoodItems = res;
       }
       return menu;
@@ -65,17 +91,52 @@ export class MenuObserver {
 
     this.emitChange();
   }
-  public createNewMenu() {
-    this.menus.push({
-      MenuName: "Un-named menu",
-      MenuID:
-        this.menus.reduce((p, c) => (p.MenuID < c.MenuID ? c : p)).MenuID + 1,
-      servingDays: ["None set"],
-      isLive: false,
-      FoodItems: [],
+  public async createNewMenu(menuName: string, id: number) {
+    // Create the menu
+    const response = await fetch(API_URL + "/menu/create", {
+      method: "POST",
+      credentials: "include",
+      mode: "cors",
+      body: JSON.stringify({
+        RestaurantID: id,
+        IsChildMenu: false,
+        MenuName: menuName,
+      }),
     });
+    if (response.status === 200) {
+      const data = await response.json();
+      const menuID = data.menu.MenuID;
+      console.log(data);
 
-    this.emitChange();
+      // Link the menu to the restaurant
+
+      const res = await fetch(API_URL + "/menu/linkrestaurant", {
+        method: "POST",
+        credentials: "include",
+        mode: "cors",
+        body: JSON.stringify({
+          RestaurantID: id,
+          MenuID: menuID,
+          AlwaysServe: false,
+          IsActive: false,
+        }),
+      });
+
+      // Successfully linked
+      if (res.status === 200) {
+        this.menus.push({
+          MenuName: menuName,
+          MenuID: menuID,
+          servingDays: ["None set"],
+          isLive: false,
+          FoodItems: [],
+        });
+      }
+
+      this.emitChange();
+    } else {
+      throw new Error("Couldn't create");
+    }
   }
 
   public subscribe(o: MenuObservers): () => void {
@@ -88,6 +149,8 @@ export class MenuObserver {
   }
 
   private emitChange() {
-    this.observers.forEach((o) => o && o([...this.menus]));
+    if (this.menus) {
+      this.observers.forEach((o) => o && o([...this.menus]));
+    }
   }
 }

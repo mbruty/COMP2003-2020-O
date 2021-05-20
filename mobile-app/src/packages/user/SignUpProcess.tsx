@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
+import { auth } from "../includeAuth";
 import EmailConfirm from "./EmailConfirm";
 import { IUser } from "./IUser";
 import PreferencesController from "./PreferencesController";
@@ -7,8 +8,8 @@ import SignUp from "./SignUp";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<string>>;
-  user: IUser;
-  setUser: React.Dispatch<React.SetStateAction<IUser>>;
+  user: auth;
+  setUser: React.Dispatch<React.SetStateAction<auth>>;
 }
 let nick = "";
 
@@ -22,10 +23,10 @@ const SignUpProcess: React.FC<Props> = (props) => {
     setPageNo(pageNo + 1);
   };
 
-  const goToEmail = (inNick: string, id: string, authToken: string) => {
+  const goToEmail = (inNick: string, userid: string, authtoken: string) => {
     nick = inNick;
     setPageNo(pageNo + 1);
-    props.setUser({ id, authToken });
+    props.setUser({ userid, authtoken });
   };
 
   // Routing the user through the sign-up sequence

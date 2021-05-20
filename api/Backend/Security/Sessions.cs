@@ -35,12 +35,12 @@ namespace api.Backend.Security
 
             if (existing.Length == 0)
             {
-                new Thread(async () => { await new RAdminSession() { RAdminID = admin.RAdminID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
+                new Thread(async () => { await new RAdminSession() { RAdminID = admin.RAdminID, AuthToken = Hashing.Hash(token) }.Insert<RAdminSession>(); }).Start();
             }
             else
             {
                 Data.Redis.Instance.InvalidateKey(t.GetKey(existing[0]).ToString());
-                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
+                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update<RAdminSession>(); }).Start();
             }
         }
 
@@ -57,12 +57,12 @@ namespace api.Backend.Security
 
             if (existing.Length == 0)
             {
-                new Thread(async () => { await new Session() { UserID = user.UserID, AuthToken = Hashing.Hash(token) }.Insert(); }).Start();
+                new Thread(async () => { await new Session() { UserID = user.UserID, AuthToken = Hashing.Hash(token) }.Insert<Session>(); }).Start();
             }
             else
             {
                 Data.Redis.Instance.InvalidateKey(t.GetKey(existing[0]).ToString());
-                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update(); }).Start();
+                new Thread(async () => { existing[0].AuthToken = Hashing.Hash(token); await existing[0].Update<Session>(); }).Start();
             }
         }
 
@@ -185,14 +185,19 @@ namespace api.Backend.Security
 
         public static async Task<SecurityPerm> GetSecurityGroup(NameValueCollection headers, WebRequest.HttpResponse response, string Data)
         {
-            if(Data.Contains("authtoken"))
+            if (Data.Contains("authtoken"))
             {
                 // We're not using cookies or headers
                 AuthObj auth = JsonSerializer.Deserialize<AuthObj>(Data);
-                if(auth.authtoken != "" && (auth.userid != "" || auth.adminid!=""))
+                if (auth.authtoken != "" && (auth.userid != "" || auth.adminid != ""))
                 {
                     return await CheckSession(auth.userid, auth.adminid, auth.authtoken, response);
                 }
+            }
+            string cookie = headers.Get("Cookie");
+            if (cookie != null)
+            {
+                return await CheckSession(new AuthObj { Cookie = cookie }, response);
             }
             Security.AuthObj auth_obj = (Security.AuthObj)Misc.ConvertHeadersOrBodyToType(typeof(Security.AuthObj), headers, Data);
             return await CheckSession(auth_obj, response);
@@ -230,6 +235,18 @@ namespace api.Backend.Security
         #endregion Methods
     }
 
+    public class AuthObj
+    {
+        #region Properties
+
+        public string adminid { get; set; }
+        public string authtoken { get; set; }
+        public string Cookie { get; set; }
+        public string userid { get; set; }
+
+        #endregion Properties
+    }
+
     public class SecurityPerm
     {
         #region Fields
@@ -238,13 +255,5 @@ namespace api.Backend.Security
         public SecurityGroup SecurityGroup = SecurityGroup.None;
 
         #endregion Fields
-    }
-
-    public class AuthObj
-    {
-        public string authtoken { get; set; }
-        public string userid { get; set; }
-        public string adminid { get; set; }
-        public string Cookie { get; set; }
     }
 }

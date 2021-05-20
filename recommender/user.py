@@ -10,3 +10,9 @@ class User:
 
     def print(self):
         print(f"ID: {self.id} \t Bias: {self.bias} \nFood Tags: {self.food_tags}")
+
+    def getSwipePct(self, tag):
+        for ft in self.food_tags:
+            if tag == ft[0]:
+                return ft [1]
+        return None

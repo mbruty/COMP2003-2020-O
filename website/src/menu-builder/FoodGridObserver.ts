@@ -1,5 +1,6 @@
+import { API_URL } from "../constants";
 import IFoodItem from "../item-builder/IFoodItem";
-export type FoodGridObserver = ((items: FoodGrid) => void) | null;
+export type FoodGridObserver = ((items: FoodGrid | undefined) => void) | null;
 
 export type FoodGrid = {
   groups: FoodGroup[];
@@ -12,55 +13,39 @@ export type FoodGroup = {
 };
 
 export class Observer {
-  public items: FoodGrid;
+  public items: FoodGrid | undefined;
   private observers: FoodGridObserver[] = [];
 
-  constructor(data: any) {
+  constructor() {
+    this.fetchItems();
+  }
+
+  public async fetchItems() {
+    const res = await fetch(API_URL + "/fooditem/me", {
+      mode: "cors",
+      credentials: "include",
+      method: "GET",
+    });
+    if (res.status !== 200) return;
+    const data = await res.json();
+    
     this.items = {
       groups: [
         {
-          name: "Amazing dinner",
-          items: [
-            {
-              FoodID: 1,
-              FoodName: "Quokka",
-              FoodNameShort: "Quokka",
-              Price: 2.99,
-            },
-            {
-              FoodID: 3,
-              FoodNameShort: "Borger",
-              FoodName: "Borger",
-              Price: 69.69,
-            },
-          ],
-          id: 1,
-        },
-        {
           name: "Ungroupped",
-          id: 2,
-          items: [
-            {
-              FoodID: 2,
-              FoodName: "Wine 'n beer",
-              FoodNameShort: "Wine 'n beer",
-              Price: 6.99,
-            },
-            {
-              FoodID: Number.MAX_SAFE_INTEGER,
-              FoodName: "Error test",
-              FoodNameShort: "Error test",
-              Price: 0.01,
-            },
-          ],
+          id: 0,
+          items: data.items,
         },
       ],
     };
+
+    this.emitChange();
   }
 
   public createNewGroup() {
     // Find the highest id and add one to it
 
+    if (!this.items) return;
     const max =
       this.items.groups?.reduce((max, current) =>
         max.id < current.id ? current : max
@@ -78,6 +63,8 @@ export class Observer {
   public removeGroup(id: number) {
     let group: any, ungroupped: any;
     let otherGroups: FoodGroup[] = [];
+
+    if (!this.items) return;
 
     this.items.groups.forEach((x) => {
       if (x.id === id) {
@@ -104,6 +91,8 @@ export class Observer {
   }
 
   public updateName(name: string, id: number) {
+    if (!this.items) return;
+
     this.items.groups = this.items.groups?.map((item) => {
       if (item.id === id && item.name !== "Ungroupped") {
         item.name = name;
@@ -114,22 +103,23 @@ export class Observer {
     this.emitChange();
   }
 
-  public subscribe(o: FoodGridObserver): () => void {
+  public subscribe(o: FoodGridObserver): void {
     this.observers.push(o);
     this.emitChange();
-
-    return (): void => {
-      this.observers = this.observers.filter((t) => t !== o);
-    };
   }
 
   public moveItemIntoGroup(itemId: number, groupId: number) {
+    if (!this.items) return;
+
     const group = this.items.groups?.filter(
-      (group) => group.items?.filter((item) => item.FoodID === itemId).length !== 0
+      (group) =>
+        group.items?.filter((item) => item.FoodID === itemId).length !== 0
     );
 
     if (group) {
-      let itemToAdd = group[0]?.items?.filter((item) => item.FoodID === itemId)[0];
+      let itemToAdd = group[0]?.items?.filter(
+        (item) => item.FoodID === itemId
+      )[0];
       // We couldn't find the item so do nothign
       if (itemToAdd) {
         // Move the item into the group
@@ -152,7 +142,6 @@ export class Observer {
           const res: IFoodItem[] = [];
           group.items?.forEach((item) => {
             const i = res.findIndex((x) => x.FoodID === item.FoodID);
-            console.log(i);
 
             if (i <= -1) res.push(item);
           });
@@ -166,6 +155,9 @@ export class Observer {
   }
 
   private emitChange() {
-    this.observers.forEach((o) => o && o({ ...this.items }));
+    if (this.items) {
+      /* @ts-ignore */
+      this.observers.forEach((o) => o && o({ ...this.items }));
+    }
   }
 }

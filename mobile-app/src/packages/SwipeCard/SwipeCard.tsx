@@ -18,6 +18,7 @@ export interface Item {
 interface Props {
   foodID: number;
   title: string;
+  price: number;
 }
 
 const { width, height } = Dimensions.get("screen");
@@ -25,16 +26,32 @@ const { width, height } = Dimensions.get("screen");
 export const CARD_WIDTH = Math.floor(width * 0.95);
 export const CARD_HEIGHT = 480;
 
-console.log(CARD_WIDTH);
-
-
 const SwipeCard: React.FC<Props> = (props) => {
-  console.log("Props", props);
   return (
     <View style={[styles.container]}>
       <View style={[styles.card]}>
-        <Image style={[styles.image]} source={{ uri: IMG_URL + props.foodID + ".png" }} />
-        <Text style={styles.title}>{props.title}</Text> 
+        {/* Adding a meaningless query so we fetch the most up-to-date image */}
+        <Image
+          style={[styles.image]}
+          source={{ uri: IMG_URL + props.foodID + ".png?1=1" }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            bottom: 50,
+            padding: 5,
+            borderRadius: 10,
+            left: 15,
+            borderColor: CONSTANT_COLOURS.DARK_GREY,
+            borderWidth: 1,
+            backgroundColor: "white",
+          }}
+        >
+          <Text style={{ fontSize: 20, color: CONSTANT_COLOURS.DARK_GREY }}>
+            £{props.price}
+          </Text>
+        </View>
+        <Text style={styles.title}>{props.title}</Text>
       </View>
     </View>
   );

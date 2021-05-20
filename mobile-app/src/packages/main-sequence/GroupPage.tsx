@@ -1,25 +1,17 @@
-import React, { useState } from "react";
-import {
-  Text,
-  View,
-  Button,
-  Modal,
-  Alert,
-  StyleSheet,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-} from "react-native";
+import React from "react";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { CONSTANT_STYLES, CONSTANT_COLOURS } from "../../constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
-import { reset } from "../includeAuth";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { Page } from "./GroupPageRouter";
+import { GroupObserver } from "./GroupObserver";
 
 interface Props {
-  setPage: React.Dispatch<React.SetStateAction<Page>>;
+  observer: GroupObserver;
+  onJoin: (code: string) => void;
+  error: string;
 }
 
 const GroupPage: React.FC<Props> = (props) => {
+  const [code, setCode] = React.useState("");
   return (
     <View>
       <View style={styles.box}>
@@ -33,22 +25,37 @@ const GroupPage: React.FC<Props> = (props) => {
           <Text style={styles.title}>Enter a Group Code:</Text>
         </View>
         <AwesomeTextInput
+          value={code}
+          onChangeText={(text) => setCode(text)}
+          keyboardType="number-pad"
           customStyles={{
             title: CONSTANT_STYLES.TXT_DEFAULT,
             container: { marginTop: 25 },
           }}
           label="Group Code"
         />
+        {props.error !== "" && (
+          <Text
+            style={{
+              paddingTop: 5,
+              marginLeft: 5,
+              paddingRight: 10,
+              color: "#8c1c1c",
+            }}
+          >
+            {props.error}
+          </Text>
+        )}
         <View style={styles.btnContainer}>
           <TouchableOpacity
             onPress={() => {
-              console.log("Join Group Clicked");
+              props.onJoin(code);
             }}
           >
             <View style={[styles.btn]}>
               <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
                 JOIN GROUP
-                    </Text>
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -63,13 +70,13 @@ const GroupPage: React.FC<Props> = (props) => {
       <View style={styles.btnContainer}>
         <TouchableOpacity
           onPress={() => {
-            props.setPage(Page.map_view);
+            props.observer.showMapView();
           }}
         >
           <View style={[styles.btn]}>
             <Text style={[styles.btnTxt, CONSTANT_STYLES.TXT_BASE]}>
               CREATE A GROUP
-                    </Text>
+            </Text>
           </View>
         </TouchableOpacity>
       </View>

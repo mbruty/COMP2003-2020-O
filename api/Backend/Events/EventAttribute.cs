@@ -1,10 +1,9 @@
 ﻿using api.Backend.Security;
+using Newtonsoft.Json;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
 
 namespace api.Backend.Events
 {
@@ -22,10 +21,10 @@ namespace api.Backend.Events
             .SelectMany(x => x.GetMethods())
             .Where(x => x.GetCustomAttributes(typeof(Events.WebEvent), false).FirstOrDefault() != null).ToArray();
 
+        public Type dataType;
         public SecurityGroup secuirtyLevel = SecurityGroup.None;
         public string urlPath, method;
         public bool WebSocket = false;
-        public Type dataType;
 
         #endregion Fields
 
@@ -71,6 +70,19 @@ namespace api.Backend.Events
             return methodInfos.Where(x => x.GetCustomAttribute<Events.WebEvent>().Equals(path, WebSocket)).ToArray();
         }
 
+        public object ConvertHeadersOrBodyToType(NameValueCollection headers, string data)
+        {
+            if (dataType == typeof(string)) return data;
+            if (dataType == typeof(NameValueCollection)) return headers;
+            if (data.Length > 0) return JsonConvert.DeserializeObject(data, dataType);
+            else
+            {
+                object o = Activator.CreateInstance(dataType);
+                o = UpdateContents(o, dataType, headers);
+                return o;
+            }
+        }
+
         /// <summary>
         /// Easily check equivalence
         /// </summary>
@@ -95,19 +107,7 @@ namespace api.Backend.Events
             return urlPath.ToLower() == this.urlPath && WebSocket == this.WebSocket;
         }
 
-        public object ConvertHeadersOrBodyToType(NameValueCollection headers, string data)
-        {
-            if (dataType == typeof(string)) return data;
-            if (dataType == typeof(NameValueCollection)) return headers;
-            if (data.Length>0) return JsonConvert.DeserializeObject(data, dataType);
-            else {
-                object o = Activator.CreateInstance(dataType);
-                o = UpdateContents(o,dataType, headers);
-                return o;
-            }
-        }
-
-        public Object UpdateContents(Object o,Type t, NameValueCollection headers)
+        public Object UpdateContents(Object o, Type t, NameValueCollection headers)
         {
             foreach (PropertyInfo field in t.GetProperties())
             {

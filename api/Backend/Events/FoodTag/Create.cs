@@ -2,9 +2,7 @@
 using api.Backend.Data.SQL.AutoSQL;
 using api.Backend.Endpoints;
 using api.Backend.Security;
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -14,7 +12,7 @@ namespace api.Backend.Events.FoodTag
     {
         #region Methods
 
-        [WebEvent(typeof(FoodTagBody),"/foodtags/create", "POST", false, SecurityGroup.None)]
+        [WebEvent(typeof(FoodTagBody), "/foodtags/create", "POST", false, SecurityGroup.None)]
         public static async Task GetTagsLike(FoodTagBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             FoodTags[] tags = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>(
@@ -24,7 +22,7 @@ namespace api.Backend.Events.FoodTag
 
             if (tags.Length == 0)
             {
-                await new FoodTags(body.name).Insert();
+                await new FoodTags(body.name).Insert<FoodTags>();
                 response.StatusCode = 201;
 
                 // Get the inserted food tag
@@ -70,8 +68,8 @@ namespace api.Backend.Events.FoodTag
             }
         }
 
-        [WebEvent(typeof(FoodTagBody), "/foodtags/sync", "POST", false, SecurityGroup.None)]
-        public static async Task SyncSearch(FoodTagBody body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
+        [WebEvent(typeof(string), "/foodtags/sync", "POST", false, SecurityGroup.None)]
+        public static async Task SyncSearch(string body, WebRequest.HttpResponse response, Security.SecurityPerm perm)
         {
             // Get all food tags
             FoodTags[] all = await Binding.GetTable<FoodTags>().SelectCustom<FoodTags>("1=1", 0);
@@ -101,7 +99,8 @@ namespace api.Backend.Events.FoodTag
                 //{
                 //    var result = streamReader.ReadToEnd();
                 //}
-                //response.StatusCode = 202;
+
+                response.StatusCode = 202;
             }
             catch (System.Net.WebException ex)
             {
@@ -112,18 +111,14 @@ namespace api.Backend.Events.FoodTag
         }
 
         #endregion Methods
+    }
 
-        #region Classes
+    public class FoodTagBody
+    {
+        #region Properties
 
-        public class FoodTagBody
-        {
-            #region Properties
+        public string name { get; set; }
 
-            public string name { get; set; }
-
-            #endregion Properties
-        }
-
-        #endregion Classes
+        #endregion Properties
     }
 }
