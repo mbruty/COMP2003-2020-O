@@ -384,6 +384,7 @@ export default function Nav(props: Props) {
                   >
                     <Typography className={classes.heading}>
                       {props.selectedRestaurant.name}
+                      <span className="verify">Unverified</span>
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -398,8 +399,8 @@ export default function Nav(props: Props) {
                         <div style={{ marginBottom: "5px" }}>
                           <Button
                             onClick={() => {
-                              if(restaurant.name === "Create a restaurant"){
-                                history.push("/restaurant-builder")
+                              if (restaurant.name === "Create a restaurant") {
+                                history.push("/restaurant-builder");
                               }
                               props.setSelectedRestaurant(restaurant);
                               setExpanded(false);
@@ -465,6 +466,16 @@ export default function Nav(props: Props) {
                 <Label />
               </ListItemIcon>
               <ListItemText primary="Create a food tag" />
+            </ListItem>
+            <ListItem
+              button
+              key="Create a food tag"
+              onClick={() => history.push("/verify")}
+            >
+              <ListItemIcon>
+                <Label />
+              </ListItemIcon>
+              <ListItemText primary="Verify your restaurant" />
             </ListItem>
           </List>
           <Divider />
