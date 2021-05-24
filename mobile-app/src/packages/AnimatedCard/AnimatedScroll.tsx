@@ -20,16 +20,16 @@ const useLazyRef = <T extends object>(initializer: () => T) => {
   return ref.current;
 };
 export interface CardProps {
-    index: number;
-    type: number;
-    name: string;
-    visitDate: string;
-  }
-  
+  index: number;
+  type: number;
+  name: string;
+  id?: number;
+  visitDate: string;
+}
+
 interface Props {
   handleSwipe: (index: number) => void;
   cards: Array<CardProps>;
-
 }
 
 const AnimatedScroll: React.FC<Props> = (props) => {

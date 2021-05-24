@@ -59,18 +59,19 @@ const MainScreen: React.FC<Props> = (props) => {
   const pageRef = React.createRef();
 
   useEffect(() => {
-    if (!scrollEnabled) {
+    if (pageIdx === 0) {
       setScrollEnabled(true);
+    } else {
+      setScrollEnabled(false);
     }
   }, [pageIdx]);
 
   const lockScroll = () => {
-    console.log("lock");
     setScrollEnabled(false);
   };
 
   const unlockScroll = () => {
-    setScrollEnabled(true);
+    setScrollEnabled(false);
   };
   return (
     <AuthContext.Consumer>
@@ -108,9 +109,45 @@ const MainScreen: React.FC<Props> = (props) => {
                 restaurants={[
                   {
                     index: 0,
+                    id: 1,
                     name: "The Bruty's Arms",
                     type: 0,
-                    visitDate: "25-12-2020",
+                    visitDate: "12-05-2021",
+                  },
+                  {
+                    index: 1,
+                    id: 6,
+                    name: "Thai Tanic",
+                    type: 1,
+                    visitDate: "06-05-2021",
+                  },
+                  {
+                    index: 2,
+                    id: 2,
+                    name: "Admiral Acbar's Sushi",
+                    type: 0,
+                    visitDate: "04-05-2021",
+                  },
+                  {
+                    index: 3,
+                    id: 5,
+                    name: "The Kingdom of Spamalot",
+                    type: 1,
+                    visitDate: "25-04-2021",
+                  },
+                  {
+                    index: 4,
+                    id: 4,
+                    name: "Dexter's Diner",
+                    type: 0,
+                    visitDate: "18-04-2021",
+                  },
+                  {
+                    index: 5,
+                    name: "Pizza Xpress",
+                    id: 7,
+                    type: 1,
+                    visitDate: "5-04-2021",
                   },
                 ]}
               />

@@ -39,9 +39,8 @@ const Settings: React.FC<Props> = (props) => {
   const [toggle, setToggle] = useState<boolean>(true);
   const [showMap, setShowMap] = useState<boolean>(false);
 
-  const [markerLocation, setMarkerLocation] = React.useState<
-    LatLng | undefined
-  >();
+  const [markerLocation, setMarkerLocation] =
+    React.useState<LatLng | undefined>();
 
   React.useEffect(() => {
     if (mapRef) {
@@ -178,8 +177,6 @@ const Settings: React.FC<Props> = (props) => {
             />
           </View>
         </View>
-        <View style={styles.spacer} />
-
         <Text style={styles.title}>Food Preferences</Text>
         <TouchableOpacity
           onPress={() => console.log("Food Preferences Clicked")}

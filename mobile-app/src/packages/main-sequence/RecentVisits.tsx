@@ -13,21 +13,33 @@ interface Props {
   restaurants: Array<CardProps>;
 }
 
-
-/**
- * @param index The index of the card that has been swiped on
- */
-const handleSwipe = (index: number) => {
-  //What to do when the user swipes on that card
-  alert("Swipe from " + index);
-};
-
-const RecentVisits: React.FC<Props> = ({restaurants}, {props}) => {
-  // Select the 10 most recent cards
-  const [showingVisit, setShowingVisit] = React.useState<boolean>(false);
+const RecentVisits: React.FC<Props> = ({ restaurants }, { props }) => {
+  const [selectedRestaurant, setSelectedRestaurant] =
+    React.useState<number | undefined>();
   // Possibly move this over to the api??
-  const cards = restaurants.slice(0, restaurants.length > 10 ? 10 : restaurants.length);
-  if (showingVisit){return <RecentVisitDetails restaurantId={6} rating={4} onClose={() => {props.unlockScroll();}}/>}
+  const cards = restaurants.slice(
+    0,
+    restaurants.length > 10 ? 10 : restaurants.length
+  );
+  const handleSwipe = (index: number) => {
+    console.log(index);
+
+    console.log("RESTUARANT", restaurants[index]);
+
+    //What to do when the user swipes on that card
+    setSelectedRestaurant(restaurants[index].id);
+  };
+  if (selectedRestaurant) {
+    return (
+      <RecentVisitDetails
+        restaurantId={selectedRestaurant}
+        rating={Math.floor(Math.random() * 5)}
+        onClose={() => {
+          setSelectedRestaurant(undefined);
+        }}
+      />
+    );
+  }
   return <AnimatedScroll handleSwipe={handleSwipe} cards={cards} />;
 };
 
