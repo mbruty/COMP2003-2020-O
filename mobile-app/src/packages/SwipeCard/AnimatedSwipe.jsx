@@ -274,19 +274,31 @@ export default function AnimatedSwipe(props) {
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.circle}
-          onPress={() => swiperRef.current.swipeLeft()}
+          onPress={() => {
+            if (swiperRef.current) {
+              swiperRef.current.swipeLeft();
+            }
+          }}
         >
           <Icon name="x" size={32} color="#ec5288" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.circle}
-          onPress={() => swiperRef.current.swipeTop()}
+          onPress={() => {
+            if (swiperRef.current) {
+              swiperRef.current.swipeTop();
+            }
+          }}
         >
           <Icon name="star" size={32} color="#1bd6f7" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.circle}
-          onPress={() => swiperRef.current.swipeRight()}
+          onPress={() => {
+            if (swiperRef.current) {
+              swiperRef.current.swipeRight();
+            }
+          }}
         >
           <Icon name="heart" size={32} color="#6ee3b4" />
         </TouchableOpacity>

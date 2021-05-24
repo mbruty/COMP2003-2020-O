@@ -31,6 +31,7 @@ import {
   Label,
   MenuBook,
   Store,
+  VerifiedUser,
 } from "@material-ui/icons";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -299,19 +300,7 @@ export default function Nav(props: Props) {
           <Typography className={classes.title} variant="h6" noWrap>
             Track and Taste Dashboard
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
+
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton
@@ -384,6 +373,7 @@ export default function Nav(props: Props) {
                   >
                     <Typography className={classes.heading}>
                       {props.selectedRestaurant.name}
+                      <span className="verify">Unverified</span>
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -398,8 +388,8 @@ export default function Nav(props: Props) {
                         <div style={{ marginBottom: "5px" }}>
                           <Button
                             onClick={() => {
-                              if(restaurant.name === "Create a restaurant"){
-                                history.push("/restaurant-builder")
+                              if (restaurant.name === "Create a restaurant") {
+                                history.push("/restaurant-builder");
                               }
                               props.setSelectedRestaurant(restaurant);
                               setExpanded(false);
@@ -465,6 +455,18 @@ export default function Nav(props: Props) {
                 <Label />
               </ListItemIcon>
               <ListItemText primary="Create a food tag" />
+            </ListItem>
+            <Divider />
+            <h3 className="nav">Verification</h3>
+            <ListItem
+              button
+              key="verify"
+              onClick={() => history.push("/verify")}
+            >
+              <ListItemIcon>
+                <VerifiedUser />
+              </ListItemIcon>
+              <ListItemText primary="Verify your restaurant" />
             </ListItem>
           </List>
           <Divider />

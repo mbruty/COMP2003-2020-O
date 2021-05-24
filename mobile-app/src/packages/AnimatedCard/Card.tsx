@@ -1,5 +1,6 @@
+import { Entypo } from "@expo/vector-icons";
 import React from "react";
-import { Dimensions, Image, StyleSheet, Text } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { CONSTANT_STYLES } from "../../constants";
 
 const { width } = Dimensions.get("window");
@@ -75,8 +76,11 @@ export default ({ type, name, nextVisit }: CardProps) => {
           { top: 120, left: 25, fontSize: 16, fontWeight: "normal" },
         ]}
       >
-        {"Swipe for more info ---->"}
+        {"Swipe for more info"}
       </Text>
+      <View style={{ position: "absolute", right: 80, top: 80 }}>
+        <Entypo name="chevron-right" size={24} color="white" />
+      </View>
     </>
   );
 };
